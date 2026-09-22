@@ -36,6 +36,7 @@ export function PlayerTable({
   const rowRefs = useRef(new Map<string, HTMLTableRowElement>())
   const previousRowRects = useRef(new Map<string, DOMRect>())
   const targetRowRects = useRef(new Map<string, DOMRect>())
+  const isEditingDirty = useRef(false)
   const rankedPlayersRef = useRef(rankedPlayers)
   const previousRanksRef = useRef<Map<string, number>>(
     new Map(rankedPlayers.map((p) => [p.id, p.rank])),
@@ -144,12 +145,21 @@ export function PlayerTable({
   // Thực hiện sắp xếp lại bảng (commit sort) và cuộn màn hình tới hàng người chơi
   const commitSortAndScroll = useCallback(
     (playerId: string) => {
+      // Đánh dấu đã commit xong toàn bộ thay đổi, hủy timer debounce nếu còn chạy dở
+      isEditingDirty.current = false
+      if (typingDebounceTimer.current) {
+        clearTimeout(typingDebounceTimer.current)
+        typingDebounceTimer.current = null
+      }
+
       // 1. Lấy thứ hạng trước khi sắp xếp và thứ hạng mới nhất từ nguồn dữ liệu chuẩn (tránh stale closure)
       const fromRank = previousRanksRef.current.get(playerId)
       const currentPlayer = rankedPlayersRef.current.find((p) => p.id === playerId)
       const toRank = currentPlayer?.rank
+      const didRankChange =
+        fromRank !== undefined && toRank !== undefined && fromRank !== toRank
 
-      if (fromRank !== undefined && toRank !== undefined && fromRank !== toRank) {
+      if (didRankChange) {
         setRankJumpInfo({ playerId, fromRank, toRank })
       } else {
         setRankJumpInfo(null)
@@ -165,32 +175,34 @@ export function PlayerTable({
       // 3. Hủy đóng băng vị trí hàng -> cho phép danh sách sắp xếp lại theo thứ hạng thực tế
       setFrozenOrderIds(null)
 
-      // 4. Chờ layout DOM cập nhật thứ tự mới, sau đó kích hoạt cuộn mượt và highlight
-      setTimeout(() => {
-        const rowEl = rowRefs.current.get(playerId)
-        if (!rowEl) return
+      // 4. Nếu thứ hạng thực sự thay đổi: kích hoạt cuộn mượt và highlight viền Chroma RGB
+      if (didRankChange) {
+        setTimeout(() => {
+          const rowEl = rowRefs.current.get(playerId)
+          if (!rowEl) return
 
-        setHighlightedPlayerId(playerId)
-        if (highlightCleanupTimer.current) clearTimeout(highlightCleanupTimer.current)
-        highlightCleanupTimer.current = setTimeout(() => {
-          setHighlightedPlayerId(null)
-          setRankJumpInfo(null)
-        }, 3400)
+          setHighlightedPlayerId(playerId)
+          if (highlightCleanupTimer.current) clearTimeout(highlightCleanupTimer.current)
+          highlightCleanupTimer.current = setTimeout(() => {
+            setHighlightedPlayerId(null)
+            setRankJumpInfo(null)
+          }, 3400)
 
-        // Kiểm tra vị trí đích chuẩn của hàng xem có đang hiển thị rõ trong khung nhìn không
-        const targetRect = targetRowRects.current.get(playerId) ?? rowEl.getBoundingClientRect()
-        const headerOffset = 110 // Đệm tránh bị thanh header sticky che khuất
-        const isComfortablyVisible =
-          targetRect.top >= headerOffset && targetRect.bottom <= window.innerHeight - 40
+          // Kiểm tra vị trí đích chuẩn của hàng xem có đang hiển thị rõ trong khung nhìn không
+          const targetRect = targetRowRects.current.get(playerId) ?? rowEl.getBoundingClientRect()
+          const headerOffset = 110 // Đệm tránh bị thanh header sticky che khuất
+          const isComfortablyVisible =
+            targetRect.top >= headerOffset && targetRect.bottom <= window.innerHeight - 40
 
-        // Nếu hàng nhảy ra ngoài khung nhìn (lên trên hoặc xuống dưới), cuộn tới ngay
-        if (!isComfortablyVisible) {
-          rowEl.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center',
-          })
-        }
-      }, 70)
+          // Nếu hàng nhảy ra ngoài khung nhìn (lên trên hoặc xuống dưới), cuộn tới ngay
+          if (!isComfortablyVisible) {
+            rowEl.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+            })
+          }
+        }, 70)
+      }
     },
     [],
   )
@@ -201,11 +213,20 @@ export function PlayerTable({
       clearTimeout(typingDebounceTimer.current)
       typingDebounceTimer.current = null
     }
+
+    // Nếu không có thay đổi nào mới (ví dụ đã dừng gõ hơn 800ms và đã sắp xếp xong trước đó)
+    // thì khi blur không cần phải trigger sắp xếp lại hay kích hoạt lại animation
+    if (!isEditingDirty.current) {
+      setFrozenOrderIds(null)
+      return
+    }
+
     commitSortAndScroll(playerId)
   }
 
   // Xử lý khi đang gõ phím: giữ nguyên vị trí hàng, debounce 800ms mới sắp xếp lại
   function handleFieldChange(playerId: string, field: keyof Player, value: string | number) {
+    isEditingDirty.current = true
     setFrozenOrderIds((prev) => prev ?? rankedPlayers.map((p) => p.id))
     onUpdatePlayerField(playerId, field, value)
 
