@@ -29,16 +29,16 @@ interface AnimatedRowItem {
   deltaY: number
 }
 
-// Đường cong gia tốc êm ái, khởi động từ tốn, không giật vọt ở pha đầu
-function easeInOutSine(t: number): number {
-  return -(Math.cos(Math.PI * t) - 1) / 2
+// Chuyển động đều (Linear motion): vận tốc không đổi, triệt tiêu hoàn toàn hiện tượng tăng tốc hay giảm tốc đột ngột
+function linear(t: number): number {
+  return t
 }
 
 function runUnifiedAnimation({
   targetScrollY,
   duration,
   rows,
-  easing = easeInOutSine,
+  easing = linear,
 }: {
   targetScrollY?: number
   duration: number
@@ -229,7 +229,6 @@ export function PlayerTable({
 
       if (movingRows.length > 0) {
         let targetTop: number | undefined
-        let duration = 1600 // Mặc định khi nhảy tại chỗ trong khung nhìn
 
         const targetRowEl = jumpingPlayerId ? rowRefs.current.get(jumpingPlayerId) : null
         if (jumpingPlayerId && targetRowEl && targetRowEl.isConnected) {
@@ -247,17 +246,25 @@ export function PlayerTable({
               0,
               rowDocTop - (window.innerHeight / 2) + (rowHeight / 2)
             )
-            const diff = Math.abs(targetTop - currentScroll)
-            // Thời lượng êm ái, kéo dài từ 2.2s đến tối đa 3.0s để khởi đầu nhẹ nhàng không giật
-            duration = Math.min(3000, Math.max(2200, 1800 + diff * 0.6))
           }
         }
+
+        const currentScroll = window.scrollY || document.documentElement.scrollTop
+        const scrollDistance = targetTop !== undefined ? Math.abs(targetTop - currentScroll) : 0
+        const maxRowDelta = Math.max(0, ...movingRows.map((r) => Math.abs(r.deltaY)))
+        const maxDistance = Math.max(maxRowDelta, scrollDistance)
+
+        // Chuyển động đều (Linear motion): Vận tốc không đổi xuyên suốt.
+        // Thời lượng scale theo quãng đường: tối thiểu 800ms (cho 1 rank) đến tối đa 3000ms (cho bước nhảy xa kèm cuộn)
+        const duration = targetTop !== undefined
+          ? Math.min(3000, Math.max(2200, 1600 + maxDistance * 1.0))
+          : Math.min(2000, Math.max(800, 600 + maxDistance * 1.5))
 
         activeScrollAnimation.current = runUnifiedAnimation({
           targetScrollY: targetTop,
           duration,
           rows: movingRows,
-          easing: easeInOutSine,
+          easing: linear,
         })
       }
     }
