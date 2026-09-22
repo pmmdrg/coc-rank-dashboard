@@ -41,23 +41,16 @@ function loadInitialDocument(): StorageDocument {
         ? parsed.seasons.map(normalizeSeason)
         : [parsed.season ? normalizeSeason(parsed.season) : defaultSeason]
 
-      // Tự động bỏ dữ liệu mẫu cũ (nếu chứa các người chơi mẫu như AriaStorm, IronMinh, Manax)
-      const hasOldSample = seasons.some((s) =>
-        s.players.some((p) => p.name === 'AriaStorm' || p.name === 'IronMinh' || p.name === 'Manax' || p.name === 'LunaBase'),
-      )
+      const activeIndex = typeof parsed.activeSeasonIndex === 'number' && parsed.activeSeasonIndex < seasons.length
+        ? parsed.activeSeasonIndex
+        : 0
 
-      if (!hasOldSample) {
-        const activeIndex = typeof parsed.activeSeasonIndex === 'number' && parsed.activeSeasonIndex < seasons.length
-          ? parsed.activeSeasonIndex
-          : 0
-
-        return {
-          name: parsed.name || 'rank-season.json',
-          format: parsed.format || 'json',
-          season: seasons[activeIndex] ?? defaultSeason,
-          seasons,
-          activeSeasonIndex: activeIndex,
-        }
+      return {
+        name: parsed.name || 'rank-season.json',
+        format: parsed.format || 'json',
+        season: seasons[activeIndex] ?? defaultSeason,
+        seasons,
+        activeSeasonIndex: activeIndex,
       }
     }
   } catch {
@@ -92,11 +85,18 @@ function App() {
   const myPlayerName = stats.myPlayer?.name || 'Tài khoản của tôi'
 
   const isInitialMount = useRef(true)
+  const isOpeningFile = useRef(false)
 
   // Cơ chế Tự động lưu (Auto-save) có Debounce 800ms
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false
+      return
+    }
+
+    // Nếu vừa mới mở file xong, không cần lưu đè ngược lại file đó ngay lập tức
+    if (isOpeningFile.current) {
+      isOpeningFile.current = false
       return
     }
 
@@ -119,9 +119,12 @@ function App() {
 
         // 2. Nếu đã có file liên kết trên máy hoặc Drive, tự động ghi ngầm
         if (currentAdapter.hasActiveFile()) {
-          await currentAdapter.save(draftDoc)
-          setAutoSaveStatus('saved')
-          setStatus(`Đã tự động lưu vào file ${document.name} lúc ${new Date().toLocaleTimeString('vi-VN')}`)
+          // Bảo vệ an toàn: Chỉ ghi đè nếu dữ liệu người chơi hợp lệ
+          if (rankedSeason.players.length > 0) {
+            await currentAdapter.save(draftDoc)
+            setAutoSaveStatus('saved')
+            setStatus(`Đã tự động lưu vào file ${document.name} lúc ${new Date().toLocaleTimeString('vi-VN')}`)
+          }
         } else {
           setAutoSaveStatus('draft')
           setStatus(`Đã tự động lưu bản nháp vào trình duyệt lúc ${new Date().toLocaleTimeString('vi-VN')}`)
@@ -241,10 +244,18 @@ function App() {
   }
 
   async function handleOpen() {
-    await runStorageAction(
-      () => currentAdapter.open(),
-      `Đã mở dữ liệu từ ${currentAdapter.label} thành công.`,
-    )
+    try {
+      setError('')
+      const nextDocument = await currentAdapter.open()
+      isOpeningFile.current = true
+      setDocument(nextDocument)
+      setStatus(`Đã mở dữ liệu từ ${currentAdapter.label} thành công.`)
+      setAutoSaveStatus('saved')
+      localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(nextDocument))
+    } catch (storageError) {
+      const message = storageError instanceof Error ? storageError.message : 'Thao tác lưu trữ thất bại.'
+      setError(message)
+    }
   }
 
   async function handleSave() {

@@ -72,37 +72,44 @@ export function formatLeagueName(league?: string): string {
 }
 
 export function normalizeSeason(season: Season): RankedSeason {
-  const maxAttacks = season.maxAttacks ?? 24
-  const maxDefenses = season.maxDefenses ?? 24
-  const promotionCount = season.promotionCount !== undefined ? season.promotionCount : 2
-  const demotionCount = season.demotionCount !== undefined ? season.demotionCount : 1
+  const safeSeason = season || ({} as Season)
+  const maxAttacks = safeSeason.maxAttacks ?? 24
+  const maxDefenses = safeSeason.maxDefenses ?? 24
+  const promotionCount = safeSeason.promotionCount !== undefined ? safeSeason.promotionCount : 2
+  const demotionCount = safeSeason.demotionCount !== undefined ? safeSeason.demotionCount : 1
 
-  const updatedPlayers = season.players.map((p) => {
-    const attacks = Math.min(maxAttacks, Math.max(0, p.attacks))
-    const defenses = Math.min(maxDefenses, Math.max(0, p.defenses))
-    const maxPossibleCups = calculateMaxPossibleCups(p.currentCups, attacks, maxAttacks)
-    const { rating } = calculatePlayerRating(p.currentCups, attacks)
+  const playersList = Array.isArray(safeSeason.players) ? safeSeason.players : []
+  const updatedPlayers = playersList.map((p, idx) => {
+    const attacks = Math.min(maxAttacks, Math.max(0, Number(p.attacks) || 0))
+    const defenses = Math.min(maxDefenses, Math.max(0, Number(p.defenses) || 0))
+    const currentCups = Math.max(0, Number(p.currentCups) || 0)
+    const maxPossibleCups = calculateMaxPossibleCups(currentCups, attacks, maxAttacks)
+    const { rating } = calculatePlayerRating(currentCups, attacks)
 
     return {
       ...p,
+      id: p.id || `p-${idx + 1}`,
+      name: p.name || `Người chơi ${idx + 1}`,
       attacks,
       defenses,
+      currentCups,
       maxPossibleCups,
       rating,
     }
   })
 
-  const league = formatLeagueName(season.league)
-  const seasonName = season.seasonName || league
+  const league = formatLeagueName(safeSeason.league)
+  const seasonName = safeSeason.seasonName || league
 
   return {
-    ...season,
+    ...safeSeason,
     league,
     seasonName,
     maxAttacks,
     maxDefenses,
     promotionCount,
     demotionCount,
+    myPlayerId: safeSeason.myPlayerId || updatedPlayers[0]?.id || '',
     players: sortAndRankPlayers(updatedPlayers),
   }
 }

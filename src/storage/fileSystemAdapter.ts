@@ -1,4 +1,4 @@
-import type { Season, StorageAdapter, StorageDocument, StorageFormat } from '../types'
+import type { Player, Season, StorageAdapter, StorageDocument, StorageFormat } from '../types'
 import { csvToSeasons, seasonsToCsv } from '../lib/csv'
 import { normalizeSeason } from '../lib/ranking'
 
@@ -46,17 +46,45 @@ function parseDocument(content: string, format: StorageFormat): { seasons: Seaso
   }
 
   // JSON parsing
-  const parsed = JSON.parse(content) as Record<string, unknown>
-  if (Array.isArray(parsed.seasons) && parsed.seasons.length > 0) {
-    const seasons = (parsed.seasons as Season[]).map(normalizeSeason)
-    const activeSeasonName = typeof parsed.activeSeasonName === 'string' ? parsed.activeSeasonName : ''
+  const parsed = JSON.parse(content) as unknown
+
+  // Case 1: Mảng trực tiếp (ví dụ: [ { id, name, ... } ])
+  if (Array.isArray(parsed)) {
+    if (parsed.length > 0 && Array.isArray((parsed[0] as Season)?.players)) {
+      const seasons = (parsed as Season[]).map(normalizeSeason)
+      return { seasons, activeSeasonIndex: 0 }
+    }
+    // Mảng người chơi trực tiếp
+    const season: Season = {
+      league: 'Legend 3',
+      seasonName: 'Legend 3',
+      startsAt: '',
+      endsAt: '',
+      myPlayerId: (parsed[0] as Player)?.id || '',
+      players: parsed as Player[],
+    }
+    return { seasons: [normalizeSeason(season)], activeSeasonIndex: 0 }
+  }
+
+  const record = parsed as Record<string, unknown>
+
+  // Case 2: Đa mùa giải { seasons: [ ... ] }
+  if (Array.isArray(record.seasons) && record.seasons.length > 0) {
+    const seasons = (record.seasons as Season[]).map(normalizeSeason)
+    const activeSeasonName = typeof record.activeSeasonName === 'string' ? record.activeSeasonName : ''
     const foundIndex = seasons.findIndex((s) => s.seasonName === activeSeasonName)
     const activeSeasonIndex = foundIndex >= 0 ? foundIndex : 0
     return { seasons, activeSeasonIndex }
   }
 
-  // Single season fallback (legacy schema)
-  const single = normalizeSeason(parsed as unknown as Season)
+  // Case 3: Bọc trong thuộc tính { season: { ... } } (như format draft)
+  if (record.season && typeof record.season === 'object') {
+    const single = normalizeSeason(record.season as Season)
+    return { seasons: [single], activeSeasonIndex: 0 }
+  }
+
+  // Case 4: Mùa giải đơn trực tiếp { league, players, ... }
+  const single = normalizeSeason(record as unknown as Season)
   return { seasons: [single], activeSeasonIndex: 0 }
 }
 
@@ -171,11 +199,12 @@ export function createFileSystemAdapter(): StorageAdapter {
       const file = await handle.getFile()
       const format = getFormat(file.name)
       const content = await file.text()
+      const { seasons, activeSeasonIndex } = parseDocument(content, format)
+
+      // Chỉ lưu và kích hoạt handle khi file đã parse thành công 100%
       activeHandle = writableHandle
       cachedHandle = writableHandle
       await saveHandleToIDB(writableHandle)
-
-      const { seasons, activeSeasonIndex } = parseDocument(content, format)
 
       return {
         name: file.name,
