@@ -15,13 +15,15 @@ interface PlayerTableProps {
 }
 
 function getElementDocumentTop(element: HTMLElement): number {
-  let top = 0
-  let current: HTMLElement | null = element
-  while (current) {
-    top += current.offsetTop
-    current = current.offsetParent as HTMLElement | null
+  let transformY = 0
+  const transform = element.style.transform
+  if (transform && transform !== 'none') {
+    const match = transform.match(/translateY\((-?[\d.]+)px\)/)
+    if (match) transformY = parseFloat(match[1])
   }
-  return top
+  const rect = element.getBoundingClientRect()
+  const scrollY = window.scrollY || document.documentElement.scrollTop
+  return rect.top + scrollY - transformY
 }
 
 interface AnimatedRowItem {
@@ -204,10 +206,18 @@ export function PlayerTable({
 
   useLayoutEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const currentScroll = window.scrollY || document.documentElement.scrollTop
     const nextTops = new Map<string, number>()
 
     rowRefs.current.forEach((element, playerId) => {
-      nextTops.set(playerId, element.offsetTop)
+      let transformY = 0
+      const transform = element.style.transform
+      if (transform && transform !== 'none') {
+        const match = transform.match(/translateY\((-?[\d.]+)px\)/)
+        if (match) transformY = parseFloat(match[1])
+      }
+      const rect = element.getBoundingClientRect()
+      nextTops.set(playerId, rect.top + currentScroll - transformY)
     })
 
     if (!prefersReducedMotion) {
@@ -391,7 +401,7 @@ export function PlayerTable({
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[1080px] border-separate border-spacing-0 text-left text-sm">
+        <table className="relative w-full min-w-[1080px] border-separate border-spacing-0 text-left text-sm">
           <thead className="soft-table-head text-xs uppercase tracking-wider">
             <tr>
               <th className="w-32 px-3.5 py-3 whitespace-nowrap">Rank</th>
