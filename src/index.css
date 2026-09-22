@@ -283,32 +283,66 @@ html.dark .glass-panel {
   pointer-events: none;
 }
 
-/* Hiệu ứng nổi bật khi người chơi nhảy vị trí sau khi chỉnh sửa */
+/* Hiệu ứng nổi bật êm ái khi người chơi nhảy vị trí sau khi chỉnh sửa */
 @keyframes row-jump-glow {
   0% {
-    background-color: rgba(56, 189, 248, 0.38) !important;
+    background-color: rgba(56, 189, 248, 0.08) !important;
   }
-  40% {
-    background-color: rgba(56, 189, 248, 0.22) !important;
+  15% {
+    background-color: rgba(56, 189, 248, 0.30) !important;
+  }
+  45% {
+    background-color: rgba(56, 189, 248, 0.18) !important;
   }
   100% {
     background-color: transparent;
   }
 }
 
+@keyframes row-jump-outline {
+  0% {
+    outline-color: transparent;
+  }
+  15% {
+    outline-color: #0284c7;
+  }
+  80% {
+    outline-color: #0284c7;
+  }
+  100% {
+    outline-color: transparent;
+  }
+}
+
+@keyframes row-jump-outline-dark {
+  0% {
+    outline-color: transparent;
+  }
+  15% {
+    outline-color: #38bdf8;
+  }
+  80% {
+    outline-color: #38bdf8;
+  }
+  100% {
+    outline-color: transparent;
+  }
+}
+
 tr.row-jump-highlight td {
-  animation: row-jump-glow 2.5s ease-out forwards;
+  animation: row-jump-glow 3.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 tr.row-jump-highlight {
-  outline: 2px solid #0284c7 !important;
+  outline: 2px solid transparent;
   outline-offset: -2px;
   z-index: 10;
   position: relative;
+  animation: row-jump-outline 3.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 html.dark tr.row-jump-highlight {
-  outline: 2px solid #38bdf8 !important;
+  animation-name: row-jump-outline-dark;
 }
 
 /* Đảm bảo ô nhập ngày và select không bị tràn chiều ngang trên màn hình điện thoại */

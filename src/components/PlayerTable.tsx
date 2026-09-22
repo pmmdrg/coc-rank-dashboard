@@ -35,6 +35,7 @@ export function PlayerTable({
 
   const rowRefs = useRef(new Map<string, HTMLTableRowElement>())
   const previousRowRects = useRef(new Map<string, DOMRect>())
+  const targetRowRects = useRef(new Map<string, DOMRect>())
   const rankedPlayersRef = useRef(rankedPlayers)
   const previousRanksRef = useRef<Map<string, number>>(
     new Map(rankedPlayers.map((p) => [p.id, p.rank])),
@@ -116,13 +117,14 @@ export function PlayerTable({
         element.animate(
           [{ transform: `translateY(${deltaY}px)` }, { transform: 'translateY(0)' }],
           {
-            duration: 260,
-            easing: 'cubic-bezier(0.2, 0, 0, 1)',
+            duration: 440,
+            easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
           },
         )
       })
     }
 
+    targetRowRects.current = nextRects
     previousRowRects.current = nextRects
   }, [displayedPlayers])
 
@@ -173,13 +175,13 @@ export function PlayerTable({
         highlightCleanupTimer.current = setTimeout(() => {
           setHighlightedPlayerId(null)
           setRankJumpInfo(null)
-        }, 3200)
+        }, 3400)
 
-        // Kiểm tra vị trí của hàng xem có đang hiển thị rõ trong khung nhìn không
-        const rect = rowEl.getBoundingClientRect()
+        // Kiểm tra vị trí đích chuẩn của hàng xem có đang hiển thị rõ trong khung nhìn không
+        const targetRect = targetRowRects.current.get(playerId) ?? rowEl.getBoundingClientRect()
         const headerOffset = 110 // Đệm tránh bị thanh header sticky che khuất
         const isComfortablyVisible =
-          rect.top >= headerOffset && rect.bottom <= window.innerHeight - 40
+          targetRect.top >= headerOffset && targetRect.bottom <= window.innerHeight - 40
 
         // Nếu hàng nhảy ra ngoài khung nhìn (lên trên hoặc xuống dưới), cuộn tới ngay
         if (!isComfortablyVisible) {
