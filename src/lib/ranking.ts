@@ -66,9 +66,8 @@ export function sortAndRankPlayers(players: Player[]): Player[] {
 }
 
 export function formatLeagueName(league?: string): string {
-  if (!league) return 'Legend 3'
+  if (!league) return 'Legend League'
   const trimmed = league.trim()
-  if (trimmed.toLowerCase() === 'legend league') return 'Legend 3'
   return trimmed.replace(/\bleague\b/gi, 'League')
 }
 
@@ -94,12 +93,7 @@ export function normalizeSeason(season: Season): RankedSeason {
   })
 
   const league = formatLeagueName(season.league)
-  const seasonName =
-    !season.seasonName ||
-    season.seasonName === 'September 2026' ||
-    season.seasonName.toLowerCase() === 'legend league'
-      ? league
-      : season.seasonName
+  const seasonName = season.seasonName || league
 
   return {
     ...season,

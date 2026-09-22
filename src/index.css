@@ -282,3 +282,23 @@ html.dark .glass-panel {
   animation: row-exit 240ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
   pointer-events: none;
 }
+
+/* Đảm bảo ô nhập ngày và select không bị tràn chiều ngang trên màn hình điện thoại */
+input[type="date"],
+input[type="text"],
+input[type="number"],
+select {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Ngăn ngừa iOS Safari tự động phóng to giao diện khi người dùng chạm vào ô nhập */
+@media screen and (max-width: 640px) {
+  input[type="text"],
+  input[type="number"],
+  input[type="date"],
+  select {
+    font-size: 16px !important;
+  }
+}
+

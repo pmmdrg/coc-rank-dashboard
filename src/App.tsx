@@ -41,16 +41,23 @@ function loadInitialDocument(): StorageDocument {
         ? parsed.seasons.map(normalizeSeason)
         : [parsed.season ? normalizeSeason(parsed.season) : defaultSeason]
 
-      const activeIndex = typeof parsed.activeSeasonIndex === 'number' && parsed.activeSeasonIndex < seasons.length
-        ? parsed.activeSeasonIndex
-        : 0
+      // Tự động bỏ dữ liệu mẫu cũ (nếu chứa các người chơi mẫu như AriaStorm, IronMinh, Manax)
+      const hasOldSample = seasons.some((s) =>
+        s.players.some((p) => p.name === 'AriaStorm' || p.name === 'IronMinh' || p.name === 'Manax' || p.name === 'LunaBase'),
+      )
 
-      return {
-        name: parsed.name || 'rank-season.json',
-        format: parsed.format || 'json',
-        season: seasons[activeIndex] ?? defaultSeason,
-        seasons,
-        activeSeasonIndex: activeIndex,
+      if (!hasOldSample) {
+        const activeIndex = typeof parsed.activeSeasonIndex === 'number' && parsed.activeSeasonIndex < seasons.length
+          ? parsed.activeSeasonIndex
+          : 0
+
+        return {
+          name: parsed.name || 'rank-season.json',
+          format: parsed.format || 'json',
+          season: seasons[activeIndex] ?? defaultSeason,
+          seasons,
+          activeSeasonIndex: activeIndex,
+        }
       }
     }
   } catch {

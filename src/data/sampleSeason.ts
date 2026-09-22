@@ -1,64 +1,42 @@
 import type { Season } from '../types'
 
+export function getDefaultSeasonDates(): { startsAt: string; endsAt: string; seasonName: string } {
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = now.getMonth() // 0-indexed
+
+  const y = year
+  const m = String(month + 1).padStart(2, '0')
+  const lastDay = new Date(year, month + 1, 0).getDate()
+
+  return {
+    startsAt: `${y}-${m}-01`,
+    endsAt: `${y}-${m}-${String(lastDay).padStart(2, '0')}`,
+    seasonName: `Tháng ${month + 1}/${year}`,
+  }
+}
+
+const defaultDates = getDefaultSeasonDates()
+
 export const sampleSeason: Season = {
-  league: 'Legend 3',
-  seasonName: 'Legend 3',
-  startsAt: '2026-09-01',
-  endsAt: '2026-09-30',
-  maxAttacks: 240,
-  maxDefenses: 240,
+  league: 'Legend League',
+  seasonName: defaultDates.seasonName,
+  startsAt: defaultDates.startsAt,
+  endsAt: defaultDates.endsAt,
+  maxAttacks: 24,
+  maxDefenses: 24,
   promotionCount: 2,
   demotionCount: 1,
-  myPlayerId: 'p-03',
+  myPlayerId: 'p-01',
   players: [
     {
       id: 'p-01',
-      name: 'AriaStorm',
+      name: 'Tài khoản của tôi',
       rank: 1,
-      attacks: 188,
-      defenses: 176,
-      currentCups: 5872,
-      maxPossibleCups: 7952,
-      rating: 'elite',
-    },
-    {
-      id: 'p-02',
-      name: 'IronMinh',
-      rank: 2,
-      attacks: 181,
-      defenses: 180,
-      currentCups: 5804,
-      maxPossibleCups: 8164,
-      rating: 'danger',
-    },
-    {
-      id: 'p-03',
-      name: 'Manax',
-      rank: 3,
-      attacks: 177,
-      defenses: 173,
-      currentCups: 5746,
-      maxPossibleCups: 8266,
-      rating: 'contested',
-    },
-    {
-      id: 'p-04',
-      name: 'BlueForge',
-      rank: 4,
-      attacks: 169,
-      defenses: 171,
-      currentCups: 5688,
-      maxPossibleCups: 8528,
-      rating: 'danger',
-    },
-    {
-      id: 'p-05',
-      name: 'LunaBase',
-      rank: 5,
-      attacks: 154,
-      defenses: 164,
-      currentCups: 5512,
-      maxPossibleCups: 8952,
+      attacks: 0,
+      defenses: 0,
+      currentCups: 5000,
+      maxPossibleCups: 5960,
       rating: 'safe',
     },
   ],
