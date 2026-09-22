@@ -116,7 +116,7 @@ export function PlayerRow({
           {/* Badge báo vị trí vừa nhảy hạng */}
           {rankJump && rankJump.fromRank !== rankJump.toRank ? (
             <span
-              className={`inline-flex shrink-0 items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[10px] font-black uppercase tracking-tight shadow-xs select-none animate-pulse ${
+              className={`animate-badge-jump inline-flex shrink-0 items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[10px] font-black uppercase tracking-tight shadow-xs select-none ${
                 rankJump.fromRank > rankJump.toRank
                   ? 'bg-emerald-600 text-white dark:bg-emerald-500'
                   : 'bg-rose-600 text-white dark:bg-rose-500'
@@ -131,14 +131,14 @@ export function PlayerRow({
             </span>
           ) : isPromotionZone ? (
             <span
-              className="inline-flex shrink-0 items-center gap-0.5 rounded-xs bg-emerald-500/20 px-1 py-0.5 text-[9px] font-black text-emerald-700 dark:text-emerald-300 uppercase tracking-tighter select-none border border-emerald-500/30"
+              className="animate-fade-in inline-flex shrink-0 items-center gap-0.5 rounded-xs bg-emerald-500/20 px-1 py-0.5 text-[9px] font-black text-emerald-700 dark:text-emerald-300 uppercase tracking-tighter select-none border border-emerald-500/30"
               title="Vị trí thăng hạng"
             >
               ▲ Thăng
             </span>
           ) : isDemotionZone ? (
             <span
-              className="inline-flex shrink-0 items-center gap-0.5 rounded-xs bg-rose-500/20 px-1 py-0.5 text-[9px] font-black text-rose-700 dark:text-rose-300 uppercase tracking-tighter select-none border border-rose-500/30"
+              className="animate-fade-in inline-flex shrink-0 items-center gap-0.5 rounded-xs bg-rose-500/20 px-1 py-0.5 text-[9px] font-black text-rose-700 dark:text-rose-300 uppercase tracking-tighter select-none border border-rose-500/30"
               title="Vị trí xuống hạng"
             >
               ▼ Xuống

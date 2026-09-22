@@ -360,18 +360,18 @@ function App() {
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 space-y-6">
         {/* Cảnh báo trình duyệt cho Local File System */}
         {storageSource === 'local' && !localAdapter.canWriteBack ? (
-          <div className="rounded-xl border border-amber-300/60 bg-amber-50/80 px-4 py-3 text-sm text-amber-900 backdrop-blur dark:border-amber-500/30 dark:bg-amber-950/40 dark:text-amber-200">
+          <div className="animate-fade-in rounded-xl border border-amber-300/60 bg-amber-50/80 px-4 py-3 text-sm text-amber-900 backdrop-blur dark:border-amber-500/30 dark:bg-amber-950/40 dark:text-amber-200">
             Trình duyệt hiện tại có thể không hỗ trợ File System Access API ghi file trực tiếp. Khuyến nghị sử dụng Google Chrome, Edge hoặc chuyển sang nguồn lưu trữ Google Drive.
           </div>
         ) : null}
 
         {/* Thông báo trạng thái hoặc lỗi */}
         {error ? (
-          <div className="rounded-xl border border-rose-300/60 bg-rose-50/80 px-4 py-3 text-sm text-rose-700 backdrop-blur dark:border-rose-500/30 dark:bg-rose-950/40 dark:text-rose-200">
+          <div className="animate-fade-in rounded-xl border border-rose-300/60 bg-rose-50/80 px-4 py-3 text-sm text-rose-700 backdrop-blur dark:border-rose-500/30 dark:bg-rose-950/40 dark:text-rose-200">
             {error}
           </div>
         ) : (
-          <div className="glass-panel rounded-xl px-4 py-3 text-sm text-slate-600 dark:text-slate-300 flex items-center justify-between">
+          <div className="glass-panel animate-fade-in rounded-xl px-4 py-3 text-sm text-slate-600 dark:text-slate-300 flex items-center justify-between">
             <span>{status}</span>
             <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
               Nguồn: {currentAdapter.label}

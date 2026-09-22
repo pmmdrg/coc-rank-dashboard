@@ -22,7 +22,7 @@ export function ConfirmDeleteModal({
     setTimeout(() => {
       setIsClosing(false)
       onClose()
-    }, 180)
+    }, 200)
   }
 
   function handleConfirm() {
@@ -30,7 +30,7 @@ export function ConfirmDeleteModal({
     setTimeout(() => {
       setIsClosing(false)
       onConfirm()
-    }, 180)
+    }, 200)
   }
 
   return (

@@ -29,7 +29,7 @@ export function GoogleDriveConfigModal({ isOpen, onClose, onConfigSaved }: Googl
     setTimeout(() => {
       setIsClosing(false)
       onClose()
-    }, 180)
+    }, 200)
   }
 
   function handleSave() {

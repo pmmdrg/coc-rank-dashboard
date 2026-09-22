@@ -37,7 +37,7 @@ export function CreateSeasonModal({
     setTimeout(() => {
       setIsClosing(false)
       onClose()
-    }, 180)
+    }, 200)
   }
 
   function handleSubmit(e: React.FormEvent) {

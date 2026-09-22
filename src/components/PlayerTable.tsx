@@ -311,7 +311,7 @@ export function PlayerTable({
 
                   {/* Vạch Phân Cách Thăng Hạng */}
                   {isAfterPromotionLine && (
-                    <tr key="divider-promotion" className="select-none">
+                    <tr key="divider-promotion" className="select-none animate-fade-in">
                       <td colSpan={9} className="p-0 border-y-2 border-emerald-500 bg-emerald-500/20 dark:bg-emerald-950/70">
                         <div className="flex items-center justify-between px-4 py-2 text-xs font-black text-emerald-800 dark:text-emerald-300">
                           <div className="flex items-center gap-2">
@@ -330,7 +330,7 @@ export function PlayerTable({
 
                   {/* Vạch Phân Cách Xuống Hạng */}
                   {isBeforeDemotionLine && (
-                    <tr key="divider-demotion" className="select-none">
+                    <tr key="divider-demotion" className="select-none animate-fade-in">
                       <td colSpan={9} className="p-0 border-y-2 border-rose-500 bg-rose-500/20 dark:bg-rose-950/70">
                         <div className="flex items-center justify-between px-4 py-2 text-xs font-black text-rose-800 dark:text-rose-300">
                           <div className="flex items-center gap-2">

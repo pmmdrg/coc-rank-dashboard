@@ -110,7 +110,7 @@ export function SeasonHeader({
           {/* Chỉ báo trạng thái Tự động lưu (thay thế nút Lưu cứng) */}
           {autoSaveStatus === 'saving' && (
             <div
-              className="inline-flex h-10 items-center gap-1.5 rounded-md border border-amber-300/60 bg-amber-50/80 px-3 text-xs font-semibold text-amber-700 shadow-sm backdrop-blur dark:border-amber-500/30 dark:bg-amber-950/40 dark:text-amber-300"
+              className="animate-fade-in inline-flex h-10 items-center gap-1.5 rounded-md border border-amber-300/60 bg-amber-50/80 px-3 text-xs font-semibold text-amber-700 shadow-sm backdrop-blur dark:border-amber-500/30 dark:bg-amber-950/40 dark:text-amber-300"
               title="Đang đồng bộ thay đổi..."
             >
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -122,7 +122,7 @@ export function SeasonHeader({
             <button
               type="button"
               onClick={onSave}
-              className="inline-flex h-10 items-center gap-1.5 rounded-md border border-emerald-300/60 bg-emerald-50/80 px-3 text-xs font-semibold text-emerald-700 shadow-sm backdrop-blur hover:bg-emerald-100 dark:border-emerald-500/30 dark:bg-emerald-950/40 dark:text-emerald-300 dark:hover:bg-emerald-900/60"
+              className="animate-fade-in inline-flex h-10 items-center gap-1.5 rounded-md border border-emerald-300/60 bg-emerald-50/80 px-3 text-xs font-semibold text-emerald-700 shadow-sm backdrop-blur hover:bg-emerald-100 dark:border-emerald-500/30 dark:bg-emerald-950/40 dark:text-emerald-300 dark:hover:bg-emerald-900/60"
               title={hasActiveFile ? 'Dữ liệu đã tự động lưu vào file. Bấm để lưu đè lại.' : 'Đã lưu tự động'}
             >
               <CheckCircle2 className="h-3.5 w-3.5" />
@@ -134,7 +134,7 @@ export function SeasonHeader({
             <button
               type="button"
               onClick={onSave}
-              className="inline-flex h-10 items-center gap-1.5 rounded-md border border-sky-300/60 bg-sky-50/80 px-3 text-xs font-semibold text-sky-700 shadow-sm backdrop-blur hover:bg-sky-100 dark:border-sky-500/30 dark:bg-sky-950/40 dark:text-sky-300 dark:hover:bg-sky-900/60"
+              className="animate-fade-in inline-flex h-10 items-center gap-1.5 rounded-md border border-sky-300/60 bg-sky-50/80 px-3 text-xs font-semibold text-sky-700 shadow-sm backdrop-blur hover:bg-sky-100 dark:border-sky-500/30 dark:bg-sky-950/40 dark:text-sky-300 dark:hover:bg-sky-900/60"
               title="Đã tự động lưu bản nháp vào trình duyệt. Bấm để chọn file lưu chính thức trên máy tính hoặc Drive."
             >
               <CloudUpload className="h-3.5 w-3.5 text-sky-500" />
@@ -146,7 +146,7 @@ export function SeasonHeader({
             <button
               type="button"
               onClick={onSave}
-              className="inline-flex h-10 items-center gap-1.5 rounded-md border border-rose-300/60 bg-rose-50/80 px-3 text-xs font-semibold text-rose-700 shadow-sm backdrop-blur hover:bg-rose-100 dark:border-rose-500/30 dark:bg-rose-950/40 dark:text-rose-300"
+              className="animate-fade-in inline-flex h-10 items-center gap-1.5 rounded-md border border-rose-300/60 bg-rose-50/80 px-3 text-xs font-semibold text-rose-700 shadow-sm backdrop-blur hover:bg-rose-100 dark:border-rose-500/30 dark:bg-rose-950/40 dark:text-rose-300"
               title="Lưu tự động gặp lỗi. Bấm để thử lại thủ công."
             >
               <AlertCircle className="h-3.5 w-3.5 text-rose-500" />
