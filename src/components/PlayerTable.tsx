@@ -24,7 +24,7 @@ function getElementDocumentTop(element: HTMLElement): number {
   return top
 }
 
-function smoothScrollTo(targetY: number, duration: number = 1100): { cancel: () => void } {
+function smoothScrollTo(targetY: number, duration: number = 2000): { cancel: () => void } {
   const startY = window.scrollY || document.documentElement.scrollTop
   const diff = targetY - startY
   if (Math.abs(diff) < 3) return { cancel: () => {} }
@@ -166,7 +166,7 @@ export function PlayerTable({
       const jumpingPlayerId = pendingScrollPlayerId.current
       pendingScrollPlayerId.current = null
 
-      let jumpDuration = 850
+      let jumpDuration = 1000
       const targetRowEl = jumpingPlayerId ? rowRefs.current.get(jumpingPlayerId) : null
 
       // Đồng bộ cuộn màn hình ngay trong frame render đầu tiên (0ms delay) cùng nhịp với FLIP
@@ -186,8 +186,8 @@ export function PlayerTable({
             rowDocTop - (window.innerHeight / 2) + (rowHeight / 2)
           )
           const diff = Math.abs(targetTop - currentScroll)
-          // Thời gian cuộn đồng bộ hoàn toàn với thời gian hàng bay (950ms - 1350ms)
-          jumpDuration = Math.min(1350, Math.max(950, diff * 0.5))
+          // Thời gian cuộn đồng bộ hoàn toàn với thời gian hàng bay, scale mượt mà từ 1.2s đến tối đa 3.0s
+          jumpDuration = Math.min(3000, Math.max(1200, 1000 + diff * 0.75))
 
           activeScrollAnimation.current = smoothScrollTo(targetTop, jumpDuration)
         }
@@ -250,7 +250,7 @@ export function PlayerTable({
         highlightCleanupTimer.current = setTimeout(() => {
           setHighlightedPlayerId(null)
           setRankJumpInfo(null)
-        }, 3400)
+        }, 5000)
       } else {
         setRankJumpInfo(null)
         pendingScrollPlayerId.current = null

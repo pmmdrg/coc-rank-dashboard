@@ -267,7 +267,7 @@ html.dark .glass-panel {
 }
 
 .animate-badge-jump {
-  animation: badge-jump-fade 3.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: badge-jump-fade 5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 /* Animation khi thêm hoặc xóa hàng người chơi */
@@ -353,7 +353,7 @@ html.dark .glass-panel {
 }
 
 tr.row-jump-highlight td {
-  animation: row-jump-glow 3.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: row-jump-glow 5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 tr.row-jump-highlight {
@@ -387,8 +387,8 @@ tr.row-jump-highlight::after {
   mask-composite: exclude;
   filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.45));
   animation:
-    chroma-spin 2.5s linear infinite,
-    chroma-fade 3.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    chroma-spin 3s linear infinite,
+    chroma-fade 5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 html.dark tr.row-jump-highlight::after {
