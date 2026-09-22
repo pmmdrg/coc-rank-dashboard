@@ -1,0 +1,284 @@
+@import "tailwindcss";
+
+:root {
+  --app-bg:
+    radial-gradient(circle at 10% 0%, rgba(96, 165, 250, 0.2), transparent 32rem),
+    radial-gradient(circle at 88% 12%, rgba(16, 185, 129, 0.16), transparent 30rem),
+    linear-gradient(135deg, #f7fafc 0%, #eef3f7 100%);
+  --panel-bg: rgba(255, 255, 255, 0.65);
+  --panel-border: rgba(148, 163, 184, 0.3);
+  --header-bg: rgba(255, 255, 255, 0.72);
+  --field-bg: rgba(255, 255, 255, 0.7);
+  --field-border: rgba(148, 163, 184, 0.45);
+  --field-text: #0f172a;
+  --soft-table-head: rgba(254, 243, 199, 0.65);
+  --table-head-text: #78350f;
+  --row-mine: rgba(186, 230, 253, 0.55);
+  --row-mine-hover: rgba(125, 211, 252, 0.7);
+  --row-risk: rgba(254, 205, 211, 0.5);
+  --row-risk-hover: rgba(253, 164, 175, 0.65);
+  --row-below: rgba(187, 247, 208, 0.5);
+  --row-below-hover: rgba(134, 239, 172, 0.65);
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  color: #172026;
+  background: #f5f7f8;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--app-bg);
+  color: var(--text-main);
+  min-height: 100vh;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 2px;
+}
+
+.app-surface {
+  background: var(--app-bg);
+  min-height: 100vh;
+}
+
+.glass-panel {
+  border: 1px solid var(--panel-border);
+  background: var(--panel-bg);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  box-shadow:
+    0 18px 48px rgba(15, 23, 42, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.glass-header {
+  border-bottom: 1px solid var(--panel-border);
+  background: var(--header-bg);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+}
+
+.soft-field {
+  border: 1px solid var(--field-border);
+  background: var(--field-bg);
+  color: var(--field-text);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+
+.soft-field:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+}
+
+.soft-table-head {
+  background: var(--soft-table-head);
+  color: var(--table-head-text);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.row-mine {
+  background: var(--row-mine) !important;
+  color: var(--text-main);
+}
+
+.row-mine:hover {
+  background: var(--row-mine-hover) !important;
+}
+
+.row-risk {
+  background: var(--row-risk) !important;
+  color: var(--text-main);
+}
+
+.row-risk:hover {
+  background: var(--row-risk-hover) !important;
+}
+
+.row-below {
+  background: var(--row-below) !important;
+  color: var(--text-main);
+}
+
+.row-below:hover {
+  background: var(--row-below-hover) !important;
+}
+
+/* Dark theme variables: Áp dụng khi có class .dark trên html hoặc theo hệ thống */
+html.dark,
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --app-bg:
+      radial-gradient(circle at 12% 0%, rgba(56, 189, 248, 0.15), transparent 36rem),
+      radial-gradient(circle at 90% 14%, rgba(16, 185, 129, 0.12), transparent 32rem),
+      linear-gradient(135deg, #090e17 0%, #0d1524 50%, #0a101d 100%);
+    --panel-bg: rgba(15, 23, 42, 0.65);
+    --panel-border: rgba(148, 163, 184, 0.16);
+    --header-bg: rgba(13, 21, 36, 0.78);
+    --field-bg: rgba(30, 41, 59, 0.65);
+    --field-border: rgba(148, 163, 184, 0.22);
+    --field-text: #f1f5f9;
+    --soft-table-head: rgba(245, 158, 11, 0.14);
+    --table-head-text: #fde68a;
+    --row-mine: rgba(14, 165, 233, 0.22);
+    --row-mine-hover: rgba(14, 165, 233, 0.32);
+    --row-risk: rgba(244, 63, 94, 0.2);
+    --row-risk-hover: rgba(244, 63, 94, 0.3);
+    --row-below: rgba(16, 185, 129, 0.18);
+    --row-below-hover: rgba(16, 185, 129, 0.28);
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    color: #e2e8f0;
+    background: #090e17;
+    color-scheme: dark;
+  }
+
+  :root:not(.light) .glass-panel {
+    box-shadow:
+      0 22px 60px rgba(0, 0, 0, 0.45),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+}
+
+/* Explicit class .dark override */
+html.dark {
+  --app-bg:
+    radial-gradient(circle at 12% 0%, rgba(56, 189, 248, 0.15), transparent 36rem),
+    radial-gradient(circle at 90% 14%, rgba(16, 185, 129, 0.12), transparent 32rem),
+    linear-gradient(135deg, #090e17 0%, #0d1524 50%, #0a101d 100%);
+  --panel-bg: rgba(15, 23, 42, 0.65);
+  --panel-border: rgba(148, 163, 184, 0.16);
+  --header-bg: rgba(13, 21, 36, 0.78);
+  --field-bg: rgba(30, 41, 59, 0.65);
+  --field-border: rgba(148, 163, 184, 0.22);
+  --field-text: #f1f5f9;
+  --soft-table-head: rgba(245, 158, 11, 0.14);
+  --table-head-text: #fde68a;
+  --row-mine: rgba(14, 165, 233, 0.22);
+  --row-mine-hover: rgba(14, 165, 233, 0.32);
+  --row-risk: rgba(244, 63, 94, 0.2);
+  --row-risk-hover: rgba(244, 63, 94, 0.3);
+  --row-below: rgba(16, 185, 129, 0.18);
+  --row-below-hover: rgba(16, 185, 129, 0.28);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  color: #e2e8f0;
+  background: #090e17;
+  color-scheme: dark;
+}
+
+html.dark .glass-panel {
+  box-shadow:
+    0 22px 60px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+@keyframes modal-backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-dialog-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-modal-backdrop {
+  animation: modal-backdrop-in 240ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-modal-dialog {
+  animation: modal-dialog-in 280ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modal-backdrop-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes modal-dialog-out {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+}
+
+.animate-modal-backdrop-out {
+  animation: modal-backdrop-out 190ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-modal-dialog-out {
+  animation: modal-dialog-out 190ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Animation khi thêm hoặc xóa hàng người chơi */
+@keyframes row-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.99);
+  }
+  40% {
+    background-color: rgba(56, 189, 248, 0.22);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes row-exit {
+  0% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    background-color: rgba(244, 63, 94, 0.25);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(28px) scale(0.96);
+  }
+}
+
+.animate-row-enter {
+  animation: row-enter 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-row-exit {
+  animation: row-exit 240ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  pointer-events: none;
+}

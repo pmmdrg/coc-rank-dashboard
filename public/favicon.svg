@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <!-- Gold Gradients -->
+    <linearGradient id="cupGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE047"/>
+      <stop offset="35%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+    <linearGradient id="handleGold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FBBF24"/>
+      <stop offset="100%" stop-color="#B45309"/>
+    </linearGradient>
+    <linearGradient id="baseGold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#92400E"/>
+    </linearGradient>
+    <filter id="shadow" x="-15%" y="-15%" width="130%" height="135%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="2" stdDeviation="1.8" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#shadow)">
+    <!-- Left Handle -->
+    <path d="M 20 16 C 9 16, 7 29, 20 34" stroke="url(#handleGold)" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+    <path d="M 20 16 C 9 16, 7 29, 20 34" stroke="#FEF08A" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.9"/>
+
+    <!-- Right Handle -->
+    <path d="M 44 16 C 55 16, 57 29, 44 34" stroke="url(#handleGold)" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+    <path d="M 44 16 C 55 16, 57 29, 44 34" stroke="#FEF08A" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.9"/>
+
+    <!-- Cup Body / Chalice -->
+    <path d="M 17 12 L 47 12 C 47 28, 39 38, 32 38 C 25 38, 17 28, 17 12 Z" fill="url(#cupGold)" stroke="#B45309" stroke-width="1.5"/>
+
+    <!-- Cup Highlight Curve -->
+    <path d="M 20 15 C 20 26, 26 34, 30 35 C 24 33, 19 25, 19 15 Z" fill="#FFFFFF" opacity="0.35"/>
+
+    <!-- Cup Rim -->
+    <ellipse cx="32" cy="12" rx="15" ry="3.5" fill="#FEF08A" stroke="#B45309" stroke-width="1.5"/>
+    <ellipse cx="32" cy="12" rx="12.5" ry="2.2" fill="#F59E0B"/>
+
+    <!-- Stem / Neck -->
+    <path d="M 29 38 L 35 38 L 36 45 L 28 45 Z" fill="url(#baseGold)" stroke="#78350F" stroke-width="1"/>
+    <!-- Stem Ring -->
+    <rect x="26.5" y="43.5" width="11" height="3" rx="1.5" fill="#FDE047" stroke="#B45309" stroke-width="1"/>
+
+    <!-- Pedestal Base Upper -->
+    <path d="M 24 46.5 L 40 46.5 L 42 52 L 22 52 Z" fill="url(#baseGold)" stroke="#78350F" stroke-width="1"/>
+    <!-- Pedestal Base Bottom -->
+    <rect x="17" y="52" width="30" height="5.5" rx="2" fill="url(#baseGold)" stroke="#78350F" stroke-width="1.2"/>
+    <rect x="19" y="53" width="26" height="1.5" rx="0.75" fill="#FEF08A" opacity="0.8"/>
+
+    <!-- Emblem Star on Cup -->
+    <polygon points="32,18 33.8,23 39,23 34.8,26.2 36.4,31.2 32,28 27.6,31.2 29.2,26.2 25,23 30.2,23" fill="#FFFFFF" opacity="0.95"/>
+  </g>
+</svg>

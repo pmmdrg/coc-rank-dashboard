@@ -1,0 +1,39 @@
+{
+  "league": "Legend League",
+  "seasonName": "September 2026",
+  "startsAt": "2026-09-01",
+  "endsAt": "2026-09-30",
+  "myPlayerId": "p-03",
+  "players": [
+    {
+      "id": "p-01",
+      "name": "AriaStorm",
+      "rank": 1,
+      "attacks": 188,
+      "defenses": 176,
+      "currentCups": 5872,
+      "maxPossibleCups": 6022,
+      "rating": "elite"
+    },
+    {
+      "id": "p-02",
+      "name": "IronMinh",
+      "rank": 2,
+      "attacks": 181,
+      "defenses": 180,
+      "currentCups": 5804,
+      "maxPossibleCups": 5964,
+      "rating": "danger"
+    },
+    {
+      "id": "p-03",
+      "name": "My Account",
+      "rank": 3,
+      "attacks": 177,
+      "defenses": 173,
+      "currentCups": 5746,
+      "maxPossibleCups": 5916,
+      "rating": "contested"
+    }
+  ]
+}
