@@ -68,24 +68,24 @@ export function PlayerRow({
 }: PlayerRowProps) {
   const rowClass = isMyPlayer
     ? 'row-mine'
-    : canPassMe
-      ? 'row-risk'
-      : 'row-below'
+    : 'row-neutral'
 
   const remainingAttacks = Math.max(0, maxAttacks - player.attacks)
   const remainingDefenses = Math.max(0, maxDefenses - player.defenses)
   const { avgCupsPerAttack } = calculatePlayerRating(player.currentCups, player.attacks)
 
-  const zoneClass = isPromotionZone
-    ? 'border-l-4 border-l-emerald-500 bg-emerald-500/[0.04] dark:bg-emerald-500/[0.08]'
-    : isDemotionZone
-      ? 'border-l-4 border-l-rose-500 bg-rose-500/[0.04] dark:bg-rose-500/[0.08]'
-      : 'border-l-4 border-l-transparent'
+  const borderClass = isMyPlayer
+    ? 'border-l-4 border-l-sky-500'
+    : isPromotionZone
+      ? 'border-l-4 border-l-emerald-500 bg-emerald-500/[0.03] dark:bg-emerald-500/[0.06]'
+      : isDemotionZone
+        ? 'border-l-4 border-l-rose-500 bg-rose-500/[0.03] dark:bg-rose-500/[0.06]'
+        : 'border-l-4 border-l-transparent'
 
   return (
     <tr
       ref={setRowRef}
-      className={`${rowClass} ${zoneClass} ${
+      className={`${rowClass} ${borderClass} ${
         isRemoving ? 'animate-row-exit' : 'animate-row-enter'
       } ${isHighlighted ? 'row-jump-highlight' : ''} transition-colors duration-200`}
     >
@@ -263,7 +263,7 @@ export function PlayerRow({
         />
       </td>
 
-      {/* Số cup tối đa có thể đạt (tự động tính theo công thức) */}
+      {/* Số cup tối đa có thể đạt (tự động tính theo công thức & chỉ báo so sánh) */}
       <td className="px-3.5 py-2.5 align-middle">
         <div className="relative flex h-9 items-center">
           <input
@@ -271,13 +271,31 @@ export function PlayerRow({
             readOnly
             value={player.maxPossibleCups.toLocaleString('vi-VN')}
             title={`Công thức: ${player.currentCups} cup hiện tại + (${maxAttacks} - ${player.attacks}) lượt chưa đánh × 40 = ${player.maxPossibleCups} cup`}
-            className="soft-field h-9 w-full rounded-md border-sky-400/30 bg-sky-500/10 px-2.5 pr-10 text-sm font-bold text-sky-700 select-all cursor-default dark:border-sky-800/50 dark:bg-sky-950/30 dark:text-sky-300"
+            className={`soft-field h-9 w-full rounded-md px-2.5 pr-24 text-sm font-bold select-all cursor-default transition-colors ${
+              isMyPlayer
+                ? 'border-sky-400/40 bg-sky-500/10 text-sky-700 dark:border-sky-500/40 dark:bg-sky-950/40 dark:text-sky-300'
+                : canPassMe
+                  ? 'border-amber-400/50 bg-amber-500/10 text-amber-800 dark:border-amber-500/40 dark:bg-amber-950/30 dark:text-amber-200'
+                  : 'border-slate-300/40 bg-slate-100/40 text-slate-600 dark:border-slate-700/40 dark:bg-slate-800/30 dark:text-slate-400'
+            }`}
           />
           <span
-            className="pointer-events-none absolute right-2 text-[10px] font-black tracking-wider text-sky-600/80 uppercase select-none dark:text-sky-400/80"
-            title="Tính tự động bằng công thức"
+            className={`pointer-events-none absolute right-1.5 inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-black tracking-tight select-none border ${
+              isMyPlayer
+                ? 'border-sky-400/40 bg-sky-500/20 text-sky-700 dark:border-sky-400/30 dark:bg-sky-500/30 dark:text-sky-300'
+                : canPassMe
+                  ? 'border-amber-400/50 bg-amber-500/20 text-amber-800 dark:border-amber-400/40 dark:bg-amber-500/30 dark:text-amber-200'
+                  : 'border-slate-300/40 bg-slate-200/50 text-slate-500 dark:border-slate-700/40 dark:bg-slate-800/60 dark:text-slate-400'
+            }`}
+            title={
+              isMyPlayer
+                ? 'Mục tiêu cúp của bạn'
+                : canPassMe
+                  ? `Người này có thể đạt tới ${player.maxPossibleCups} cúp, cao hơn cúp tối đa của bạn!`
+                  : `Cúp tối đa (${player.maxPossibleCups}) không thể vượt bạn.`
+            }
           >
-            MAX
+            {isMyPlayer ? 'BẠN' : canPassMe ? '⚠ CÓ THỂ VƯỢT' : '✓ DƯỚI BẠN'}
           </span>
         </div>
       </td>

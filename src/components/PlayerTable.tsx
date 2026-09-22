@@ -345,7 +345,7 @@ export function PlayerTable({
               <th className="w-36 px-3.5 py-3">Lượt đánh</th>
               <th className="w-36 px-3.5 py-3">Lượt thủ</th>
               <th className="w-36 px-3.5 py-3">Cup hiện tại</th>
-              <th className="w-36 px-3.5 py-3">Cup tối đa</th>
+              <th className="w-44 px-3.5 py-3">Cup tối đa</th>
               <th className="w-36 px-3.5 py-3">Đánh giá</th>
               <th className="w-14 px-3.5 py-3"></th>
             </tr>
@@ -430,20 +430,24 @@ export function PlayerTable({
         </table>
       </div>
 
-      {/* Legend hướng dẫn màu */}
+      {/* Chú thích biểu tượng & trạng thái */}
       <div className="flex flex-wrap items-center gap-4 border-t border-slate-200/60 px-5 py-3 text-xs text-slate-500 dark:border-slate-700/60 dark:text-slate-400">
-        <span className="font-semibold text-slate-600 dark:text-slate-300">Chú thích hàng:</span>
+        <span className="font-semibold text-slate-600 dark:text-slate-300">Chú thích:</span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-3 w-3 rounded-xs border border-sky-400/40 bg-sky-400/30" />
+          <span className="h-3 w-3 rounded-xs border-l-4 border-l-sky-500 bg-sky-400/20" />
           Tài khoản của bạn
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-3 w-3 rounded-xs border border-rose-400/40 bg-rose-400/30" />
-          Có thể vượt bạn (Cup tối đa &gt; Cup tối đa của bạn)
+          <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-black bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30">
+            ⚠ CÓ THỂ VƯỢT
+          </span>
+          Cup tối đa &gt; bạn
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-3 w-3 rounded-xs border border-emerald-400/40 bg-emerald-400/30" />
-          Chắc chắn xếp dưới bạn (Cup tối đa ≤ Cup tối đa của bạn)
+          <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-black bg-slate-200/60 text-slate-600 dark:bg-slate-800/60 dark:text-slate-400 border border-slate-300/40 dark:border-slate-700/40">
+            ✓ DƯỚI BẠN
+          </span>
+          Cup tối đa ≤ bạn
         </span>
         {promotionCount > 0 && (
           <span className="inline-flex items-center gap-1.5 font-medium text-emerald-600 dark:text-emerald-400">

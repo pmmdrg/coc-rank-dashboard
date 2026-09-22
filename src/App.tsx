@@ -24,7 +24,7 @@ import { SummaryTables } from './components/SummaryTables'
 const DRAFT_STORAGE_KEY = 'coc_rank_autosave_draft'
 
 const comparisonColors = {
-  canPass: '#f43f5e',
+  canPass: '#f59e0b',
   below: '#10b981',
 }
 

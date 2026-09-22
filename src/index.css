@@ -13,12 +13,8 @@
   --field-text: #0f172a;
   --soft-table-head: rgba(254, 243, 199, 0.65);
   --table-head-text: #78350f;
-  --row-mine: rgba(186, 230, 253, 0.55);
-  --row-mine-hover: rgba(125, 211, 252, 0.7);
-  --row-risk: rgba(254, 205, 211, 0.5);
-  --row-risk-hover: rgba(253, 164, 175, 0.65);
-  --row-below: rgba(187, 247, 208, 0.5);
-  --row-below-hover: rgba(134, 239, 172, 0.65);
+  --row-mine: rgba(14, 165, 233, 0.12);
+  --row-mine-hover: rgba(14, 165, 233, 0.20);
   --text-main: #0f172a;
   --text-muted: #64748b;
   color: #172026;
@@ -104,22 +100,13 @@ select:focus-visible {
   background: var(--row-mine-hover) !important;
 }
 
-.row-risk {
-  background: var(--row-risk) !important;
+.row-neutral {
+  background: transparent;
   color: var(--text-main);
 }
 
-.row-risk:hover {
-  background: var(--row-risk-hover) !important;
-}
-
-.row-below {
-  background: var(--row-below) !important;
-  color: var(--text-main);
-}
-
-.row-below:hover {
-  background: var(--row-below-hover) !important;
+.row-neutral:hover {
+  background: rgba(148, 163, 184, 0.08) !important;
 }
 
 /* Dark theme variables: Áp dụng khi có class .dark trên html hoặc theo hệ thống */
@@ -138,12 +125,8 @@ html.dark,
     --field-text: #f1f5f9;
     --soft-table-head: rgba(245, 158, 11, 0.14);
     --table-head-text: #fde68a;
-    --row-mine: rgba(14, 165, 233, 0.22);
-    --row-mine-hover: rgba(14, 165, 233, 0.32);
-    --row-risk: rgba(244, 63, 94, 0.2);
-    --row-risk-hover: rgba(244, 63, 94, 0.3);
-    --row-below: rgba(16, 185, 129, 0.18);
-    --row-below-hover: rgba(16, 185, 129, 0.28);
+    --row-mine: rgba(14, 165, 233, 0.16);
+    --row-mine-hover: rgba(14, 165, 233, 0.26);
     --text-main: #f8fafc;
     --text-muted: #94a3b8;
     color: #e2e8f0;
