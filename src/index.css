@@ -283,6 +283,34 @@ html.dark .glass-panel {
   pointer-events: none;
 }
 
+/* Hiệu ứng nổi bật khi người chơi nhảy vị trí sau khi chỉnh sửa */
+@keyframes row-jump-glow {
+  0% {
+    background-color: rgba(56, 189, 248, 0.38) !important;
+  }
+  40% {
+    background-color: rgba(56, 189, 248, 0.22) !important;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+tr.row-jump-highlight td {
+  animation: row-jump-glow 2.5s ease-out forwards;
+}
+
+tr.row-jump-highlight {
+  outline: 2px solid #0284c7 !important;
+  outline-offset: -2px;
+  z-index: 10;
+  position: relative;
+}
+
+html.dark tr.row-jump-highlight {
+  outline: 2px solid #38bdf8 !important;
+}
+
 /* Đảm bảo ô nhập ngày và select không bị tràn chiều ngang trên màn hình điện thoại */
 input[type="date"],
 input[type="text"],

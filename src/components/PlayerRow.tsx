@@ -11,8 +11,12 @@ interface PlayerRowProps {
   isRemoving?: boolean
   isPromotionZone?: boolean
   isDemotionZone?: boolean
+  isHighlighted?: boolean
+  rankJump?: { fromRank: number; toRank: number } | null
   onSelectMyPlayer: () => void
   onUpdateField: (field: keyof Player, value: string | number) => void
+  onStartEditing?: () => void
+  onFinishEditing?: () => void
   onRequestRemove: () => void
   setRowRef: (element: HTMLTableRowElement | null) => void
 }
@@ -55,8 +59,12 @@ export function PlayerRow({
   isRemoving = false,
   isPromotionZone = false,
   isDemotionZone = false,
+  isHighlighted = false,
+  rankJump = null,
   onSelectMyPlayer,
   onUpdateField,
+  onStartEditing,
+  onFinishEditing,
   onRequestRemove,
   setRowRef,
 }: PlayerRowProps) {
@@ -81,11 +89,11 @@ export function PlayerRow({
       ref={setRowRef}
       className={`${rowClass} ${zoneClass} ${
         isRemoving ? 'animate-row-exit' : 'animate-row-enter'
-      } transition-colors duration-200`}
+      } ${isHighlighted ? 'row-jump-highlight' : ''} transition-colors duration-200`}
     >
       {/* Cột Rank */}
       <td className="px-3.5 py-2.5 align-middle">
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 flex-wrap">
           <span
             className={`inline-flex h-9 min-w-8 items-center justify-center rounded-md px-2 text-xs font-bold shadow-xs backdrop-blur transition-all ${
               isPromotionZone
@@ -104,7 +112,24 @@ export function PlayerRow({
           >
             #{player.rank}
           </span>
-          {isPromotionZone ? (
+
+          {/* Badge báo vị trí vừa nhảy hạng */}
+          {rankJump && rankJump.fromRank !== rankJump.toRank ? (
+            <span
+              className={`inline-flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[10px] font-black uppercase tracking-tight shadow-xs select-none animate-pulse ${
+                rankJump.fromRank > rankJump.toRank
+                  ? 'bg-emerald-600 text-white dark:bg-emerald-500'
+                  : 'bg-rose-600 text-white dark:bg-rose-500'
+              }`}
+              title={
+                rankJump.fromRank > rankJump.toRank
+                  ? `Vừa tăng ${rankJump.fromRank - rankJump.toRank} bậc (từ #${rankJump.fromRank} lên #${rankJump.toRank})`
+                  : `Vừa giảm ${rankJump.toRank - rankJump.fromRank} bậc (từ #${rankJump.fromRank} xuống #${rankJump.toRank})`
+              }
+            >
+              {rankJump.fromRank > rankJump.toRank ? '▲' : '▼'} #{rankJump.fromRank} → #{rankJump.toRank}
+            </span>
+          ) : isPromotionZone ? (
             <span
               className="inline-flex items-center gap-0.5 rounded-xs bg-emerald-500/20 px-1 py-0.5 text-[9px] font-black text-emerald-700 dark:text-emerald-300 uppercase tracking-tighter select-none border border-emerald-500/30"
               title="Vị trí thăng hạng"
@@ -126,6 +151,11 @@ export function PlayerRow({
       <td className="px-3.5 py-2.5 align-middle">
         <input
           value={player.name}
+          onFocus={onStartEditing}
+          onBlur={onFinishEditing}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') e.currentTarget.blur()
+          }}
           onChange={(e) => onUpdateField('name', e.target.value)}
           className="soft-field h-9 w-full rounded-md px-2.5 text-sm font-medium"
         />
@@ -156,9 +186,14 @@ export function PlayerRow({
             max={maxAttacks}
             value={player.attacks === 0 ? '' : player.attacks}
             placeholder="0"
-            onFocus={(e) => e.target.select()}
+            onFocus={(e) => {
+              e.target.select()
+              onStartEditing?.()
+            }}
+            onBlur={onFinishEditing}
             onKeyDown={(e) => {
               if (['-', '+', 'e', 'E', '.'].includes(e.key)) e.preventDefault()
+              if (e.key === 'Enter') e.currentTarget.blur()
             }}
             onChange={(e) => handleNumberChange(e.target.value, 'attacks', onUpdateField, maxAttacks)}
             className="soft-field h-9 w-12 rounded-md px-1 text-center text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
@@ -189,9 +224,14 @@ export function PlayerRow({
             max={maxDefenses}
             value={player.defenses === 0 ? '' : player.defenses}
             placeholder="0"
-            onFocus={(e) => e.target.select()}
+            onFocus={(e) => {
+              e.target.select()
+              onStartEditing?.()
+            }}
+            onBlur={onFinishEditing}
             onKeyDown={(e) => {
               if (['-', '+', 'e', 'E', '.'].includes(e.key)) e.preventDefault()
+              if (e.key === 'Enter') e.currentTarget.blur()
             }}
             onChange={(e) => handleNumberChange(e.target.value, 'defenses', onUpdateField, maxDefenses)}
             className="soft-field h-9 w-12 rounded-md px-1 text-center text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
@@ -220,9 +260,14 @@ export function PlayerRow({
           min="0"
           value={player.currentCups === 0 ? '' : player.currentCups}
           placeholder="0"
-          onFocus={(e) => e.target.select()}
+          onFocus={(e) => {
+            e.target.select()
+            onStartEditing?.()
+          }}
+          onBlur={onFinishEditing}
           onKeyDown={(e) => {
             if (['-', '+', 'e', 'E', '.'].includes(e.key)) e.preventDefault()
+            if (e.key === 'Enter') e.currentTarget.blur()
           }}
           onChange={(e) => handleNumberChange(e.target.value, 'currentCups', onUpdateField)}
           className="soft-field h-9 w-full rounded-md px-2.5 text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"

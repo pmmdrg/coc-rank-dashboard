@@ -1,4 +1,4 @@
-import { Fragment, useLayoutEffect, useRef, useState } from 'react'
+import { Fragment, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Plus } from 'lucide-react'
 import type { Player, RankingStats, Season } from '../types'
 import { ConfirmDeleteModal } from './ConfirmDeleteModal'
@@ -25,9 +25,25 @@ export function PlayerTable({
 }: PlayerTableProps) {
   const [playerToDelete, setPlayerToDelete] = useState<Player | null>(null)
   const [removingPlayerId, setRemovingPlayerId] = useState<string | null>(null)
+  const [highlightedPlayerId, setHighlightedPlayerId] = useState<string | null>(null)
+  const [rankJumpInfo, setRankJumpInfo] = useState<{
+    playerId: string
+    fromRank: number
+    toRank: number
+  } | null>(null)
 
   const rowRefs = useRef(new Map<string, HTMLTableRowElement>())
   const previousRowRects = useRef(new Map<string, DOMRect>())
+  const initialEditRanks = useRef<Map<string, number>>(new Map())
+  const typingDebounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const highlightCleanupTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (typingDebounceTimer.current) clearTimeout(typingDebounceTimer.current)
+      if (highlightCleanupTimer.current) clearTimeout(highlightCleanupTimer.current)
+    }
+  }, [])
 
   const promotionCount = season.promotionCount !== undefined ? season.promotionCount : 2
   const demotionCount = season.demotionCount !== undefined ? season.demotionCount : 1
@@ -75,6 +91,75 @@ export function PlayerTable({
     } else {
       rowRefs.current.delete(playerId)
     }
+  }
+
+  // Ghi nhận thứ hạng của người chơi lúc người dùng bắt đầu chạm/focus vào ô nhập
+  function handleStartEditing(playerId: string, currentRank: number) {
+    if (!initialEditRanks.current.has(playerId)) {
+      initialEditRanks.current.set(playerId, currentRank)
+    }
+  }
+
+  // Tự động cuộn màn hình mượt mà tới vị trí hàng người chơi và bật hiệu ứng highlight
+  const scrollToPlayerRow = useCallback(
+    (playerId: string) => {
+      const rowEl = rowRefs.current.get(playerId)
+      if (!rowEl) return
+
+      const fromRank = initialEditRanks.current.get(playerId)
+      const currentPlayer = rankedPlayers.find((p) => p.id === playerId)
+      const toRank = currentPlayer?.rank
+
+      if (fromRank !== undefined && toRank !== undefined && fromRank !== toRank) {
+        setRankJumpInfo({ playerId, fromRank, toRank })
+      }
+
+      setHighlightedPlayerId(playerId)
+      if (highlightCleanupTimer.current) clearTimeout(highlightCleanupTimer.current)
+      highlightCleanupTimer.current = setTimeout(() => {
+        setHighlightedPlayerId(null)
+        setRankJumpInfo(null)
+        initialEditRanks.current.delete(playerId)
+      }, 3000)
+
+      // Kiểm tra vị trí của hàng xem có đang hiển thị rõ trong khung nhìn không
+      const rect = rowEl.getBoundingClientRect()
+      const headerOffset = 110 // Đệm tránh bị thanh header sticky che khuất
+      const isComfortablyVisible =
+        rect.top >= headerOffset && rect.bottom <= window.innerHeight - 40
+
+      // Nếu hàng nhảy ra ngoài khung nhìn (lên trên hoặc xuống dưới), cuộn tới ngay
+      if (!isComfortablyVisible) {
+        rowEl.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        })
+      }
+    },
+    [rankedPlayers],
+  )
+
+  // Xử lý khi kết thúc chỉnh sửa (rời khỏi ô nhập hoặc bấm Enter)
+  function handleFinishEditing(playerId: string) {
+    if (typingDebounceTimer.current) {
+      clearTimeout(typingDebounceTimer.current)
+      typingDebounceTimer.current = null
+    }
+    setTimeout(() => {
+      scrollToPlayerRow(playerId)
+    }, 100)
+  }
+
+  // Xử lý khi đang gõ phím (tự động cuộn sau 850ms nếu dừng tay mà không blur)
+  function handleFieldChange(playerId: string, field: keyof Player, value: string | number) {
+    onUpdatePlayerField(playerId, field, value)
+
+    if (typingDebounceTimer.current) {
+      clearTimeout(typingDebounceTimer.current)
+    }
+    typingDebounceTimer.current = setTimeout(() => {
+      scrollToPlayerRow(playerId)
+    }, 850)
   }
 
   return (
@@ -138,8 +223,12 @@ export function PlayerTable({
                     isRemoving={removingPlayerId === player.id}
                     isPromotionZone={isPromotionZone}
                     isDemotionZone={isDemotionZone}
+                    isHighlighted={highlightedPlayerId === player.id}
+                    rankJump={rankJumpInfo?.playerId === player.id ? rankJumpInfo : null}
                     onSelectMyPlayer={() => onSelectMyPlayer(player.id)}
-                    onUpdateField={(field, value) => onUpdatePlayerField(player.id, field, value)}
+                    onUpdateField={(field, value) => handleFieldChange(player.id, field, value)}
+                    onStartEditing={() => handleStartEditing(player.id, player.rank)}
+                    onFinishEditing={() => handleFinishEditing(player.id)}
                     onRequestRemove={() => setPlayerToDelete(player)}
                     setRowRef={(el) => setPlayerRowRef(player.id, el)}
                   />
