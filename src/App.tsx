@@ -411,6 +411,7 @@ function App() {
 
         {/* Bảng danh sách người chơi chi tiết */}
         <PlayerTable
+          key={rankedSeason.seasonName}
           season={rankedSeason}
           rankedPlayers={rankedSeason.players}
           stats={stats}

@@ -35,16 +35,36 @@ export function PlayerTable({
 
   const rowRefs = useRef(new Map<string, HTMLTableRowElement>())
   const previousRowRects = useRef(new Map<string, DOMRect>())
-  const initialEditRanks = useRef<Map<string, number>>(new Map())
+  const rankedPlayersRef = useRef(rankedPlayers)
+  const previousRanksRef = useRef<Map<string, number>>(
+    new Map(rankedPlayers.map((p) => [p.id, p.rank])),
+  )
   const typingDebounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const highlightCleanupTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  // Đồng bộ rankedPlayersRef sau mỗi lần render để các callback bất đồng bộ luôn truy cập dữ liệu mới nhất
+  useEffect(() => {
+    rankedPlayersRef.current = rankedPlayers
+  })
+
+  // Dọn dẹp timer khi unmount
   useEffect(() => {
     return () => {
       if (typingDebounceTimer.current) clearTimeout(typingDebounceTimer.current)
       if (highlightCleanupTimer.current) clearTimeout(highlightCleanupTimer.current)
     }
   }, [])
+
+  // Cập nhật previousRanksRef khi ở trạng thái nhàn rỗi (không bị đóng băng thứ tự hàng)
+  useEffect(() => {
+    if (!frozenOrderIds) {
+      const map = new Map<string, number>()
+      rankedPlayers.forEach((p) => {
+        map.set(p.id, p.rank)
+      })
+      previousRanksRef.current = map
+    }
+  }, [rankedPlayers, frozenOrderIds])
 
   // Danh sách hiển thị:
   // - Khi KHÔNG gõ phím (frozenOrderIds === null): luôn hiển thị danh sách đã sắp xếp mới nhất.
@@ -114,40 +134,45 @@ export function PlayerTable({
     }
   }
 
-  // Ghi nhận thứ hạng của người chơi lúc người dùng bắt đầu chạm/focus vào ô nhập
-  function handleStartEditing(playerId: string, currentRank: number) {
-    if (!initialEditRanks.current.has(playerId)) {
-      initialEditRanks.current.set(playerId, currentRank)
-    }
-    // Đóng băng thứ tự hàng hiện tại để không bị nhảy hàng khi đang gõ
+  // Khi người dùng focus vào ô nhập: đóng băng thứ tự hàng hiện tại để không bị nhảy hàng khi đang gõ
+  function handleStartEditing() {
     setFrozenOrderIds((prev) => prev ?? rankedPlayers.map((p) => p.id))
   }
 
   // Thực hiện sắp xếp lại bảng (commit sort) và cuộn màn hình tới hàng người chơi
   const commitSortAndScroll = useCallback(
     (playerId: string) => {
-      // 1. Hủy đóng băng vị trí hàng -> cho phép danh sách sắp xếp lại theo thứ hạng thực tế
+      // 1. Lấy thứ hạng trước khi sắp xếp và thứ hạng mới nhất từ nguồn dữ liệu chuẩn (tránh stale closure)
+      const fromRank = previousRanksRef.current.get(playerId)
+      const currentPlayer = rankedPlayersRef.current.find((p) => p.id === playerId)
+      const toRank = currentPlayer?.rank
+
+      if (fromRank !== undefined && toRank !== undefined && fromRank !== toRank) {
+        setRankJumpInfo({ playerId, fromRank, toRank })
+      } else {
+        setRankJumpInfo(null)
+      }
+
+      // 2. Cập nhật lại previousRanksRef với toàn bộ thứ hạng mới nhất
+      const nextRanks = new Map<string, number>()
+      rankedPlayersRef.current.forEach((p) => {
+        nextRanks.set(p.id, p.rank)
+      })
+      previousRanksRef.current = nextRanks
+
+      // 3. Hủy đóng băng vị trí hàng -> cho phép danh sách sắp xếp lại theo thứ hạng thực tế
       setFrozenOrderIds(null)
 
-      // 2. Chờ layout DOM cập nhật thứ tự mới, sau đó kích hoạt cuộn mượt và highlight
+      // 4. Chờ layout DOM cập nhật thứ tự mới, sau đó kích hoạt cuộn mượt và highlight
       setTimeout(() => {
         const rowEl = rowRefs.current.get(playerId)
         if (!rowEl) return
-
-        const fromRank = initialEditRanks.current.get(playerId)
-        const currentPlayer = rankedPlayers.find((p) => p.id === playerId)
-        const toRank = currentPlayer?.rank
-
-        if (fromRank !== undefined && toRank !== undefined && fromRank !== toRank) {
-          setRankJumpInfo({ playerId, fromRank, toRank })
-        }
 
         setHighlightedPlayerId(playerId)
         if (highlightCleanupTimer.current) clearTimeout(highlightCleanupTimer.current)
         highlightCleanupTimer.current = setTimeout(() => {
           setHighlightedPlayerId(null)
           setRankJumpInfo(null)
-          initialEditRanks.current.delete(playerId)
         }, 3200)
 
         // Kiểm tra vị trí của hàng xem có đang hiển thị rõ trong khung nhìn không
@@ -165,7 +190,7 @@ export function PlayerTable({
         }
       }, 70)
     },
-    [rankedPlayers],
+    [],
   )
 
   // Xử lý khi kết thúc chỉnh sửa (rời khỏi ô nhập hoặc bấm Enter) -> Sắp xếp lại ngay lập tức
@@ -255,7 +280,7 @@ export function PlayerTable({
                     rankJump={rankJumpInfo?.playerId === player.id ? rankJumpInfo : null}
                     onSelectMyPlayer={() => onSelectMyPlayer(player.id)}
                     onUpdateField={(field, value) => handleFieldChange(player.id, field, value)}
-                    onStartEditing={() => handleStartEditing(player.id, player.rank)}
+                    onStartEditing={handleStartEditing}
                     onFinishEditing={() => handleFinishEditing(player.id)}
                     onRequestRemove={() => setPlayerToDelete(player)}
                     setRowRef={(el) => setPlayerRowRef(player.id, el)}
