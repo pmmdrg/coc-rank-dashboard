@@ -24,43 +24,86 @@ function getElementDocumentTop(element: HTMLElement): number {
   return top
 }
 
-function smoothScrollTo(targetY: number, duration: number = 2000): { cancel: () => void } {
-  const startY = window.scrollY || document.documentElement.scrollTop
-  const diff = targetY - startY
-  if (Math.abs(diff) < 3) return { cancel: () => {} }
+interface AnimatedRowItem {
+  element: HTMLElement
+  deltaY: number
+}
 
-  const startTime = performance.now()
+function easeInOutCubic(t: number): number {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
+}
+
+function runUnifiedAnimation({
+  targetScrollY,
+  duration,
+  rows,
+  easing = easeInOutCubic,
+}: {
+  targetScrollY?: number
+  duration: number
+  rows: AnimatedRowItem[]
+  easing?: (t: number) => number
+}): { cancel: () => void } {
+  const startScrollY = window.scrollY || document.documentElement.scrollTop
+  const shouldScroll = targetScrollY !== undefined && Math.abs(targetScrollY - startScrollY) >= 3
+  const scrollDiff = shouldScroll ? targetScrollY - startScrollY : 0
+
   let isCancelled = false
   let frameId = 0
+  const startTime = performance.now()
 
-  const cancel = () => {
-    isCancelled = true
-    cancelAnimationFrame(frameId)
+  // Gán vị trí xuất phát cho toàn bộ các hàng ngay lập tức trong layout frame (0ms delay)
+  rows.forEach(({ element, deltaY }) => {
+    element.style.transform = `translateY(${deltaY}px)`
+    element.style.willChange = 'transform'
+  })
+
+  const cleanup = () => {
+    rows.forEach(({ element }) => {
+      element.style.transform = ''
+      element.style.willChange = ''
+    })
     window.removeEventListener('wheel', cancel)
     window.removeEventListener('touchmove', cancel)
   }
 
+  const cancel = () => {
+    if (isCancelled) return
+    isCancelled = true
+    cancelAnimationFrame(frameId)
+    cleanup()
+  }
+
   window.addEventListener('wheel', cancel, { passive: true, once: true })
   window.addEventListener('touchmove', cancel, { passive: true, once: true })
-
-  function easeInOutCubic(t: number): number {
-    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
-  }
 
   function step(currentTime: number) {
     if (isCancelled) return
 
     const elapsed = currentTime - startTime
     const progress = Math.min(elapsed / duration, 1)
-    const ease = easeInOutCubic(progress)
+    const ease = easing(progress)
 
-    window.scrollTo(0, startY + diff * ease)
+    // 1. Cuộn camera đồng bộ
+    if (shouldScroll) {
+      window.scrollTo(0, startScrollY + scrollDiff * ease)
+    }
+
+    // 2. Di chuyển các hàng cùng 1 biến ease và 1 tick đồng hồ duy nhất
+    const remaining = 1 - ease
+    rows.forEach(({ element, deltaY }) => {
+      const currentY = deltaY * remaining
+      if (Math.abs(currentY) < 0.2) {
+        element.style.transform = ''
+      } else {
+        element.style.transform = `translateY(${currentY}px)`
+      }
+    })
 
     if (progress < 1) {
       frameId = requestAnimationFrame(step)
     } else {
-      window.removeEventListener('wheel', cancel)
-      window.removeEventListener('touchmove', cancel)
+      cleanup()
     }
   }
 
@@ -166,33 +209,8 @@ export function PlayerTable({
       const jumpingPlayerId = pendingScrollPlayerId.current
       pendingScrollPlayerId.current = null
 
-      let jumpDuration = 1000
-      const targetRowEl = jumpingPlayerId ? rowRefs.current.get(jumpingPlayerId) : null
-
-      // Đồng bộ cuộn màn hình ngay trong frame render đầu tiên (0ms delay) cùng nhịp với FLIP
-      if (jumpingPlayerId && targetRowEl && targetRowEl.isConnected) {
-        const rowDocTop = getElementDocumentTop(targetRowEl)
-        const currentScroll = window.scrollY || document.documentElement.scrollTop
-        const headerOffset = 110
-        const rowHeight = targetRowEl.offsetHeight || 48
-
-        const isComfortablyVisible =
-          rowDocTop >= currentScroll + headerOffset &&
-          rowDocTop + rowHeight <= currentScroll + window.innerHeight - 40
-
-        if (!isComfortablyVisible) {
-          const targetTop = Math.max(
-            0,
-            rowDocTop - (window.innerHeight / 2) + (rowHeight / 2)
-          )
-          const diff = Math.abs(targetTop - currentScroll)
-          // Thời gian cuộn đồng bộ hoàn toàn với thời gian hàng bay, scale mượt mà từ 1.2s đến tối đa 3.0s
-          jumpDuration = Math.min(3000, Math.max(1200, 1000 + diff * 0.75))
-
-          activeScrollAnimation.current = smoothScrollTo(targetTop, jumpDuration)
-        }
-      }
-
+      // Thu thập toàn bộ các hàng có sự thay đổi vị trí
+      const movingRows: AnimatedRowItem[] = []
       nextTops.forEach((currentTop, playerId) => {
         const previousTop = previousRowTops.current.get(playerId)
         const element = rowRefs.current.get(playerId)
@@ -201,17 +219,42 @@ export function PlayerTable({
         const deltaY = previousTop - currentTop
         if (Math.abs(deltaY) < 1) return
 
-        // Đồng bộ thời lượng và gia tốc với camera cuộn để toàn bộ bảng di chuyển nhịp nhàng không giật
-        const duration = jumpDuration
-
-        element.animate(
-          [{ transform: `translateY(${deltaY}px)` }, { transform: 'translateY(0)' }],
-          {
-            duration,
-            easing: 'cubic-bezier(0.65, 0, 0.35, 1)',
-          },
-        )
+        movingRows.push({ element, deltaY })
       })
+
+      if (movingRows.length > 0) {
+        let targetTop: number | undefined
+        let duration = 1200 // Mặc định khi nhảy tại chỗ trong khung nhìn
+
+        const targetRowEl = jumpingPlayerId ? rowRefs.current.get(jumpingPlayerId) : null
+        if (jumpingPlayerId && targetRowEl && targetRowEl.isConnected) {
+          const rowDocTop = getElementDocumentTop(targetRowEl)
+          const currentScroll = window.scrollY || document.documentElement.scrollTop
+          const headerOffset = 110
+          const rowHeight = targetRowEl.offsetHeight || 48
+
+          const isComfortablyVisible =
+            rowDocTop >= currentScroll + headerOffset &&
+            rowDocTop + rowHeight <= currentScroll + window.innerHeight - 40
+
+          if (!isComfortablyVisible) {
+            targetTop = Math.max(
+              0,
+              rowDocTop - (window.innerHeight / 2) + (rowHeight / 2)
+            )
+            const diff = Math.abs(targetTop - currentScroll)
+            // Scale thời lượng từ 1.5s đến 3.0s tùy theo khoảng cách
+            duration = Math.min(3000, Math.max(1500, 1200 + diff * 0.75))
+          }
+        }
+
+        activeScrollAnimation.current = runUnifiedAnimation({
+          targetScrollY: targetTop,
+          duration,
+          rows: movingRows,
+          easing: easeInOutCubic,
+        })
+      }
     }
 
     previousRowTops.current = nextTops
