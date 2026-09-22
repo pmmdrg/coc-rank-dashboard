@@ -29,15 +29,16 @@ interface AnimatedRowItem {
   deltaY: number
 }
 
-function easeInOutCubic(t: number): number {
-  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
+// Đường cong gia tốc êm ái, khởi động từ tốn, không giật vọt ở pha đầu
+function easeInOutSine(t: number): number {
+  return -(Math.cos(Math.PI * t) - 1) / 2
 }
 
 function runUnifiedAnimation({
   targetScrollY,
   duration,
   rows,
-  easing = easeInOutCubic,
+  easing = easeInOutSine,
 }: {
   targetScrollY?: number
   duration: number
@@ -50,7 +51,7 @@ function runUnifiedAnimation({
 
   let isCancelled = false
   let frameId = 0
-  const startTime = performance.now()
+  let startTime: number | null = null
 
   // Gán vị trí xuất phát cho toàn bộ các hàng ngay lập tức trong layout frame (0ms delay)
   rows.forEach(({ element, deltaY }) => {
@@ -79,6 +80,10 @@ function runUnifiedAnimation({
 
   function step(currentTime: number) {
     if (isCancelled) return
+
+    if (startTime === null) {
+      startTime = currentTime
+    }
 
     const elapsed = currentTime - startTime
     const progress = Math.min(elapsed / duration, 1)
@@ -224,7 +229,7 @@ export function PlayerTable({
 
       if (movingRows.length > 0) {
         let targetTop: number | undefined
-        let duration = 1200 // Mặc định khi nhảy tại chỗ trong khung nhìn
+        let duration = 1600 // Mặc định khi nhảy tại chỗ trong khung nhìn
 
         const targetRowEl = jumpingPlayerId ? rowRefs.current.get(jumpingPlayerId) : null
         if (jumpingPlayerId && targetRowEl && targetRowEl.isConnected) {
@@ -243,8 +248,8 @@ export function PlayerTable({
               rowDocTop - (window.innerHeight / 2) + (rowHeight / 2)
             )
             const diff = Math.abs(targetTop - currentScroll)
-            // Scale thời lượng từ 1.5s đến 3.0s tùy theo khoảng cách
-            duration = Math.min(3000, Math.max(1500, 1200 + diff * 0.75))
+            // Thời lượng êm ái, kéo dài từ 2.2s đến tối đa 3.0s để khởi đầu nhẹ nhàng không giật
+            duration = Math.min(3000, Math.max(2200, 1800 + diff * 0.6))
           }
         }
 
@@ -252,7 +257,7 @@ export function PlayerTable({
           targetScrollY: targetTop,
           duration,
           rows: movingRows,
-          easing: easeInOutCubic,
+          easing: easeInOutSine,
         })
       }
     }
