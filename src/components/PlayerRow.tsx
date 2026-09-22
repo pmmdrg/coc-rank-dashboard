@@ -86,7 +86,7 @@ export function PlayerRow({
     <tr
       ref={setRowRef}
       className={`${rowClass} ${borderClass} ${
-        isRemoving ? 'animate-row-exit' : 'animate-row-enter'
+        isRemoving ? 'animate-row-exit' : ''
       } ${isHighlighted ? 'row-jump-highlight' : ''} transition-colors duration-200`}
     >
       {/* Cột Rank */}

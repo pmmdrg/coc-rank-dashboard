@@ -43,8 +43,8 @@ function smoothScrollTo(targetY: number, duration: number = 1100): { cancel: () 
   window.addEventListener('wheel', cancel, { passive: true, once: true })
   window.addEventListener('touchmove', cancel, { passive: true, once: true })
 
-  function easeOutCubic(t: number): number {
-    return 1 - Math.pow(1 - t, 3)
+  function easeInOutCubic(t: number): number {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
   }
 
   function step(currentTime: number) {
@@ -52,7 +52,7 @@ function smoothScrollTo(targetY: number, duration: number = 1100): { cancel: () 
 
     const elapsed = currentTime - startTime
     const progress = Math.min(elapsed / duration, 1)
-    const ease = easeOutCubic(progress)
+    const ease = easeInOutCubic(progress)
 
     window.scrollTo(0, startY + diff * ease)
 
@@ -201,14 +201,14 @@ export function PlayerTable({
         const deltaY = previousTop - currentTop
         if (Math.abs(deltaY) < 1) return
 
-        // Hàng người chơi vừa nhảy rank dùng chung duration với camera; các hàng khác lướt nhẹ
-        const duration = playerId === jumpingPlayerId ? jumpDuration : Math.min(750, jumpDuration)
+        // Đồng bộ thời lượng và gia tốc với camera cuộn để toàn bộ bảng di chuyển nhịp nhàng không giật
+        const duration = jumpDuration
 
         element.animate(
           [{ transform: `translateY(${deltaY}px)` }, { transform: 'translateY(0)' }],
           {
             duration,
-            easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+            easing: 'cubic-bezier(0.65, 0, 0.35, 1)',
           },
         )
       })
@@ -336,7 +336,7 @@ export function PlayerTable({
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[1080px] border-collapse text-left text-sm">
+        <table className="w-full min-w-[1080px] border-separate border-spacing-0 text-left text-sm">
           <thead className="soft-table-head text-xs uppercase tracking-wider">
             <tr>
               <th className="w-32 px-3.5 py-3 whitespace-nowrap">Rank</th>
