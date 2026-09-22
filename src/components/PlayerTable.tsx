@@ -385,9 +385,18 @@ export function PlayerTable({
     <section className="glass-panel rounded-xl shadow-sm">
       <div className="flex flex-col gap-3 border-b border-slate-200/60 p-5 sm:flex-row sm:items-center sm:justify-between dark:border-slate-700/60">
         <div>
-          <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Danh sách Người chơi</h2>
+          <div className="flex items-center gap-2.5">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Danh sách Người chơi</h2>
+            <span
+              className="hidden items-center gap-1.5 rounded-full border border-sky-200/60 bg-sky-50 px-2.5 py-0.5 text-[11px] font-medium text-sky-800 dark:border-sky-800/60 dark:bg-sky-950/50 dark:text-sky-300 sm:inline-flex"
+              title="Nhấn Tab hoặc Enter để sang ô tiếp theo, Shift+Tab để lùi ô, Alt + Mũi tên để di chuyển 4 hướng"
+            >
+              <span>⌨️</span>
+              <kbd className="rounded bg-white px-1 py-0.2 shadow-xs border border-sky-300/50 dark:bg-slate-900 dark:border-sky-800">Tab</kbd> / <kbd className="rounded bg-white px-1 py-0.2 shadow-xs border border-sky-300/50 dark:bg-slate-900 dark:border-sky-800">Enter</kbd> đổi ô nhanh
+            </span>
+          </div>
           <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-            Chỉnh sửa số cup sẽ tự động sắp xếp lại thứ hạng. Số lượt đánh/thủ sẽ cập nhật cup tối đa và đánh giá kỹ năng.
+            Dùng phím <kbd className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[10px] dark:bg-slate-800">Tab</kbd> / <kbd className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[10px] dark:bg-slate-800">Enter</kbd> / <kbd className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[10px] dark:bg-slate-800">Shift+Tab</kbd> hoặc <kbd className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[10px] dark:bg-slate-800">Alt + Mũi tên</kbd> để nhập liệu liền mạch không cần chuột.
           </p>
         </div>
         <button

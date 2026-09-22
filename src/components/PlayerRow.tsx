@@ -82,6 +82,125 @@ export function PlayerRow({
         ? 'border-l-4 border-l-rose-500 bg-rose-500/[0.03] dark:bg-rose-500/[0.06]'
         : 'border-l-4 border-l-transparent'
 
+  type EditableField = 'name' | 'attacks' | 'defenses' | 'currentCups'
+  const EDITABLE_FIELDS: EditableField[] = ['name', 'attacks', 'defenses', 'currentCups']
+
+  function handleInputKeyDown(
+    e: React.KeyboardEvent<HTMLInputElement>,
+    currentField: EditableField,
+  ) {
+    if (['attacks', 'defenses', 'currentCups'].includes(currentField)) {
+      if (['-', '+', 'e', 'E', '.'].includes(e.key)) {
+        e.preventDefault()
+        return
+      }
+    }
+
+    const tr = e.currentTarget.closest('tr')
+    if (!tr) return
+
+    const currentIndex = EDITABLE_FIELDS.indexOf(currentField)
+
+    const focusField = (rowEl: HTMLTableRowElement | null, field: EditableField) => {
+      if (!rowEl) return false
+      const targetInput = rowEl.querySelector<HTMLInputElement>(`input[data-field="${field}"]`)
+      if (targetInput) {
+        targetInput.focus()
+        targetInput.select()
+        return true
+      }
+      return false
+    }
+
+    const getAdjacentRow = (direction: 'next' | 'prev'): HTMLTableRowElement | null => {
+      let sibling = direction === 'next' ? tr.nextElementSibling : tr.previousElementSibling
+      while (sibling) {
+        if (sibling.tagName === 'TR' && !sibling.className.includes('select-none')) {
+          const input = sibling.querySelector('input[data-field]')
+          if (input) return sibling as HTMLTableRowElement
+        }
+        sibling = direction === 'next' ? sibling.nextElementSibling : sibling.previousElementSibling
+      }
+      return null
+    }
+
+    // 1. Phím Enter: Chuyển sang trường tiếp theo trên cùng hàng; tại currentCups thì hoàn tất và sắp xếp
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      if (currentField === 'currentCups') {
+        e.currentTarget.blur()
+      } else {
+        const nextField = EDITABLE_FIELDS[currentIndex + 1]
+        focusField(tr, nextField)
+      }
+      return
+    }
+
+    // 2. Phím Tab & Shift + Tab: Di chuyển trực tiếp giữa các textfield (bỏ qua nút bấm / readonly)
+    if (e.key === 'Tab') {
+      if (e.shiftKey) {
+        if (currentIndex > 0) {
+          e.preventDefault()
+          focusField(tr, EDITABLE_FIELDS[currentIndex - 1])
+        } else {
+          // Lùi về hàng trước (vào ô currentCups)
+          const prevRow = getAdjacentRow('prev')
+          if (prevRow) {
+            e.preventDefault()
+            focusField(prevRow, 'currentCups')
+          }
+        }
+      } else {
+        if (currentIndex < EDITABLE_FIELDS.length - 1) {
+          e.preventDefault()
+          focusField(tr, EDITABLE_FIELDS[currentIndex + 1])
+        } else {
+          // Tiến sang hàng kế tiếp (vào ô attacks)
+          const nextRow = getAdjacentRow('next')
+          if (nextRow) {
+            e.preventDefault()
+            focusField(nextRow, 'attacks')
+          }
+        }
+      }
+      return
+    }
+
+    // 3. Phím tắt Alt + Mũi tên (hoặc Ctrl + Mũi tên): Di chuyển 4 hướng như bảng tính Excel
+    if (e.altKey || e.ctrlKey) {
+      if (e.key === 'ArrowRight') {
+        e.preventDefault()
+        if (currentIndex < EDITABLE_FIELDS.length - 1) {
+          focusField(tr, EDITABLE_FIELDS[currentIndex + 1])
+        }
+        return
+      }
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault()
+        if (currentIndex > 0) {
+          focusField(tr, EDITABLE_FIELDS[currentIndex - 1])
+        }
+        return
+      }
+      if (e.key === 'ArrowDown') {
+        e.preventDefault()
+        const nextRow = getAdjacentRow('next')
+        if (nextRow) {
+          focusField(nextRow, currentField)
+        }
+        return
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault()
+        const prevRow = getAdjacentRow('prev')
+        if (prevRow) {
+          focusField(prevRow, currentField)
+        }
+        return
+      }
+    }
+  }
+
   return (
     <tr
       ref={setRowRef}
@@ -148,14 +267,14 @@ export function PlayerRow({
       {/* Tên người chơi */}
       <td className="px-3.5 py-2.5 align-middle">
         <input
+          data-field="name"
           value={player.name}
           onFocus={(e) => e.target.select()}
           onBlur={onFinishEditing}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') e.currentTarget.blur()
-          }}
+          onKeyDown={(e) => handleInputKeyDown(e, 'name')}
           onChange={(e) => onUpdateField('name', e.target.value)}
           className="soft-field h-9 w-full rounded-md px-2.5 text-sm font-medium"
+          title="Tên người chơi (Tab/Enter để sang Lượt đánh)"
         />
       </td>
 
@@ -163,6 +282,7 @@ export function PlayerRow({
       <td className="px-3.5 py-2.5 text-center align-middle">
         <button
           type="button"
+          tabIndex={-1}
           onClick={onSelectMyPlayer}
           className={`inline-flex h-9 w-9 items-center justify-center rounded-md border transition-all ${
             isMyPlayer
@@ -179,6 +299,7 @@ export function PlayerRow({
       <td className="px-3.5 py-2.5 align-middle">
         <div className="flex h-9 items-center gap-1.5">
           <input
+            data-field="attacks"
             type="number"
             min="0"
             max={maxAttacks}
@@ -186,12 +307,10 @@ export function PlayerRow({
             placeholder="0"
             onFocus={(e) => e.target.select()}
             onBlur={onFinishEditing}
-            onKeyDown={(e) => {
-              if (['-', '+', 'e', 'E', '.'].includes(e.key)) e.preventDefault()
-              if (e.key === 'Enter') e.currentTarget.blur()
-            }}
+            onKeyDown={(e) => handleInputKeyDown(e, 'attacks')}
             onChange={(e) => handleNumberChange(e.target.value, 'attacks', onUpdateField, maxAttacks)}
             className="soft-field h-9 w-12 rounded-md px-1 text-center text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
+            title="Số lượt đánh (Tab/Enter sang Lượt thủ, Alt+Mũi tên để di chuyển)"
           />
           <div className="flex flex-col justify-center leading-none">
             <span className="select-none text-xs font-bold text-slate-500 dark:text-slate-400">
@@ -214,6 +333,7 @@ export function PlayerRow({
       <td className="px-3.5 py-2.5 align-middle">
         <div className="flex h-9 items-center gap-1.5">
           <input
+            data-field="defenses"
             type="number"
             min="0"
             max={maxDefenses}
@@ -221,12 +341,10 @@ export function PlayerRow({
             placeholder="0"
             onFocus={(e) => e.target.select()}
             onBlur={onFinishEditing}
-            onKeyDown={(e) => {
-              if (['-', '+', 'e', 'E', '.'].includes(e.key)) e.preventDefault()
-              if (e.key === 'Enter') e.currentTarget.blur()
-            }}
+            onKeyDown={(e) => handleInputKeyDown(e, 'defenses')}
             onChange={(e) => handleNumberChange(e.target.value, 'defenses', onUpdateField, maxDefenses)}
             className="soft-field h-9 w-12 rounded-md px-1 text-center text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
+            title="Số lượt thủ (Tab/Enter sang Cup, Shift+Tab về Lượt đánh)"
           />
           <div className="flex flex-col justify-center leading-none">
             <span className="select-none text-xs font-bold text-slate-500 dark:text-slate-400">
@@ -248,18 +366,17 @@ export function PlayerRow({
       {/* Số cup hiện tại */}
       <td className="px-3.5 py-2.5 align-middle">
         <input
+          data-field="currentCups"
           type="number"
           min="0"
           value={player.currentCups === 0 ? '' : player.currentCups}
           placeholder="0"
           onFocus={(e) => e.target.select()}
           onBlur={onFinishEditing}
-          onKeyDown={(e) => {
-            if (['-', '+', 'e', 'E', '.'].includes(e.key)) e.preventDefault()
-            if (e.key === 'Enter') e.currentTarget.blur()
-          }}
+          onKeyDown={(e) => handleInputKeyDown(e, 'currentCups')}
           onChange={(e) => handleNumberChange(e.target.value, 'currentCups', onUpdateField)}
           className="soft-field h-9 w-full rounded-md px-2.5 text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
+          title="Số cup hiện tại (Enter để lưu & xếp hạng, Shift+Tab về Lượt thủ, Tab sang người chơi kế tiếp)"
         />
       </td>
 
@@ -269,6 +386,7 @@ export function PlayerRow({
           <input
             type="text"
             readOnly
+            tabIndex={-1}
             value={player.maxPossibleCups.toLocaleString('vi-VN')}
             title={`Công thức: ${player.currentCups} cup hiện tại + (${maxAttacks} - ${player.attacks}) lượt chưa đánh × 40 = ${player.maxPossibleCups} cup`}
             className={`soft-field h-9 w-full rounded-md px-2.5 pr-24 text-sm font-bold select-all cursor-default transition-colors ${
@@ -324,6 +442,7 @@ export function PlayerRow({
       <td className="px-3.5 py-2.5 text-right align-middle">
         <button
           type="button"
+          tabIndex={-1}
           onClick={onRequestRemove}
           className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-slate-300/60 bg-white/50 text-slate-400 transition-all duration-200 hover:scale-105 active:scale-90 hover:border-rose-300 hover:bg-rose-50 hover:text-rose-600 dark:border-slate-700/60 dark:bg-slate-800/50 dark:hover:bg-rose-950/50 dark:hover:text-rose-400"
           title="Xóa người chơi"
