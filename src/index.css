@@ -283,66 +283,93 @@ html.dark .glass-panel {
   pointer-events: none;
 }
 
-/* Hiệu ứng nổi bật êm ái khi người chơi nhảy vị trí sau khi chỉnh sửa */
-@keyframes row-jump-glow {
+/* Hiệu ứng viền dải màu Chroma RGB chạy quanh hàng khi nhảy rank */
+@property --chroma-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes chroma-spin {
+  from {
+    --chroma-angle: 0deg;
+  }
+  to {
+    --chroma-angle: 360deg;
+  }
+}
+
+@keyframes chroma-fade {
   0% {
-    background-color: rgba(56, 189, 248, 0.08) !important;
+    opacity: 0;
   }
   15% {
-    background-color: rgba(56, 189, 248, 0.30) !important;
+    opacity: 1;
   }
-  45% {
-    background-color: rgba(56, 189, 248, 0.18) !important;
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes row-jump-glow {
+  0% {
+    background-color: rgba(56, 189, 248, 0.04) !important;
+  }
+  18% {
+    background-color: rgba(56, 189, 248, 0.16) !important;
+  }
+  48% {
+    background-color: rgba(168, 85, 247, 0.10) !important;
   }
   100% {
     background-color: transparent;
   }
 }
 
-@keyframes row-jump-outline {
-  0% {
-    outline-color: transparent;
-  }
-  15% {
-    outline-color: #0284c7;
-  }
-  80% {
-    outline-color: #0284c7;
-  }
-  100% {
-    outline-color: transparent;
-  }
-}
-
-@keyframes row-jump-outline-dark {
-  0% {
-    outline-color: transparent;
-  }
-  15% {
-    outline-color: #38bdf8;
-  }
-  80% {
-    outline-color: #38bdf8;
-  }
-  100% {
-    outline-color: transparent;
-  }
-}
-
 tr.row-jump-highlight td {
-  animation: row-jump-glow 3.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: row-jump-glow 3.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 tr.row-jump-highlight {
-  outline: 2px solid transparent;
-  outline-offset: -2px;
-  z-index: 10;
   position: relative;
-  animation: row-jump-outline 3.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  z-index: 10;
 }
 
-html.dark tr.row-jump-highlight {
-  animation-name: row-jump-outline-dark;
+tr.row-jump-highlight::after {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  border-radius: 8px;
+  pointer-events: none;
+  padding: 2.5px;
+  box-sizing: border-box;
+  background: conic-gradient(
+    from var(--chroma-angle, 0deg),
+    #f43f5e,
+    #fb923c,
+    #facc15,
+    #10b981,
+    #0ea5e9,
+    #6366f1,
+    #a855f7,
+    #f43f5e
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.45));
+  animation:
+    chroma-spin 2.5s linear infinite,
+    chroma-fade 3.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+html.dark tr.row-jump-highlight::after {
+  filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.55));
 }
 
 /* Đảm bảo ô nhập ngày và select không bị tràn chiều ngang trên màn hình điện thoại */
