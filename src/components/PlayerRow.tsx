@@ -92,10 +92,10 @@ export function PlayerRow({
       } ${isHighlighted ? 'row-jump-highlight' : ''} transition-colors duration-200`}
     >
       {/* Cột Rank */}
-      <td className="px-3.5 py-2.5 align-middle">
-        <div className="flex items-center gap-1.5 flex-wrap">
+      <td className="px-3.5 py-2.5 align-middle whitespace-nowrap">
+        <div className="flex items-center gap-1.5 flex-nowrap whitespace-nowrap">
           <span
-            className={`inline-flex h-9 min-w-8 items-center justify-center rounded-md px-2 text-xs font-bold shadow-xs backdrop-blur transition-all ${
+            className={`inline-flex h-9 min-w-8 shrink-0 items-center justify-center rounded-md px-2 text-xs font-bold shadow-xs backdrop-blur transition-all ${
               isPromotionZone
                 ? 'bg-emerald-500/20 text-emerald-800 border border-emerald-500/60 dark:bg-emerald-950/70 dark:text-emerald-300'
                 : isDemotionZone
@@ -116,7 +116,7 @@ export function PlayerRow({
           {/* Badge báo vị trí vừa nhảy hạng */}
           {rankJump && rankJump.fromRank !== rankJump.toRank ? (
             <span
-              className={`inline-flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[10px] font-black uppercase tracking-tight shadow-xs select-none animate-pulse ${
+              className={`inline-flex shrink-0 items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[10px] font-black uppercase tracking-tight shadow-xs select-none animate-pulse ${
                 rankJump.fromRank > rankJump.toRank
                   ? 'bg-emerald-600 text-white dark:bg-emerald-500'
                   : 'bg-rose-600 text-white dark:bg-rose-500'
@@ -131,14 +131,14 @@ export function PlayerRow({
             </span>
           ) : isPromotionZone ? (
             <span
-              className="inline-flex items-center gap-0.5 rounded-xs bg-emerald-500/20 px-1 py-0.5 text-[9px] font-black text-emerald-700 dark:text-emerald-300 uppercase tracking-tighter select-none border border-emerald-500/30"
+              className="inline-flex shrink-0 items-center gap-0.5 rounded-xs bg-emerald-500/20 px-1 py-0.5 text-[9px] font-black text-emerald-700 dark:text-emerald-300 uppercase tracking-tighter select-none border border-emerald-500/30"
               title="Vị trí thăng hạng"
             >
               ▲ Thăng
             </span>
           ) : isDemotionZone ? (
             <span
-              className="inline-flex items-center gap-0.5 rounded-xs bg-rose-500/20 px-1 py-0.5 text-[9px] font-black text-rose-700 dark:text-rose-300 uppercase tracking-tighter select-none border border-rose-500/30"
+              className="inline-flex shrink-0 items-center gap-0.5 rounded-xs bg-rose-500/20 px-1 py-0.5 text-[9px] font-black text-rose-700 dark:text-rose-300 uppercase tracking-tighter select-none border border-rose-500/30"
               title="Vị trí xuống hạng"
             >
               ▼ Xuống

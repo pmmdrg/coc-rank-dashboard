@@ -182,10 +182,10 @@ export function PlayerTable({
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[1060px] border-collapse text-left text-sm">
+        <table className="w-full min-w-[1080px] border-collapse text-left text-sm">
           <thead className="soft-table-head text-xs uppercase tracking-wider">
             <tr>
-              <th className="w-20 px-3.5 py-3">Rank</th>
+              <th className="w-32 px-3.5 py-3 whitespace-nowrap">Rank</th>
               <th className="px-3.5 py-3">Tên người chơi</th>
               <th className="w-16 px-3.5 py-3 text-center">Tôi</th>
               <th className="w-36 px-3.5 py-3">Lượt đánh</th>
