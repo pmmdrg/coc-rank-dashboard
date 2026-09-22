@@ -34,7 +34,7 @@ export function PlayerTable({
   } | null>(null)
 
   const rowRefs = useRef(new Map<string, HTMLTableRowElement>())
-  const previousRowRects = useRef(new Map<string, DOMRect>())
+  const previousRowTops = useRef(new Map<string, number>())
   const targetRowRects = useRef(new Map<string, DOMRect>())
   const isEditingDirty = useRef(false)
   const rankedPlayersRef = useRef(rankedPlayers)
@@ -100,19 +100,21 @@ export function PlayerTable({
 
   useLayoutEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const nextTops = new Map<string, number>()
     const nextRects = new Map<string, DOMRect>()
 
     rowRefs.current.forEach((element, playerId) => {
+      nextTops.set(playerId, element.offsetTop)
       nextRects.set(playerId, element.getBoundingClientRect())
     })
 
     if (!prefersReducedMotion) {
-      nextRects.forEach((rect, playerId) => {
-        const previousRect = previousRowRects.current.get(playerId)
+      nextTops.forEach((currentTop, playerId) => {
+        const previousTop = previousRowTops.current.get(playerId)
         const element = rowRefs.current.get(playerId)
-        if (!previousRect || !element) return
+        if (previousTop === undefined || !element) return
 
-        const deltaY = previousRect.top - rect.top
+        const deltaY = previousTop - currentTop
         if (Math.abs(deltaY) < 1) return
 
         element.animate(
@@ -126,7 +128,7 @@ export function PlayerTable({
     }
 
     targetRowRects.current = nextRects
-    previousRowRects.current = nextRects
+    previousRowTops.current = nextTops
   }, [displayedPlayers])
 
   function setPlayerRowRef(playerId: string, element: HTMLTableRowElement | null) {
@@ -135,11 +137,6 @@ export function PlayerTable({
     } else {
       rowRefs.current.delete(playerId)
     }
-  }
-
-  // Khi người dùng focus vào ô nhập: đóng băng thứ tự hàng hiện tại để không bị nhảy hàng khi đang gõ
-  function handleStartEditing() {
-    setFrozenOrderIds((prev) => prev ?? rankedPlayers.map((p) => p.id))
   }
 
   // Thực hiện sắp xếp lại bảng (commit sort) và cuộn màn hình tới hàng người chơi
@@ -214,28 +211,33 @@ export function PlayerTable({
       typingDebounceTimer.current = null
     }
 
-    // Nếu không có thay đổi nào mới (ví dụ đã dừng gõ hơn 800ms và đã sắp xếp xong trước đó)
+    // Nếu không có thay đổi số cup nào mới (ví dụ đã dừng gõ hơn 800ms và đã sắp xếp xong trước đó, hoặc chỉ sửa lượt đánh)
     // thì khi blur không cần phải trigger sắp xếp lại hay kích hoạt lại animation
     if (!isEditingDirty.current) {
-      setFrozenOrderIds(null)
+      if (frozenOrderIds) {
+        setFrozenOrderIds(null)
+      }
       return
     }
 
     commitSortAndScroll(playerId)
   }
 
-  // Xử lý khi đang gõ phím: giữ nguyên vị trí hàng, debounce 800ms mới sắp xếp lại
+  // Xử lý khi đang gõ phím: CHỈ đóng băng thứ tự và debounce 800ms sắp xếp lại khi chỉnh sửa số cup
   function handleFieldChange(playerId: string, field: keyof Player, value: string | number) {
-    isEditingDirty.current = true
-    setFrozenOrderIds((prev) => prev ?? rankedPlayers.map((p) => p.id))
     onUpdatePlayerField(playerId, field, value)
 
-    if (typingDebounceTimer.current) {
-      clearTimeout(typingDebounceTimer.current)
+    if (field === 'currentCups') {
+      isEditingDirty.current = true
+      setFrozenOrderIds((prev) => prev ?? rankedPlayers.map((p) => p.id))
+
+      if (typingDebounceTimer.current) {
+        clearTimeout(typingDebounceTimer.current)
+      }
+      typingDebounceTimer.current = setTimeout(() => {
+        commitSortAndScroll(playerId)
+      }, 800)
     }
-    typingDebounceTimer.current = setTimeout(() => {
-      commitSortAndScroll(playerId)
-    }, 800)
   }
 
   return (
@@ -244,7 +246,7 @@ export function PlayerTable({
         <div>
           <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Danh sách Người chơi</h2>
           <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-            Chỉnh sửa số cup hoặc lượt đánh sẽ tự động sắp xếp lại thứ hạng và cập nhật thống kê ngay lập tức.
+            Chỉnh sửa số cup sẽ tự động sắp xếp lại thứ hạng. Số lượt đánh/thủ sẽ cập nhật cup tối đa và đánh giá kỹ năng.
           </p>
         </div>
         <button
@@ -303,7 +305,6 @@ export function PlayerTable({
                     rankJump={rankJumpInfo?.playerId === player.id ? rankJumpInfo : null}
                     onSelectMyPlayer={() => onSelectMyPlayer(player.id)}
                     onUpdateField={(field, value) => handleFieldChange(player.id, field, value)}
-                    onStartEditing={handleStartEditing}
                     onFinishEditing={() => handleFinishEditing(player.id)}
                     onRequestRemove={() => setPlayerToDelete(player)}
                     setRowRef={(el) => setPlayerRowRef(player.id, el)}

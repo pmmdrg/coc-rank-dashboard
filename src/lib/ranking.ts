@@ -50,10 +50,10 @@ function sortAndRankPlayers(players: Player[]): Player[] {
       const currentCupDiff = b.currentCups - a.currentCups
       if (currentCupDiff !== 0) return currentCupDiff
 
-      const maxCupDiff = b.maxPossibleCups - a.maxPossibleCups
-      if (maxCupDiff !== 0) return maxCupDiff
+      const nameDiff = a.name.localeCompare(b.name)
+      if (nameDiff !== 0) return nameDiff
 
-      return a.name.localeCompare(b.name)
+      return a.id.localeCompare(b.id)
     })
     .map((player, index) => ({ ...player, rank: index + 1 }))
 }

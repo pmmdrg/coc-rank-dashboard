@@ -15,7 +15,6 @@ interface PlayerRowProps {
   rankJump?: { fromRank: number; toRank: number } | null
   onSelectMyPlayer: () => void
   onUpdateField: (field: keyof Player, value: string | number) => void
-  onStartEditing?: () => void
   onFinishEditing?: () => void
   onRequestRemove: () => void
   setRowRef: (element: HTMLTableRowElement | null) => void
@@ -63,7 +62,6 @@ export function PlayerRow({
   rankJump = null,
   onSelectMyPlayer,
   onUpdateField,
-  onStartEditing,
   onFinishEditing,
   onRequestRemove,
   setRowRef,
@@ -151,7 +149,7 @@ export function PlayerRow({
       <td className="px-3.5 py-2.5 align-middle">
         <input
           value={player.name}
-          onFocus={onStartEditing}
+          onFocus={(e) => e.target.select()}
           onBlur={onFinishEditing}
           onKeyDown={(e) => {
             if (e.key === 'Enter') e.currentTarget.blur()
@@ -186,10 +184,7 @@ export function PlayerRow({
             max={maxAttacks}
             value={player.attacks === 0 ? '' : player.attacks}
             placeholder="0"
-            onFocus={(e) => {
-              e.target.select()
-              onStartEditing?.()
-            }}
+            onFocus={(e) => e.target.select()}
             onBlur={onFinishEditing}
             onKeyDown={(e) => {
               if (['-', '+', 'e', 'E', '.'].includes(e.key)) e.preventDefault()
@@ -224,10 +219,7 @@ export function PlayerRow({
             max={maxDefenses}
             value={player.defenses === 0 ? '' : player.defenses}
             placeholder="0"
-            onFocus={(e) => {
-              e.target.select()
-              onStartEditing?.()
-            }}
+            onFocus={(e) => e.target.select()}
             onBlur={onFinishEditing}
             onKeyDown={(e) => {
               if (['-', '+', 'e', 'E', '.'].includes(e.key)) e.preventDefault()
@@ -260,10 +252,7 @@ export function PlayerRow({
           min="0"
           value={player.currentCups === 0 ? '' : player.currentCups}
           placeholder="0"
-          onFocus={(e) => {
-            e.target.select()
-            onStartEditing?.()
-          }}
+          onFocus={(e) => e.target.select()}
           onBlur={onFinishEditing}
           onKeyDown={(e) => {
             if (['-', '+', 'e', 'E', '.'].includes(e.key)) e.preventDefault()
