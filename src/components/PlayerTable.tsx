@@ -31,16 +31,16 @@ interface AnimatedRowItem {
   deltaY: number
 }
 
-// Chuyển động đều (Linear motion): vận tốc không đổi, triệt tiêu hoàn toàn hiện tượng tăng tốc hay giảm tốc đột ngột
-function linear(t: number): number {
-  return t
+// Đường cong gia tốc sóng Sine tự nhiên (easeInOutSine): khởi đầu êm dịu, đỉnh vận tốc chỉ 1.57x, hãm phanh tự nhiên mềm mại
+function easeInOutSine(t: number): number {
+  return -(Math.cos(Math.PI * t) - 1) / 2
 }
 
 function runUnifiedAnimation({
   targetScrollY,
   duration,
   rows,
-  easing = linear,
+  easing = easeInOutSine,
 }: {
   targetScrollY?: number
   duration: number
@@ -264,7 +264,7 @@ export function PlayerTable({
         const maxRowDelta = Math.max(0, ...movingRows.map((r) => Math.abs(r.deltaY)))
         const maxDistance = Math.max(maxRowDelta, scrollDistance)
 
-        // Chuyển động đều (Linear motion): Vận tốc không đổi xuyên suốt.
+        // Gia tốc sóng Sine tự nhiên (easeInOutSine): khởi đầu êm dịu, không giật vọt, cập bến nhẹ nhàng
         // Thời lượng scale theo quãng đường: tối thiểu 800ms (cho 1 rank) đến tối đa 3000ms (cho bước nhảy xa kèm cuộn)
         const duration = targetTop !== undefined
           ? Math.min(3000, Math.max(2200, 1600 + maxDistance * 1.0))
@@ -274,7 +274,7 @@ export function PlayerTable({
           targetScrollY: targetTop,
           duration,
           rows: movingRows,
-          easing: linear,
+          easing: easeInOutSine,
         })
       }
     }
