@@ -24,7 +24,7 @@ function getElementDocumentTop(element: HTMLElement): number {
   return top
 }
 
-function smoothScrollTo(targetY: number, duration: number = 700): { cancel: () => void } {
+function smoothScrollTo(targetY: number, duration: number = 1100): { cancel: () => void } {
   const startY = window.scrollY || document.documentElement.scrollTop
   const diff = targetY - startY
   if (Math.abs(diff) < 3) return { cancel: () => {} }
@@ -166,7 +166,7 @@ export function PlayerTable({
       const jumpingPlayerId = pendingScrollPlayerId.current
       pendingScrollPlayerId.current = null
 
-      let jumpDuration = 480
+      let jumpDuration = 850
       const targetRowEl = jumpingPlayerId ? rowRefs.current.get(jumpingPlayerId) : null
 
       // Đồng bộ cuộn màn hình ngay trong frame render đầu tiên (0ms delay) cùng nhịp với FLIP
@@ -186,8 +186,8 @@ export function PlayerTable({
             rowDocTop - (window.innerHeight / 2) + (rowHeight / 2)
           )
           const diff = Math.abs(targetTop - currentScroll)
-          // Thời gian cuộn đồng bộ hoàn toàn với thời gian hàng bay (520ms - 720ms)
-          jumpDuration = Math.min(720, Math.max(520, diff * 0.32))
+          // Thời gian cuộn đồng bộ hoàn toàn với thời gian hàng bay (950ms - 1350ms)
+          jumpDuration = Math.min(1350, Math.max(950, diff * 0.5))
 
           activeScrollAnimation.current = smoothScrollTo(targetTop, jumpDuration)
         }
@@ -202,7 +202,7 @@ export function PlayerTable({
         if (Math.abs(deltaY) < 1) return
 
         // Hàng người chơi vừa nhảy rank dùng chung duration với camera; các hàng khác lướt nhẹ
-        const duration = playerId === jumpingPlayerId ? jumpDuration : Math.min(460, jumpDuration)
+        const duration = playerId === jumpingPlayerId ? jumpDuration : Math.min(750, jumpDuration)
 
         element.animate(
           [{ transform: `translateY(${deltaY}px)` }, { transform: 'translateY(0)' }],
