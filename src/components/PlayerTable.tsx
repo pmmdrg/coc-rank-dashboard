@@ -14,6 +14,60 @@ interface PlayerTableProps {
   onUpdatePlayerField: (playerId: string, field: keyof Player, value: string | number) => void
 }
 
+function getElementDocumentTop(element: HTMLElement): number {
+  let top = 0
+  let current: HTMLElement | null = element
+  while (current) {
+    top += current.offsetTop
+    current = current.offsetParent as HTMLElement | null
+  }
+  return top
+}
+
+function smoothScrollTo(targetY: number, duration: number = 700): { cancel: () => void } {
+  const startY = window.scrollY || document.documentElement.scrollTop
+  const diff = targetY - startY
+  if (Math.abs(diff) < 3) return { cancel: () => {} }
+
+  const startTime = performance.now()
+  let isCancelled = false
+  let frameId = 0
+
+  const cancel = () => {
+    isCancelled = true
+    cancelAnimationFrame(frameId)
+    window.removeEventListener('wheel', cancel)
+    window.removeEventListener('touchmove', cancel)
+  }
+
+  window.addEventListener('wheel', cancel, { passive: true, once: true })
+  window.addEventListener('touchmove', cancel, { passive: true, once: true })
+
+  function easeInOutCubic(t: number): number {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
+  }
+
+  function step(currentTime: number) {
+    if (isCancelled) return
+
+    const elapsed = currentTime - startTime
+    const progress = Math.min(elapsed / duration, 1)
+    const ease = easeInOutCubic(progress)
+
+    window.scrollTo(0, startY + diff * ease)
+
+    if (progress < 1) {
+      frameId = requestAnimationFrame(step)
+    } else {
+      window.removeEventListener('wheel', cancel)
+      window.removeEventListener('touchmove', cancel)
+    }
+  }
+
+  frameId = requestAnimationFrame(step)
+  return { cancel }
+}
+
 export function PlayerTable({
   season,
   rankedPlayers,
@@ -35,7 +89,7 @@ export function PlayerTable({
 
   const rowRefs = useRef(new Map<string, HTMLTableRowElement>())
   const previousRowTops = useRef(new Map<string, number>())
-  const targetRowRects = useRef(new Map<string, DOMRect>())
+  const activeScrollAnimation = useRef<{ cancel: () => void } | null>(null)
   const isEditingDirty = useRef(false)
   const rankedPlayersRef = useRef(rankedPlayers)
   const previousRanksRef = useRef<Map<string, number>>(
@@ -49,11 +103,12 @@ export function PlayerTable({
     rankedPlayersRef.current = rankedPlayers
   })
 
-  // Dọn dẹp timer khi unmount
+  // Dọn dẹp timer và animation khi unmount
   useEffect(() => {
     return () => {
       if (typingDebounceTimer.current) clearTimeout(typingDebounceTimer.current)
       if (highlightCleanupTimer.current) clearTimeout(highlightCleanupTimer.current)
+      if (activeScrollAnimation.current) activeScrollAnimation.current.cancel()
     }
   }, [])
 
@@ -101,11 +156,9 @@ export function PlayerTable({
   useLayoutEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const nextTops = new Map<string, number>()
-    const nextRects = new Map<string, DOMRect>()
 
     rowRefs.current.forEach((element, playerId) => {
       nextTops.set(playerId, element.offsetTop)
-      nextRects.set(playerId, element.getBoundingClientRect())
     })
 
     if (!prefersReducedMotion) {
@@ -120,14 +173,13 @@ export function PlayerTable({
         element.animate(
           [{ transform: `translateY(${deltaY}px)` }, { transform: 'translateY(0)' }],
           {
-            duration: 440,
+            duration: 460,
             easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
           },
         )
       })
     }
 
-    targetRowRects.current = nextRects
     previousRowTops.current = nextTops
   }, [displayedPlayers])
 
@@ -139,7 +191,7 @@ export function PlayerTable({
     }
   }
 
-  // Thực hiện sắp xếp lại bảng (commit sort) và cuộn màn hình tới hàng người chơi
+  // Thực hiện sắp xếp lại bảng (commit sort) và cuộn màn hình mượt mà tới hàng người chơi
   const commitSortAndScroll = useCallback(
     (playerId: string) => {
       // Đánh dấu đã commit xong toàn bộ thay đổi, hủy timer debounce nếu còn chạy dở
@@ -169,14 +221,25 @@ export function PlayerTable({
       })
       previousRanksRef.current = nextRanks
 
-      // 3. Hủy đóng băng vị trí hàng -> cho phép danh sách sắp xếp lại theo thứ hạng thực tế
+      // 3. Blur phần tử đang focus để ngăn trình duyệt tự động giật màn hình (instant focus snap)
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur()
+      }
+
+      // 4. Hủy đóng băng vị trí hàng -> cho phép danh sách sắp xếp lại theo thứ hạng thực tế
       setFrozenOrderIds(null)
 
-      // 4. Nếu thứ hạng thực sự thay đổi: kích hoạt cuộn mượt và highlight viền Chroma RGB
+      // 5. Nếu thứ hạng thực sự thay đổi: kích hoạt cuộn mượt và highlight viền Chroma RGB
       if (didRankChange) {
+        // Hủy animation cuộn cũ nếu đang chạy dở
+        if (activeScrollAnimation.current) {
+          activeScrollAnimation.current.cancel()
+          activeScrollAnimation.current = null
+        }
+
         setTimeout(() => {
           const rowEl = rowRefs.current.get(playerId)
-          if (!rowEl) return
+          if (!rowEl || !rowEl.isConnected) return
 
           setHighlightedPlayerId(playerId)
           if (highlightCleanupTimer.current) clearTimeout(highlightCleanupTimer.current)
@@ -185,20 +248,28 @@ export function PlayerTable({
             setRankJumpInfo(null)
           }, 3400)
 
-          // Kiểm tra vị trí đích chuẩn của hàng xem có đang hiển thị rõ trong khung nhìn không
-          const targetRect = targetRowRects.current.get(playerId) ?? rowEl.getBoundingClientRect()
+          // Đo toạ độ chuẩn của hàng đích (bất biến trước CSS transform của animation)
+          const rowDocTop = getElementDocumentTop(rowEl)
+          const currentScroll = window.scrollY || document.documentElement.scrollTop
           const headerOffset = 110 // Đệm tránh bị thanh header sticky che khuất
-          const isComfortablyVisible =
-            targetRect.top >= headerOffset && targetRect.bottom <= window.innerHeight - 40
+          const rowHeight = rowEl.offsetHeight || 48
 
-          // Nếu hàng nhảy ra ngoài khung nhìn (lên trên hoặc xuống dưới), cuộn tới ngay
+          const isComfortablyVisible =
+            rowDocTop >= currentScroll + headerOffset &&
+            rowDocTop + rowHeight <= currentScroll + window.innerHeight - 40
+
+          // Nếu hàng nằm ngoài tầm nhìn thoải mái (ở trên hoặc ở dưới), cuộn mượt đưa về trung tâm màn hình
           if (!isComfortablyVisible) {
-            rowEl.scrollIntoView({
-              behavior: 'smooth',
-              block: 'center',
-            })
+            const targetTop = Math.max(
+              0,
+              rowDocTop - (window.innerHeight / 2) + (rowHeight / 2)
+            )
+            const diff = Math.abs(targetTop - currentScroll)
+            // Thời gian cuộn thích ứng theo khoảng cách (500ms - 850ms) tạo hiệu ứng lướt mượt mà, không giật cục
+            const duration = Math.min(850, Math.max(500, diff * 0.35))
+            activeScrollAnimation.current = smoothScrollTo(targetTop, duration)
           }
-        }, 70)
+        }, 50)
       }
     },
     [],
