@@ -7,13 +7,6 @@ export const ratingLabels: Record<RatingCategory, string> = {
   safe: 'Chưa đánh',
 }
 
-export const ratingStyles: Record<RatingCategory, string> = {
-  elite: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
-  contested: 'bg-sky-50 text-sky-700 ring-sky-200',
-  danger: 'bg-amber-50 text-amber-800 ring-amber-200',
-  safe: 'bg-slate-100 text-slate-700 ring-slate-200',
-}
-
 export const ratingColors: Record<RatingCategory, string> = {
   elite: '#10b981',
   contested: '#0284c7',
@@ -21,7 +14,7 @@ export const ratingColors: Record<RatingCategory, string> = {
   safe: '#64748b',
 }
 
-export function calculateMaxPossibleCups(
+function calculateMaxPossibleCups(
   currentCups: number,
   attacks: number,
   maxAttacks: number = 24,
@@ -51,7 +44,7 @@ export function calculatePlayerRating(currentCups: number, attacks: number): {
   return { rating: 'danger', avgCupsPerAttack }
 }
 
-export function sortAndRankPlayers(players: Player[]): Player[] {
+function sortAndRankPlayers(players: Player[]): Player[] {
   return [...players]
     .sort((a, b) => {
       const currentCupDiff = b.currentCups - a.currentCups

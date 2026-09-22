@@ -111,10 +111,6 @@ export function seasonsToCsv(seasons: Season[]): string {
   return `${allRows.join('\n')}\n`
 }
 
-export function seasonToCsv(season: Season): string {
-  return seasonsToCsv([season])
-}
-
 export function csvToSeasons(csv: string): Season[] {
   const rows = parseCsvRows(csv)
   const [headers, ...records] = rows
@@ -190,9 +186,4 @@ export function csvToSeasons(csv: string): Season[] {
       myPlayerId: s.myPlayerId || s.players[0]?.id || '',
     }),
   )
-}
-
-export function csvToSeason(csv: string): Season {
-  const seasons = csvToSeasons(csv)
-  return seasons[0]
 }

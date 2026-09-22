@@ -1,6 +1,6 @@
 import type { Season } from '../types'
 
-export function getDefaultSeasonDates(): { startsAt: string; endsAt: string; seasonName: string } {
+function getDefaultSeasonDates(): { startsAt: string; endsAt: string; seasonName: string } {
   const now = new Date()
   const year = now.getFullYear()
   const month = now.getMonth() // 0-indexed
