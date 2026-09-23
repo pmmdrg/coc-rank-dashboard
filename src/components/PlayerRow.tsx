@@ -304,7 +304,7 @@ export function PlayerRow({
       } ${isHighlighted ? 'row-jump-highlight' : ''} transition-colors duration-200`}
     >
       {/* Cột Rank */}
-      <td className="px-2.5 py-2.5 align-middle whitespace-nowrap">
+      <td className="w-[136px] min-w-[136px] max-w-[136px] px-2.5 py-2.5 align-middle whitespace-nowrap">
         <div className="flex items-center gap-1.5 flex-nowrap whitespace-nowrap">
           <span
             className={`inline-flex h-9 min-w-8 shrink-0 items-center justify-center rounded-md px-2 text-xs font-bold shadow-xs backdrop-blur transition-all ${

@@ -413,7 +413,7 @@ export function PlayerTable({
         <table className="relative w-full min-w-[1080px] border-separate border-spacing-0 text-left text-sm">
           <thead className="soft-table-head text-xs uppercase tracking-wider">
             <tr>
-              <th className="w-18 min-w-[72px] px-2.5 py-2.5 whitespace-nowrap">Rank</th>
+              <th className="w-[136px] min-w-[136px] max-w-[136px] px-2.5 py-2.5 whitespace-nowrap">Rank</th>
               <th className="w-48 min-w-[165px] max-w-[210px] px-2 py-2.5">Tên người chơi</th>
               <th className="w-11 min-w-[40px] px-1 py-2.5 text-center">Tôi</th>
               <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap">Lượt đánh</th>
