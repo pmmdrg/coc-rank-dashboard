@@ -359,7 +359,7 @@ function App() {
         onOpenDriveConfig={() => setIsDriveConfigOpen(true)}
       />
 
-      <main className="mx-auto w-full max-w-[1650px] flex-1 px-4 py-6 sm:px-6 lg:px-8 space-y-6">
+      <main className="mx-auto w-full max-w-[1320px] flex-1 px-4 py-6 sm:px-6 lg:px-8 space-y-6">
         {/* Cảnh báo trình duyệt cho Local File System */}
         {storageSource === 'local' && !localAdapter.canWriteBack ? (
           <div className="animate-fade-in rounded-xl border border-amber-300/60 bg-amber-50/80 px-4 py-3 text-sm text-amber-900 backdrop-blur dark:border-amber-500/30 dark:bg-amber-950/40 dark:text-amber-200">

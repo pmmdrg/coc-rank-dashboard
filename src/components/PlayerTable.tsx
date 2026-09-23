@@ -410,30 +410,30 @@ export function PlayerTable({
       </div>
 
       <div className="overflow-x-auto">
-        <table className="relative w-full min-w-[1150px] border-separate border-spacing-0 text-left text-sm">
+        <table className="relative w-full min-w-[1080px] border-separate border-spacing-0 text-left text-sm">
           <thead className="soft-table-head text-xs uppercase tracking-wider">
             <tr>
-              <th className="w-20 min-w-[76px] px-3 py-3 whitespace-nowrap">Rank</th>
-              <th className="w-52 min-w-[180px] max-w-[240px] px-2.5 py-3">Tên người chơi</th>
-              <th className="w-12 min-w-[44px] px-1 py-3 text-center">Tôi</th>
-              <th className="w-28 min-w-[95px] px-2.5 py-3 whitespace-nowrap">Lượt đánh</th>
-              <th className="w-24 min-w-[90px] px-2 py-3 whitespace-nowrap text-center">
+              <th className="w-18 min-w-[72px] px-2.5 py-2.5 whitespace-nowrap">Rank</th>
+              <th className="w-48 min-w-[165px] max-w-[210px] px-2 py-2.5">Tên người chơi</th>
+              <th className="w-11 min-w-[40px] px-1 py-2.5 text-center">Tôi</th>
+              <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap">Lượt đánh</th>
+              <th className="w-22 min-w-[84px] px-1.5 py-2.5 whitespace-nowrap text-center">
                 <div className="leading-tight">
                   <div>% Phá huỷ</div>
                   <div className="text-[10px] font-bold text-amber-600 dark:text-amber-400 normal-case">(Công)</div>
                 </div>
               </th>
-              <th className="w-28 min-w-[95px] px-2.5 py-3 whitespace-nowrap">Lượt thủ</th>
-              <th className="w-24 min-w-[90px] px-2 py-3 whitespace-nowrap text-center">
+              <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap">Lượt thủ</th>
+              <th className="w-22 min-w-[84px] px-1.5 py-2.5 whitespace-nowrap text-center">
                 <div className="leading-tight">
                   <div>% Phá huỷ</div>
                   <div className="text-[10px] font-bold text-sky-600 dark:text-sky-400 normal-case">(Thủ)</div>
                 </div>
               </th>
-              <th className="w-28 min-w-[95px] px-2.5 py-3 whitespace-nowrap">Cup hiện tại</th>
-              <th className="w-60 min-w-[230px] px-2.5 py-3 whitespace-nowrap">Cup tối đa</th>
-              <th className="w-28 min-w-[105px] px-2.5 py-3 whitespace-nowrap text-center">Đánh giá</th>
-              <th className="w-12 min-w-[44px] px-1 py-3 text-center"></th>
+              <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap">Cup hiện tại</th>
+              <th className="w-48 min-w-[195px] px-2 py-2.5 whitespace-nowrap">Cup tối đa</th>
+              <th className="w-24 min-w-[92px] px-2 py-2.5 whitespace-nowrap text-center">Đánh giá</th>
+              <th className="w-11 min-w-[40px] px-1 py-2.5 text-center"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200/50 dark:divide-slate-800/60">

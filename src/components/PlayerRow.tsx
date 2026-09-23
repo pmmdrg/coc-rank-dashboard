@@ -355,7 +355,7 @@ export function PlayerRow({
       </td>
 
       {/* Tên người chơi */}
-      <td className="w-52 min-w-[180px] max-w-[240px] px-2.5 py-2.5 align-middle">
+      <td className="w-48 min-w-[165px] max-w-[210px] px-2 py-2 align-middle">
         <input
           data-field="name"
           value={player.name}
@@ -363,13 +363,13 @@ export function PlayerRow({
           onBlur={onFinishEditing}
           onKeyDown={(e) => handleInputKeyDown(e, 'name')}
           onChange={(e) => onUpdateField('name', e.target.value)}
-          className="soft-field h-9 w-full min-w-[160px] rounded-md px-2.5 text-sm font-medium"
+          className="soft-field h-9 w-full min-w-[150px] rounded-md px-2 text-sm font-medium"
           title="Tên người chơi (Tab/Enter để sang Lượt đánh)"
         />
       </td>
 
       {/* Nút đánh dấu Tài khoản của tôi */}
-      <td className="px-1 py-2.5 text-center align-middle">
+      <td className="px-1 py-2 text-center align-middle">
         <button
           type="button"
           tabIndex={-1}
@@ -386,7 +386,7 @@ export function PlayerRow({
       </td>
 
       {/* Số lượt đánh */}
-      <td className="px-2.5 py-2.5 align-middle">
+      <td className="px-2 py-2 align-middle">
         <div className="flex h-9 items-center gap-1.5">
           <input
             data-field="attacks"
@@ -399,7 +399,7 @@ export function PlayerRow({
             onBlur={onFinishEditing}
             onKeyDown={(e) => handleInputKeyDown(e, 'attacks')}
             onChange={(e) => handleNumberChange(e.target.value, 'attacks', onUpdateField, maxAttacks)}
-            className="soft-field h-9 w-12 rounded-md px-1 text-center text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
+            className="soft-field h-9 w-11 rounded-md px-1 text-center text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
             title="Số lượt đánh (Tab/Enter sang % Công, Alt+Mũi tên để di chuyển)"
           />
           <div className="flex flex-col justify-center leading-none">
@@ -420,8 +420,8 @@ export function PlayerRow({
       </td>
 
       {/* % Phá huỷ trên mỗi lượt công */}
-      <td className="px-2 py-2.5 align-middle">
-        <div className="relative flex h-9 w-24 items-center">
+      <td className="px-1.5 py-2 align-middle">
+        <div className="relative flex h-9 w-20 items-center">
           <input
             data-field="attackDestruction"
             type="text"
@@ -439,17 +439,17 @@ export function PlayerRow({
             }}
             onKeyDown={(e) => handleInputKeyDown(e, 'attackDestruction')}
             onChange={(e) => handleDestructionChange('attackDestruction', e.target.value)}
-            className="soft-field h-9 w-full rounded-md pr-6 pl-2 text-right text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
+            className="soft-field h-9 w-full rounded-md pr-5 pl-1.5 text-right text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
             title="% Phá huỷ trên mỗi lượt tấn công (0.0% - 100.0%) (Tab/Enter sang Lượt thủ)"
           />
-          <span className="pointer-events-none absolute right-2 text-xs font-bold text-slate-400 dark:text-slate-500">
+          <span className="pointer-events-none absolute right-1.5 text-xs font-bold text-slate-400 dark:text-slate-500">
             %
           </span>
         </div>
       </td>
 
       {/* Số lượt thủ */}
-      <td className="px-2.5 py-2.5 align-middle">
+      <td className="px-2 py-2 align-middle">
         <div className="flex h-9 items-center gap-1.5">
           <input
             data-field="defenses"
@@ -462,7 +462,7 @@ export function PlayerRow({
             onBlur={onFinishEditing}
             onKeyDown={(e) => handleInputKeyDown(e, 'defenses')}
             onChange={(e) => handleNumberChange(e.target.value, 'defenses', onUpdateField, maxDefenses)}
-            className="soft-field h-9 w-12 rounded-md px-1 text-center text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
+            className="soft-field h-9 w-11 rounded-md px-1 text-center text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
             title="Số lượt thủ (Tab/Enter sang % Thủ, Shift+Tab về % Công)"
           />
           <div className="flex flex-col justify-center leading-none">
@@ -483,8 +483,8 @@ export function PlayerRow({
       </td>
 
       {/* % Phá huỷ trên mỗi lượt thủ */}
-      <td className="px-2 py-2.5 align-middle">
-        <div className="relative flex h-9 w-24 items-center">
+      <td className="px-1.5 py-2 align-middle">
+        <div className="relative flex h-9 w-20 items-center">
           <input
             data-field="defenseDestruction"
             type="text"
@@ -502,17 +502,17 @@ export function PlayerRow({
             }}
             onKeyDown={(e) => handleInputKeyDown(e, 'defenseDestruction')}
             onChange={(e) => handleDestructionChange('defenseDestruction', e.target.value)}
-            className="soft-field h-9 w-full rounded-md pr-6 pl-2 text-right text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
+            className="soft-field h-9 w-full rounded-md pr-5 pl-1.5 text-right text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
             title="% Phá huỷ trên mỗi lượt phòng thủ (0.0% - 100.0%) (Tab/Enter sang Cup hiện tại)"
           />
-          <span className="pointer-events-none absolute right-2 text-xs font-bold text-slate-400 dark:text-slate-500">
+          <span className="pointer-events-none absolute right-1.5 text-xs font-bold text-slate-400 dark:text-slate-500">
             %
           </span>
         </div>
       </td>
 
       {/* Số cup hiện tại */}
-      <td className="px-2.5 py-2.5 align-middle">
+      <td className="px-2 py-2 align-middle">
         <input
           data-field="currentCups"
           type="number"
@@ -523,13 +523,13 @@ export function PlayerRow({
           onBlur={onFinishEditing}
           onKeyDown={(e) => handleInputKeyDown(e, 'currentCups')}
           onChange={(e) => handleNumberChange(e.target.value, 'currentCups', onUpdateField)}
-          className="soft-field h-9 w-full rounded-md px-2.5 text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
+          className="soft-field h-9 w-full rounded-md px-2 text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
           title="Số cup hiện tại (Enter để lưu & xếp hạng, Shift+Tab về % Thủ, Tab sang người chơi kế tiếp)"
         />
       </td>
 
       {/* Số cup tối đa có thể đạt (tự động tính theo công thức & chỉ báo so sánh) */}
-      <td className="w-60 min-w-[230px] px-2.5 py-2.5 align-middle">
+      <td className="w-48 min-w-[195px] px-2 py-2 align-middle">
         <div className="relative flex h-9 items-center">
           <input
             type="text"
@@ -537,7 +537,7 @@ export function PlayerRow({
             tabIndex={-1}
             value={player.maxPossibleCups.toLocaleString('vi-VN')}
             title={`Công thức: ${player.currentCups} cup hiện tại + (${maxAttacks} - ${player.attacks}) lượt chưa đánh × 40 = ${player.maxPossibleCups} cup`}
-            className={`soft-field h-9 w-full rounded-md px-2.5 pr-[110px] text-sm font-bold select-all cursor-default transition-colors ${
+            className={`soft-field h-9 w-full rounded-md px-2 pr-[98px] text-sm font-bold select-all cursor-default transition-colors ${
               isMyPlayer
                 ? 'border-sky-400/40 bg-sky-500/10 text-sky-700 dark:border-sky-500/40 dark:bg-sky-950/40 dark:text-sky-300'
                 : canPassMe
@@ -546,7 +546,7 @@ export function PlayerRow({
             }`}
           />
           <span
-            className={`pointer-events-none absolute right-1.5 inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-black tracking-tight select-none border ${
+            className={`pointer-events-none absolute right-1 inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-black tracking-tight select-none border ${
               isMyPlayer
                 ? 'border-sky-400/40 bg-sky-500/20 text-sky-700 dark:border-sky-400/30 dark:bg-sky-500/30 dark:text-sky-300'
                 : canPassMe
@@ -567,7 +567,7 @@ export function PlayerRow({
       </td>
 
       {/* Phân loại đánh giá (Tính tự động theo số cup trung bình/lượt) */}
-      <td className="px-2.5 py-2.5 align-middle">
+      <td className="px-2 py-2 align-middle">
         <div
           className={`flex h-9 w-full items-center justify-center rounded-md border text-xs font-bold shadow-xs select-none transition-colors ${ratingTagColors[player.rating]}`}
           title={
@@ -587,7 +587,7 @@ export function PlayerRow({
       </td>
 
       {/* Nút Xóa người chơi */}
-      <td className="px-1 py-2.5 text-center align-middle">
+      <td className="px-1 py-2 text-center align-middle">
         <button
           type="button"
           tabIndex={-1}

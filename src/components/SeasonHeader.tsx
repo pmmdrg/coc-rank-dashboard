@@ -43,7 +43,7 @@ export function SeasonHeader({
 
   return (
     <header className="glass-header sticky top-0 z-40">
-      <div className="mx-auto flex max-w-[1650px] flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+      <div className="mx-auto flex max-w-[1320px] flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl dark:text-slate-50">
             CoC Rank Dashboard
