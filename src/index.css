@@ -1,7 +1,12 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
+* {
+  overflow-anchor: none;
+}
+
 :root {
+  overflow-anchor: none;
   --app-bg:
     radial-gradient(circle at 10% 0%, rgba(96, 165, 250, 0.2), transparent 32rem),
     radial-gradient(circle at 88% 12%, rgba(16, 185, 129, 0.16), transparent 30rem),

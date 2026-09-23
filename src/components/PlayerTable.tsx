@@ -247,9 +247,15 @@ export function PlayerTable({
           const headerOffset = 110
           const rowHeight = targetRowEl.offsetHeight || 48
 
+          const jumpingRowMovement = movingRows.find((r) => r.element === targetRowEl)
+          const isLargeJump = jumpingRowMovement && Math.abs(jumpingRowMovement.deltaY) > 120
+
+          // Nếu bước nhảy nhỏ (chỉ đổi chỗ 1 hàng ngay trong tầm mắt), không cần cuộn camera
+          // Nếu bước nhảy xa hoặc vị trí đích ở ngoài/sát viền màn hình, luôn cuộn mượt để căn giữa
           const isComfortablyVisible =
-            rowDocTop >= currentScroll + headerOffset &&
-            rowDocTop + rowHeight <= currentScroll + window.innerHeight - 40
+            !isLargeJump &&
+            rowDocTop >= currentScroll + headerOffset + 20 &&
+            rowDocTop + rowHeight <= currentScroll + window.innerHeight - 60
 
           if (!isComfortablyVisible) {
             targetTop = Math.max(
