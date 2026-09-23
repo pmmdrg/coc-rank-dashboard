@@ -298,10 +298,12 @@ function App() {
 
         const updated = { ...p, [field]: finalValue }
         const attacks = field === 'attacks' ? Number(finalValue) : updated.attacks
+        const defenses = field === 'defenses' ? Number(finalValue) : updated.defenses
         const currentCups = field === 'currentCups' ? Number(finalValue) : updated.currentCups
         const remainingAttacks = Math.max(0, maxAttacks - attacks)
-        updated.maxPossibleCups = currentCups + remainingAttacks * 40
-        updated.rating = calculatePlayerRating(currentCups, attacks).rating
+        const remainingDefenses = Math.max(0, maxDefenses - defenses)
+        updated.maxPossibleCups = currentCups + remainingAttacks * 40 + remainingDefenses * 15
+        updated.rating = calculatePlayerRating(currentCups, attacks, defenses).rating
 
         return updated
       }),
@@ -309,7 +311,10 @@ function App() {
   }
 
   function handleAddPlayer() {
-    const newPlayer = createPlayer(rankedSeason.maxAttacks ?? 24)
+    const newPlayer = createPlayer(
+      rankedSeason.maxAttacks ?? 24,
+      rankedSeason.maxDefenses ?? 24,
+    )
     updateCurrentSeason({
       ...rankedSeason,
       myPlayerId: rankedSeason.myPlayerId || newPlayer.id,

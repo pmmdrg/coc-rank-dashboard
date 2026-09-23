@@ -78,7 +78,11 @@ export function PlayerRow({
 
   const remainingAttacks = Math.max(0, maxAttacks - player.attacks)
   const remainingDefenses = Math.max(0, maxDefenses - player.defenses)
-  const { avgCupsPerAttack } = calculatePlayerRating(player.currentCups, player.attacks)
+  const { avgCupsPerAttack, estimatedAttackCups, estimatedDefenseCups } = calculatePlayerRating(
+    player.currentCups,
+    player.attacks,
+    player.defenses,
+  )
 
   const borderClass = isMyPlayer
     ? 'border-l-4 border-l-sky-500'
@@ -536,7 +540,7 @@ export function PlayerRow({
             readOnly
             tabIndex={-1}
             value={player.maxPossibleCups.toLocaleString('vi-VN')}
-            title={`Công thức: ${player.currentCups} cup hiện tại + (${maxAttacks} - ${player.attacks}) lượt chưa đánh × 40 = ${player.maxPossibleCups} cup`}
+            title={`Công thức: ${player.currentCups} cup hiện tại + (${maxAttacks} - ${player.attacks}) lượt công × 40 + (${maxDefenses} - ${player.defenses}) lượt thủ × 15 = ${player.maxPossibleCups} cup`}
             className={`soft-field h-9 w-full rounded-md px-2 pr-[98px] text-sm font-bold select-all cursor-default transition-colors ${
               isMyPlayer
                 ? 'border-sky-400/40 bg-sky-500/10 text-sky-700 dark:border-sky-500/40 dark:bg-sky-950/40 dark:text-sky-300'
@@ -573,7 +577,7 @@ export function PlayerRow({
           title={
             player.attacks === 0
               ? 'Chưa đánh lượt nào (Đánh giá: Chưa đánh)'
-              : `Trung bình: ${avgCupsPerAttack.toFixed(1)} cup/lượt (${
+              : `Khả năng tấn công: ${avgCupsPerAttack.toFixed(1)} cup/lượt công (~${estimatedAttackCups} cup công / ${player.attacks} lượt, đã trừ ~${estimatedDefenseCups} cup thủ) (${
                   player.rating === 'elite'
                     ? '≥ 32: Đỉnh'
                     : player.rating === 'contested'
