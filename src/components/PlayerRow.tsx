@@ -582,8 +582,8 @@ export function PlayerRow({
                   player.rating === 'elite'
                     ? '≥ 36: Đỉnh'
                     : player.rating === 'contested'
-                      ? '≥ 28: Kỹ năng tốt'
-                      : '< 28: Có tiềm năng'
+                      ? '≥ 32: Kỹ năng tốt'
+                      : '< 32: Có tiềm năng'
                 })`
           }
         >

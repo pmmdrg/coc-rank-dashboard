@@ -84,7 +84,7 @@ export function calculatePlayerRating(
   let rating: RatingCategory = 'danger'
   if (avgCupsPerAttack >= 36) {
     rating = 'elite'
-  } else if (avgCupsPerAttack >= 28) {
+  } else if (avgCupsPerAttack >= 32) {
     rating = 'contested'
   }
 

@@ -49,9 +49,9 @@ export function SummaryTables({ ratingCounts, totalPlayers }: SummaryTablesProps
                           {rating === 'elite'
                             ? '(≥ 36 cup/lượt)'
                             : rating === 'contested'
-                              ? '(≥ 28 cup/lượt)'
+                              ? '(≥ 32 cup/lượt)'
                               : rating === 'danger'
-                                ? '(< 28 cup/lượt)'
+                                ? '(< 32 cup/lượt)'
                                 : '(chưa đánh lượt nào)'}
                         </span>
                       </span>
