@@ -21,6 +21,7 @@ import { SeasonMetaForm } from './components/SeasonMetaForm'
 import { StatCardsGrid } from './components/StatCardsGrid'
 import { SummaryTables } from './components/SummaryTables'
 import { Footer } from './components/Footer'
+import { Analytics } from '@vercel/analytics/react'
 
 const DRAFT_STORAGE_KEY = 'coc_rank_autosave_draft'
 
@@ -439,6 +440,9 @@ function App() {
         onClose={() => setIsDriveConfigOpen(false)}
         onConfigSaved={() => setStatus('Đã cập nhật cấu hình Google Drive.')}
       />
+
+      {/* Vercel Web Analytics */}
+      <Analytics />
     </div>
   )
 }
