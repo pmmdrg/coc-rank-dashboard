@@ -580,10 +580,10 @@ export function PlayerRow({
               ? 'Chưa đánh lượt nào (Đánh giá: Chưa đánh)'
               : `Khả năng tấn công: ${avgCupsPerAttack.toFixed(1)} cup/lượt công (~${attackCups} cup công / ${player.attacks} lượt công, ~${defenseCups >= 0 ? '+' : ''}${defenseCups} cup thủ) (${
                   player.rating === 'elite'
-                    ? '≥ 32: Đỉnh'
+                    ? '≥ 36: Đỉnh'
                     : player.rating === 'contested'
-                      ? '≥ 24: Kỹ năng tốt'
-                      : '< 24: Có tiềm năng'
+                      ? '≥ 28: Kỹ năng tốt'
+                      : '< 28: Có tiềm năng'
                 })`
           }
         >

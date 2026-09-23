@@ -47,11 +47,11 @@ export function SummaryTables({ ratingCounts, totalPlayers }: SummaryTablesProps
                         <span>{ratingLabels[rating]}</span>
                         <span className="text-[11px] text-slate-400 dark:text-slate-500 font-normal">
                           {rating === 'elite'
-                            ? '(≥ 32 cup/lượt)'
+                            ? '(≥ 36 cup/lượt)'
                             : rating === 'contested'
-                              ? '(≥ 24 cup/lượt)'
+                              ? '(≥ 28 cup/lượt)'
                               : rating === 'danger'
-                                ? '(< 24 cup/lượt)'
+                                ? '(< 28 cup/lượt)'
                                 : '(chưa đánh lượt nào)'}
                         </span>
                       </span>
