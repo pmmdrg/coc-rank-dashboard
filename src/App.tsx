@@ -294,16 +294,25 @@ function App() {
           finalValue = Math.min(maxDefenses, Math.max(0, Number(value) || 0))
         } else if (field === 'currentCups') {
           finalValue = Math.max(0, Number(value) || 0)
+        } else if (field === 'attackDestruction' || field === 'defenseDestruction') {
+          finalValue = Math.min(100, Math.max(0, Math.round(Number(value) * 10) / 10))
         }
 
         const updated = { ...p, [field]: finalValue }
         const attacks = field === 'attacks' ? Number(finalValue) : updated.attacks
         const defenses = field === 'defenses' ? Number(finalValue) : updated.defenses
+        const attackDestruction =
+          field === 'attackDestruction'
+            ? Number(finalValue)
+            : (updated.attackDestruction ?? 0)
         const currentCups = field === 'currentCups' ? Number(finalValue) : updated.currentCups
         const remainingAttacks = Math.max(0, maxAttacks - attacks)
         const remainingDefenses = Math.max(0, maxDefenses - defenses)
         updated.maxPossibleCups = currentCups + remainingAttacks * 40 + remainingDefenses * 15
-        updated.rating = calculatePlayerRating(currentCups, attacks, defenses).rating
+        const ratingResult = calculatePlayerRating(currentCups, attacks, attackDestruction, defenses)
+        updated.rating = ratingResult.rating
+        updated.attackCups = ratingResult.attackCups
+        updated.defenseCups = ratingResult.defenseCups
 
         return updated
       }),

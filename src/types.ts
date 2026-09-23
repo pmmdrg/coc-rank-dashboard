@@ -11,6 +11,8 @@ export type Player = {
   currentCups: number
   maxPossibleCups: number
   rating: RatingCategory
+  attackCups?: number
+  defenseCups?: number
 }
 
 export type Season = {

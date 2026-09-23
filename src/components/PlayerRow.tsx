@@ -78,9 +78,10 @@ export function PlayerRow({
 
   const remainingAttacks = Math.max(0, maxAttacks - player.attacks)
   const remainingDefenses = Math.max(0, maxDefenses - player.defenses)
-  const { avgCupsPerAttack, estimatedAttackCups, estimatedDefenseCups } = calculatePlayerRating(
+  const { avgCupsPerAttack, attackCups, defenseCups } = calculatePlayerRating(
     player.currentCups,
     player.attacks,
+    player.attackDestruction,
     player.defenses,
   )
 
@@ -444,7 +445,7 @@ export function PlayerRow({
             onKeyDown={(e) => handleInputKeyDown(e, 'attackDestruction')}
             onChange={(e) => handleDestructionChange('attackDestruction', e.target.value)}
             className="soft-field h-9 w-full rounded-md pr-5 pl-1.5 text-right text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
-            title="% Phá huỷ trên mỗi lượt tấn công (0.0% - 100.0%) (Tab/Enter sang Lượt thủ)"
+            title={`% Phá huỷ trên mỗi lượt công (0.0% - 100.0%) • Cup công: ${attackCups} cup (${player.attacks} lượt × 40 × ${player.attackDestruction || 0}% / 100) (Tab/Enter sang Lượt thủ)`}
           />
           <span className="pointer-events-none absolute right-1.5 text-xs font-bold text-slate-400 dark:text-slate-500">
             %
@@ -507,7 +508,7 @@ export function PlayerRow({
             onKeyDown={(e) => handleInputKeyDown(e, 'defenseDestruction')}
             onChange={(e) => handleDestructionChange('defenseDestruction', e.target.value)}
             className="soft-field h-9 w-full rounded-md pr-5 pl-1.5 text-right text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
-            title="% Phá huỷ trên mỗi lượt phòng thủ (0.0% - 100.0%) (Tab/Enter sang Cup hiện tại)"
+            title={`% Phá huỷ trên mỗi lượt phòng thủ (0.0% - 100.0%) • Cup thủ: ${defenseCups >= 0 ? '+' : ''}${defenseCups} cup (Cup hiện tại trừ Cup công) (Tab/Enter sang Cup hiện tại)`}
           />
           <span className="pointer-events-none absolute right-1.5 text-xs font-bold text-slate-400 dark:text-slate-500">
             %
@@ -528,7 +529,7 @@ export function PlayerRow({
           onKeyDown={(e) => handleInputKeyDown(e, 'currentCups')}
           onChange={(e) => handleNumberChange(e.target.value, 'currentCups', onUpdateField)}
           className="soft-field h-9 w-full rounded-md px-2 text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
-          title="Số cup hiện tại (Enter để lưu & xếp hạng, Shift+Tab về % Thủ, Tab sang người chơi kế tiếp)"
+          title={`Số cup hiện tại: ${player.currentCups.toLocaleString('vi-VN')} (Gồm: ~${attackCups} cup công + ~${defenseCups} cup thủ) (Enter để lưu & xếp hạng, Shift+Tab về % Thủ, Tab sang người chơi kế tiếp)`}
         />
       </td>
 
@@ -577,7 +578,7 @@ export function PlayerRow({
           title={
             player.attacks === 0
               ? 'Chưa đánh lượt nào (Đánh giá: Chưa đánh)'
-              : `Khả năng tấn công: ${avgCupsPerAttack.toFixed(1)} cup/lượt công (~${estimatedAttackCups} cup công / ${player.attacks} lượt, đã trừ ~${estimatedDefenseCups} cup thủ) (${
+              : `Khả năng tấn công: ${avgCupsPerAttack.toFixed(1)} cup/lượt công (~${attackCups} cup công / ${player.attacks} lượt công, ~${defenseCups >= 0 ? '+' : ''}${defenseCups} cup thủ) (${
                   player.rating === 'elite'
                     ? '≥ 32: Đỉnh'
                     : player.rating === 'contested'

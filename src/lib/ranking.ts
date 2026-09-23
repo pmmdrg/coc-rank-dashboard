@@ -29,37 +29,54 @@ function calculateMaxPossibleCups(
 export function calculatePlayerRating(
   currentCups: number,
   attacks: number,
-  defenses: number = 0,
+  attackDestruction: number = 0,
+  _defenses: number = 0,
 ): {
   rating: RatingCategory
   avgCupsPerAttack: number
+  attackCups: number
+  defenseCups: number
   estimatedAttackCups: number
   estimatedDefenseCups: number
 } {
+  const effectiveCups = currentCups >= 4000 ? Math.max(0, currentCups - 5000) : Math.max(0, currentCups)
+
   if (attacks <= 0) {
     return {
       rating: 'safe',
       avgCupsPerAttack: 0,
+      attackCups: 0,
+      defenseCups: effectiveCups,
       estimatedAttackCups: 0,
-      estimatedDefenseCups: 0,
+      estimatedDefenseCups: effectiveCups,
     }
   }
 
-  // Nếu cúp nhập theo mốc Legend League chuẩn game (>= 4000), lấy cúp kiếm thêm từ mốc 5000
-  const effectiveCups = currentCups >= 4000 ? Math.max(0, currentCups - 5000) : Math.max(0, currentCups)
-  // Ước tính số cúp từ các lượt thủ đã diễn ra: mỗi lượt thủ trung bình đạt 15 cup
-  const estimatedDefenseCups = Math.max(0, defenses * 15)
-  // Số cúp thực sự kiếm được từ các lượt đánh (đã loại trừ cúp kiếm từ thủ)
-  const estimatedAttackCups = Math.max(0, effectiveCups - estimatedDefenseCups)
-  const avgCupsPerAttack = estimatedAttackCups / attacks
+  // Công thức: cup công = lượt công * 40 * % công / 100
+  const rawAtkDest = Math.max(0, attackDestruction || 0)
+  const attackCups = Math.round(attacks * 40 * (rawAtkDest / 100))
 
+  // Công thức: cup thủ = cup hiện tại - cup công
+  const defenseCups = effectiveCups - attackCups
+
+  // Đánh giá được tính dựa theo số cup đánh chia cho số lượt đánh
+  const avgCupsPerAttack = attacks > 0 ? attackCups / attacks : 0
+
+  let rating: RatingCategory = 'danger'
   if (avgCupsPerAttack >= 32) {
-    return { rating: 'elite', avgCupsPerAttack, estimatedAttackCups, estimatedDefenseCups }
+    rating = 'elite'
+  } else if (avgCupsPerAttack >= 24) {
+    rating = 'contested'
   }
-  if (avgCupsPerAttack >= 24) {
-    return { rating: 'contested', avgCupsPerAttack, estimatedAttackCups, estimatedDefenseCups }
+
+  return {
+    rating,
+    avgCupsPerAttack,
+    attackCups,
+    defenseCups,
+    estimatedAttackCups: attackCups,
+    estimatedDefenseCups: defenseCups,
   }
-  return { rating: 'danger', avgCupsPerAttack, estimatedAttackCups, estimatedDefenseCups }
 }
 
 function sortAndRankPlayers(players: Player[]): Player[] {
@@ -123,7 +140,12 @@ export function normalizeSeason(season: Season): RankedSeason {
       maxAttacks,
       maxDefenses,
     )
-    const { rating } = calculatePlayerRating(currentCups, attacks, defenses)
+    const { rating, attackCups, defenseCups } = calculatePlayerRating(
+      currentCups,
+      attacks,
+      attackDestruction,
+      defenses,
+    )
 
     return {
       ...p,
@@ -136,6 +158,8 @@ export function normalizeSeason(season: Season): RankedSeason {
       currentCups,
       maxPossibleCups,
       rating,
+      attackCups,
+      defenseCups,
     }
   })
 
@@ -200,5 +224,7 @@ export function createPlayer(maxAttacks: number = 24, maxDefenses: number = 24):
     currentCups: 0,
     maxPossibleCups: maxAttacks * 40 + maxDefenses * 15,
     rating: 'safe',
+    attackCups: 0,
+    defenseCups: 0,
   }
 }
