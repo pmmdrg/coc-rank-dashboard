@@ -299,7 +299,7 @@ export function PlayerRow({
       } ${isHighlighted ? 'row-jump-highlight' : ''} transition-colors duration-200`}
     >
       {/* Cột Rank */}
-      <td className="px-3.5 py-2.5 align-middle whitespace-nowrap">
+      <td className="px-2.5 py-2.5 align-middle whitespace-nowrap">
         <div className="flex items-center gap-1.5 flex-nowrap whitespace-nowrap">
           <span
             className={`inline-flex h-9 min-w-8 shrink-0 items-center justify-center rounded-md px-2 text-xs font-bold shadow-xs backdrop-blur transition-all ${
@@ -355,7 +355,7 @@ export function PlayerRow({
       </td>
 
       {/* Tên người chơi */}
-      <td className="px-3.5 py-2.5 align-middle">
+      <td className="min-w-[180px] px-2.5 py-2.5 align-middle">
         <input
           data-field="name"
           value={player.name}
@@ -363,13 +363,13 @@ export function PlayerRow({
           onBlur={onFinishEditing}
           onKeyDown={(e) => handleInputKeyDown(e, 'name')}
           onChange={(e) => onUpdateField('name', e.target.value)}
-          className="soft-field h-9 w-full rounded-md px-2.5 text-sm font-medium"
+          className="soft-field h-9 w-full min-w-[160px] rounded-md px-2.5 text-sm font-medium"
           title="Tên người chơi (Tab/Enter để sang Lượt đánh)"
         />
       </td>
 
       {/* Nút đánh dấu Tài khoản của tôi */}
-      <td className="px-3.5 py-2.5 text-center align-middle">
+      <td className="px-1 py-2.5 text-center align-middle">
         <button
           type="button"
           tabIndex={-1}
@@ -386,7 +386,7 @@ export function PlayerRow({
       </td>
 
       {/* Số lượt đánh */}
-      <td className="px-3.5 py-2.5 align-middle">
+      <td className="px-2.5 py-2.5 align-middle">
         <div className="flex h-9 items-center gap-1.5">
           <input
             data-field="attacks"
@@ -420,8 +420,8 @@ export function PlayerRow({
       </td>
 
       {/* % Phá huỷ trên mỗi lượt công */}
-      <td className="px-3.5 py-2.5 align-middle">
-        <div className="relative flex h-9 w-20 items-center">
+      <td className="px-2 py-2.5 align-middle">
+        <div className="relative flex h-9 w-24 items-center">
           <input
             data-field="attackDestruction"
             type="text"
@@ -449,7 +449,7 @@ export function PlayerRow({
       </td>
 
       {/* Số lượt thủ */}
-      <td className="px-3.5 py-2.5 align-middle">
+      <td className="px-2.5 py-2.5 align-middle">
         <div className="flex h-9 items-center gap-1.5">
           <input
             data-field="defenses"
@@ -483,8 +483,8 @@ export function PlayerRow({
       </td>
 
       {/* % Phá huỷ trên mỗi lượt thủ */}
-      <td className="px-3.5 py-2.5 align-middle">
-        <div className="relative flex h-9 w-20 items-center">
+      <td className="px-2 py-2.5 align-middle">
+        <div className="relative flex h-9 w-24 items-center">
           <input
             data-field="defenseDestruction"
             type="text"
@@ -512,7 +512,7 @@ export function PlayerRow({
       </td>
 
       {/* Số cup hiện tại */}
-      <td className="px-3.5 py-2.5 align-middle">
+      <td className="px-2.5 py-2.5 align-middle">
         <input
           data-field="currentCups"
           type="number"
@@ -529,7 +529,7 @@ export function PlayerRow({
       </td>
 
       {/* Số cup tối đa có thể đạt (tự động tính theo công thức & chỉ báo so sánh) */}
-      <td className="px-3.5 py-2.5 align-middle">
+      <td className="px-2.5 py-2.5 align-middle">
         <div className="relative flex h-9 items-center">
           <input
             type="text"
@@ -537,7 +537,7 @@ export function PlayerRow({
             tabIndex={-1}
             value={player.maxPossibleCups.toLocaleString('vi-VN')}
             title={`Công thức: ${player.currentCups} cup hiện tại + (${maxAttacks} - ${player.attacks}) lượt chưa đánh × 40 = ${player.maxPossibleCups} cup`}
-            className={`soft-field h-9 w-full rounded-md px-2.5 pr-24 text-sm font-bold select-all cursor-default transition-colors ${
+            className={`soft-field h-9 w-full rounded-md px-2.5 pr-[72px] text-sm font-bold select-all cursor-default transition-colors ${
               isMyPlayer
                 ? 'border-sky-400/40 bg-sky-500/10 text-sky-700 dark:border-sky-500/40 dark:bg-sky-950/40 dark:text-sky-300'
                 : canPassMe
@@ -567,7 +567,7 @@ export function PlayerRow({
       </td>
 
       {/* Phân loại đánh giá (Tính tự động theo số cup trung bình/lượt) */}
-      <td className="px-3.5 py-2.5 align-middle">
+      <td className="px-2.5 py-2.5 align-middle">
         <div
           className={`flex h-9 w-full items-center justify-center rounded-md border text-xs font-bold shadow-xs select-none transition-colors ${ratingTagColors[player.rating]}`}
           title={
@@ -587,7 +587,7 @@ export function PlayerRow({
       </td>
 
       {/* Nút Xóa người chơi */}
-      <td className="px-3.5 py-2.5 text-right align-middle">
+      <td className="px-1 py-2.5 text-center align-middle">
         <button
           type="button"
           tabIndex={-1}
