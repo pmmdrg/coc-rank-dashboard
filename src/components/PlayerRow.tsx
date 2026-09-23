@@ -355,7 +355,7 @@ export function PlayerRow({
       </td>
 
       {/* Tên người chơi */}
-      <td className="min-w-[180px] px-2.5 py-2.5 align-middle">
+      <td className="w-52 min-w-[180px] max-w-[240px] px-2.5 py-2.5 align-middle">
         <input
           data-field="name"
           value={player.name}
@@ -529,7 +529,7 @@ export function PlayerRow({
       </td>
 
       {/* Số cup tối đa có thể đạt (tự động tính theo công thức & chỉ báo so sánh) */}
-      <td className="px-2.5 py-2.5 align-middle">
+      <td className="w-60 min-w-[230px] px-2.5 py-2.5 align-middle">
         <div className="relative flex h-9 items-center">
           <input
             type="text"
@@ -537,7 +537,7 @@ export function PlayerRow({
             tabIndex={-1}
             value={player.maxPossibleCups.toLocaleString('vi-VN')}
             title={`Công thức: ${player.currentCups} cup hiện tại + (${maxAttacks} - ${player.attacks}) lượt chưa đánh × 40 = ${player.maxPossibleCups} cup`}
-            className={`soft-field h-9 w-full rounded-md px-2.5 pr-[72px] text-sm font-bold select-all cursor-default transition-colors ${
+            className={`soft-field h-9 w-full rounded-md px-2.5 pr-[110px] text-sm font-bold select-all cursor-default transition-colors ${
               isMyPlayer
                 ? 'border-sky-400/40 bg-sky-500/10 text-sky-700 dark:border-sky-500/40 dark:bg-sky-950/40 dark:text-sky-300'
                 : canPassMe
