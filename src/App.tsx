@@ -20,6 +20,7 @@ import { SeasonHeader } from './components/SeasonHeader'
 import { SeasonMetaForm } from './components/SeasonMetaForm'
 import { StatCardsGrid } from './components/StatCardsGrid'
 import { SummaryTables } from './components/SummaryTables'
+import { Footer } from './components/Footer'
 
 const DRAFT_STORAGE_KEY = 'coc_rank_autosave_draft'
 
@@ -342,7 +343,7 @@ function App() {
   }
 
   return (
-    <div className="app-surface min-h-screen pb-12">
+    <div className="app-surface flex min-h-screen flex-col">
       {/* Header điều khiển, Live Auto-save & đổi nguồn lưu trữ */}
       <SeasonHeader
         league={rankedSeason.league}
@@ -357,7 +358,7 @@ function App() {
         onOpenDriveConfig={() => setIsDriveConfigOpen(true)}
       />
 
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 space-y-6">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 lg:px-8 space-y-6">
         {/* Cảnh báo trình duyệt cho Local File System */}
         {storageSource === 'local' && !localAdapter.canWriteBack ? (
           <div className="animate-fade-in rounded-xl border border-amber-300/60 bg-amber-50/80 px-4 py-3 text-sm text-amber-900 backdrop-blur dark:border-amber-500/30 dark:bg-amber-950/40 dark:text-amber-200">
@@ -420,7 +421,10 @@ function App() {
           onSelectMyPlayer={handleSelectMyPlayer}
           onUpdatePlayerField={handleUpdatePlayerField}
         />
-      </div>
+      </main>
+
+      {/* Footer bản quyền */}
+      <Footer />
 
       {/* Modal tạo mùa giải mới */}
       <CreateSeasonModal
