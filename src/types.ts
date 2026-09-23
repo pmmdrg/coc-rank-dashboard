@@ -28,12 +28,15 @@ export type Season = {
   players: Player[]
 }
 
+export type AttackStatusCategory = 'finished' | 'inProgress' | 'notStarted'
+
 export type RankingStats = {
   myPlayer?: Player
   playersWhoCanPassMe: number
   playersDefinitelyBelowMe: number
   lowestPossibleRank: number
   ratingCounts: Record<RatingCategory, number>
+  attackStatusCounts: Record<AttackStatusCategory, number>
 }
 
 export type RankedSeason = Season & {

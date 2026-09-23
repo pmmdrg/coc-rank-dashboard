@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { sampleSeason } from './data/sampleSeason'
 import {
+  attackStatusColors,
+  attackStatusLabels,
   calculatePlayerRating,
   createPlayer,
   getRankingStats,
@@ -151,6 +153,24 @@ function App() {
       label: `Chắc chắn dưới ${myPlayerName}`,
       value: stats.playersDefinitelyBelowMe,
       color: comparisonColors.below,
+    },
+  ]
+
+  const attackStatusChartData = [
+    {
+      label: attackStatusLabels.finished,
+      value: stats.attackStatusCounts.finished,
+      color: attackStatusColors.finished,
+    },
+    {
+      label: attackStatusLabels.inProgress,
+      value: stats.attackStatusCounts.inProgress,
+      color: attackStatusColors.inProgress,
+    },
+    {
+      label: attackStatusLabels.notStarted,
+      value: stats.attackStatusCounts.notStarted,
+      color: attackStatusColors.notStarted,
     },
   ]
 
@@ -415,6 +435,7 @@ function App() {
         {/* Khu vực biểu đồ thống kê */}
         <ChartsSection
           comparisonData={comparisonChartData}
+          attackStatusData={attackStatusChartData}
           ratingData={ratingChartData}
           myPlayerName={myPlayerName}
         />

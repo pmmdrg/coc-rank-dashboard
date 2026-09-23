@@ -1,4 +1,11 @@
-import type { Player, RankedSeason, RankingStats, RatingCategory, Season } from '../types'
+import type {
+  AttackStatusCategory,
+  Player,
+  RankedSeason,
+  RankingStats,
+  RatingCategory,
+  Season,
+} from '../types'
 
 export const ratingLabels: Record<RatingCategory, string> = {
   elite: 'Đỉnh',
@@ -12,6 +19,18 @@ export const ratingColors: Record<RatingCategory, string> = {
   contested: '#0284c7',
   danger: '#f59e0b',
   safe: '#64748b',
+}
+
+export const attackStatusLabels: Record<AttackStatusCategory, string> = {
+  finished: 'Đã đánh xong',
+  inProgress: 'Chưa đánh xong',
+  notStarted: 'Chưa đánh lượt nào',
+}
+
+export const attackStatusColors: Record<AttackStatusCategory, string> = {
+  finished: '#10b981',
+  inProgress: '#f59e0b',
+  notStarted: '#64748b',
 }
 
 function calculateMaxPossibleCups(
@@ -181,6 +200,7 @@ export function normalizeSeason(season: Season): RankedSeason {
 
 export function getRankingStats(season: Season): RankingStats {
   const rankedSeason = normalizeSeason(season)
+  const maxAttacks = rankedSeason.maxAttacks ?? 24
   const myPlayer = rankedSeason.players.find((player) => player.id === season.myPlayerId)
 
   const ratingCounts = rankedSeason.players.reduce(
@@ -189,6 +209,20 @@ export function getRankingStats(season: Season): RankingStats {
       return counts
     },
     { safe: 0, contested: 0, danger: 0, elite: 0 } satisfies Record<RatingCategory, number>,
+  )
+
+  const attackStatusCounts = rankedSeason.players.reduce(
+    (counts, player) => {
+      if (player.attacks <= 0) {
+        counts.notStarted += 1
+      } else if (player.attacks >= maxAttacks) {
+        counts.finished += 1
+      } else {
+        counts.inProgress += 1
+      }
+      return counts
+    },
+    { finished: 0, inProgress: 0, notStarted: 0 } satisfies Record<AttackStatusCategory, number>,
   )
 
   return {
@@ -209,6 +243,7 @@ export function getRankingStats(season: Season): RankingStats {
         ).length + 1
       : 0,
     ratingCounts,
+    attackStatusCounts,
   }
 }
 
