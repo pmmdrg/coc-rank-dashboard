@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import { Shield, Trash2 } from 'lucide-react'
 import type { Player, RatingCategory } from '../types'
 import { calculatePlayerRating, ratingLabels } from '../lib/ranking'
@@ -49,6 +50,11 @@ function handleNumberChange(
   onUpdateField(field, num)
 }
 
+function formatDestruction(val?: number): string {
+  if (val === undefined || val === null || val <= 0) return ''
+  return (Math.round(val * 10) / 10).toFixed(1)
+}
+
 export function PlayerRow({
   player,
   maxAttacks,
@@ -82,8 +88,86 @@ export function PlayerRow({
         ? 'border-l-4 border-l-rose-500 bg-rose-500/[0.03] dark:bg-rose-500/[0.06]'
         : 'border-l-4 border-l-transparent'
 
-  type EditableField = 'name' | 'attacks' | 'defenses' | 'currentCups'
-  const EDITABLE_FIELDS: EditableField[] = ['name', 'attacks', 'defenses', 'currentCups']
+  const isAtkFocused = useRef(false)
+  const isDefFocused = useRef(false)
+
+  const [localAtkDest, setLocalAtkDest] = useState(() => formatDestruction(player.attackDestruction))
+  const [localDefDest, setLocalDefDest] = useState(() => formatDestruction(player.defenseDestruction))
+
+  useEffect(() => {
+    if (!isAtkFocused.current) {
+      setLocalAtkDest(formatDestruction(player.attackDestruction))
+    }
+  }, [player.attackDestruction])
+
+  useEffect(() => {
+    if (!isDefFocused.current) {
+      setLocalDefDest(formatDestruction(player.defenseDestruction))
+    }
+  }, [player.defenseDestruction])
+
+  function handleDestructionChange(field: 'attackDestruction' | 'defenseDestruction', rawValue: string) {
+    let val = rawValue.replace(',', '.')
+
+    if (val === '') {
+      if (field === 'attackDestruction') setLocalAtkDest('')
+      else setLocalDefDest('')
+      onUpdateField(field, 0)
+      return
+    }
+
+    if (!/^\d*(?:\.\d?)?$/.test(val)) {
+      return
+    }
+
+    const parsed = parseFloat(val)
+    if (parsed > 100) {
+      val = '100'
+    }
+
+    if (field === 'attackDestruction') setLocalAtkDest(val)
+    else setLocalDefDest(val)
+
+    if (!Number.isNaN(parsed) && Number.isFinite(parsed)) {
+      const clamped = Math.min(100, Math.max(0, parsed))
+      onUpdateField(field, clamped)
+    }
+  }
+
+  function handleDestructionBlur(field: 'attackDestruction' | 'defenseDestruction') {
+    const currentVal = field === 'attackDestruction' ? localAtkDest : localDefDest
+    if (currentVal === '') return
+
+    const parsed = parseFloat(currentVal)
+    if (Number.isNaN(parsed) || !Number.isFinite(parsed) || parsed <= 0) {
+      if (field === 'attackDestruction') setLocalAtkDest('')
+      else setLocalDefDest('')
+      onUpdateField(field, 0)
+    } else {
+      const rounded = Math.min(100, Math.max(0, Math.round(parsed * 10) / 10))
+      const formatted = rounded.toFixed(1)
+      if (field === 'attackDestruction') setLocalAtkDest(formatted)
+      else setLocalDefDest(formatted)
+      onUpdateField(field, rounded)
+    }
+  }
+
+  type EditableField =
+    | 'name'
+    | 'attacks'
+    | 'attackDestruction'
+    | 'defenses'
+    | 'defenseDestruction'
+    | 'currentCups'
+
+  const EDITABLE_FIELDS: EditableField[] = [
+    'name',
+    'attacks',
+    'attackDestruction',
+    'defenses',
+    'defenseDestruction',
+    'currentCups',
+  ]
 
   function handleInputKeyDown(
     e: React.KeyboardEvent<HTMLInputElement>,
@@ -91,6 +175,12 @@ export function PlayerRow({
   ) {
     if (['attacks', 'defenses', 'currentCups'].includes(currentField)) {
       if (['-', '+', 'e', 'E', '.'].includes(e.key)) {
+        e.preventDefault()
+        return
+      }
+    }
+    if (['attackDestruction', 'defenseDestruction'].includes(currentField)) {
+      if (['-', '+', 'e', 'E'].includes(e.key)) {
         e.preventDefault()
         return
       }
@@ -310,7 +400,7 @@ export function PlayerRow({
             onKeyDown={(e) => handleInputKeyDown(e, 'attacks')}
             onChange={(e) => handleNumberChange(e.target.value, 'attacks', onUpdateField, maxAttacks)}
             className="soft-field h-9 w-12 rounded-md px-1 text-center text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
-            title="Số lượt đánh (Tab/Enter sang Lượt thủ, Alt+Mũi tên để di chuyển)"
+            title="Số lượt đánh (Tab/Enter sang % Công, Alt+Mũi tên để di chuyển)"
           />
           <div className="flex flex-col justify-center leading-none">
             <span className="select-none text-xs font-bold text-slate-500 dark:text-slate-400">
@@ -329,6 +419,35 @@ export function PlayerRow({
         </div>
       </td>
 
+      {/* % Phá huỷ trên mỗi lượt công */}
+      <td className="px-3.5 py-2.5 align-middle">
+        <div className="relative flex h-9 w-20 items-center">
+          <input
+            data-field="attackDestruction"
+            type="text"
+            inputMode="decimal"
+            value={localAtkDest}
+            placeholder="0.0"
+            onFocus={(e) => {
+              isAtkFocused.current = true
+              e.target.select()
+            }}
+            onBlur={() => {
+              isAtkFocused.current = false
+              handleDestructionBlur('attackDestruction')
+              onFinishEditing?.()
+            }}
+            onKeyDown={(e) => handleInputKeyDown(e, 'attackDestruction')}
+            onChange={(e) => handleDestructionChange('attackDestruction', e.target.value)}
+            className="soft-field h-9 w-full rounded-md pr-6 pl-2 text-right text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
+            title="% Phá huỷ trên mỗi lượt tấn công (0.0% - 100.0%) (Tab/Enter sang Lượt thủ)"
+          />
+          <span className="pointer-events-none absolute right-2 text-xs font-bold text-slate-400 dark:text-slate-500">
+            %
+          </span>
+        </div>
+      </td>
+
       {/* Số lượt thủ */}
       <td className="px-3.5 py-2.5 align-middle">
         <div className="flex h-9 items-center gap-1.5">
@@ -344,7 +463,7 @@ export function PlayerRow({
             onKeyDown={(e) => handleInputKeyDown(e, 'defenses')}
             onChange={(e) => handleNumberChange(e.target.value, 'defenses', onUpdateField, maxDefenses)}
             className="soft-field h-9 w-12 rounded-md px-1 text-center text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
-            title="Số lượt thủ (Tab/Enter sang Cup, Shift+Tab về Lượt đánh)"
+            title="Số lượt thủ (Tab/Enter sang % Thủ, Shift+Tab về % Công)"
           />
           <div className="flex flex-col justify-center leading-none">
             <span className="select-none text-xs font-bold text-slate-500 dark:text-slate-400">
@@ -363,6 +482,35 @@ export function PlayerRow({
         </div>
       </td>
 
+      {/* % Phá huỷ trên mỗi lượt thủ */}
+      <td className="px-3.5 py-2.5 align-middle">
+        <div className="relative flex h-9 w-20 items-center">
+          <input
+            data-field="defenseDestruction"
+            type="text"
+            inputMode="decimal"
+            value={localDefDest}
+            placeholder="0.0"
+            onFocus={(e) => {
+              isDefFocused.current = true
+              e.target.select()
+            }}
+            onBlur={() => {
+              isDefFocused.current = false
+              handleDestructionBlur('defenseDestruction')
+              onFinishEditing?.()
+            }}
+            onKeyDown={(e) => handleInputKeyDown(e, 'defenseDestruction')}
+            onChange={(e) => handleDestructionChange('defenseDestruction', e.target.value)}
+            className="soft-field h-9 w-full rounded-md pr-6 pl-2 text-right text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
+            title="% Phá huỷ trên mỗi lượt phòng thủ (0.0% - 100.0%) (Tab/Enter sang Cup hiện tại)"
+          />
+          <span className="pointer-events-none absolute right-2 text-xs font-bold text-slate-400 dark:text-slate-500">
+            %
+          </span>
+        </div>
+      </td>
+
       {/* Số cup hiện tại */}
       <td className="px-3.5 py-2.5 align-middle">
         <input
@@ -376,7 +524,7 @@ export function PlayerRow({
           onKeyDown={(e) => handleInputKeyDown(e, 'currentCups')}
           onChange={(e) => handleNumberChange(e.target.value, 'currentCups', onUpdateField)}
           className="soft-field h-9 w-full rounded-md px-2.5 text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
-          title="Số cup hiện tại (Enter để lưu & xếp hạng, Shift+Tab về Lượt thủ, Tab sang người chơi kế tiếp)"
+          title="Số cup hiện tại (Enter để lưu & xếp hạng, Shift+Tab về % Thủ, Tab sang người chơi kế tiếp)"
         />
       </td>
 

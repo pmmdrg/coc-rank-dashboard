@@ -15,7 +15,9 @@ const csvColumns = [
   'name',
   'rank',
   'attacks',
+  'attackDestruction',
   'defenses',
+  'defenseDestruction',
   'currentCups',
   'maxPossibleCups',
   'rating',
@@ -97,7 +99,9 @@ export function seasonsToCsv(seasons: Season[]): string {
           player.name,
           player.rank,
           player.attacks,
+          (player.attackDestruction ?? 0).toFixed(1),
           player.defenses,
+          (player.defenseDestruction ?? 0).toFixed(1),
           player.currentCups,
           player.maxPossibleCups,
           player.rating,
@@ -162,12 +166,19 @@ export function csvToSeasons(csv: string): Season[] {
     const currentSeason = seasonMap.get(seasonName)!
     const id = entry.id || crypto.randomUUID()
 
+    const rawAtkDest = entry.attackDestruction ? parseNumber(entry.attackDestruction) : 0
+    const attackDestruction = Math.min(100, Math.max(0, Math.round(rawAtkDest * 10) / 10))
+    const rawDefDest = entry.defenseDestruction ? parseNumber(entry.defenseDestruction) : 0
+    const defenseDestruction = Math.min(100, Math.max(0, Math.round(rawDefDest * 10) / 10))
+
     currentSeason.players.push({
       id,
       name: entry.name || 'Unnamed player',
       rank: parseNumber(entry.rank),
       attacks: parseNumber(entry.attacks),
       defenses: parseNumber(entry.defenses),
+      attackDestruction,
+      defenseDestruction,
       currentCups: parseNumber(entry.currentCups),
       maxPossibleCups: parseNumber(entry.maxPossibleCups),
       rating: ['safe', 'contested', 'danger', 'elite'].includes(entry.rating)

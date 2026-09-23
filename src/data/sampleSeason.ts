@@ -35,6 +35,8 @@ export const sampleSeason: Season = {
       rank: 1,
       attacks: 0,
       defenses: 0,
+      attackDestruction: 0,
+      defenseDestruction: 0,
       currentCups: 5000,
       maxPossibleCups: 5960,
       rating: 'safe',

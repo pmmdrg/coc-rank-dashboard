@@ -410,17 +410,19 @@ export function PlayerTable({
       </div>
 
       <div className="overflow-x-auto">
-        <table className="relative w-full min-w-[1080px] border-separate border-spacing-0 text-left text-sm">
+        <table className="relative w-full min-w-[1260px] border-separate border-spacing-0 text-left text-sm">
           <thead className="soft-table-head text-xs uppercase tracking-wider">
             <tr>
-              <th className="w-32 px-3.5 py-3 whitespace-nowrap">Rank</th>
+              <th className="w-28 px-3.5 py-3 whitespace-nowrap">Rank</th>
               <th className="px-3.5 py-3">Tên người chơi</th>
-              <th className="w-16 px-3.5 py-3 text-center">Tôi</th>
-              <th className="w-36 px-3.5 py-3">Lượt đánh</th>
-              <th className="w-36 px-3.5 py-3">Lượt thủ</th>
+              <th className="w-14 px-3.5 py-3 text-center">Tôi</th>
+              <th className="w-32 px-3.5 py-3">Lượt đánh</th>
+              <th className="w-28 px-3.5 py-3">% Phá huỷ (Công)</th>
+              <th className="w-32 px-3.5 py-3">Lượt thủ</th>
+              <th className="w-28 px-3.5 py-3">% Phá huỷ (Thủ)</th>
               <th className="w-36 px-3.5 py-3">Cup hiện tại</th>
               <th className="w-44 px-3.5 py-3">Cup tối đa</th>
-              <th className="w-36 px-3.5 py-3">Đánh giá</th>
+              <th className="w-32 px-3.5 py-3">Đánh giá</th>
               <th className="w-14 px-3.5 py-3"></th>
             </tr>
           </thead>
@@ -463,7 +465,7 @@ export function PlayerTable({
                   {/* Vạch Phân Cách Thăng Hạng */}
                   {isAfterPromotionLine && (
                     <tr key="divider-promotion" className="select-none animate-fade-in">
-                      <td colSpan={9} className="p-0 border-y-2 border-emerald-500 bg-emerald-500/20 dark:bg-emerald-950/70">
+                      <td colSpan={11} className="p-0 border-y-2 border-emerald-500 bg-emerald-500/20 dark:bg-emerald-950/70">
                         <div className="flex items-center justify-between px-4 py-2 text-xs font-black text-emerald-800 dark:text-emerald-300">
                           <div className="flex items-center gap-2">
                             <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-emerald-500 text-[10px] text-white">
@@ -482,7 +484,7 @@ export function PlayerTable({
                   {/* Vạch Phân Cách Xuống Hạng */}
                   {isBeforeDemotionLine && (
                     <tr key="divider-demotion" className="select-none animate-fade-in">
-                      <td colSpan={9} className="p-0 border-y-2 border-rose-500 bg-rose-500/20 dark:bg-rose-950/70">
+                      <td colSpan={11} className="p-0 border-y-2 border-rose-500 bg-rose-500/20 dark:bg-rose-950/70">
                         <div className="flex items-center justify-between px-4 py-2 text-xs font-black text-rose-800 dark:text-rose-300">
                           <div className="flex items-center gap-2">
                             <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-rose-500 text-[10px] text-white">

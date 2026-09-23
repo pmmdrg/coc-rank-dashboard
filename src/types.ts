@@ -6,6 +6,8 @@ export type Player = {
   rank: number
   attacks: number
   defenses: number
+  attackDestruction?: number
+  defenseDestruction?: number
   currentCups: number
   maxPossibleCups: number
   rating: RatingCategory

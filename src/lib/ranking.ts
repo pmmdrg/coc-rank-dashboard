@@ -47,9 +47,23 @@ export function calculatePlayerRating(currentCups: number, attacks: number): {
 function sortAndRankPlayers(players: Player[]): Player[] {
   return [...players]
     .sort((a, b) => {
+      // 1. Cúp hiện tại (cao hơn đứng trên)
       const currentCupDiff = b.currentCups - a.currentCups
       if (currentCupDiff !== 0) return currentCupDiff
 
+      // 2. Tie-break: % Phá huỷ công (cao hơn đứng trên)
+      const aAtkDest = a.attackDestruction ?? 0
+      const bAtkDest = b.attackDestruction ?? 0
+      const atkDestDiff = bAtkDest - aAtkDest
+      if (Math.abs(atkDestDiff) >= 0.05) return atkDestDiff
+
+      // 3. Tie-break: % Phá huỷ thủ (thấp hơn đứng trên - thủ tốt hơn)
+      const aDefDest = a.defenseDestruction ?? 0
+      const bDefDest = b.defenseDestruction ?? 0
+      const defDestDiff = aDefDest - bDefDest
+      if (Math.abs(defDestDiff) >= 0.05) return defDestDiff
+
+      // 4. Tên theo bảng chữ cái A-Z
       const nameDiff = a.name.localeCompare(b.name)
       if (nameDiff !== 0) return nameDiff
 
@@ -75,6 +89,14 @@ export function normalizeSeason(season: Season): RankedSeason {
   const updatedPlayers = playersList.map((p, idx) => {
     const attacks = Math.min(maxAttacks, Math.max(0, Number(p.attacks) || 0))
     const defenses = Math.min(maxDefenses, Math.max(0, Number(p.defenses) || 0))
+    const rawAtkDest = Number(p.attackDestruction)
+    const attackDestruction = Number.isFinite(rawAtkDest)
+      ? Math.min(100, Math.max(0, Math.round(rawAtkDest * 10) / 10))
+      : 0
+    const rawDefDest = Number(p.defenseDestruction)
+    const defenseDestruction = Number.isFinite(rawDefDest)
+      ? Math.min(100, Math.max(0, Math.round(rawDefDest * 10) / 10))
+      : 0
     const currentCups = Math.max(0, Number(p.currentCups) || 0)
     const maxPossibleCups = calculateMaxPossibleCups(currentCups, attacks, maxAttacks)
     const { rating } = calculatePlayerRating(currentCups, attacks)
@@ -85,6 +107,8 @@ export function normalizeSeason(season: Season): RankedSeason {
       name: p.name || `Người chơi ${idx + 1}`,
       attacks,
       defenses,
+      attackDestruction,
+      defenseDestruction,
       currentCups,
       maxPossibleCups,
       rating,
@@ -147,6 +171,8 @@ export function createPlayer(maxAttacks: number = 24): Player {
     rank: 0,
     attacks: 0,
     defenses: 0,
+    attackDestruction: 0,
+    defenseDestruction: 0,
     currentCups: 0,
     maxPossibleCups: maxAttacks * 40,
     rating: 'safe',
