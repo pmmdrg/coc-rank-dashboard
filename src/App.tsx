@@ -21,7 +21,7 @@ import { PlayerTable } from './components/PlayerTable'
 import { SeasonHeader } from './components/SeasonHeader'
 import { SeasonMetaForm } from './components/SeasonMetaForm'
 import { StatCardsGrid } from './components/StatCardsGrid'
-import { SummaryTables } from './components/SummaryTables'
+import { HighlightStatsTable } from './components/HighlightStatsTable'
 import { Footer } from './components/Footer'
 import { Analytics } from '@vercel/analytics/react'
 
@@ -440,10 +440,10 @@ function App() {
           myPlayerName={myPlayerName}
         />
 
-        {/* Bảng tổng hợp phân loại đánh giá */}
-        <SummaryTables
-          ratingCounts={stats.ratingCounts}
-          totalPlayers={rankedSeason.players.length}
+        {/* Bảng thống kê nổi bật & kỷ lục mùa giải */}
+        <HighlightStatsTable
+          players={rankedSeason.players}
+          myPlayerId={rankedSeason.myPlayerId}
         />
 
         {/* Bảng danh sách người chơi chi tiết */}
