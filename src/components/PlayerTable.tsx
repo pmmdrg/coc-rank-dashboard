@@ -1,5 +1,6 @@
 import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { Plus } from 'lucide-react'
+import { createPortal } from 'react-dom'
+import { Plus, Scale } from 'lucide-react'
 import type { Player, RankingStats, Season } from '../types'
 import { ConfirmDeleteModal } from './ConfirmDeleteModal'
 import { PlayerRow } from './PlayerRow'
@@ -193,6 +194,30 @@ export function PlayerTable({
       }
     })
   }, [rankedPlayers, frozenOrderIds])
+
+  // Thống kê cân bằng tổng lượt công và tổng lượt thủ trong bảng kín 100 người chơi
+  const { totalAttacks, totalDefenses, diff, imbalanceType } = useMemo(() => {
+    let attacks = 0
+    let defenses = 0
+    for (const p of rankedPlayers) {
+      attacks += Number(p.attacks) || 0
+      defenses += Number(p.defenses) || 0
+    }
+    const difference = Math.abs(attacks - defenses)
+    const type: 'equal' | 'attacks_more' | 'defenses_more' =
+      attacks > defenses
+        ? 'attacks_more'
+        : defenses > attacks
+          ? 'defenses_more'
+          : 'equal'
+
+    return {
+      totalAttacks: attacks,
+      totalDefenses: defenses,
+      diff: difference,
+      imbalanceType: type,
+    }
+  }, [rankedPlayers])
 
   const promotionCount = season.promotionCount !== undefined ? season.promotionCount : 2
   const demotionCount = season.demotionCount !== undefined ? season.demotionCount : 1
@@ -391,7 +416,7 @@ export function PlayerTable({
     <section className="glass-panel rounded-xl shadow-sm">
       <div className="flex flex-col gap-3 border-b border-slate-200/60 p-5 sm:flex-row sm:items-center sm:justify-between dark:border-slate-700/60">
         <div>
-          <div className="flex items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2.5">
             <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Danh sách Người chơi</h2>
             <span
               className="hidden items-center gap-1.5 rounded-full border border-sky-200/60 bg-sky-50 px-2.5 py-0.5 text-[11px] font-medium text-sky-800 dark:border-sky-800/60 dark:bg-sky-950/50 dark:text-sky-300 sm:inline-flex"
@@ -400,6 +425,25 @@ export function PlayerTable({
               <span>⌨️</span>
               <kbd className="rounded bg-white px-1 py-0.2 shadow-xs border border-sky-300/50 dark:bg-slate-900 dark:border-sky-800">Tab</kbd> / <kbd className="rounded bg-white px-1 py-0.2 shadow-xs border border-sky-300/50 dark:bg-slate-900 dark:border-sky-800">Enter</kbd> đổi ô nhanh
             </span>
+
+            {/* Cảnh báo lệch lượt công / thủ */}
+            {imbalanceType !== 'equal' && (
+              <span
+                className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/60 bg-amber-500/10 px-2.5 py-0.5 text-[11px] font-semibold text-amber-800 shadow-xs dark:border-amber-500/40 dark:bg-amber-950/40 dark:text-amber-300"
+                title={`Bảng đánh kín: Tổng công (${totalAttacks}) phải bằng Tổng thủ (${totalDefenses}). Hiện đang lệch ${diff} lượt.`}
+              >
+                <Scale className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
+                <span>
+                  Lệch công/thủ:{' '}
+                  <strong>
+                    {imbalanceType === 'attacks_more'
+                      ? `Công nhiều hơn Thủ ${diff} lượt`
+                      : `Thủ nhiều hơn Công ${diff} lượt`}
+                  </strong>{' '}
+                  <span className="opacity-80">({totalAttacks} công / {totalDefenses} thủ)</span>
+                </span>
+              </span>
+            )}
           </div>
           <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
             Dùng phím <kbd className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[10px] dark:bg-slate-800">Tab</kbd> / <kbd className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[10px] dark:bg-slate-800">Enter</kbd> / <kbd className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[10px] dark:bg-slate-800">Shift+Tab</kbd> hoặc <kbd className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[10px] dark:bg-slate-800">Alt + Mũi tên</kbd> để nhập liệu liền mạch không cần chuột.
@@ -422,14 +466,60 @@ export function PlayerTable({
               <th className="w-[136px] min-w-[136px] max-w-[136px] px-2.5 py-2.5 whitespace-nowrap">Rank</th>
               <th className="w-48 min-w-[165px] max-w-[210px] px-2 py-2.5">Tên người chơi</th>
               <th className="w-11 min-w-[40px] px-1 py-2.5 text-center">Tôi</th>
-              <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap">Lượt đánh</th>
+              <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap">
+                <div className="leading-tight">
+                  <div className="flex items-center gap-1">
+                    <span>Lượt đánh</span>
+                    {imbalanceType === 'attacks_more' && (
+                      <span
+                        className="inline-flex items-center px-1 rounded text-[10px] font-extrabold bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-500/40"
+                        title={`Lượt đánh đang nhiều hơn lượt thủ ${diff} lượt`}
+                      >
+                        +{diff}
+                      </span>
+                    )}
+                  </div>
+                  <div
+                    className={`text-[10px] normal-case ${
+                      imbalanceType === 'attacks_more'
+                        ? 'font-bold text-amber-700 dark:text-amber-400'
+                        : 'font-medium text-slate-500/80 dark:text-slate-400/80'
+                    }`}
+                  >
+                    Tổng: {totalAttacks}
+                  </div>
+                </div>
+              </th>
               <th className="w-22 min-w-[84px] px-1.5 py-2.5 whitespace-nowrap text-center">
                 <div className="leading-tight">
                   <div>% Phá huỷ</div>
                   <div className="text-[10px] font-bold text-amber-600 dark:text-amber-400 normal-case">(Công)</div>
                 </div>
               </th>
-              <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap">Lượt thủ</th>
+              <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap">
+                <div className="leading-tight">
+                  <div className="flex items-center gap-1">
+                    <span>Lượt thủ</span>
+                    {imbalanceType === 'defenses_more' && (
+                      <span
+                        className="inline-flex items-center px-1 rounded text-[10px] font-extrabold bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-500/40"
+                        title={`Lượt thủ đang nhiều hơn lượt đánh ${diff} lượt`}
+                      >
+                        +{diff}
+                      </span>
+                    )}
+                  </div>
+                  <div
+                    className={`text-[10px] normal-case ${
+                      imbalanceType === 'defenses_more'
+                        ? 'font-bold text-amber-700 dark:text-amber-400'
+                        : 'font-medium text-slate-500/80 dark:text-slate-400/80'
+                    }`}
+                  >
+                    Tổng: {totalDefenses}
+                  </div>
+                </div>
+              </th>
               <th className="w-22 min-w-[84px] px-1.5 py-2.5 whitespace-nowrap text-center">
                 <div className="leading-tight">
                   <div>% Phá huỷ</div>
@@ -570,6 +660,34 @@ export function PlayerTable({
           }, 230)
         }}
       />
+
+      {/* Floating alert theo dõi cân bằng thời gian thực khi cuộn rà soát bảng 100 người */}
+      {imbalanceType !== 'equal' &&
+        typeof document !== 'undefined' &&
+        createPortal(
+          <aside
+            aria-label="Cảnh báo lệch số lượt công thủ"
+            className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 rounded-full border border-amber-400/60 bg-white/95 px-4 py-2.5 text-xs font-semibold text-amber-900 shadow-2xl backdrop-blur-md transition-all duration-300 hover:scale-105 dark:border-amber-500/50 dark:bg-slate-900/95 dark:text-amber-200"
+          >
+            <span className="relative flex h-2.5 w-2.5 shrink-0">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75" />
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-amber-500" />
+            </span>
+            <Scale className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0" />
+            <span>
+              Lệch công/thủ:{' '}
+              <strong className="font-bold text-amber-700 dark:text-amber-300">
+                {imbalanceType === 'attacks_more'
+                  ? `Công dư +${diff} lượt`
+                  : `Thủ dư +${diff} lượt`}
+              </strong>{' '}
+              <span className="font-normal opacity-85">
+                ({totalAttacks} công vs {totalDefenses} thủ)
+              </span>
+            </span>
+          </aside>,
+          document.body,
+        )}
     </section>
   )
 }
