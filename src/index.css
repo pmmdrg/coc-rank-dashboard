@@ -252,6 +252,22 @@ html.dark .glass-panel {
   animation: fade-in 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* Hiệu ứng mượt mà cho các hàng khi lọc bảng thống kê nổi bật */
+@keyframes filter-row-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-filter-row {
+  animation: filter-row-fade-in 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 /* Hiệu ứng huy hiệu nhảy rank: fade in mượt mà ➔ giữ sáng ➔ fade out tan dần trước khi unmount */
 @keyframes badge-jump-fade {
   0% {
