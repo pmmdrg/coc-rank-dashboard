@@ -1,5 +1,16 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { Swords, ShieldCheck, Trophy, Sparkles, TrendingDown, ShieldAlert, Award, AlertTriangle } from 'lucide-react'
+import {
+  Swords,
+  ShieldCheck,
+  Trophy,
+  Sparkles,
+  TrendingDown,
+  ShieldAlert,
+  Award,
+  AlertTriangle,
+  Shield,
+  UserCheck,
+} from 'lucide-react'
 import type { Player } from '../types'
 
 export interface HighlightStatsTableProps {
@@ -54,6 +65,102 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
   const animatedWrapperRef = useRef<HTMLDivElement>(null)
   const innerContentRef = useRef<HTMLDivElement>(null)
   const prevHeightRef = useRef<number | null>(null)
+
+  // Tìm tài khoản của tôi và các đối thủ khác trong bảng
+  const myPlayer = useMemo(() => {
+    return players.find((p) => p.id === myPlayerId)
+  }, [players, myPlayerId])
+
+  const otherPlayers = useMemo(() => {
+    return players.filter((p) => p.id !== myPlayerId)
+  }, [players, myPlayerId])
+
+  // --- TÍNH TOÁN SO SÁNH NĂNG LỰC CỦA TÔI SO VỚI TOÀN BẢNG ---
+  const myComparisonStats = useMemo(() => {
+    if (!myPlayer) return null
+
+    const totalOpponents = otherPlayers.length
+
+    // 1. % Công: Lớn hơn là tốt hơn
+    const myAtk = myPlayer.attackDestruction ?? 0
+    const hasMyAttack = (myPlayer.attacks ?? 0) > 0 || myAtk > 0
+    const activeAtkOpponents = otherPlayers.filter(
+      (p) => (p.attacks ?? 0) > 0 || (p.attackDestruction ?? 0) > 0,
+    )
+
+    let atkPercentBetter = 0
+    let atkBetterCount = 0
+    let atkTiedCount = 0
+
+    if (hasMyAttack) {
+      if (totalOpponents === 0) {
+        atkPercentBetter = 100
+      } else {
+        atkBetterCount = otherPlayers.filter((p) => myAtk > (p.attackDestruction ?? 0)).length
+        atkTiedCount = otherPlayers.filter((p) => myAtk === (p.attackDestruction ?? 0)).length
+        atkPercentBetter = Math.round((atkBetterCount / totalOpponents) * 1000) / 10
+      }
+    }
+
+    // 2. % Thủ: Bé hơn là tốt hơn (chịu ít % phá huỷ hơn = thủ kiên cố hơn)
+    const myDef = myPlayer.defenseDestruction ?? 0
+    const hasMyDefense = (myPlayer.defenses ?? 0) > 0 || myDef > 0
+    const activeDefOpponents = otherPlayers.filter(
+      (p) => (p.defenses ?? 0) > 0 || (p.defenseDestruction ?? 0) > 0,
+    )
+
+    let defPercentBetter = 0
+    let defBetterCount = 0
+    let defTiedCount = 0
+
+    if (hasMyDefense) {
+      if (activeDefOpponents.length === 0) {
+        defPercentBetter = 100
+      } else {
+        // So sánh với những đối thủ đã thực sự nhận lượt thủ
+        defBetterCount = activeDefOpponents.filter((p) => myDef < (p.defenseDestruction ?? 0)).length
+        defTiedCount = activeDefOpponents.filter((p) => myDef === (p.defenseDestruction ?? 0)).length
+        defPercentBetter = Math.round((defBetterCount / activeDefOpponents.length) * 1000) / 10
+      }
+    }
+
+    // 3. Cup tối đa: Lớn hơn là tốt hơn
+    const myMaxCups = myPlayer.maxPossibleCups ?? 0
+    let cupsPercentBetter = 0
+    let cupsBetterCount = 0
+    let cupsTiedCount = 0
+
+    if (totalOpponents === 0) {
+      cupsPercentBetter = 100
+    } else {
+      cupsBetterCount = otherPlayers.filter((p) => myMaxCups > (p.maxPossibleCups ?? 0)).length
+      cupsTiedCount = otherPlayers.filter((p) => myMaxCups === (p.maxPossibleCups ?? 0)).length
+      cupsPercentBetter = Math.round((cupsBetterCount / totalOpponents) * 1000) / 10
+    }
+
+    return {
+      hasMyAttack,
+      myAtk,
+      atkPercentBetter,
+      atkBetterCount,
+      atkTiedCount,
+      activeAtkCount: activeAtkOpponents.length,
+
+      hasMyDefense,
+      myDef,
+      defPercentBetter,
+      defBetterCount,
+      defTiedCount,
+      activeDefCount: activeDefOpponents.length,
+
+      myMaxCups,
+      cupsPercentBetter,
+      cupsBetterCount,
+      cupsTiedCount,
+
+      totalOpponents,
+    }
+  }, [myPlayer, otherPlayers])
 
   // Lưu chiều cao trước khi state filter thay đổi để tạo hiệu ứng chuyển động mượt mà
   const handleFilterChange = (mode: FilterMode) => {
@@ -185,7 +292,7 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
 
   return (
     <section>
-      <div className="glass-panel rounded-xl p-5 shadow-sm">
+      <div className="glass-panel rounded-xl p-5 shadow-sm space-y-4">
         {/* Header với Tiêu đề, Bộ lọc nhanh & Tổng số người chơi */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
@@ -241,9 +348,185 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
           </div>
         </div>
 
-        {/* Khung chuyển động co giãn chiều cao mượt mà */}
+        {/* ==================== PHẦN MỚI: ĐỊNH VỊ NĂNG LỰC CỦA BẠN SO VỚI TOÀN BẢNG ==================== */}
+        {myPlayer && myComparisonStats ? (
+          <div className="rounded-xl border border-sky-500/20 bg-sky-500/5 p-4 dark:border-sky-500/30 dark:bg-sky-950/20">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-3.5">
+              <div className="flex items-center gap-2">
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-sky-500/20 text-sky-600 dark:text-sky-400">
+                  <UserCheck className="h-3.5 w-3.5" />
+                </span>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-100">
+                  Vị thế năng lực của bạn ({myPlayer.name}) so với các đối thủ trong bảng
+                </h4>
+              </div>
+              <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                Đo lường trên {myComparisonStats.totalOpponents} đối thủ
+              </span>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-3">
+              {/* Thẻ 1: % Phá huỷ công */}
+              <div className="flex flex-col justify-between rounded-lg border border-amber-500/25 bg-white/80 p-3.5 shadow-2xs transition-all hover:border-amber-500/40 dark:border-amber-500/25 dark:bg-slate-900/70">
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                      <Swords className="h-3.5 w-3.5 text-amber-500" />
+                      % Phá huỷ (Công)
+                    </span>
+                    <span className="rounded-md border border-amber-500/30 bg-amber-500/15 px-2 py-0.5 text-xs font-bold text-amber-700 dark:text-amber-300">
+                      {myComparisonStats.hasMyAttack ? `${myComparisonStats.myAtk.toFixed(1)} %` : 'Chưa đánh'}
+                    </span>
+                  </div>
+
+                  <div className="mt-2.5">
+                    {myComparisonStats.hasMyAttack ? (
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-xl font-black text-amber-600 dark:text-amber-400">
+                          Tốt hơn {myComparisonStats.atkPercentBetter.toFixed(1)}%
+                        </span>
+                        <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                          đối thủ
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="text-sm font-semibold italic text-slate-400 dark:text-slate-500">
+                        Chưa có lượt đánh
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mt-3">
+                  <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200/80 dark:bg-slate-700/80">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-amber-500 to-amber-400 transition-all duration-600"
+                      style={{ width: `${myComparisonStats.hasMyAttack ? myComparisonStats.atkPercentBetter : 0}%` }}
+                    />
+                  </div>
+                  <p className="mt-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+                    {myComparisonStats.hasMyAttack
+                      ? `Vượt ${myComparisonStats.atkBetterCount}/${myComparisonStats.totalOpponents} người chơi trong bảng${
+                          myComparisonStats.atkTiedCount > 0 ? ` (bằng ${myComparisonStats.atkTiedCount} người)` : ''
+                        }`
+                      : 'Cần ít nhất 1 lượt đánh để tính tỷ lệ'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Thẻ 2: % Phá huỷ thủ */}
+              <div className="flex flex-col justify-between rounded-lg border border-emerald-500/25 bg-white/80 p-3.5 shadow-2xs transition-all hover:border-emerald-500/40 dark:border-emerald-500/25 dark:bg-slate-900/70">
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                      <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
+                      % Phá huỷ (Thủ)
+                    </span>
+                    <span className="rounded-md border border-emerald-500/30 bg-emerald-500/15 px-2 py-0.5 text-xs font-bold text-emerald-700 dark:text-emerald-300">
+                      {myComparisonStats.hasMyDefense ? `${myComparisonStats.myDef.toFixed(1)} %` : 'Chưa thủ'}
+                    </span>
+                  </div>
+
+                  <div className="mt-2.5">
+                    {myComparisonStats.hasMyDefense ? (
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-xl font-black text-emerald-600 dark:text-emerald-400">
+                          Tốt hơn {myComparisonStats.defPercentBetter.toFixed(1)}%
+                        </span>
+                        <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                          đối thủ
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="text-sm font-semibold italic text-slate-400 dark:text-slate-500">
+                        Chưa có lượt thủ
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mt-3">
+                  <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200/80 dark:bg-slate-700/80">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-600"
+                      style={{ width: `${myComparisonStats.hasMyDefense ? myComparisonStats.defPercentBetter : 0}%` }}
+                    />
+                  </div>
+                  <p className="mt-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+                    {myComparisonStats.hasMyDefense
+                      ? `Thủ kiên cố hơn ${myComparisonStats.defBetterCount}/${myComparisonStats.activeDefCount} đối thủ đã thủ${
+                          myComparisonStats.defTiedCount > 0 ? ` (bằng ${myComparisonStats.defTiedCount} người)` : ''
+                        }`
+                      : 'Cần nhận ít nhất 1 lượt thủ để tính tỷ lệ'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Thẻ 3: Cup tối đa */}
+              <div className="flex flex-col justify-between rounded-lg border border-indigo-500/25 bg-white/80 p-3.5 shadow-2xs transition-all hover:border-indigo-500/40 dark:border-indigo-500/25 dark:bg-slate-900/70">
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                      <Trophy className="h-3.5 w-3.5 text-indigo-500" />
+                      Cup tối đa
+                    </span>
+                    <span className="rounded-md border border-indigo-500/30 bg-indigo-500/15 px-2 py-0.5 text-xs font-bold text-indigo-700 dark:text-indigo-300">
+                      {new Intl.NumberFormat('vi-VN').format(myComparisonStats.myMaxCups)} cup
+                    </span>
+                  </div>
+
+                  <div className="mt-2.5">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-xl font-black text-indigo-600 dark:text-indigo-400">
+                        {myComparisonStats.cupsTiedCount === myComparisonStats.totalOpponents
+                          ? 'Đồng hạng trần'
+                          : `Tốt hơn ${myComparisonStats.cupsPercentBetter.toFixed(1)}%`}
+                      </span>
+                      {myComparisonStats.cupsTiedCount !== myComparisonStats.totalOpponents && (
+                        <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                          đối thủ
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-3">
+                  <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200/80 dark:bg-slate-700/80">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-400 transition-all duration-600"
+                      style={{
+                        width: `${
+                          myComparisonStats.cupsTiedCount === myComparisonStats.totalOpponents
+                            ? 100
+                            : myComparisonStats.cupsPercentBetter
+                        }%`,
+                      }}
+                    />
+                  </div>
+                  <p className="mt-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+                    {myComparisonStats.cupsTiedCount === myComparisonStats.totalOpponents
+                      ? `Cùng mức trần cúp lý thuyết với tất cả ${myComparisonStats.totalOpponents} người chơi`
+                      : `Trần cúp cao hơn ${myComparisonStats.cupsBetterCount}/${myComparisonStats.totalOpponents} người chơi${
+                          myComparisonStats.cupsTiedCount > 0 ? ` (bằng ${myComparisonStats.cupsTiedCount} người)` : ''
+                        }`}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center gap-3 rounded-xl border border-dashed border-slate-300/80 bg-slate-50/50 p-3.5 text-xs text-slate-500 dark:border-slate-700/80 dark:bg-slate-800/30 dark:text-slate-400">
+            <Shield className="h-4 w-4 text-sky-500 shrink-0" />
+            <span>
+              Chọn tài khoản của bạn (bấm icon khiên ở cột <strong>"Tôi"</strong> trong bảng danh sách) để xem tỷ lệ năng lực của bạn vượt trội hơn bao nhiêu % người chơi trong bảng.
+            </span>
+          </div>
+        )}
+
+        {/* Khung chuyển động co giãn chiều cao mượt mà khi filter */}
         <div ref={animatedWrapperRef} className="will-change-[height]">
-          <div ref={innerContentRef} className="mt-3 overflow-x-auto rounded-lg border border-slate-200/60 dark:border-slate-700/60">
+          <div ref={innerContentRef} className="overflow-x-auto rounded-lg border border-slate-200/60 dark:border-slate-700/60">
             <table className="w-full text-sm">
               <thead className="soft-table-head text-xs uppercase tracking-wider">
                 <tr>
