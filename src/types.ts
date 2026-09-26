@@ -1,4 +1,12 @@
-export type RatingCategory = 'safe' | 'contested' | 'danger' | 'elite'
+export type RatingCategory =
+  | 'outstanding'
+  | 'elite'
+  | 'good'
+  | 'potential'
+  | 'needs_effort'
+  | 'not_good'
+  | 'terrible'
+  | 'safe'
 
 export type Player = {
   id: string

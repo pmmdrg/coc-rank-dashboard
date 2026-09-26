@@ -33,7 +33,16 @@ const comparisonColors = {
   below: '#10b981',
 }
 
-const ratingOptions: RatingCategory[] = ['elite', 'contested', 'danger', 'safe']
+const ratingOptions: RatingCategory[] = [
+  'outstanding',
+  'elite',
+  'good',
+  'potential',
+  'needs_effort',
+  'not_good',
+  'terrible',
+  'safe',
+]
 
 function loadInitialDocument(): StorageDocument {
   const defaultSeason = normalizeSeason(sampleSeason)

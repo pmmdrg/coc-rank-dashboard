@@ -8,16 +8,24 @@ import type {
 } from '../types'
 
 export const ratingLabels: Record<RatingCategory, string> = {
+  outstanding: 'Xuất sắc',
   elite: 'Đỉnh',
-  contested: 'Kỹ năng tốt',
-  danger: 'Có tiềm năng',
+  good: 'Kỹ năng tốt',
+  potential: 'Có tiềm năng',
+  needs_effort: 'Cần cố gắng',
+  not_good: 'Chưa tốt',
+  terrible: 'Quá gà',
   safe: 'Chưa đánh',
 }
 
 export const ratingColors: Record<RatingCategory, string> = {
+  outstanding: '#8b5cf6',
   elite: '#10b981',
-  contested: '#0284c7',
-  danger: '#f59e0b',
+  good: '#0284c7',
+  potential: '#f59e0b',
+  needs_effort: '#ea580c',
+  not_good: '#f43f5e',
+  terrible: '#dc2626',
   safe: '#64748b',
 }
 
@@ -94,14 +102,22 @@ export function calculatePlayerRating(
   // Công thức: cup thủ = cup hiện tại - cup công
   const defenseCups = effectiveCups - attackCups
 
-  // Đánh giá được tính dựa theo số cup đánh chia cho số lượt đánh
+  // Đánh giá được tính trực tiếp dựa theo % công (attackDestruction)
   const avgCupsPerAttack = attacks > 0 ? attackCups / attacks : 0
 
-  let rating: RatingCategory = 'danger'
-  if (avgCupsPerAttack >= 36) {
+  let rating: RatingCategory = 'terrible'
+  if (rawAtkDest >= 98) {
+    rating = 'outstanding'
+  } else if (rawAtkDest >= 95) {
     rating = 'elite'
-  } else if (avgCupsPerAttack >= 32) {
-    rating = 'contested'
+  } else if (rawAtkDest >= 92) {
+    rating = 'good'
+  } else if (rawAtkDest >= 89) {
+    rating = 'potential'
+  } else if (rawAtkDest >= 86) {
+    rating = 'needs_effort'
+  } else if (rawAtkDest >= 83) {
+    rating = 'not_good'
   }
 
   return {
@@ -225,7 +241,16 @@ export function getRankingStats(season: Season): RankingStats {
       counts[player.rating] += 1
       return counts
     },
-    { safe: 0, contested: 0, danger: 0, elite: 0 } satisfies Record<RatingCategory, number>,
+    {
+      outstanding: 0,
+      elite: 0,
+      good: 0,
+      potential: 0,
+      needs_effort: 0,
+      not_good: 0,
+      terrible: 0,
+      safe: 0,
+    } satisfies Record<RatingCategory, number>,
   )
 
   const attackStatusCounts = rankedSeason.players.reduce(

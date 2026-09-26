@@ -22,9 +22,13 @@ interface PlayerRowProps {
 }
 
 const ratingTagColors: Record<RatingCategory, string> = {
+  outstanding: 'bg-purple-500/15 text-purple-700 dark:text-purple-300 border-purple-500/30',
   elite: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30',
-  contested: 'bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/30',
-  danger: 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30',
+  good: 'bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/30',
+  potential: 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30',
+  needs_effort: 'bg-orange-500/15 text-orange-700 dark:text-orange-300 border-orange-500/30',
+  not_good: 'bg-rose-500/15 text-rose-700 dark:text-rose-300 border-rose-500/30',
+  terrible: 'bg-red-600/15 text-red-700 dark:text-red-400 border-red-600/30',
   safe: 'bg-slate-500/15 text-slate-700 dark:text-slate-300 border-slate-500/30',
 }
 
@@ -579,20 +583,14 @@ export function PlayerRow({
         </div>
       </td>
 
-      {/* Phân loại đánh giá (Tính tự động theo số cup trung bình/lượt) */}
+      {/* Phân loại đánh giá (Tính tự động trực tiếp theo % công) */}
       <td className="px-2 py-2 align-middle">
         <div
           className={`flex h-9 w-full items-center justify-center rounded-md border text-xs font-bold shadow-xs select-none transition-colors ${ratingTagColors[player.rating]}`}
           title={
             player.attacks === 0
               ? 'Chưa đánh lượt nào (Đánh giá: Chưa đánh)'
-              : `Khả năng tấn công: ${avgCupsPerAttack.toFixed(1)} cup/lượt công (~${attackCups} cup công / ${player.attacks} lượt công, ~${defenseCups >= 0 ? '+' : ''}${defenseCups} cup thủ) (${
-                  player.rating === 'elite'
-                    ? '≥ 36: Đỉnh'
-                    : player.rating === 'contested'
-                      ? '≥ 32: Kỹ năng tốt'
-                      : '< 32: Có tiềm năng'
-                })`
+              : `Đánh giá: ${ratingLabels[player.rating]} (${formatDestruction(player.attackDestruction)}% công) • ~${attackCups} cup công (${avgCupsPerAttack.toFixed(1)} cup/lượt)`
           }
         >
           {ratingLabels[player.rating]}

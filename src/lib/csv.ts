@@ -181,7 +181,16 @@ export function csvToSeasons(csv: string): Season[] {
       defenseDestruction,
       currentCups: parseNumber(entry.currentCups),
       maxPossibleCups: parseNumber(entry.maxPossibleCups),
-      rating: ['safe', 'contested', 'danger', 'elite'].includes(entry.rating)
+      rating: [
+        'outstanding',
+        'elite',
+        'good',
+        'potential',
+        'needs_effort',
+        'not_good',
+        'terrible',
+        'safe',
+      ].includes(entry.rating)
         ? (entry.rating as Player['rating'])
         : 'safe',
     })
