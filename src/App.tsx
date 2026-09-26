@@ -3,6 +3,7 @@ import { sampleSeason } from './data/sampleSeason'
 import {
   attackStatusColors,
   attackStatusLabels,
+  calculateMaxPossibleCups,
   calculatePlayerRating,
   createPlayer,
   getRankingStats,
@@ -325,10 +326,19 @@ function App() {
           field === 'attackDestruction'
             ? Number(finalValue)
             : (updated.attackDestruction ?? 0)
+        const defenseDestruction =
+          field === 'defenseDestruction'
+            ? Number(finalValue)
+            : (updated.defenseDestruction ?? 0)
         const currentCups = field === 'currentCups' ? Number(finalValue) : updated.currentCups
-        const remainingAttacks = Math.max(0, maxAttacks - attacks)
-        const remainingDefenses = Math.max(0, maxDefenses - defenses)
-        updated.maxPossibleCups = currentCups + remainingAttacks * 40 + remainingDefenses * 15
+        updated.maxPossibleCups = calculateMaxPossibleCups(
+          currentCups,
+          attacks,
+          defenses,
+          defenseDestruction,
+          maxAttacks,
+          maxDefenses,
+        )
         const ratingResult = calculatePlayerRating(currentCups, attacks, attackDestruction, defenses)
         updated.rating = ratingResult.rating
         updated.attackCups = ratingResult.attackCups

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Shield, Trash2 } from 'lucide-react'
 import type { Player, RatingCategory } from '../types'
-import { calculatePlayerRating, ratingLabels } from '../lib/ranking'
+import { calculatePlayerRating, getCupsPerRemainingDefense, ratingLabels } from '../lib/ranking'
 
 interface PlayerRowProps {
   player: Player
@@ -78,6 +78,10 @@ export function PlayerRow({
 
   const remainingAttacks = Math.max(0, maxAttacks - player.attacks)
   const remainingDefenses = Math.max(0, maxDefenses - player.defenses)
+  const cupsPerRemainingDefense = getCupsPerRemainingDefense(
+    player.defenses,
+    player.defenseDestruction,
+  )
   const { avgCupsPerAttack, attackCups, defenseCups } = calculatePlayerRating(
     player.currentCups,
     player.attacks,
@@ -541,7 +545,11 @@ export function PlayerRow({
             readOnly
             tabIndex={-1}
             value={player.maxPossibleCups.toLocaleString('vi-VN')}
-            title={`Công thức: ${player.currentCups} cup hiện tại + (${maxAttacks} - ${player.attacks}) lượt công × 40 + (${maxDefenses} - ${player.defenses}) lượt thủ × 15 = ${player.maxPossibleCups} cup`}
+            title={
+              player.defenses <= 0
+                ? `Công thức: ${player.currentCups} cup hiện tại + (${maxAttacks} - ${player.attacks}) lượt công × 40 + (${remainingDefenses}) lượt thủ × 0 cup (chưa có trận thủ) = ${player.maxPossibleCups} cup`
+                : `Công thức: ${player.currentCups} cup hiện tại + (${maxAttacks} - ${player.attacks}) lượt công × 40 + (${remainingDefenses}) lượt thủ × ${cupsPerRemainingDefense} cup (theo ${formatDestruction(player.defenseDestruction)}% thủ) = ${player.maxPossibleCups} cup`
+            }
             className={`soft-field h-9 w-full rounded-md px-2 pr-[98px] text-sm font-bold select-all cursor-default transition-colors ${
               isMyPlayer
                 ? 'border-sky-400/40 bg-sky-500/10 text-sky-700 dark:border-sky-500/40 dark:bg-sky-950/40 dark:text-sky-300'

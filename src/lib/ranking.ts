@@ -33,16 +33,32 @@ export const attackStatusColors: Record<AttackStatusCategory, string> = {
   notStarted: '#64748b',
 }
 
-function calculateMaxPossibleCups(
+export function getCupsPerRemainingDefense(
+  defenses: number,
+  defenseDestruction?: number,
+): number {
+  if (defenses <= 0) return 0
+  const d = Math.max(0, defenseDestruction || 0)
+  if (d >= 100) return 0
+  if (d >= 98) return 8
+  if (d >= 95) return 9
+  const diff = Math.round((95 - d) * 10) / 10
+  const steps = Math.ceil(diff / 3)
+  return Math.min(40, 9 + steps)
+}
+
+export function calculateMaxPossibleCups(
   currentCups: number,
   attacks: number,
   defenses: number = 0,
+  defenseDestruction: number = 0,
   maxAttacks: number = 24,
   maxDefenses: number = 24,
 ): number {
   const remainingAttacks = Math.max(0, maxAttacks - Math.max(0, attacks))
   const remainingDefenses = Math.max(0, maxDefenses - Math.max(0, defenses))
-  return Math.max(0, currentCups) + remainingAttacks * 40 + remainingDefenses * 15
+  const cupsPerRemainingDef = getCupsPerRemainingDefense(defenses, defenseDestruction)
+  return Math.max(0, currentCups) + remainingAttacks * 40 + remainingDefenses * cupsPerRemainingDef
 }
 
 export function calculatePlayerRating(
@@ -156,6 +172,7 @@ export function normalizeSeason(season: Season): RankedSeason {
       currentCups,
       attacks,
       defenses,
+      defenseDestruction,
       maxAttacks,
       maxDefenses,
     )
@@ -247,7 +264,7 @@ export function getRankingStats(season: Season): RankingStats {
   }
 }
 
-export function createPlayer(maxAttacks: number = 24, maxDefenses: number = 24): Player {
+export function createPlayer(maxAttacks: number = 24, _maxDefenses: number = 24): Player {
   return {
     id: crypto.randomUUID(),
     name: 'Người chơi mới',
@@ -257,7 +274,7 @@ export function createPlayer(maxAttacks: number = 24, maxDefenses: number = 24):
     attackDestruction: 0,
     defenseDestruction: 0,
     currentCups: 0,
-    maxPossibleCups: maxAttacks * 40 + maxDefenses * 15,
+    maxPossibleCups: maxAttacks * 40,
     rating: 'safe',
     attackCups: 0,
     defenseCups: 0,
