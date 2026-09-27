@@ -18,6 +18,7 @@ import type { AutoSaveStatus, Player, RatingCategory, Season, StorageDocument, S
 import { ChartsSection } from './components/ChartsSection'
 import { CreateSeasonModal } from './components/CreateSeasonModal'
 import { GoogleDriveConfigModal } from './components/GoogleDriveConfigModal'
+import { ApiTesterModal } from './components/ApiTesterModal'
 import { PlayerTable } from './components/PlayerTable'
 import { SeasonHeader } from './components/SeasonHeader'
 import { SeasonMetaForm } from './components/SeasonMetaForm'
@@ -85,6 +86,7 @@ function App() {
   const [storageSource, setStorageSource] = useState<StorageSource>('local')
   const [isDriveConfigOpen, setIsDriveConfigOpen] = useState(false)
   const [isCreateSeasonModalOpen, setIsCreateSeasonModalOpen] = useState(false)
+  const [isApiTesterOpen, setIsApiTesterOpen] = useState(false)
   const [document, setDocument] = useState<StorageDocument>(loadInitialDocument)
   const [status, setStatus] = useState('Dữ liệu đã sẵn sàng.')
   const [error, setError] = useState('')
@@ -411,6 +413,7 @@ function App() {
         onSave={handleSave}
         onSaveAs={handleSaveAs}
         onOpenDriveConfig={() => setIsDriveConfigOpen(true)}
+        onOpenApiTester={() => setIsApiTesterOpen(true)}
       />
 
       <main className="mx-auto w-full max-w-[1320px] flex-1 px-4 py-6 sm:px-6 lg:px-8 space-y-6">
@@ -501,6 +504,13 @@ function App() {
         isOpen={isDriveConfigOpen}
         onClose={() => setIsDriveConfigOpen(false)}
         onConfigSaved={() => setStatus('Đã cập nhật cấu hình Google Drive.')}
+      />
+
+      {/* Modal thử nghiệm CoC API */}
+      <ApiTesterModal
+        isOpen={isApiTesterOpen}
+        onClose={() => setIsApiTesterOpen(false)}
+        defaultTag={stats.myPlayer?.name && stats.myPlayer.name !== 'Tài khoản của tôi' && stats.myPlayer.name.startsWith('#') ? stats.myPlayer.name : ''}
       />
 
       {/* Vercel Web Analytics */}

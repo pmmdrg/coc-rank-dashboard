@@ -9,6 +9,7 @@ import {
   HardDrive,
   Loader2,
   Settings,
+  Zap,
 } from 'lucide-react'
 import type { AutoSaveStatus, StorageFormat, StorageSource } from '../types'
 import { formatLeagueName } from '../lib/ranking'
@@ -25,6 +26,7 @@ interface SeasonHeaderProps {
   onSave: () => void
   onSaveAs: (format: StorageFormat) => void
   onOpenDriveConfig: () => void
+  onOpenApiTester: () => void
 }
 
 export function SeasonHeader({
@@ -38,6 +40,7 @@ export function SeasonHeader({
   onSave,
   onSaveAs,
   onOpenDriveConfig,
+  onOpenApiTester,
 }: SeasonHeaderProps) {
   const displayLeague = formatLeagueName(league)
 
@@ -178,6 +181,17 @@ export function SeasonHeader({
           >
             <Download className="h-4 w-4 text-sky-500" aria-hidden="true" />
             CSV
+          </button>
+
+          {/* Nút Test CoC API */}
+          <button
+            type="button"
+            onClick={onOpenApiTester}
+            className="inline-flex h-10 items-center gap-1.5 rounded-md border border-amber-300/80 bg-amber-500/10 px-2.5 text-xs font-semibold text-amber-700 shadow-sm backdrop-blur hover:bg-amber-500/20 dark:border-amber-500/40 dark:bg-amber-400/10 dark:text-amber-300 dark:hover:bg-amber-400/20"
+            title="Thử nghiệm tra cứu Clash of Clans API"
+          >
+            <Zap className="h-3.5 w-3.5 text-amber-500" aria-hidden="true" />
+            API Test
           </button>
 
           {/* Nút đổi theme */}
