@@ -47,8 +47,8 @@ function PercentagePieChart({
   const hasData = total > 0
 
   return (
-    <div className="glass-panel flex h-full flex-col justify-between rounded-xl p-4 sm:p-5 shadow-sm">
-      <div className="flex items-center justify-between gap-2">
+    <div className="glass-panel flex h-full flex-col rounded-xl p-4 sm:p-5 shadow-sm">
+      <div className="flex items-center justify-between gap-2 shrink-0">
         <h3 className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-200 truncate" title={title}>
           {title}
         </h3>
@@ -57,7 +57,7 @@ function PercentagePieChart({
         </span>
       </div>
 
-      <div className="mt-3.5 flex flex-col sm:flex-row items-center gap-3.5 sm:gap-4">
+      <div className="my-auto flex flex-col sm:flex-row items-center gap-3.5 sm:gap-4 pt-3 sm:pt-4">
         <div className="relative flex shrink-0 items-center justify-center">
           <svg viewBox="0 0 42 42" className="h-32 w-32 sm:h-34 sm:w-34 -rotate-90 drop-shadow-sm">
             <circle
