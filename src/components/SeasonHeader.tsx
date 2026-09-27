@@ -45,9 +45,14 @@ export function SeasonHeader({
     <header className="glass-header sticky top-0 z-40">
       <div className="mx-auto flex max-w-[1320px] flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl dark:text-slate-50">
-            CoC Rank Dashboard
-          </h1>
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl dark:text-slate-50">
+              CoC Rank Dashboard
+            </h1>
+            <span className="rounded-md border border-slate-300/80 bg-slate-100/80 px-2 py-0.5 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-400">
+              Fan Tool
+            </span>
+          </div>
           <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">
             <span className="font-medium text-slate-700 dark:text-slate-200">{myPlayerName}</span> • {displayLeague}
           </p>

@@ -486,7 +486,7 @@ function App() {
         />
       </main>
 
-      {/* Footer bản quyền */}
+      {/* Footer & chính sách */}
       <Footer />
 
       {/* Modal tạo mùa giải mới */}
