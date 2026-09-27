@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
-import { Shield, Trash2 } from 'lucide-react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { AlertTriangle, Shield, Trash2 } from 'lucide-react'
 import type { Player, RatingCategory } from '../types'
 import { calculatePlayerRating, getCupsPerRemainingDefense, ratingLabels } from '../lib/ranking'
+import { validatePlayer } from '../lib/validation'
 
 interface PlayerRowProps {
   player: Player
@@ -92,6 +93,16 @@ export function PlayerRow({
     player.attackDestruction,
     player.defenses,
   )
+
+  const warnings = useMemo(
+    () => validatePlayer(player, maxAttacks, maxDefenses),
+    [player, maxAttacks, maxDefenses],
+  )
+  const hasAtkWarning = warnings.some((w) => w.field === 'attacks')
+  const hasAtkDestWarning = warnings.some((w) => w.field === 'attackDestruction')
+  const hasDefWarning = warnings.some((w) => w.field === 'defenses')
+  const hasDefDestWarning = warnings.some((w) => w.field === 'defenseDestruction')
+  const hasCupsWarning = warnings.some((w) => w.field === 'currentCups')
 
   const borderClass = isMyPlayer
     ? 'border-l-4 border-l-sky-500'
@@ -227,30 +238,37 @@ export function PlayerRow({
       return null
     }
 
-    // 1. Phím Enter: Chuyển sang trường tiếp theo trên cùng hàng; tại currentCups thì hoàn tất và sắp xếp
+    // 1. Phím Enter: Nhảy xuống ô tương ứng ở hàng kế tiếp (cùng cột) để nhập nhanh
     if (e.key === 'Enter') {
       e.preventDefault()
-      if (currentField === 'currentCups') {
-        e.currentTarget.blur()
+      if (e.shiftKey) {
+        // Shift + Enter: Nhảy lên ô tương ứng ở hàng trước
+        const prevRow = getAdjacentRow('prev')
+        if (prevRow) {
+          focusField(prevRow, currentField)
+        }
       } else {
-        const nextField = EDITABLE_FIELDS[currentIndex + 1]
-        focusField(tr, nextField)
+        // Enter: Nhảy xuống ô tương ứng ở hàng sau
+        const nextRow = getAdjacentRow('next')
+        if (nextRow) {
+          focusField(nextRow, currentField)
+        }
       }
       return
     }
 
-    // 2. Phím Tab & Shift + Tab: Di chuyển trực tiếp giữa các textfield (bỏ qua nút bấm / readonly)
+    // 2. Phím Tab & Shift + Tab: Di chuyển sang ô ngang tiếp theo trên cùng hàng
     if (e.key === 'Tab') {
       if (e.shiftKey) {
         if (currentIndex > 0) {
           e.preventDefault()
           focusField(tr, EDITABLE_FIELDS[currentIndex - 1])
         } else {
-          // Lùi về hàng trước (vào ô currentCups)
+          // Lùi về hàng trước (vào ô cuối: currentCups)
           const prevRow = getAdjacentRow('prev')
           if (prevRow) {
             e.preventDefault()
-            focusField(prevRow, 'currentCups')
+            focusField(prevRow, EDITABLE_FIELDS[EDITABLE_FIELDS.length - 1])
           }
         }
       } else {
@@ -258,11 +276,11 @@ export function PlayerRow({
           e.preventDefault()
           focusField(tr, EDITABLE_FIELDS[currentIndex + 1])
         } else {
-          // Tiến sang hàng kế tiếp (vào ô attacks)
+          // Tiến sang hàng kế tiếp (vào ô đầu tiên: name)
           const nextRow = getAdjacentRow('next')
           if (nextRow) {
             e.preventDefault()
-            focusField(nextRow, 'attacks')
+            focusField(nextRow, EDITABLE_FIELDS[0])
           }
         }
       }
@@ -369,16 +387,28 @@ export function PlayerRow({
 
       {/* Tên người chơi */}
       <td className="w-48 min-w-[165px] max-w-[210px] px-2 py-2 align-middle">
-        <input
-          data-field="name"
-          value={player.name}
-          onFocus={(e) => e.target.select()}
-          onBlur={onFinishEditing}
-          onKeyDown={(e) => handleInputKeyDown(e, 'name')}
-          onChange={(e) => onUpdateField('name', e.target.value)}
-          className="soft-field h-9 w-full min-w-[150px] rounded-md px-2 text-sm font-medium"
-          title="Tên người chơi (Tab/Enter để sang Lượt đánh)"
-        />
+        <div className="relative flex items-center">
+          <input
+            data-field="name"
+            value={player.name}
+            onFocus={(e) => e.target.select()}
+            onBlur={onFinishEditing}
+            onKeyDown={(e) => handleInputKeyDown(e, 'name')}
+            onChange={(e) => onUpdateField('name', e.target.value)}
+            className={`soft-field h-9 w-full min-w-[150px] rounded-md px-2 text-sm font-medium ${
+              warnings.length > 0 ? 'pr-7' : ''
+            }`}
+            title="Tên người chơi (Enter: Xuống ô dưới • Shift+Enter: Lên ô trên • Tab: Sang ô ngang kế tiếp)"
+          />
+          {warnings.length > 0 && (
+            <span
+              className="absolute right-2 flex items-center text-amber-500 hover:text-amber-600 dark:text-amber-400 dark:hover:text-amber-300 cursor-help"
+              title={`⚠️ Cảnh báo dữ liệu (${warnings.length}):\n${warnings.map((w) => '• ' + w.message).join('\n')}`}
+            >
+              <AlertTriangle className="h-4 w-4 drop-shadow-xs" />
+            </span>
+          )}
+        </div>
       </td>
 
       {/* Nút đánh dấu Tài khoản của tôi */}
@@ -412,8 +442,12 @@ export function PlayerRow({
             onBlur={onFinishEditing}
             onKeyDown={(e) => handleInputKeyDown(e, 'attacks')}
             onChange={(e) => handleNumberChange(e.target.value, 'attacks', onUpdateField, maxAttacks)}
-            className="soft-field h-9 w-11 rounded-md px-1 text-center text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
-            title="Số lượt đánh (Tab/Enter sang % Công, Alt+Mũi tên để di chuyển)"
+            className={`soft-field h-9 w-11 rounded-md px-1 text-center text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500 ${
+              hasAtkWarning ? 'border-amber-400/80 bg-amber-500/10 text-amber-700 dark:border-amber-500/60 dark:text-amber-300' : ''
+            }`}
+            title={`Số lượt đánh (Enter: Xuống ô dưới • Shift+Enter: Lên ô trên • Tab: Sang % Công)${
+              hasAtkWarning ? '\n⚠️ ' + warnings.find((w) => w.field === 'attacks')?.message : ''
+            }`}
           />
           <div className="flex flex-col justify-center leading-none">
             <span className="select-none text-xs font-bold text-slate-500 dark:text-slate-400">
@@ -452,8 +486,12 @@ export function PlayerRow({
             }}
             onKeyDown={(e) => handleInputKeyDown(e, 'attackDestruction')}
             onChange={(e) => handleDestructionChange('attackDestruction', e.target.value)}
-            className="soft-field h-9 w-full rounded-md pr-5 pl-1.5 text-right text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
-            title={`% Phá huỷ trên mỗi lượt công (0.0% - 100.0%) • Cup công: ${attackCups} cup (${player.attacks} lượt × 40 × ${player.attackDestruction || 0}% / 100) (Tab/Enter sang Lượt thủ)`}
+            className={`soft-field h-9 w-full rounded-md pr-5 pl-1.5 text-right text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500 ${
+              hasAtkDestWarning ? 'border-amber-400/80 bg-amber-500/10 text-amber-700 dark:border-amber-500/60 dark:text-amber-300' : ''
+            }`}
+            title={`% Phá huỷ trên mỗi lượt công (0.0% - 100.0%) • Cup công: ${attackCups} cup (${player.attacks} lượt × 40 × ${player.attackDestruction || 0}% / 100) (Enter: Xuống ô dưới • Shift+Enter: Lên ô trên • Tab: Sang Lượt thủ)${
+              hasAtkDestWarning ? '\n⚠️ ' + warnings.find((w) => w.field === 'attackDestruction')?.message : ''
+            }`}
           />
           <span className="pointer-events-none absolute right-1.5 text-xs font-bold text-slate-400 dark:text-slate-500">
             %
@@ -475,8 +513,12 @@ export function PlayerRow({
             onBlur={onFinishEditing}
             onKeyDown={(e) => handleInputKeyDown(e, 'defenses')}
             onChange={(e) => handleNumberChange(e.target.value, 'defenses', onUpdateField, maxDefenses)}
-            className="soft-field h-9 w-11 rounded-md px-1 text-center text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
-            title="Số lượt thủ (Tab/Enter sang % Thủ, Shift+Tab về % Công)"
+            className={`soft-field h-9 w-11 rounded-md px-1 text-center text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500 ${
+              hasDefWarning ? 'border-amber-400/80 bg-amber-500/10 text-amber-700 dark:border-amber-500/60 dark:text-amber-300' : ''
+            }`}
+            title={`Số lượt thủ (Enter: Xuống ô dưới • Shift+Enter: Lên ô trên • Tab: Sang % Thủ)${
+              hasDefWarning ? '\n⚠️ ' + warnings.find((w) => w.field === 'defenses')?.message : ''
+            }`}
           />
           <div className="flex flex-col justify-center leading-none">
             <span className="select-none text-xs font-bold text-slate-500 dark:text-slate-400">
@@ -515,8 +557,12 @@ export function PlayerRow({
             }}
             onKeyDown={(e) => handleInputKeyDown(e, 'defenseDestruction')}
             onChange={(e) => handleDestructionChange('defenseDestruction', e.target.value)}
-            className="soft-field h-9 w-full rounded-md pr-5 pl-1.5 text-right text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
-            title={`% Phá huỷ trên mỗi lượt phòng thủ (0.0% - 100.0%) • Cup thủ: ${defenseCups >= 0 ? '+' : ''}${defenseCups} cup (Cup hiện tại trừ Cup công) (Tab/Enter sang Cup hiện tại)`}
+            className={`soft-field h-9 w-full rounded-md pr-5 pl-1.5 text-right text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500 ${
+              hasDefDestWarning ? 'border-amber-400/80 bg-amber-500/10 text-amber-700 dark:border-amber-500/60 dark:text-amber-300' : ''
+            }`}
+            title={`% Phá huỷ trên mỗi lượt phòng thủ (0.0% - 100.0%) • Cup thủ: ${defenseCups >= 0 ? '+' : ''}${defenseCups} cup (Cup hiện tại trừ Cup công) (Enter: Xuống ô dưới • Shift+Enter: Lên ô trên • Tab: Sang Cup hiện tại)${
+              hasDefDestWarning ? '\n⚠️ ' + warnings.find((w) => w.field === 'defenseDestruction')?.message : ''
+            }`}
           />
           <span className="pointer-events-none absolute right-1.5 text-xs font-bold text-slate-400 dark:text-slate-500">
             %
@@ -536,8 +582,12 @@ export function PlayerRow({
           onBlur={onFinishEditing}
           onKeyDown={(e) => handleInputKeyDown(e, 'currentCups')}
           onChange={(e) => handleNumberChange(e.target.value, 'currentCups', onUpdateField)}
-          className="soft-field h-9 w-full rounded-md px-2 text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500"
-          title={`Số cup hiện tại: ${player.currentCups.toLocaleString('vi-VN')} (Gồm: ~${attackCups} cup công + ~${defenseCups} cup thủ) (Enter để lưu & xếp hạng, Shift+Tab về % Thủ, Tab sang người chơi kế tiếp)`}
+          className={`soft-field h-9 w-full rounded-md px-2 text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500 ${
+            hasCupsWarning ? 'border-amber-400/80 bg-amber-500/10 text-amber-700 dark:border-amber-500/60 dark:text-amber-300' : ''
+          }`}
+          title={`Số cup hiện tại: ${player.currentCups.toLocaleString('vi-VN')} (Gồm: ~${attackCups} cup công + ~${defenseCups} cup thủ) (Enter: Xuống ô dưới • Shift+Enter: Lên ô trên • Tab: Sang người chơi kế tiếp)${
+            hasCupsWarning ? '\n⚠️ ' + warnings.find((w) => w.field === 'currentCups')?.message : ''
+          }`}
         />
       </td>
 

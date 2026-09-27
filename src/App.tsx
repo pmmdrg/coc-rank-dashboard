@@ -23,6 +23,7 @@ import { SeasonHeader } from './components/SeasonHeader'
 import { SeasonMetaForm } from './components/SeasonMetaForm'
 import { StatCardsGrid } from './components/StatCardsGrid'
 import { HighlightStatsTable } from './components/HighlightStatsTable'
+import { PerformanceTrendSection } from './components/PerformanceTrendSection'
 import { Footer } from './components/Footer'
 import { Analytics } from '@vercel/analytics/react'
 
@@ -457,6 +458,13 @@ function App() {
           attackStatusData={attackStatusChartData}
           ratingData={ratingChartData}
           myPlayerName={myPlayerName}
+        />
+
+        {/* Theo dõi phong độ qua các mùa giải */}
+        <PerformanceTrendSection
+          seasons={document.seasons}
+          myPlayerName={myPlayerName}
+          activeSeasonIndex={document.activeSeasonIndex}
         />
 
         {/* Bảng thống kê nổi bật & kỷ lục mùa giải */}

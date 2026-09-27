@@ -35,6 +35,11 @@ export const attackStatusLabels: Record<AttackStatusCategory, string> = {
   notStarted: 'Chưa đánh lượt nào',
 }
 
+export function formatDestruction(val?: number): string {
+  if (val === undefined || val === null || val <= 0) return ''
+  return (Math.round(val * 10) / 10).toFixed(1)
+}
+
 export const attackStatusColors: Record<AttackStatusCategory, string> = {
   finished: '#10b981',
   inProgress: '#f59e0b',

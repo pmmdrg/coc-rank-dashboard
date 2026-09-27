@@ -1,9 +1,10 @@
 import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { Plus, Scale } from 'lucide-react'
+import { AlertTriangle, Plus, Scale } from 'lucide-react'
 import type { Player, RankingStats, Season } from '../types'
 import { ConfirmDeleteModal } from './ConfirmDeleteModal'
 import { PlayerRow } from './PlayerRow'
+import { validatePlayer } from '../lib/validation'
 
 interface PlayerTableProps {
   season: Season
@@ -195,6 +196,23 @@ export function PlayerTable({
     })
   }, [rankedPlayers, frozenOrderIds])
 
+  const [filterWarnedOnly, setFilterWarnedOnly] = useState(false)
+
+  const warnedPlayerIds = useMemo(() => {
+    const ids = new Set<string>()
+    for (const p of rankedPlayers) {
+      if (validatePlayer(p, season.maxAttacks ?? 24, season.maxDefenses ?? 24).length > 0) {
+        ids.add(p.id)
+      }
+    }
+    return ids
+  }, [rankedPlayers, season.maxAttacks, season.maxDefenses])
+
+  const effectivePlayers = useMemo(() => {
+    if (!filterWarnedOnly) return displayedPlayers
+    return displayedPlayers.filter((p) => warnedPlayerIds.has(p.id))
+  }, [displayedPlayers, filterWarnedOnly, warnedPlayerIds])
+
   // Thống kê cân bằng tổng lượt công và tổng lượt thủ trong bảng kín 100 người chơi
   const { totalAttacks, totalDefenses, diff, imbalanceType } = useMemo(() => {
     let attacks = 0
@@ -221,10 +239,11 @@ export function PlayerTable({
 
   const promotionCount = season.promotionCount !== undefined ? season.promotionCount : 2
   const demotionCount = season.demotionCount !== undefined ? season.demotionCount : 1
-  const totalPlayers = displayedPlayers.length
+  const totalPlayers = effectivePlayers.length
 
-  const showPromotionLine = promotionCount > 0 && promotionCount < totalPlayers
+  const showPromotionLine = !filterWarnedOnly && promotionCount > 0 && promotionCount < totalPlayers
   const showDemotionLine =
+    !filterWarnedOnly &&
     demotionCount > 0 &&
     demotionCount < totalPlayers &&
     totalPlayers - demotionCount >= promotionCount
@@ -418,13 +437,33 @@ export function PlayerTable({
         <div>
           <div className="flex flex-wrap items-center gap-2.5">
             <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Danh sách Người chơi</h2>
+            {/* Phím tắt nhập liệu */}
             <span
               className="hidden items-center gap-1.5 rounded-full border border-sky-200/60 bg-sky-50 px-2.5 py-0.5 text-[11px] font-medium text-sky-800 dark:border-sky-800/60 dark:bg-sky-950/50 dark:text-sky-300 sm:inline-flex"
-              title="Nhấn Tab hoặc Enter để sang ô tiếp theo, Shift+Tab để lùi ô, Alt + Mũi tên để di chuyển 4 hướng"
+              title="Nhấn Tab để sang ngang, Enter để xuống ô dưới cùng cột, Shift+Enter để lên ô trên, Alt + Mũi tên để di chuyển 4 hướng"
             >
               <span>⌨️</span>
-              <kbd className="rounded bg-white px-1 py-0.2 shadow-xs border border-sky-300/50 dark:bg-slate-900 dark:border-sky-800">Tab</kbd> / <kbd className="rounded bg-white px-1 py-0.2 shadow-xs border border-sky-300/50 dark:bg-slate-900 dark:border-sky-800">Enter</kbd> đổi ô nhanh
+              <kbd className="rounded bg-white px-1 py-0.2 shadow-xs border border-sky-300/50 dark:bg-slate-900 dark:border-sky-800">Tab</kbd> Sang ngang / <kbd className="rounded bg-white px-1 py-0.2 shadow-xs border border-sky-300/50 dark:bg-slate-900 dark:border-sky-800">Enter</kbd> Xuống dưới
             </span>
+
+            {/* Nút lọc người chơi có cảnh báo dữ liệu nếu phát hiện */}
+            {warnedPlayerIds.size > 0 && (
+              <button
+                type="button"
+                onClick={() => setFilterWarnedOnly((prev) => !prev)}
+                className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold transition-all cursor-pointer ${
+                  filterWarnedOnly
+                    ? 'border-amber-500 bg-amber-500 text-white shadow-xs dark:bg-amber-600'
+                    : 'border-amber-400/60 bg-amber-500/10 text-amber-800 hover:bg-amber-500/20 dark:border-amber-500/40 dark:bg-amber-950/40 dark:text-amber-300'
+                }`}
+                title="Nhấp để chỉ xem các người chơi có dữ liệu bất thường cần rà soát"
+              >
+                <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
+                <span>
+                  {warnedPlayerIds.size} người chơi cần rà soát {filterWarnedOnly ? '(Đang lọc)' : ''}
+                </span>
+              </button>
+            )}
 
             {/* Cảnh báo lệch lượt công / thủ */}
             {imbalanceType !== 'equal' && (
@@ -446,7 +485,7 @@ export function PlayerTable({
             )}
           </div>
           <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-            Dùng phím <kbd className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[10px] dark:bg-slate-800">Tab</kbd> / <kbd className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[10px] dark:bg-slate-800">Enter</kbd> / <kbd className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[10px] dark:bg-slate-800">Shift+Tab</kbd> hoặc <kbd className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[10px] dark:bg-slate-800">Alt + Mũi tên</kbd> để nhập liệu liền mạch không cần chuột.
+            Dùng phím <kbd className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[10px] dark:bg-slate-800">Tab</kbd> (sang ngang) / <kbd className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[10px] dark:bg-slate-800">Enter</kbd> (xuống dưới cùng cột) / <kbd className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[10px] dark:bg-slate-800">Shift+Enter</kbd> (lên trên) để nhập liệu theo hàng hoặc theo cột nhanh chóng.
           </p>
         </div>
         <button
@@ -533,81 +572,102 @@ export function PlayerTable({
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200/50 dark:divide-slate-800/60">
-            {displayedPlayers.map((player, index) => {
-              const isMyPlayer = player.id === season.myPlayerId
-              const canPassMe = Boolean(
-                stats.myPlayer &&
-                  !isMyPlayer &&
-                  player.maxPossibleCups > stats.myPlayer.maxPossibleCups,
-              )
-              const isPromotionZone = promotionCount > 0 && player.rank <= promotionCount
-              const isDemotionZone =
-                demotionCount > 0 && player.rank > totalPlayers - demotionCount
-
-              const isAfterPromotionLine = showPromotionLine && index === promotionCount - 1
-              const isBeforeDemotionLine =
-                showDemotionLine && index === totalPlayers - demotionCount - 1
-
-              return (
-                <Fragment key={player.id}>
-                  <PlayerRow
-                    player={player}
-                    maxAttacks={season.maxAttacks ?? 24}
-                    maxDefenses={season.maxDefenses ?? 24}
-                    isMyPlayer={isMyPlayer}
-                    canPassMe={canPassMe}
-                    isRemoving={removingPlayerId === player.id}
-                    isPromotionZone={isPromotionZone}
-                    isDemotionZone={isDemotionZone}
-                    isHighlighted={highlightedPlayerId === player.id}
-                    rankJump={rankJumpInfo?.playerId === player.id ? rankJumpInfo : null}
-                    onSelectMyPlayer={() => onSelectMyPlayer(player.id)}
-                    onUpdateField={(field, value) => handleFieldChange(player.id, field, value)}
-                    onFinishEditing={() => handleFinishEditing(player.id)}
-                    onRequestRemove={() => setPlayerToDelete(player)}
-                    setRowRef={(el) => setPlayerRowRef(player.id, el)}
-                  />
-
-                  {/* Vạch Phân Cách Thăng Hạng */}
-                  {isAfterPromotionLine && (
-                    <tr key="divider-promotion" className="select-none animate-fade-in">
-                      <td colSpan={11} className="p-0 border-y-2 border-emerald-500 bg-emerald-500/20 dark:bg-emerald-950/70">
-                        <div className="flex items-center justify-between px-4 py-2 text-xs font-black text-emerald-800 dark:text-emerald-300">
-                          <div className="flex items-center gap-2">
-                            <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-emerald-500 text-[10px] text-white">
-                              ▲
-                            </span>
-                            <span className="tracking-wide">VẠCH THĂNG HẠNG (Top {promotionCount} người chơi đứng đầu)</span>
-                          </div>
-                          <span className="text-[11px] font-semibold text-emerald-700/90 dark:text-emerald-400">
-                            Các vị trí từ #1 đến #{promotionCount} sẽ được thăng hạng
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
+            {effectivePlayers.length === 0 ? (
+              <tr>
+                <td colSpan={11} className="py-12 text-center text-sm font-medium text-slate-500 dark:text-slate-400">
+                  {filterWarnedOnly ? (
+                    <div className="flex flex-col items-center justify-center gap-1.5">
+                      <span className="text-base">🎉 Không có người chơi nào có dữ liệu bất thường!</span>
+                      <button
+                        type="button"
+                        onClick={() => setFilterWarnedOnly(false)}
+                        className="mt-1 text-xs text-blue-600 hover:underline dark:text-sky-400"
+                      >
+                        Quay lại xem toàn bộ 100 người chơi
+                      </button>
+                    </div>
+                  ) : (
+                    'Không có người chơi nào trong bảng.'
                   )}
+                </td>
+              </tr>
+            ) : (
+              effectivePlayers.map((player, index) => {
+                const isMyPlayer = player.id === season.myPlayerId
+                const canPassMe = Boolean(
+                  stats.myPlayer &&
+                    !isMyPlayer &&
+                    player.maxPossibleCups > stats.myPlayer.maxPossibleCups,
+                )
+                const isPromotionZone = promotionCount > 0 && player.rank <= promotionCount
+                const isDemotionZone =
+                  demotionCount > 0 && player.rank > totalPlayers - demotionCount
 
-                  {/* Vạch Phân Cách Xuống Hạng */}
-                  {isBeforeDemotionLine && (
-                    <tr key="divider-demotion" className="select-none animate-fade-in">
-                      <td colSpan={11} className="p-0 border-y-2 border-rose-500 bg-rose-500/20 dark:bg-rose-950/70">
-                        <div className="flex items-center justify-between px-4 py-2 text-xs font-black text-rose-800 dark:text-rose-300">
-                          <div className="flex items-center gap-2">
-                            <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-rose-500 text-[10px] text-white">
-                              ▼
+                const isAfterPromotionLine = showPromotionLine && index === promotionCount - 1
+                const isBeforeDemotionLine =
+                  showDemotionLine && index === totalPlayers - demotionCount - 1
+
+                return (
+                  <Fragment key={player.id}>
+                    <PlayerRow
+                      player={player}
+                      maxAttacks={season.maxAttacks ?? 24}
+                      maxDefenses={season.maxDefenses ?? 24}
+                      isMyPlayer={isMyPlayer}
+                      canPassMe={canPassMe}
+                      isRemoving={removingPlayerId === player.id}
+                      isPromotionZone={isPromotionZone}
+                      isDemotionZone={isDemotionZone}
+                      isHighlighted={highlightedPlayerId === player.id}
+                      rankJump={rankJumpInfo?.playerId === player.id ? rankJumpInfo : null}
+                      onSelectMyPlayer={() => onSelectMyPlayer(player.id)}
+                      onUpdateField={(field, value) => handleFieldChange(player.id, field, value)}
+                      onFinishEditing={() => handleFinishEditing(player.id)}
+                      onRequestRemove={() => setPlayerToDelete(player)}
+                      setRowRef={(el) => setPlayerRowRef(player.id, el)}
+                    />
+
+                    {/* Vạch Phân Cách Thăng Hạng */}
+                    {isAfterPromotionLine && (
+                      <tr key="divider-promotion" className="select-none animate-fade-in">
+                        <td colSpan={11} className="p-0 border-y-2 border-emerald-500 bg-emerald-500/20 dark:bg-emerald-950/70">
+                          <div className="flex items-center justify-between px-4 py-2 text-xs font-black text-emerald-800 dark:text-emerald-300">
+                            <div className="flex items-center gap-2">
+                              <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-emerald-500 text-[10px] text-white">
+                                ▲
+                              </span>
+                              <span className="tracking-wide">VẠCH THĂNG HẠNG (Top {promotionCount} người chơi đứng đầu)</span>
+                            </div>
+                            <span className="text-[11px] font-semibold text-emerald-700/90 dark:text-emerald-400">
+                              Các vị trí từ #1 đến #{promotionCount} sẽ được thăng hạng
                             </span>
-                            <span className="tracking-wide">VẠCH XUỐNG HẠNG ({demotionCount} người chơi cuối bảng)</span>
                           </div>
-                          <span className="text-[11px] font-semibold text-rose-700/90 dark:text-rose-400">
-                            Các vị trí từ #{totalPlayers - demotionCount + 1} đến #{totalPlayers} sẽ bị xuống hạng
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                </Fragment>
-              )
-            })}
+                        </td>
+                      </tr>
+                    )}
+
+                    {/* Vạch Phân Cách Xuống Hạng */}
+                    {isBeforeDemotionLine && (
+                      <tr key="divider-demotion" className="select-none animate-fade-in">
+                        <td colSpan={11} className="p-0 border-y-2 border-rose-500 bg-rose-500/20 dark:bg-rose-950/70">
+                          <div className="flex items-center justify-between px-4 py-2 text-xs font-black text-rose-800 dark:text-rose-300">
+                            <div className="flex items-center gap-2">
+                              <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-rose-500 text-[10px] text-white">
+                                ▼
+                              </span>
+                              <span className="tracking-wide">VẠCH XUỐNG HẠNG ({demotionCount} người chơi cuối bảng)</span>
+                            </div>
+                            <span className="text-[11px] font-semibold text-rose-700/90 dark:text-rose-400">
+                              Các vị trí từ #{totalPlayers - demotionCount + 1} đến #{totalPlayers} sẽ bị xuống hạng
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </Fragment>
+                )
+              })
+            )}
           </tbody>
         </table>
       </div>
