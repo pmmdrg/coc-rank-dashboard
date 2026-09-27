@@ -727,24 +727,26 @@ export function PlayerTable({
         createPortal(
           <aside
             aria-label="Cảnh báo lệch số lượt công thủ"
-            className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 rounded-full border border-amber-400/60 bg-white/95 px-4 py-2.5 text-xs font-semibold text-amber-900 shadow-2xl backdrop-blur-md transition-all duration-300 hover:scale-105 dark:border-amber-500/50 dark:bg-slate-900/95 dark:text-amber-200"
+            className="fixed bottom-6 left-6 z-50 flex items-center gap-3 rounded-2xl border border-amber-400/60 bg-white/95 px-4 py-2.5 text-xs font-semibold text-amber-900 shadow-2xl backdrop-blur-md transition-all duration-300 hover:scale-105 dark:border-amber-500/50 dark:bg-slate-900/95 dark:text-amber-200"
           >
             <span className="relative flex h-2.5 w-2.5 shrink-0">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75" />
               <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-amber-500" />
             </span>
             <Scale className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0" />
-            <span>
-              Lệch công/thủ:{' '}
-              <strong className="font-bold text-amber-700 dark:text-amber-300">
-                {imbalanceType === 'attacks_more'
-                  ? `Công dư +${diff} lượt`
-                  : `Thủ dư +${diff} lượt`}
-              </strong>{' '}
-              <span className="font-normal opacity-85">
-                ({totalAttacks} công vs {totalDefenses} thủ)
+            <div className="flex flex-col gap-0.5">
+              <div className="flex items-center gap-1.5">
+                <span className="font-medium text-slate-700 dark:text-slate-300">Lệch công/thủ:</span>
+                <strong className="font-bold text-amber-700 dark:text-amber-300">
+                  {imbalanceType === 'attacks_more'
+                    ? `Công dư +${diff} lượt`
+                    : `Thủ dư +${diff} lượt`}
+                </strong>
+              </div>
+              <span className="text-[11px] font-normal text-slate-500 dark:text-slate-400">
+                {totalAttacks} công vs {totalDefenses} thủ (cần cân bằng)
               </span>
-            </span>
+            </div>
           </aside>,
           document.body,
         )}

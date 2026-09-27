@@ -3,7 +3,7 @@ import { Trophy, Heart, ExternalLink, Mail, Shield } from 'lucide-react'
 export function Footer() {
   return (
     <footer className="mt-12 border-t border-slate-200/80 bg-white/40 backdrop-blur-md dark:border-slate-800/80 dark:bg-slate-950/40">
-      <div className="mx-auto max-w-[1320px] px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[1320px] px-4 pt-8 pb-20 sm:px-6 sm:pb-24 lg:px-8">
         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           {/* Brand & Project Info */}
           <div className="space-y-1.5">
