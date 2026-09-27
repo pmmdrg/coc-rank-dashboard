@@ -60,8 +60,8 @@ export default async function handler(
   const formattedTag = cleanTag.startsWith('#') ? cleanTag : `#${cleanTag}`
   const encodedTag = encodeURIComponent(formattedTag)
 
-  // Mặc định định tuyến qua proxy IP tĩnh RoyaleAPI (45.79.218.79) để tránh bị chặn IP trên Vercel
-  const proxyBase = process.env.COC_PROXY_URL || 'https://proxy.royaleapi.dev/v1'
+  // Mặc định định tuyến qua proxy IP tĩnh RoyaleAPI dành cho Clash of Clans (45.79.218.79)
+  const proxyBase = process.env.COC_PROXY_URL || 'https://cocproxy.royaleapi.dev/v1'
   const targetUrl = `${proxyBase.replace(/\/+$/, '')}/players/${encodedTag}`
 
   try {
