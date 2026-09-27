@@ -76,12 +76,13 @@ export default async function handler(
     const data = (await apiRes.json()) as Record<string, any>
 
     if (!apiRes.ok) {
-      let errorMessage = (data?.message as string) || `Lỗi API Supercell (${apiRes.status})`
+      const rawMessage = (data?.message as string) || (data?.reason as string) || ''
+      let errorMessage = rawMessage
+        ? `Lỗi API Supercell (${apiRes.status}): ${rawMessage}`
+        : `Lỗi API Supercell (${apiRes.status})`
 
       if (apiRes.status === 403) {
-        errorMessage =
-          'Lỗi 403 Forbidden: Token không hợp lệ hoặc IP chưa được whitelist trên Supercell Developer Portal. ' +
-          'Lưu ý: Nếu deploy Vercel, hãy đảm bảo bạn đã cấp quyền IP 45.79.218.79 (Proxy RoyaleAPI).'
+        errorMessage = `Lỗi 403 Forbidden: ${rawMessage || 'Token không hợp lệ hoặc IP chưa khớp danh sách cho phép trên Supercell Developer Portal.'}`
       } else if (apiRes.status === 404) {
         errorMessage = `Không tìm thấy người chơi với Tag "${formattedTag}". Vui lòng kiểm tra lại chính xác Tag trong game.`
       }

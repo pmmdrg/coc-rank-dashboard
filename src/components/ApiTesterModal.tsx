@@ -197,6 +197,16 @@ export function ApiTesterModal({ isOpen, onClose, defaultTag = '' }: ApiTesterMo
                 <AlertCircle className="h-4 w-4 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
                 <div className="space-y-1.5 flex-1">
                   <p className="font-semibold">{error.message}</p>
+                  {Boolean(error.details) && (
+                    <div className="mt-2">
+                      <span className="text-[10px] font-semibold text-rose-800 dark:text-rose-300">
+                        Chi tiết phản hồi từ máy chủ:
+                      </span>
+                      <pre className="mt-1 max-h-24 overflow-auto rounded-lg bg-rose-950/20 p-2 font-mono text-[10px] text-rose-900 dark:text-rose-200">
+                        {JSON.stringify(error.details, null, 2)}
+                      </pre>
+                    </div>
+                  )}
                   <p className="text-[11px] text-rose-700/80 dark:text-rose-400/80">
                     💡 <strong>Gợi ý kiểm tra:</strong> Hãy chắc chắn bạn đã cấu hình biến môi trường{' '}
                     <code className="rounded bg-rose-200/60 px-1 py-0.5 font-mono text-[10px] dark:bg-rose-900/60">
