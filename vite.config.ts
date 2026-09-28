@@ -2,6 +2,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig, loadEnv } from 'vite'
 import playerHandler from './api/player.ts'
+import cocHandler from './api/coc.ts'
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
@@ -23,6 +24,9 @@ export default defineConfig(({ mode }) => {
         configureServer(server) {
           server.middlewares.use('/api/player', (req, res) => {
             playerHandler(req as any, res as any)
+          })
+          server.middlewares.use('/api/coc', (req, res) => {
+            cocHandler(req as any, res as any)
           })
         },
       },
