@@ -63,8 +63,11 @@ function loadInitialDocument(): StorageDocument {
         : 0
 
       const currentSeason = seasons[activeIndex] ?? defaultSeason
-      // Nếu draft cũ chỉ có 1 người chơi dummy ("p-01"), ưu tiên nạp sampleSeason mới có 100 người từ API
-      if (currentSeason.players.length <= 1) {
+      // Nếu draft cũ là dữ liệu giả lập ban đầu (dưới 50 người hoặc có ID dummy "p-"), ưu tiên nạp sampleSeason 100 người từ Supercell API
+      const isOldDummyData =
+        currentSeason.players.length < 50 ||
+        currentSeason.players.some((p) => p.id.startsWith('p-'))
+      if (isOldDummyData) {
         return {
           name: parsed.name || 'rank-season.json',
           format: parsed.format || 'json',
@@ -74,11 +77,29 @@ function loadInitialDocument(): StorageDocument {
         }
       }
 
+      // Tự động bổ sung clanName / clanTag từ sampleSeason nếu draft lưu trước đó chưa có trường này
+      const sampleMap = new Map(sampleSeason.players.map((p) => [p.id, p]))
+      const enrichedSeasons = seasons.map((s) => ({
+        ...s,
+        players: s.players.map((p) => {
+          if (!p.clanName && sampleMap.has(p.id)) {
+            const sp = sampleMap.get(p.id)
+            return {
+              ...p,
+              clanName: sp?.clanName || p.clanName,
+              clanTag: sp?.clanTag || p.clanTag,
+            }
+          }
+          return p
+        }),
+      }))
+      const enrichedCurrent = enrichedSeasons[activeIndex] ?? defaultSeason
+
       return {
         name: parsed.name || 'rank-season.json',
         format: parsed.format || 'json',
-        season: currentSeason,
-        seasons,
+        season: enrichedCurrent,
+        seasons: enrichedSeasons,
         activeSeasonIndex: activeIndex,
       }
     }
