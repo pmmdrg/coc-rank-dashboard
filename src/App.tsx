@@ -12,7 +12,7 @@ import {
 import { createFileSystemAdapter } from './storage/fileSystemAdapter'
 import { createGoogleDriveAdapter } from './storage/googleDriveAdapter'
 import { fetchRankedSeasonData } from './lib/cocApi'
-import type { AutoSaveStatus, Player, RatingCategory, Season, StorageDocument, StorageFormat, StorageSource } from './types'
+import type { AutoSaveStatus, LeagueHistoryItem, Player, RatingCategory, Season, StorageDocument, StorageFormat, StorageSource } from './types'
 
 import { ChartsSection } from './components/ChartsSection'
 import { CreateSeasonModal } from './components/CreateSeasonModal'
@@ -113,6 +113,17 @@ function App() {
   const [isSyncingApi, setIsSyncingApi] = useState(false)
   const [playerTag, setPlayerTag] = useState<string>(() => {
     return localStorage.getItem('coc_player_tag') || ''
+  })
+  const [leagueHistory, setLeagueHistory] = useState<LeagueHistoryItem[]>(() => {
+    const saved = localStorage.getItem('coc_league_history')
+    if (saved) {
+      try {
+        return JSON.parse(saved)
+      } catch {
+        return []
+      }
+    }
+    return []
   })
   const [document, setDocument] = useState<StorageDocument>(loadInitialDocument)
   const [status, setStatus] = useState(() => {
@@ -364,6 +375,8 @@ function App() {
   ) {
     const maxAttacks = rankedSeason.maxAttacks ?? 24
     const maxDefenses = rankedSeason.maxDefenses ?? 24
+    const activeCups = rankedSeason.players.map((p) => p.currentCups).filter((c) => c > 0)
+    const avgCups = activeCups.length > 0 ? Math.round(activeCups.reduce((a, b) => a + b, 0) / activeCups.length) : 0
 
     updateCurrentSeason({
       ...rankedSeason,
@@ -401,7 +414,7 @@ function App() {
           maxAttacks,
           maxDefenses,
         )
-        const ratingResult = calculatePlayerRating(currentCups, attacks, attackDestruction, defenses)
+        const ratingResult = calculatePlayerRating(currentCups, attacks, attackDestruction, defenses, avgCups)
         updated.rating = ratingResult.rating
         updated.attackCups = ratingResult.attackCups
         updated.defenseCups = ratingResult.defenseCups
@@ -432,6 +445,8 @@ function App() {
       }
     } else {
       localStorage.removeItem('coc_player_tag')
+      localStorage.removeItem('coc_league_history')
+      setLeagueHistory([])
     }
   }
 
@@ -452,6 +467,10 @@ function App() {
       }
       const existingMap = new Map(rankedSeason.players.map((p) => [(p.playerTag || p.id).toUpperCase(), p]))
       const result = await fetchRankedSeasonData(cleanTag, existingMap)
+      if (result.leagueHistory) {
+        setLeagueHistory(result.leagueHistory)
+        localStorage.setItem('coc_league_history', JSON.stringify(result.leagueHistory))
+      }
       const syncedSeasons = [
         normalizeSeason(result.currentSeason),
         ...(result.previousSeason ? [normalizeSeason(result.previousSeason)] : []),
@@ -559,9 +578,9 @@ function App() {
 
         {/* Theo dõi phong độ qua các mùa giải */}
         <PerformanceTrendSection
-          seasons={document.seasons}
+          leagueHistory={leagueHistory}
           myPlayerName={myPlayerName}
-          activeSeasonIndex={document.activeSeasonIndex}
+          playerTag={playerTag}
         />
 
         {/* Bảng thống kê nổi bật & kỷ lục mùa giải */}

@@ -8,6 +8,20 @@ export type RatingCategory =
   | 'terrible'
   | 'safe'
 
+export interface LeagueHistoryItem {
+  leagueSeasonId: number
+  leagueTrophies: number
+  leagueTierId: number
+  placement: number
+  attackWins: number
+  attackLosses: number
+  attackStars?: number
+  defenseWins: number
+  defenseLosses: number
+  defenseStars?: number
+  maxBattles: number
+}
+
 export type Player = {
   id: string
   name: string

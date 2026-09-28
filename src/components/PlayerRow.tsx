@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo } from 'react'
 import { AlertTriangle } from 'lucide-react'
 import type { Player, RatingCategory } from '../types'
-import { calculatePlayerRating, getCupsPerRemainingDefense, ratingLabels } from '../lib/ranking'
+import { ratingLabels } from '../lib/ranking'
 import { validatePlayer } from '../lib/validation'
 
 interface PlayerRowProps {
@@ -14,8 +14,6 @@ interface PlayerRowProps {
   isDemotionZone?: boolean
   isHighlighted?: boolean
   rankJump?: { fromRank: number; toRank: number } | null
-  onUpdateField: (field: keyof Player, value: string | number) => void
-  onFinishEditing?: () => void
   setRowRef: (element: HTMLTableRowElement | null) => void
 }
 
@@ -23,16 +21,11 @@ const ratingTagColors: Record<RatingCategory, string> = {
   outstanding: 'bg-purple-500/15 text-purple-700 dark:text-purple-300 border-purple-500/30',
   elite: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30',
   good: 'bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/30',
-  potential: 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30',
-  needs_effort: 'bg-orange-500/15 text-orange-700 dark:text-orange-300 border-orange-500/30',
-  not_good: 'bg-rose-500/15 text-rose-700 dark:text-rose-300 border-rose-500/30',
-  terrible: 'bg-red-600/15 text-red-700 dark:text-red-400 border-red-600/30',
+  potential: 'bg-teal-500/15 text-teal-700 dark:text-teal-300 border-teal-500/30',
+  needs_effort: 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30',
+  not_good: 'bg-orange-500/15 text-orange-700 dark:text-orange-300 border-orange-500/30',
+  terrible: 'bg-rose-500/15 text-rose-700 dark:text-rose-300 border-rose-500/30',
   safe: 'bg-slate-500/15 text-slate-700 dark:text-slate-300 border-slate-500/30',
-}
-
-function formatDestruction(val?: number): string {
-  if (val === undefined || val === null || val <= 0) return ''
-  return (Math.round(val * 10) / 10).toFixed(1)
 }
 
 export function PlayerRow({
@@ -45,8 +38,6 @@ export function PlayerRow({
   isDemotionZone = false,
   isHighlighted = false,
   rankJump = null,
-  onUpdateField,
-  onFinishEditing,
   setRowRef,
 }: PlayerRowProps) {
   const rowClass = isMyPlayer
@@ -55,23 +46,11 @@ export function PlayerRow({
 
   const remainingAttacks = Math.max(0, maxAttacks - player.attacks)
   const remainingDefenses = Math.max(0, maxDefenses - player.defenses)
-  const cupsPerRemainingDefense = getCupsPerRemainingDefense(
-    player.defenses,
-    player.defenseDestruction,
-  )
-  const { avgCupsPerAttack, attackCups, defenseCups } = calculatePlayerRating(
-    player.currentCups,
-    player.attacks,
-    player.attackDestruction,
-    player.defenses,
-  )
 
   const warnings = useMemo(
     () => validatePlayer(player, maxAttacks, maxDefenses),
     [player, maxAttacks, maxDefenses],
   )
-  const hasAtkDestWarning = warnings.some((w) => w.field === 'attackDestruction')
-  const hasDefDestWarning = warnings.some((w) => w.field === 'defenseDestruction')
 
   const borderClass = isMyPlayer
     ? 'border-l-4 border-l-sky-500'
@@ -81,193 +60,6 @@ export function PlayerRow({
         ? 'border-l-4 border-l-rose-500 bg-rose-500/[0.03] dark:bg-rose-500/[0.06]'
         : 'border-l-4 border-l-transparent'
 
-  const isAtkFocused = useRef(false)
-  const isDefFocused = useRef(false)
-
-  const [localAtkDest, setLocalAtkDest] = useState(() => formatDestruction(player.attackDestruction))
-  const [localDefDest, setLocalDefDest] = useState(() => formatDestruction(player.defenseDestruction))
-
-  useEffect(() => {
-    if (!isAtkFocused.current) {
-      setLocalAtkDest(formatDestruction(player.attackDestruction))
-    }
-  }, [player.attackDestruction])
-
-  useEffect(() => {
-    if (!isDefFocused.current) {
-      setLocalDefDest(formatDestruction(player.defenseDestruction))
-    }
-  }, [player.defenseDestruction])
-
-  function handleDestructionChange(field: 'attackDestruction' | 'defenseDestruction', rawValue: string) {
-    let val = rawValue.replace(',', '.')
-
-    if (val === '') {
-      if (field === 'attackDestruction') setLocalAtkDest('')
-      else setLocalDefDest('')
-      onUpdateField(field, 0)
-      return
-    }
-
-    if (!/^\d*(?:\.\d?)?$/.test(val)) {
-      return
-    }
-
-    const parsed = parseFloat(val)
-    if (parsed > 100) {
-      val = '100'
-    }
-
-    if (field === 'attackDestruction') setLocalAtkDest(val)
-    else setLocalDefDest(val)
-
-    if (!Number.isNaN(parsed) && Number.isFinite(parsed)) {
-      const clamped = Math.min(100, Math.max(0, parsed))
-      onUpdateField(field, clamped)
-    }
-  }
-
-  function handleDestructionBlur(field: 'attackDestruction' | 'defenseDestruction') {
-    const currentVal = field === 'attackDestruction' ? localAtkDest : localDefDest
-    if (currentVal === '') return
-
-    const parsed = parseFloat(currentVal)
-    if (Number.isNaN(parsed) || !Number.isFinite(parsed) || parsed <= 0) {
-      if (field === 'attackDestruction') setLocalAtkDest('')
-      else setLocalDefDest('')
-      onUpdateField(field, 0)
-    } else {
-      const rounded = Math.min(100, Math.max(0, Math.round(parsed * 10) / 10))
-      const formatted = rounded.toFixed(1)
-      if (field === 'attackDestruction') setLocalAtkDest(formatted)
-      else setLocalDefDest(formatted)
-      onUpdateField(field, rounded)
-    }
-  }
-
-  type EditableField = 'attackDestruction' | 'defenseDestruction'
-
-  const EDITABLE_FIELDS: EditableField[] = ['attackDestruction', 'defenseDestruction']
-
-  function handleInputKeyDown(
-    e: React.KeyboardEvent<HTMLInputElement>,
-    currentField: EditableField,
-  ) {
-    if (['-', '+', 'e', 'E'].includes(e.key)) {
-      e.preventDefault()
-      return
-    }
-
-    const tr = e.currentTarget.closest('tr')
-    if (!tr) return
-
-    const currentIndex = EDITABLE_FIELDS.indexOf(currentField)
-
-    const focusField = (rowEl: HTMLTableRowElement | null, field: EditableField) => {
-      if (!rowEl) return false
-      const targetInput = rowEl.querySelector<HTMLInputElement>(`input[data-field="${field}"]`)
-      if (targetInput) {
-        targetInput.focus()
-        targetInput.select()
-        return true
-      }
-      return false
-    }
-
-    const getAdjacentRow = (direction: 'next' | 'prev'): HTMLTableRowElement | null => {
-      let sibling = direction === 'next' ? tr.nextElementSibling : tr.previousElementSibling
-      while (sibling) {
-        if (sibling.tagName === 'TR' && !sibling.className.includes('select-none')) {
-          const input = sibling.querySelector('input[data-field]')
-          if (input) return sibling as HTMLTableRowElement
-        }
-        sibling = direction === 'next' ? sibling.nextElementSibling : sibling.previousElementSibling
-      }
-      return null
-    }
-
-    // 1. Phím Enter: Nhảy xuống ô tương ứng ở hàng kế tiếp (cùng cột)
-    if (e.key === 'Enter') {
-      e.preventDefault()
-      if (e.shiftKey) {
-        const prevRow = getAdjacentRow('prev')
-        if (prevRow) {
-          focusField(prevRow, currentField)
-        }
-      } else {
-        const nextRow = getAdjacentRow('next')
-        if (nextRow) {
-          focusField(nextRow, currentField)
-        }
-      }
-      return
-    }
-
-    // 2. Phím Tab & Shift + Tab: Di chuyển giữa % Công và % Thủ
-    if (e.key === 'Tab') {
-      if (e.shiftKey) {
-        if (currentIndex > 0) {
-          e.preventDefault()
-          focusField(tr, EDITABLE_FIELDS[currentIndex - 1])
-        } else {
-          // Lùi về hàng trước (vào % Thủ)
-          const prevRow = getAdjacentRow('prev')
-          if (prevRow) {
-            e.preventDefault()
-            focusField(prevRow, EDITABLE_FIELDS[EDITABLE_FIELDS.length - 1])
-          }
-        }
-      } else {
-        if (currentIndex < EDITABLE_FIELDS.length - 1) {
-          e.preventDefault()
-          focusField(tr, EDITABLE_FIELDS[currentIndex + 1])
-        } else {
-          // Tiến sang hàng kế tiếp (vào % Công)
-          const nextRow = getAdjacentRow('next')
-          if (nextRow) {
-            e.preventDefault()
-            focusField(nextRow, EDITABLE_FIELDS[0])
-          }
-        }
-      }
-      return
-    }
-
-    // 3. Phím tắt Alt + Mũi tên (hoặc Ctrl + Mũi tên): Di chuyển 4 hướng như bảng tính Excel
-    if (e.altKey || e.ctrlKey) {
-      if (e.key === 'ArrowRight') {
-        e.preventDefault()
-        if (currentIndex < EDITABLE_FIELDS.length - 1) {
-          focusField(tr, EDITABLE_FIELDS[currentIndex + 1])
-        }
-        return
-      }
-      if (e.key === 'ArrowLeft') {
-        e.preventDefault()
-        if (currentIndex > 0) {
-          focusField(tr, EDITABLE_FIELDS[currentIndex - 1])
-        }
-        return
-      }
-      if (e.key === 'ArrowDown') {
-        e.preventDefault()
-        const nextRow = getAdjacentRow('next')
-        if (nextRow) {
-          focusField(nextRow, currentField)
-        }
-        return
-      }
-      if (e.key === 'ArrowUp') {
-        e.preventDefault()
-        const prevRow = getAdjacentRow('prev')
-        if (prevRow) {
-          focusField(prevRow, currentField)
-        }
-        return
-      }
-    }
-  }
-
   return (
     <tr
       ref={setRowRef}
@@ -275,7 +67,7 @@ export function PlayerRow({
         isHighlighted ? 'row-jump-highlight' : ''
       } transition-colors duration-200`}
     >
-      {/* Cột Rank */}
+      {/* 1. Cột Rank */}
       <td className="w-[136px] min-w-[136px] max-w-[136px] px-2.5 py-2.5 align-middle whitespace-nowrap">
         <div className="flex items-center gap-1.5 flex-nowrap whitespace-nowrap">
           <span
@@ -331,7 +123,7 @@ export function PlayerRow({
         </div>
       </td>
 
-      {/* Tên người chơi */}
+      {/* 2. Tên người chơi */}
       <td className="w-56 min-w-[170px] max-w-[240px] px-2 py-2 align-middle">
         <div className="relative flex items-center justify-between">
           <div className="flex flex-col justify-center min-w-0 pr-2">
@@ -366,8 +158,7 @@ export function PlayerRow({
         </div>
       </td>
 
-
-      {/* Số lượt đánh (Đã công = thắng + thua) */}
+      {/* 3. Số lượt đánh (Đã công = thắng + thua) */}
       <td className="px-2 py-2 align-middle">
         <div className="flex h-9 items-center gap-2">
           <div className="flex flex-col items-center justify-center min-w-[32px] rounded-md bg-slate-100/90 px-1.5 py-0.5 dark:bg-slate-800/90">
@@ -400,40 +191,7 @@ export function PlayerRow({
         </div>
       </td>
 
-      {/* % Phá huỷ trên mỗi lượt công */}
-      <td className="px-1.5 py-2 align-middle">
-        <div className="relative flex h-9 w-20 items-center">
-          <input
-            data-field="attackDestruction"
-            type="text"
-            inputMode="decimal"
-            value={localAtkDest}
-            placeholder="0.0"
-            onFocus={(e) => {
-              isAtkFocused.current = true
-              e.target.select()
-            }}
-            onBlur={() => {
-              isAtkFocused.current = false
-              handleDestructionBlur('attackDestruction')
-              onFinishEditing?.()
-            }}
-            onKeyDown={(e) => handleInputKeyDown(e, 'attackDestruction')}
-            onChange={(e) => handleDestructionChange('attackDestruction', e.target.value)}
-            className={`soft-field h-9 w-full rounded-md pr-5 pl-1.5 text-right text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500 ${
-              hasAtkDestWarning ? 'border-amber-400/80 bg-amber-500/10 text-amber-700 dark:border-amber-500/60 dark:text-amber-300' : ''
-            }`}
-            title={`% Phá huỷ trên mỗi lượt công (0.0% - 100.0%) • Cup công: ${attackCups} cup (${player.attacks} lượt × 40 × ${player.attackDestruction || 0}% / 100) (Enter: Xuống ô dưới • Tab: Sang % Thủ)${
-              hasAtkDestWarning ? '\n⚠️ ' + warnings.find((w) => w.field === 'attackDestruction')?.message : ''
-            }`}
-          />
-          <span className="pointer-events-none absolute right-1.5 text-xs font-bold text-slate-400 dark:text-slate-500">
-            %
-          </span>
-        </div>
-      </td>
-
-      {/* Số lượt thủ (Đã thủ = thắng + thua) */}
+      {/* 4. Số lượt thủ (Đã thủ = thắng + thua) */}
       <td className="px-2 py-2 align-middle">
         <div className="flex h-9 items-center gap-2">
           <div className="flex flex-col items-center justify-center min-w-[32px] rounded-md bg-slate-100/90 px-1.5 py-0.5 dark:bg-slate-800/90">
@@ -466,55 +224,18 @@ export function PlayerRow({
         </div>
       </td>
 
-      {/* % Phá huỷ trên mỗi lượt thủ */}
-      <td className="px-1.5 py-2 align-middle">
-        <div className="relative flex h-9 w-20 items-center">
-          <input
-            data-field="defenseDestruction"
-            type="text"
-            inputMode="decimal"
-            value={localDefDest}
-            placeholder="0.0"
-            onFocus={(e) => {
-              isDefFocused.current = true
-              e.target.select()
-            }}
-            onBlur={() => {
-              isDefFocused.current = false
-              handleDestructionBlur('defenseDestruction')
-              onFinishEditing?.()
-            }}
-            onKeyDown={(e) => handleInputKeyDown(e, 'defenseDestruction')}
-            onChange={(e) => handleDestructionChange('defenseDestruction', e.target.value)}
-            className={`soft-field h-9 w-full rounded-md pr-5 pl-1.5 text-right text-sm font-semibold placeholder:text-slate-400/60 dark:placeholder:text-slate-500 ${
-              hasDefDestWarning ? 'border-amber-400/80 bg-amber-500/10 text-amber-700 dark:border-amber-500/60 dark:text-amber-300' : ''
-            }`}
-            title={`% Phá huỷ trên mỗi lượt phòng thủ (0.0% - 100.0%) • Cup thủ: ${defenseCups >= 0 ? '+' : ''}${defenseCups} cup (Enter: Xuống ô dưới • Tab: Sang người chơi tiếp theo)${
-              hasDefDestWarning ? '\n⚠️ ' + warnings.find((w) => w.field === 'defenseDestruction')?.message : ''
-            }`}
-          />
-          <span className="pointer-events-none absolute right-1.5 text-xs font-bold text-slate-400 dark:text-slate-500">
-            %
-          </span>
-        </div>
-      </td>
-
-      {/* Số cup hiện tại */}
+      {/* 5. Số cup hiện tại */}
       <td className="w-24 min-w-[88px] px-2 py-2 align-middle">
         <span className="font-mono text-sm font-bold text-amber-600 dark:text-amber-400">
           {player.currentCups.toLocaleString('vi-VN')}
         </span>
       </td>
 
-      {/* Số cup tối đa có thể đạt */}
+      {/* 6. Số cup tối đa có thể đạt (Giả định mỗi trận còn lại được +40 cúp) */}
       <td className="w-36 min-w-[120px] px-2 py-2 align-middle">
         <div
           className="flex items-center gap-1.5 font-mono text-sm font-bold cursor-default"
-          title={
-            player.defenses <= 0
-              ? `Công thức: ${player.currentCups} cup hiện tại + (${maxAttacks} - ${player.attacks}) lượt công × 40 + (${remainingDefenses}) lượt thủ × 0 cup (chưa có trận thủ) = ${player.maxPossibleCups} cup`
-              : `Công thức: ${player.currentCups} cup hiện tại + (${maxAttacks} - ${player.attacks}) lượt công × 40 + (${remainingDefenses}) lượt thủ × ${cupsPerRemainingDefense} cup (theo ${formatDestruction(player.defenseDestruction)}% thủ) = ${player.maxPossibleCups} cup`
-          }
+          title={`Công thức: ${player.currentCups} cúp hiện tại + (${remainingAttacks}) lượt công × 40 + (${remainingDefenses}) lượt thủ × 40 = ${player.maxPossibleCups.toLocaleString('vi-VN')} cúp (Giả định các trận còn lại đều hoàn thành tối đa)`}
         >
           <span
             className={
@@ -542,15 +263,11 @@ export function PlayerRow({
         </div>
       </td>
 
-      {/* Phân loại đánh giá (Tính tự động trực tiếp theo % công) */}
+      {/* 7. Phân loại đánh giá (Theo cúp so với trung bình bảng) */}
       <td className="px-2 py-2 align-middle">
         <div
           className={`flex h-9 w-full items-center justify-center rounded-md border text-xs font-bold shadow-xs select-none transition-colors ${ratingTagColors[player.rating]}`}
-          title={
-            player.attacks === 0
-              ? 'Chưa đánh lượt nào (Đánh giá: Chưa đánh)'
-              : `Đánh giá: ${ratingLabels[player.rating]} (${formatDestruction(player.attackDestruction)}% công) • ~${attackCups} cup công (${avgCupsPerAttack.toFixed(1)} cup/lượt)`
-          }
+          title={`Đánh giá: ${ratingLabels[player.rating]} • ${player.attacks > 0 ? `Hiệu suất ~${(player.currentCups / player.attacks).toFixed(1)} cúp/lượt` : 'Chưa đánh'}`}
         >
           {ratingLabels[player.rating]}
         </div>

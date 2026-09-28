@@ -1,11 +1,9 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import {
-  Swords,
-  ShieldCheck,
   Trophy,
   Sparkles,
   TrendingDown,
-  ShieldAlert,
+  TrendingUp,
   Award,
   AlertTriangle,
   Shield,
@@ -81,50 +79,21 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
 
     const totalOpponents = otherPlayers.length
 
-    // 1. % Công: Lớn hơn là tốt hơn
-    const myAtk = myPlayer.attackDestruction ?? 0
-    const hasMyAttack = (myPlayer.attacks ?? 0) > 0 || myAtk > 0
-    const activeAtkOpponents = otherPlayers.filter(
-      (p) => (p.attacks ?? 0) > 0 || (p.attackDestruction ?? 0) > 0,
-    )
+    // 1. Cúp hiện tại: Lớn hơn là tốt hơn
+    const myCurrentCups = myPlayer.currentCups ?? 0
+    let currentCupsPercentBetter = 0
+    let currentCupsBetterCount = 0
+    let currentCupsTiedCount = 0
 
-    let atkPercentBetter = 0
-    let atkBetterCount = 0
-    let atkTiedCount = 0
-
-    if (hasMyAttack) {
-      if (totalOpponents === 0) {
-        atkPercentBetter = 100
-      } else {
-        atkBetterCount = otherPlayers.filter((p) => myAtk > (p.attackDestruction ?? 0)).length
-        atkTiedCount = otherPlayers.filter((p) => myAtk === (p.attackDestruction ?? 0)).length
-        atkPercentBetter = Math.round((atkBetterCount / totalOpponents) * 1000) / 10
-      }
+    if (totalOpponents === 0) {
+      currentCupsPercentBetter = 100
+    } else {
+      currentCupsBetterCount = otherPlayers.filter((p) => myCurrentCups > (p.currentCups ?? 0)).length
+      currentCupsTiedCount = otherPlayers.filter((p) => myCurrentCups === (p.currentCups ?? 0)).length
+      currentCupsPercentBetter = Math.round((currentCupsBetterCount / totalOpponents) * 1000) / 10
     }
 
-    // 2. % Thủ: Bé hơn là tốt hơn (chịu ít % phá huỷ hơn = thủ kiên cố hơn)
-    const myDef = myPlayer.defenseDestruction ?? 0
-    const hasMyDefense = (myPlayer.defenses ?? 0) > 0 || myDef > 0
-    const activeDefOpponents = otherPlayers.filter(
-      (p) => (p.defenses ?? 0) > 0 || (p.defenseDestruction ?? 0) > 0,
-    )
-
-    let defPercentBetter = 0
-    let defBetterCount = 0
-    let defTiedCount = 0
-
-    if (hasMyDefense) {
-      if (activeDefOpponents.length === 0) {
-        defPercentBetter = 100
-      } else {
-        // So sánh với những đối thủ đã thực sự nhận lượt thủ
-        defBetterCount = activeDefOpponents.filter((p) => myDef < (p.defenseDestruction ?? 0)).length
-        defTiedCount = activeDefOpponents.filter((p) => myDef === (p.defenseDestruction ?? 0)).length
-        defPercentBetter = Math.round((defBetterCount / activeDefOpponents.length) * 1000) / 10
-      }
-    }
-
-    // 3. Cup tối đa: Lớn hơn là tốt hơn
+    // 2. Cúp tối đa: Lớn hơn là tốt hơn
     const myMaxCups = myPlayer.maxPossibleCups ?? 0
     let cupsPercentBetter = 0
     let cupsBetterCount = 0
@@ -139,19 +108,10 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
     }
 
     return {
-      hasMyAttack,
-      myAtk,
-      atkPercentBetter,
-      atkBetterCount,
-      atkTiedCount,
-      activeAtkCount: activeAtkOpponents.length,
-
-      hasMyDefense,
-      myDef,
-      defPercentBetter,
-      defBetterCount,
-      defTiedCount,
-      activeDefCount: activeDefOpponents.length,
+      myCurrentCups,
+      currentCupsPercentBetter,
+      currentCupsBetterCount,
+      currentCupsTiedCount,
 
       myMaxCups,
       cupsPercentBetter,
@@ -206,57 +166,28 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
     }
   }, [filterMode])
 
-  // --- 1. NHÓM TẤN CÔNG (Công cao nhất & Công thấp nhất) ---
-  const candidateAttacks = useMemo(() => {
-    return players.filter((p) => (p.attacks ?? 0) > 0 || (p.attackDestruction ?? 0) > 0)
+  // --- 1. NHÓM CUP HIỆN TẠI (Cao nhất & Thấp nhất) ---
+  const topCurrentCups = useMemo(() => {
+    if (players.length === 0) return null
+    const maxVal = Math.max(...players.map((p) => p.currentCups ?? 0))
+    const tiedPlayers = players.filter((p) => (p.currentCups ?? 0) === maxVal)
+    return {
+      cups: maxVal,
+      players: tiedPlayers,
+    }
   }, [players])
 
-  const topAttack = useMemo(() => {
-    if (candidateAttacks.length === 0) return null
-    const maxVal = Math.max(...candidateAttacks.map((p) => p.attackDestruction ?? 0))
-    const tiedPlayers = candidateAttacks.filter((p) => (p.attackDestruction ?? 0) === maxVal)
+  const worstCurrentCups = useMemo(() => {
+    if (players.length === 0) return null
+    const minVal = Math.min(...players.map((p) => p.currentCups ?? 0))
+    const tiedPlayers = players.filter((p) => (p.currentCups ?? 0) === minVal)
     return {
-      destruction: maxVal,
+      cups: minVal,
       players: tiedPlayers,
     }
-  }, [candidateAttacks])
-
-  const worstAttack = useMemo(() => {
-    if (candidateAttacks.length === 0) return null
-    const minVal = Math.min(...candidateAttacks.map((p) => p.attackDestruction ?? 0))
-    const tiedPlayers = candidateAttacks.filter((p) => (p.attackDestruction ?? 0) === minVal)
-    return {
-      destruction: minVal,
-      players: tiedPlayers,
-    }
-  }, [candidateAttacks])
-
-  // --- 2. NHÓM PHÒNG THỦ (Thủ thấp nhất - tốt nhất & Thủ cao nhất - tệ nhất) ---
-  const candidateDefenses = useMemo(() => {
-    return players.filter((p) => (p.defenses ?? 0) > 0 || (p.defenseDestruction ?? 0) > 0)
   }, [players])
 
-  const bestDefense = useMemo(() => {
-    if (candidateDefenses.length === 0) return null
-    const minVal = Math.min(...candidateDefenses.map((p) => p.defenseDestruction ?? 0))
-    const tiedPlayers = candidateDefenses.filter((p) => (p.defenseDestruction ?? 0) === minVal)
-    return {
-      destruction: minVal,
-      players: tiedPlayers,
-    }
-  }, [candidateDefenses])
-
-  const worstDefense = useMemo(() => {
-    if (candidateDefenses.length === 0) return null
-    const maxVal = Math.max(...candidateDefenses.map((p) => p.defenseDestruction ?? 0))
-    const tiedPlayers = candidateDefenses.filter((p) => (p.defenseDestruction ?? 0) === maxVal)
-    return {
-      destruction: maxVal,
-      players: tiedPlayers,
-    }
-  }, [candidateDefenses])
-
-  // --- 3. NHÓM CUP TỐI ĐA (Cup tối đa cao nhất & Cup tối đa thấp nhất) ---
+  // --- 2. NHÓM CUP TỐI ĐA (Cup tối đa cao nhất & Cup tối đa thấp nhất) ---
   const topMaxCups = useMemo(() => {
     if (players.length === 0) return null
     const maxVal = Math.max(...players.map((p) => p.maxPossibleCups ?? 0))
@@ -321,7 +252,7 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Bộ lọc nhanh: Tất cả / Tốt nhất / Tệ nhất */}
+            {/* Bộ lọc nhanh: Tất cả / Tốt nhất / Thấp nhất */}
             <div className="flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-100/70 p-0.5 text-xs font-semibold dark:border-slate-700 dark:bg-slate-800/70">
               <button
                 type="button"
@@ -332,7 +263,7 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
                     : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
                 }`}
               >
-                Tất cả (6)
+                Tất cả (4)
               </button>
               <button
                 type="button"
@@ -344,7 +275,7 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
                 }`}
               >
                 <Award className="h-3 w-3" />
-                <span>Tốt nhất (3)</span>
+                <span>Tốt nhất (2)</span>
               </button>
               <button
                 type="button"
@@ -356,7 +287,7 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
                 }`}
               >
                 <AlertTriangle className="h-3 w-3" />
-                <span>Tệ nhất (3)</span>
+                <span>Thấp nhất (2)</span>
               </button>
             </div>
 
@@ -366,7 +297,7 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
           </div>
         </div>
 
-        {/* ==================== PHẦN MỚI: ĐỊNH VỊ NĂNG LỰC CỦA BẠN SO VỚI TOÀN BẢNG ==================== */}
+        {/* ==================== ĐỊNH VỊ NĂNG LỰC CỦA BẠN SO VỚI TOÀN BẢNG ==================== */}
         {myPlayer && myComparisonStats ? (
           <div className="rounded-xl border border-sky-500/20 bg-sky-500/5 p-4 dark:border-sky-500/30 dark:bg-sky-950/20">
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-3.5">
@@ -383,35 +314,33 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
               </span>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-3">
-              {/* Thẻ 1: % Phá huỷ công */}
+            <div className="grid gap-3 sm:grid-cols-2">
+              {/* Thẻ 1: Cúp hiện tại */}
               <div className="flex flex-col justify-between rounded-lg border border-amber-500/25 bg-white/80 p-3.5 shadow-2xs transition-all hover:border-amber-500/40 dark:border-amber-500/25 dark:bg-slate-900/70">
                 <div>
                   <div className="flex items-center justify-between">
                     <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300">
-                      <Swords className="h-3.5 w-3.5 text-amber-500" />
-                      % Phá huỷ (Công)
+                      <TrendingUp className="h-3.5 w-3.5 text-amber-500" />
+                      Cúp hiện tại
                     </span>
                     <span className="rounded-md border border-amber-500/30 bg-amber-500/15 px-2 py-0.5 text-xs font-bold text-amber-700 dark:text-amber-300">
-                      {myComparisonStats.hasMyAttack ? `${myComparisonStats.myAtk.toFixed(1)} %` : 'Chưa đánh'}
+                      {new Intl.NumberFormat('vi-VN').format(myComparisonStats.myCurrentCups)} cúp
                     </span>
                   </div>
 
                   <div className="mt-2.5">
-                    {myComparisonStats.hasMyAttack ? (
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-xl font-black text-amber-600 dark:text-amber-400">
-                          Tốt hơn {myComparisonStats.atkPercentBetter.toFixed(1)}%
-                        </span>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-xl font-black text-amber-600 dark:text-amber-400">
+                        {myComparisonStats.currentCupsTiedCount === myComparisonStats.totalOpponents
+                          ? 'Đồng hạng cúp'
+                          : `Tốt hơn ${myComparisonStats.currentCupsPercentBetter.toFixed(1)}%`}
+                      </span>
+                      {myComparisonStats.currentCupsTiedCount !== myComparisonStats.totalOpponents && (
                         <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
                           đối thủ
                         </span>
-                      </div>
-                    ) : (
-                      <div className="text-sm font-semibold italic text-slate-400 dark:text-slate-500">
-                        Chưa có lượt đánh
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -419,77 +348,35 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
                   <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200/80 dark:bg-slate-700/80">
                     <div
                       className="h-full rounded-full bg-gradient-to-r from-amber-500 to-amber-400 transition-all duration-600"
-                      style={{ width: `${myComparisonStats.hasMyAttack ? myComparisonStats.atkPercentBetter : 0}%` }}
+                      style={{
+                        width: `${
+                          myComparisonStats.currentCupsTiedCount === myComparisonStats.totalOpponents
+                            ? 100
+                            : myComparisonStats.currentCupsPercentBetter
+                        }%`,
+                      }}
                     />
                   </div>
                   <p className="mt-1.5 text-[11px] text-slate-500 dark:text-slate-400">
-                    {myComparisonStats.hasMyAttack
-                      ? `Vượt ${myComparisonStats.atkBetterCount}/${myComparisonStats.totalOpponents} người chơi trong bảng${
-                          myComparisonStats.atkTiedCount > 0 ? ` (bằng ${myComparisonStats.atkTiedCount} người)` : ''
-                        }`
-                      : 'Cần ít nhất 1 lượt đánh để tính tỷ lệ'}
+                    {myComparisonStats.currentCupsTiedCount === myComparisonStats.totalOpponents
+                      ? `Cùng số cúp với tất cả ${myComparisonStats.totalOpponents} người chơi`
+                      : `Cúp hiện tại cao hơn ${myComparisonStats.currentCupsBetterCount}/${myComparisonStats.totalOpponents} người chơi${
+                          myComparisonStats.currentCupsTiedCount > 0 ? ` (bằng ${myComparisonStats.currentCupsTiedCount} người)` : ''
+                        }`}
                   </p>
                 </div>
               </div>
 
-              {/* Thẻ 2: % Phá huỷ thủ */}
-              <div className="flex flex-col justify-between rounded-lg border border-emerald-500/25 bg-white/80 p-3.5 shadow-2xs transition-all hover:border-emerald-500/40 dark:border-emerald-500/25 dark:bg-slate-900/70">
-                <div>
-                  <div className="flex items-center justify-between">
-                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300">
-                      <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
-                      % Phá huỷ (Thủ)
-                    </span>
-                    <span className="rounded-md border border-emerald-500/30 bg-emerald-500/15 px-2 py-0.5 text-xs font-bold text-emerald-700 dark:text-emerald-300">
-                      {myComparisonStats.hasMyDefense ? `${myComparisonStats.myDef.toFixed(1)} %` : 'Chưa thủ'}
-                    </span>
-                  </div>
-
-                  <div className="mt-2.5">
-                    {myComparisonStats.hasMyDefense ? (
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-xl font-black text-emerald-600 dark:text-emerald-400">
-                          Tốt hơn {myComparisonStats.defPercentBetter.toFixed(1)}%
-                        </span>
-                        <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                          đối thủ
-                        </span>
-                      </div>
-                    ) : (
-                      <div className="text-sm font-semibold italic text-slate-400 dark:text-slate-500">
-                        Chưa có lượt thủ
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="mt-3">
-                  <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200/80 dark:bg-slate-700/80">
-                    <div
-                      className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-600"
-                      style={{ width: `${myComparisonStats.hasMyDefense ? myComparisonStats.defPercentBetter : 0}%` }}
-                    />
-                  </div>
-                  <p className="mt-1.5 text-[11px] text-slate-500 dark:text-slate-400">
-                    {myComparisonStats.hasMyDefense
-                      ? `Thủ kiên cố hơn ${myComparisonStats.defBetterCount}/${myComparisonStats.activeDefCount} đối thủ đã thủ${
-                          myComparisonStats.defTiedCount > 0 ? ` (bằng ${myComparisonStats.defTiedCount} người)` : ''
-                        }`
-                      : 'Cần nhận ít nhất 1 lượt thủ để tính tỷ lệ'}
-                  </p>
-                </div>
-              </div>
-
-              {/* Thẻ 3: Cup tối đa */}
+              {/* Thẻ 2: Cúp tối đa có thể đạt */}
               <div className="flex flex-col justify-between rounded-lg border border-indigo-500/25 bg-white/80 p-3.5 shadow-2xs transition-all hover:border-indigo-500/40 dark:border-indigo-500/25 dark:bg-slate-900/70">
                 <div>
                   <div className="flex items-center justify-between">
                     <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300">
                       <Trophy className="h-3.5 w-3.5 text-indigo-500" />
-                      Cup tối đa
+                      Cúp tối đa có thể đạt
                     </span>
                     <span className="rounded-md border border-indigo-500/30 bg-indigo-500/15 px-2 py-0.5 text-xs font-bold text-indigo-700 dark:text-indigo-300">
-                      {new Intl.NumberFormat('vi-VN').format(myComparisonStats.myMaxCups)} cup
+                      {new Intl.NumberFormat('vi-VN').format(myComparisonStats.myMaxCups)} cúp
                     </span>
                   </div>
 
@@ -497,7 +384,7 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
                     <div className="flex items-baseline gap-1">
                       <span className="text-xl font-black text-indigo-600 dark:text-indigo-400">
                         {myComparisonStats.cupsTiedCount === myComparisonStats.totalOpponents
-                          ? 'Đồng hạng trần'
+                          ? 'Đồng hạng trần cúp'
                           : `Tốt hơn ${myComparisonStats.cupsPercentBetter.toFixed(1)}%`}
                       </span>
                       {myComparisonStats.cupsTiedCount !== myComparisonStats.totalOpponents && (
@@ -537,7 +424,7 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
           <div className="flex items-center gap-3 rounded-xl border border-dashed border-slate-300/80 bg-slate-50/50 p-3.5 text-xs text-slate-500 dark:border-slate-700/80 dark:bg-slate-800/30 dark:text-slate-400">
             <Shield className="h-4 w-4 text-sky-500 shrink-0" />
             <span>
-              Chọn tài khoản của bạn (bấm icon khiên ở cột <strong>"Tôi"</strong> trong bảng danh sách) để xem tỷ lệ năng lực của bạn vượt trội hơn bao nhiêu % người chơi trong bảng.
+              Tài khoản của bạn được đánh dấu với nhãn <strong>"Tôi"</strong> trong bảng danh sách để theo dõi tỷ lệ năng lực vượt trội hơn bao nhiêu % người chơi trong bảng.
             </span>
           </div>
         )}
@@ -577,27 +464,27 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
                       </tr>
                     )}
 
-                    {/* 1.1: % Phá huỷ công cao nhất */}
+                    {/* 1.1: Cúp hiện tại cao nhất */}
                     <tr className="animate-filter-row hover:bg-slate-500/5 transition-colors">
                       <td className="px-4 py-3 align-middle">
                         <div className="flex items-center gap-3">
                           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400 shadow-2xs">
-                            <Swords className="h-4 w-4" aria-hidden="true" />
+                            <TrendingUp className="h-4 w-4" aria-hidden="true" />
                           </div>
                           <div className="flex flex-col">
                             <span className="font-semibold text-slate-800 dark:text-slate-100">
-                              % Phá huỷ công cao nhất
+                              Cúp hiện tại cao nhất
                             </span>
                             <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                              Sát thương công kích trung bình đỉnh nhất
+                              Dẫn đầu điểm số hiện tại của bảng đấu
                             </span>
                           </div>
                         </div>
                       </td>
                       <td className="px-4 py-3 text-center align-middle">
-                        {topAttack !== null ? (
+                        {topCurrentCups !== null ? (
                           <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/15 px-3 py-1 text-sm font-bold text-amber-700 dark:text-amber-300 shadow-2xs">
-                            {topAttack.destruction.toFixed(1)} %
+                            {new Intl.NumberFormat('vi-VN').format(topCurrentCups.cups)} cúp
                           </span>
                         ) : (
                           <span className="text-xs italic text-slate-400 dark:text-slate-500">
@@ -606,74 +493,26 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
                         )}
                       </td>
                       <td className="px-4 py-3 align-middle">
-                        {topAttack && topAttack.players.length > 0 ? (
+                        {topCurrentCups && topCurrentCups.players.length > 0 ? (
                           <div className="flex flex-wrap items-center gap-1.5 py-0.5">
-                            {topAttack.players.map((player) => (
+                            {topCurrentCups.players.map((player) => (
                               <PlayerBadge
                                 key={player.id}
                                 player={player}
                                 isMe={player.id === myPlayerId}
-                                extraInfo={`${player.attacks} lượt`}
+                                extraInfo={`${player.attacks} công • ${player.defenses} thủ`}
                               />
                             ))}
                           </div>
                         ) : (
                           <span className="text-xs text-slate-400 dark:text-slate-500">
-                            Chưa có người chơi nào thực hiện lượt đánh
-                          </span>
-                        )}
-                      </td>
-                    </tr>
-
-                    {/* 1.2: % Phá huỷ thủ thấp nhất */}
-                    <tr className="animate-filter-row hover:bg-slate-500/5 transition-colors">
-                      <td className="px-4 py-3 align-middle">
-                        <div className="flex items-center gap-3">
-                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shadow-2xs">
-                            <ShieldCheck className="h-4 w-4" aria-hidden="true" />
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="font-semibold text-slate-800 dark:text-slate-100">
-                              % Phá huỷ thủ thấp nhất
-                            </span>
-                            <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                              Phòng thủ kiên cố nhất (chịu ít thiệt hại nhất)
-                            </span>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 text-center align-middle">
-                        {bestDefense !== null ? (
-                          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/15 px-3 py-1 text-sm font-bold text-emerald-700 dark:text-emerald-300 shadow-2xs">
-                            {bestDefense.destruction.toFixed(1)} %
-                          </span>
-                        ) : (
-                          <span className="text-xs italic text-slate-400 dark:text-slate-500">
                             Chưa có dữ liệu
                           </span>
                         )}
                       </td>
-                      <td className="px-4 py-3 align-middle">
-                        {bestDefense && bestDefense.players.length > 0 ? (
-                          <div className="flex flex-wrap items-center gap-1.5 py-0.5">
-                            {bestDefense.players.map((player) => (
-                              <PlayerBadge
-                                key={player.id}
-                                player={player}
-                                isMe={player.id === myPlayerId}
-                                extraInfo={`${player.defenses} lượt`}
-                              />
-                            ))}
-                          </div>
-                        ) : (
-                          <span className="text-xs text-slate-400 dark:text-slate-500">
-                            Chưa có người chơi nào nhận lượt thủ
-                          </span>
-                        )}
-                      </td>
                     </tr>
 
-                    {/* 1.3: Cup tối đa cao nhất */}
+                    {/* 1.2: Cup tối đa cao nhất */}
                     <tr className="animate-filter-row hover:bg-slate-500/5 transition-colors">
                       <td className="px-4 py-3 align-middle">
                         <div className="flex items-center gap-3">
@@ -682,10 +521,10 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
                           </div>
                           <div className="flex flex-col">
                             <span className="font-semibold text-slate-800 dark:text-slate-100">
-                              Cup tối đa cao nhất
+                              Cúp tối đa cao nhất
                             </span>
                             <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                              Trần cúp lý thuyết cao nhất mùa giải
+                              Trần cúp lý thuyết cao nhất bảng đấu
                             </span>
                           </div>
                         </div>
@@ -693,7 +532,7 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
                       <td className="px-4 py-3 text-center align-middle">
                         {topMaxCups !== null ? (
                           <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/15 px-3 py-1 text-sm font-bold text-indigo-700 dark:text-indigo-300 shadow-2xs">
-                            {new Intl.NumberFormat('vi-VN').format(topMaxCups.maxCups)} cup
+                            {new Intl.NumberFormat('vi-VN').format(topMaxCups.maxCups)} cúp
                           </span>
                         ) : (
                           <span className="text-xs italic text-slate-400 dark:text-slate-500">
@@ -739,7 +578,7 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
                   </>
                 )}
 
-                {/* ==================== PHẦN 2: HẠNG MỤC TỆ NHẤT ==================== */}
+                {/* ==================== PHẦN 2: HẠNG MỤC THẤP NHẤT ==================== */}
                 {showWorst && (
                   <>
                     {filterMode === 'all' && (
@@ -750,13 +589,13 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
                         >
                           <span className="inline-flex items-center gap-1.5">
                             <AlertTriangle className="h-3.5 w-3.5" />
-                            Hạng mục thành tích tệ nhất / Cần cải thiện
+                            Hạng mục thành tích thấp nhất / Cần nỗ lực
                           </span>
                         </td>
                       </tr>
                     )}
 
-                    {/* 2.1: % Phá huỷ công thấp nhất */}
+                    {/* 2.1: Cúp hiện tại thấp nhất */}
                     <tr className="animate-filter-row hover:bg-slate-500/5 transition-colors">
                       <td className="px-4 py-3 align-middle">
                         <div className="flex items-center gap-3">
@@ -765,18 +604,18 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
                           </div>
                           <div className="flex flex-col">
                             <span className="font-semibold text-slate-800 dark:text-slate-100">
-                              % Phá huỷ công thấp nhất
+                              Cúp hiện tại thấp nhất
                             </span>
                             <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                              Sát thương công kích trung bình thấp nhất
+                              Điểm số cúp thấp nhất bảng đấu hiện tại
                             </span>
                           </div>
                         </div>
                       </td>
                       <td className="px-4 py-3 text-center align-middle">
-                        {worstAttack !== null ? (
+                        {worstCurrentCups !== null ? (
                           <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-500/30 bg-rose-500/15 px-3 py-1 text-sm font-bold text-rose-700 dark:text-rose-300 shadow-2xs">
-                            {worstAttack.destruction.toFixed(1)} %
+                            {new Intl.NumberFormat('vi-VN').format(worstCurrentCups.cups)} cúp
                           </span>
                         ) : (
                           <span className="text-xs italic text-slate-400 dark:text-slate-500">
@@ -785,76 +624,27 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
                         )}
                       </td>
                       <td className="px-4 py-3 align-middle">
-                        {worstAttack && worstAttack.players.length > 0 ? (
+                        {worstCurrentCups && worstCurrentCups.players.length > 0 ? (
                           <div className="flex flex-wrap items-center gap-1.5 py-0.5">
-                            {worstAttack.players.map((player) => (
+                            {worstCurrentCups.players.map((player) => (
                               <PlayerBadge
                                 key={player.id}
                                 player={player}
                                 isMe={player.id === myPlayerId}
                                 variant="danger"
-                                extraInfo={`${player.attacks} lượt`}
+                                extraInfo={`${player.attacks} công • ${player.defenses} thủ`}
                               />
                             ))}
                           </div>
                         ) : (
                           <span className="text-xs text-slate-400 dark:text-slate-500">
-                            Chưa có người chơi nào thực hiện lượt đánh
-                          </span>
-                        )}
-                      </td>
-                    </tr>
-
-                    {/* 2.2: % Phá huỷ thủ cao nhất */}
-                    <tr className="animate-filter-row hover:bg-slate-500/5 transition-colors">
-                      <td className="px-4 py-3 align-middle">
-                        <div className="flex items-center gap-3">
-                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-rose-500/30 bg-rose-500/10 text-rose-600 dark:text-rose-400 shadow-2xs">
-                            <ShieldAlert className="h-4 w-4" aria-hidden="true" />
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="font-semibold text-slate-800 dark:text-slate-100">
-                              % Phá huỷ thủ cao nhất
-                            </span>
-                            <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                              Phòng thủ chịu nhiều thiệt hại nhất
-                            </span>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 text-center align-middle">
-                        {worstDefense !== null ? (
-                          <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-500/30 bg-rose-500/15 px-3 py-1 text-sm font-bold text-rose-700 dark:text-rose-300 shadow-2xs">
-                            {worstDefense.destruction.toFixed(1)} %
-                          </span>
-                        ) : (
-                          <span className="text-xs italic text-slate-400 dark:text-slate-500">
                             Chưa có dữ liệu
                           </span>
                         )}
                       </td>
-                      <td className="px-4 py-3 align-middle">
-                        {worstDefense && worstDefense.players.length > 0 ? (
-                          <div className="flex flex-wrap items-center gap-1.5 py-0.5">
-                            {worstDefense.players.map((player) => (
-                              <PlayerBadge
-                                key={player.id}
-                                player={player}
-                                isMe={player.id === myPlayerId}
-                                variant="danger"
-                                extraInfo={`${player.defenses} lượt`}
-                              />
-                            ))}
-                          </div>
-                        ) : (
-                          <span className="text-xs text-slate-400 dark:text-slate-500">
-                            Chưa có người chơi nào nhận lượt thủ
-                          </span>
-                        )}
-                      </td>
                     </tr>
 
-                    {/* 2.3: Cup tối đa thấp nhất */}
+                    {/* 2.2: Cup tối đa thấp nhất */}
                     <tr className="animate-filter-row hover:bg-slate-500/5 transition-colors">
                       <td className="px-4 py-3 align-middle">
                         <div className="flex items-center gap-3">
@@ -863,7 +653,7 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
                           </div>
                           <div className="flex flex-col">
                             <span className="font-semibold text-slate-800 dark:text-slate-100">
-                              Cup tối đa thấp nhất
+                              Cúp tối đa thấp nhất
                             </span>
                             <span className="text-[11px] text-slate-500 dark:text-slate-400">
                               Trần cúp lý thuyết thấp nhất mùa giải
@@ -874,7 +664,7 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
                       <td className="px-4 py-3 text-center align-middle">
                         {worstMaxCups !== null ? (
                           <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-400/30 bg-slate-500/15 px-3 py-1 text-sm font-bold text-slate-700 dark:text-slate-300 shadow-2xs">
-                            {new Intl.NumberFormat('vi-VN').format(worstMaxCups.maxCups)} cup
+                            {new Intl.NumberFormat('vi-VN').format(worstMaxCups.maxCups)} cúp
                           </span>
                         ) : (
                           <span className="text-xs italic text-slate-400 dark:text-slate-500">

@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { AlertTriangle } from 'lucide-react'
 import type { Player, RankingStats, Season } from '../types'
 import { PlayerRow } from './PlayerRow'
@@ -8,7 +8,7 @@ interface PlayerTableProps {
   season: Season
   rankedPlayers: Player[]
   stats: RankingStats
-  onUpdatePlayerField: (playerId: string, field: keyof Player, value: string | number) => void
+  onUpdatePlayerField?: (playerId: string, field: keyof Player, value: string | number) => void
 }
 
 function getElementDocumentTop(element: HTMLElement): number {
@@ -119,9 +119,7 @@ export function PlayerTable({
   season,
   rankedPlayers,
   stats,
-  onUpdatePlayerField,
 }: PlayerTableProps) {
-  const [frozenOrderIds, setFrozenOrderIds] = useState<string[] | null>(null)
   const [highlightedPlayerId, setHighlightedPlayerId] = useState<string | null>(null)
   const [rankJumpInfo, setRankJumpInfo] = useState<{
     playerId: string
@@ -133,58 +131,50 @@ export function PlayerTable({
   const previousRowTops = useRef(new Map<string, number>())
   const activeScrollAnimation = useRef<{ cancel: () => void } | null>(null)
   const pendingScrollPlayerId = useRef<string | null>(null)
-  const isEditingDirty = useRef(false)
-  const rankedPlayersRef = useRef(rankedPlayers)
   const previousRanksRef = useRef<Map<string, number>>(
     new Map(rankedPlayers.map((p) => [p.id, p.rank])),
   )
-  const typingDebounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const highlightCleanupTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  // Đồng bộ rankedPlayersRef sau mỗi lần render để các callback bất đồng bộ luôn truy cập dữ liệu mới nhất
-  useEffect(() => {
-    rankedPlayersRef.current = rankedPlayers
-  })
 
   // Dọn dẹp timer và animation khi unmount
   useEffect(() => {
     return () => {
-      if (typingDebounceTimer.current) clearTimeout(typingDebounceTimer.current)
       if (highlightCleanupTimer.current) clearTimeout(highlightCleanupTimer.current)
       if (activeScrollAnimation.current) activeScrollAnimation.current.cancel()
     }
   }, [])
 
-  // Cập nhật previousRanksRef khi ở trạng thái nhàn rỗi (không bị đóng băng thứ tự hàng)
+  // Theo dõi sự thay đổi thứ hạng khi dữ liệu mùa giải được cập nhật từ Supercell API
   useEffect(() => {
-    if (!frozenOrderIds) {
-      const map = new Map<string, number>()
-      rankedPlayers.forEach((p) => {
-        map.set(p.id, p.rank)
-      })
-      previousRanksRef.current = map
-    }
-  }, [rankedPlayers, frozenOrderIds])
+    const prevMap = previousRanksRef.current
+    let jumpingPlayer: { playerId: string; fromRank: number; toRank: number } | null = null
 
-  // Danh sách hiển thị:
-  // - Khi KHÔNG gõ phím (frozenOrderIds === null): luôn hiển thị danh sách đã sắp xếp mới nhất.
-  // - Khi ĐANG gõ phím: ĐÓNG BĂNG thứ tự các hàng (frozenOrderIds) để các hàng không bị nhảy vị trí,
-  //   nhưng dữ liệu cup, lượt đánh... bên trong hàng vẫn cập nhật theo thời gian thực.
-  const displayedPlayers = useMemo(() => {
-    if (!frozenOrderIds || frozenOrderIds.length !== rankedPlayers.length) {
-      return rankedPlayers
-    }
-
-    const playerMap = new Map(rankedPlayers.map((p) => [p.id, p]))
-    return frozenOrderIds.map((id, index) => {
-      const p = playerMap.get(id)
-      if (!p) return rankedPlayers[index]
-      return {
-        ...p,
-        rank: index + 1, // Giữ rank hiển thị theo vị trí chưa nhảy trong lúc đang gõ
+    for (const p of rankedPlayers) {
+      const fromRank = prevMap.get(p.id)
+      if (fromRank !== undefined && fromRank !== p.rank) {
+        jumpingPlayer = { playerId: p.id, fromRank, toRank: p.rank }
+        break
       }
-    })
-  }, [rankedPlayers, frozenOrderIds])
+    }
+
+    if (jumpingPlayer) {
+      setRankJumpInfo(jumpingPlayer)
+      setHighlightedPlayerId(jumpingPlayer.playerId)
+      pendingScrollPlayerId.current = jumpingPlayer.playerId
+
+      if (highlightCleanupTimer.current) clearTimeout(highlightCleanupTimer.current)
+      highlightCleanupTimer.current = setTimeout(() => {
+        setHighlightedPlayerId(null)
+        setRankJumpInfo(null)
+      }, 5000)
+    }
+
+    const nextMap = new Map<string, number>()
+    rankedPlayers.forEach((p) => nextMap.set(p.id, p.rank))
+    previousRanksRef.current = nextMap
+  }, [rankedPlayers])
+
+  const displayedPlayers = rankedPlayers
 
   const [filterWarnedOnly, setFilterWarnedOnly] = useState(false)
 
@@ -306,110 +296,19 @@ export function PlayerTable({
     }
   }
 
-  // Thực hiện sắp xếp lại bảng (commit sort) và kích hoạt animation đồng bộ
-  const commitSortAndScroll = useCallback(
-    (playerId: string) => {
-      // Đánh dấu đã commit xong toàn bộ thay đổi, hủy timer debounce nếu còn chạy dở
-      isEditingDirty.current = false
-      if (typingDebounceTimer.current) {
-        clearTimeout(typingDebounceTimer.current)
-        typingDebounceTimer.current = null
-      }
-
-      // 1. Lấy thứ hạng trước khi sắp xếp và thứ hạng mới nhất từ nguồn dữ liệu chuẩn (tránh stale closure)
-      const fromRank = previousRanksRef.current.get(playerId)
-      const currentPlayer = rankedPlayersRef.current.find((p) => p.id === playerId)
-      const toRank = currentPlayer?.rank
-      const didRankChange =
-        fromRank !== undefined && toRank !== undefined && fromRank !== toRank
-
-      if (didRankChange) {
-        setRankJumpInfo({ playerId, fromRank, toRank })
-        pendingScrollPlayerId.current = playerId
-        setHighlightedPlayerId(playerId)
-        if (highlightCleanupTimer.current) clearTimeout(highlightCleanupTimer.current)
-        highlightCleanupTimer.current = setTimeout(() => {
-          setHighlightedPlayerId(null)
-          setRankJumpInfo(null)
-        }, 5000)
-      } else {
-        setRankJumpInfo(null)
-        pendingScrollPlayerId.current = null
-      }
-
-      // 2. Cập nhật lại previousRanksRef với toàn bộ thứ hạng mới nhất
-      const nextRanks = new Map<string, number>()
-      rankedPlayersRef.current.forEach((p) => {
-        nextRanks.set(p.id, p.rank)
-      })
-      previousRanksRef.current = nextRanks
-
-      // 3. Blur phần tử đang focus để ngăn trình duyệt tự động giật màn hình (instant focus snap)
-      if (document.activeElement instanceof HTMLElement) {
-        document.activeElement.blur()
-      }
-
-      // 4. Hủy animation cuộn cũ nếu đang chạy dở
-      if (activeScrollAnimation.current) {
-        activeScrollAnimation.current.cancel()
-        activeScrollAnimation.current = null
-      }
-
-      // 5. Hủy đóng băng vị trí hàng -> cho phép danh sách sắp xếp lại theo thứ hạng thực tế
-      setFrozenOrderIds(null)
-    },
-    [],
-  )
-
-  // Xử lý khi kết thúc chỉnh sửa (rời khỏi ô nhập hoặc bấm Enter) -> Sắp xếp lại ngay lập tức
-  function handleFinishEditing(playerId: string) {
-    if (typingDebounceTimer.current) {
-      clearTimeout(typingDebounceTimer.current)
-      typingDebounceTimer.current = null
-    }
-
-    // Nếu không có thay đổi số cup nào mới (ví dụ đã dừng gõ hơn 800ms và đã sắp xếp xong trước đó, hoặc chỉ sửa lượt đánh)
-    // thì khi blur không cần phải trigger sắp xếp lại hay kích hoạt lại animation
-    if (!isEditingDirty.current) {
-      if (frozenOrderIds) {
-        setFrozenOrderIds(null)
-      }
-      return
-    }
-
-    commitSortAndScroll(playerId)
-  }
-
-  // Xử lý khi đang gõ phím: CHỈ đóng băng thứ tự và debounce 800ms sắp xếp lại khi chỉnh sửa số cup
-  function handleFieldChange(playerId: string, field: keyof Player, value: string | number) {
-    onUpdatePlayerField(playerId, field, value)
-
-    if (field === 'currentCups') {
-      isEditingDirty.current = true
-      setFrozenOrderIds((prev) => prev ?? rankedPlayers.map((p) => p.id))
-
-      if (typingDebounceTimer.current) {
-        clearTimeout(typingDebounceTimer.current)
-      }
-      typingDebounceTimer.current = setTimeout(() => {
-        commitSortAndScroll(playerId)
-      }, 800)
-    }
-  }
-
   return (
     <section className="glass-panel rounded-xl shadow-sm">
       <div className="flex flex-col gap-3 border-b border-slate-200/60 p-5 sm:flex-row sm:items-center sm:justify-between dark:border-slate-700/60">
         <div>
           <div className="flex flex-wrap items-center gap-2.5">
             <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Danh sách Người chơi</h2>
-            {/* Phím tắt nhập liệu */}
+            {/* Trạng thái cập nhật */}
             <span
-              className="hidden items-center gap-1.5 rounded-full border border-sky-200/60 bg-sky-50 px-2.5 py-0.5 text-[11px] font-medium text-sky-800 dark:border-sky-800/60 dark:bg-sky-950/50 dark:text-sky-300 sm:inline-flex"
-              title="Nhấn Tab để sang ngang, Enter để xuống ô dưới cùng cột, Shift+Enter để lên ô trên, Alt + Mũi tên để di chuyển 4 hướng"
+              className="hidden items-center gap-1.5 rounded-full border border-emerald-200/60 bg-emerald-50 px-2.5 py-0.5 text-[11px] font-medium text-emerald-800 dark:border-emerald-800/60 dark:bg-emerald-950/50 dark:text-emerald-300 sm:inline-flex"
+              title="Dữ liệu thứ hạng, cúp và lượt đánh được tính toán tự động từ Supercell API"
             >
-              <span>⌨️</span>
-              <kbd className="rounded bg-white px-1 py-0.2 shadow-xs border border-sky-300/50 dark:bg-slate-900 dark:border-sky-800">Tab</kbd> Sang ngang / <kbd className="rounded bg-white px-1 py-0.2 shadow-xs border border-sky-300/50 dark:bg-slate-900 dark:border-sky-800">Enter</kbd> Xuống dưới
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              Tự động cập nhật theo thời gian thực
             </span>
 
             {/* Nút lọc người chơi có cảnh báo dữ liệu nếu phát hiện */}
@@ -434,7 +333,7 @@ export function PlayerTable({
           <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
             {season.players.length === 0
               ? 'Dữ liệu người chơi sẽ được tự động tải từ Supercell API hoặc từ file dữ liệu.'
-              : 'Dữ liệu Tên, Lượt đánh, Lượt thủ, Cúp được đồng bộ trực tiếp từ Supercell API. Dùng Tab (sang % tiếp theo) / Enter (xuống hàng dưới) để nhập tỉ lệ % phá huỷ.'}
+              : 'Dữ liệu Tên, Lượt đánh, Lượt thủ, Cúp được đồng bộ trực tiếp từ Supercell API và tự động xếp hạng theo quy chuẩn giải đấu.'}
           </p>
         </div>
       </div>
@@ -446,19 +345,7 @@ export function PlayerTable({
               <th className="w-[136px] min-w-[136px] max-w-[136px] px-2.5 py-2.5 whitespace-nowrap">Rank</th>
               <th className="w-56 min-w-[170px] max-w-[240px] px-2 py-2.5">Tên người chơi</th>
               <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap">Lượt đánh</th>
-              <th className="w-22 min-w-[84px] px-1.5 py-2.5 whitespace-nowrap text-center">
-                <div className="leading-tight">
-                  <div>% Phá huỷ</div>
-                  <div className="text-[10px] font-bold text-amber-600 dark:text-amber-400 normal-case">(Công)</div>
-                </div>
-              </th>
               <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap">Lượt thủ</th>
-              <th className="w-22 min-w-[84px] px-1.5 py-2.5 whitespace-nowrap text-center">
-                <div className="leading-tight">
-                  <div>% Phá huỷ</div>
-                  <div className="text-[10px] font-bold text-sky-600 dark:text-sky-400 normal-case">(Thủ)</div>
-                </div>
-              </th>
               <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap">Cup hiện tại</th>
               <th className="w-36 min-w-[120px] px-2 py-2.5 whitespace-nowrap">Cup tối đa</th>
               <th className="w-24 min-w-[92px] px-2 py-2.5 whitespace-nowrap text-center">Đánh giá</th>
@@ -467,7 +354,7 @@ export function PlayerTable({
           <tbody className="divide-y divide-slate-200/50 dark:divide-slate-800/60">
             {effectivePlayers.length === 0 ? (
               <tr>
-                <td colSpan={9} className="py-12 text-center text-sm font-medium text-slate-400 dark:text-slate-500">
+                <td colSpan={7} className="py-12 text-center text-sm font-medium text-slate-400 dark:text-slate-500">
                   {filterWarnedOnly ? (
                     <div className="flex flex-col items-center justify-center gap-1.5">
                       <span className="text-base">🎉 Không có người chơi nào có dữ liệu bất thường!</span>
@@ -517,15 +404,13 @@ export function PlayerTable({
                       isDemotionZone={isDemotionZone}
                       isHighlighted={highlightedPlayerId === player.id}
                       rankJump={rankJumpInfo?.playerId === player.id ? rankJumpInfo : null}
-                      onUpdateField={(field, value) => handleFieldChange(player.id, field, value)}
-                      onFinishEditing={() => handleFinishEditing(player.id)}
                       setRowRef={(el) => setPlayerRowRef(player.id, el)}
                     />
 
                     {/* Vạch Phân Cách Thăng Hạng */}
                     {isAfterPromotionLine && (
                       <tr key="divider-promotion" className="select-none animate-fade-in">
-                        <td colSpan={9} className="p-0 border-y-2 border-emerald-500 bg-emerald-500/20 dark:bg-emerald-950/70">
+                        <td colSpan={7} className="p-0 border-y-2 border-emerald-500 bg-emerald-500/20 dark:bg-emerald-950/70">
                           <div className="flex items-center justify-between px-4 py-2 text-xs font-black text-emerald-800 dark:text-emerald-300">
                             <div className="flex items-center gap-2">
                               <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-emerald-500 text-[10px] text-white">
@@ -544,7 +429,7 @@ export function PlayerTable({
                     {/* Vạch Phân Cách Xuống Hạng */}
                     {isBeforeDemotionLine && (
                       <tr key="divider-demotion" className="select-none animate-fade-in">
-                        <td colSpan={9} className="p-0 border-y-2 border-rose-500 bg-rose-500/20 dark:bg-rose-950/70">
+                        <td colSpan={7} className="p-0 border-y-2 border-rose-500 bg-rose-500/20 dark:bg-rose-950/70">
                           <div className="flex items-center justify-between px-4 py-2 text-xs font-black text-rose-800 dark:text-rose-300">
                             <div className="flex items-center gap-2">
                               <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-rose-500 text-[10px] text-white">

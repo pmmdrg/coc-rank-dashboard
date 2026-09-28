@@ -9,24 +9,24 @@ import type {
 import { getLeagueIconUrl } from './leagueIcons'
 
 export const ratingLabels: Record<RatingCategory, string> = {
-  outstanding: 'Xuất sắc',
-  elite: 'Đỉnh',
-  good: 'Kỹ năng tốt',
-  potential: 'Có tiềm năng',
-  needs_effort: 'Cần cố gắng',
-  not_good: 'Chưa tốt',
-  terrible: 'Quá gà',
-  safe: 'Chưa đánh',
+  outstanding: 'Thống trị',
+  elite: 'Dẫn đầu',
+  good: 'Vượt trội',
+  potential: 'Cân bằng',
+  needs_effort: 'Dưới chuẩn',
+  not_good: 'Nguy cơ',
+  terrible: 'Báo động',
+  safe: 'Chưa tham gia',
 }
 
 export const ratingColors: Record<RatingCategory, string> = {
   outstanding: '#8b5cf6',
-  elite: '#10b981',
+  elite: '#059669',
   good: '#0284c7',
-  potential: '#f59e0b',
-  needs_effort: '#ea580c',
-  not_good: '#f43f5e',
-  terrible: '#dc2626',
+  potential: '#0d9488',
+  needs_effort: '#f59e0b',
+  not_good: '#ea580c',
+  terrible: '#e11d48',
   safe: '#64748b',
 }
 
@@ -48,38 +48,32 @@ export const attackStatusColors: Record<AttackStatusCategory, string> = {
 }
 
 export function getCupsPerRemainingDefense(
-  defenses: number,
-  defenseDestruction?: number,
+  _defenses: number,
+  _defenseDestruction?: number,
 ): number {
-  if (defenses <= 0) return 0
-  const d = Math.max(0, defenseDestruction || 0)
-  if (d >= 100) return 0
-  if (d >= 98) return 8
-  if (d >= 95) return 9
-  const diff = Math.round((95 - d) * 10) / 10
-  const steps = Math.ceil(diff / 3)
-  return Math.min(40, 9 + steps)
+  return 40
 }
 
 export function calculateMaxPossibleCups(
   currentCups: number,
   attacks: number,
   defenses: number = 0,
-  defenseDestruction: number = 0,
+  _defenseDestruction?: number,
   maxAttacks: number = 24,
   maxDefenses: number = 24,
 ): number {
   const remainingAttacks = Math.max(0, maxAttacks - Math.max(0, attacks))
   const remainingDefenses = Math.max(0, maxDefenses - Math.max(0, defenses))
-  const cupsPerRemainingDef = getCupsPerRemainingDefense(defenses, defenseDestruction)
-  return Math.max(0, currentCups) + remainingAttacks * 40 + remainingDefenses * cupsPerRemainingDef
+  // Theo quyết định người dùng: Giả định các trận thủ còn lại đều được cộng 40 cúp (thủ thành công hoàn hảo)
+  return Math.max(0, currentCups) + remainingAttacks * 40 + remainingDefenses * 40
 }
 
 export function calculatePlayerRating(
   currentCups: number,
-  attacks: number,
-  attackDestruction: number = 0,
+  attacks: number = 0,
+  _attackDestruction: number = 0,
   _defenses: number = 0,
+  avgCups: number = 0,
 ): {
   rating: RatingCategory
   avgCupsPerAttack: number
@@ -88,51 +82,46 @@ export function calculatePlayerRating(
   estimatedAttackCups: number
   estimatedDefenseCups: number
 } {
-  const effectiveCups = currentCups >= 4000 ? Math.max(0, currentCups - 5000) : Math.max(0, currentCups)
-
-  if (attacks <= 0) {
+  if (currentCups <= 0 && attacks <= 0) {
     return {
       rating: 'safe',
       avgCupsPerAttack: 0,
       attackCups: 0,
-      defenseCups: effectiveCups,
+      defenseCups: 0,
       estimatedAttackCups: 0,
-      estimatedDefenseCups: effectiveCups,
+      estimatedDefenseCups: 0,
     }
   }
 
-  // Công thức: cup công = lượt công * 40 * % công / 100
-  const rawAtkDest = Math.max(0, attackDestruction || 0)
-  const attackCups = Math.round(attacks * 40 * (rawAtkDest / 100))
+  // Đánh giá dựa theo độ chênh lệch điểm cúp so với mức cúp trung bình của cả bảng đấu
+  const diff = avgCups > 0 ? currentCups - avgCups : 0
+  let rating: RatingCategory = 'potential'
 
-  // Công thức: cup thủ = cup hiện tại - cup công
-  const defenseCups = effectiveCups - attackCups
-
-  // Đánh giá được tính trực tiếp dựa theo % công (attackDestruction)
-  const avgCupsPerAttack = attacks > 0 ? attackCups / attacks : 0
-
-  let rating: RatingCategory = 'terrible'
-  if (rawAtkDest >= 98) {
-    rating = 'outstanding'
-  } else if (rawAtkDest >= 95) {
-    rating = 'elite'
-  } else if (rawAtkDest >= 92) {
-    rating = 'good'
-  } else if (rawAtkDest >= 89) {
-    rating = 'potential'
-  } else if (rawAtkDest >= 86) {
-    rating = 'needs_effort'
-  } else if (rawAtkDest >= 83) {
-    rating = 'not_good'
+  if (diff >= 80) {
+    rating = 'outstanding' // Thống trị (+80 cúp so với TB bảng)
+  } else if (diff >= 40) {
+    rating = 'elite'       // Dẫn đầu (+40 cúp so với TB bảng)
+  } else if (diff >= 10) {
+    rating = 'good'        // Vượt trội (+10 cúp so với TB bảng)
+  } else if (diff >= -15) {
+    rating = 'potential'   // Cân bằng (quanh mức TB)
+  } else if (diff >= -50) {
+    rating = 'needs_effort'// Dưới chuẩn (-15 đến -50 cúp)
+  } else if (diff >= -90) {
+    rating = 'not_good'    // Nguy cơ (-50 đến -90 cúp)
+  } else {
+    rating = 'terrible'    // Báo động (< -90 cúp so với TB)
   }
+
+  const avgCupsPerAttack = attacks > 0 ? Math.round((currentCups / attacks) * 10) / 10 : 0
 
   return {
     rating,
     avgCupsPerAttack,
-    attackCups,
-    defenseCups,
-    estimatedAttackCups: attackCups,
-    estimatedDefenseCups: defenseCups,
+    attackCups: currentCups,
+    defenseCups: 0,
+    estimatedAttackCups: currentCups,
+    estimatedDefenseCups: 0,
   }
 }
 
@@ -143,17 +132,13 @@ function sortAndRankPlayers(players: Player[]): Player[] {
       const currentCupDiff = b.currentCups - a.currentCups
       if (currentCupDiff !== 0) return currentCupDiff
 
-      // 2. Tie-break: % Phá huỷ công (cao hơn đứng trên)
-      const aAtkDest = a.attackDestruction ?? 0
-      const bAtkDest = b.attackDestruction ?? 0
-      const atkDestDiff = bAtkDest - aAtkDest
-      if (Math.abs(atkDestDiff) >= 0.05) return atkDestDiff
+      // 2. Tie-break: Thắng công nhiều hơn (nếu có dữ liệu CoC API)
+      const aAtkWins = a.attackWinCount ?? 0
+      const bAtkWins = b.attackWinCount ?? 0
+      if (bAtkWins !== aAtkWins) return bAtkWins - aAtkWins
 
-      // 3. Tie-break: % Phá huỷ thủ (thấp hơn đứng trên - thủ tốt hơn)
-      const aDefDest = a.defenseDestruction ?? 0
-      const bDefDest = b.defenseDestruction ?? 0
-      const defDestDiff = aDefDest - bDefDest
-      if (Math.abs(defDestDiff) >= 0.05) return defDestDiff
+      // 3. Tie-break: Đánh ít trận hơn (hiệu suất cúp cao hơn)
+      if (a.attacks !== b.attacks) return a.attacks - b.attacks
 
       // 4. Tên theo bảng chữ cái A-Z
       const nameDiff = a.name.localeCompare(b.name)
@@ -178,6 +163,14 @@ export function normalizeSeason(season: Season): RankedSeason {
   const demotionCount = safeSeason.demotionCount !== undefined ? safeSeason.demotionCount : 1
 
   const playersList = Array.isArray(safeSeason.players) ? safeSeason.players : []
+  const activeCups = playersList
+    .map((p) => Math.max(0, Number(p.currentCups) || 0))
+    .filter((c) => c > 0)
+  const avgCups =
+    activeCups.length > 0
+      ? Math.round(activeCups.reduce((a, b) => a + b, 0) / activeCups.length)
+      : 0
+
   const updatedPlayers = playersList.map((p, idx) => {
     const attacks = Math.min(maxAttacks, Math.max(0, Number(p.attacks) || 0))
     const defenses = Math.min(maxDefenses, Math.max(0, Number(p.defenses) || 0))
@@ -203,6 +196,7 @@ export function normalizeSeason(season: Season): RankedSeason {
       attacks,
       attackDestruction,
       defenses,
+      avgCups,
     )
 
     return {

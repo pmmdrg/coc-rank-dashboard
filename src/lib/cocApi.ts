@@ -1,4 +1,4 @@
-import type { Season, Player } from '../types'
+import type { Season, Player, LeagueHistoryItem } from '../types'
 import { calculateMaxPossibleCups, calculatePlayerRating } from './ranking'
 import { getLeagueIconUrl } from './leagueIcons'
 import { getRankedTierMaxAttacks, type RankedTierDefinition } from '../data/rankedTierMetadata'
@@ -12,6 +12,7 @@ export interface SyncResult {
   groupTag: string
   seasonId: string
   membersCount: number
+  leagueHistory?: LeagueHistoryItem[]
 }
 
 /**
@@ -54,6 +55,8 @@ function mapMembersToPlayers(
   maxDefenses: number = 24,
   existingPlayersMap?: Map<string, Player>,
 ): Player[] {
+  const activeCups = members.map((m) => Number(m.leagueTrophies) || 0).filter((c) => c > 0)
+  const avgCups = activeCups.length > 0 ? Math.round(activeCups.reduce((a, b) => a + b, 0) / activeCups.length) : 0
 
   return members.map((m: Record<string, unknown>, index: number) => {
     const tag = (m.playerTag as string) || `#PLAYER_${index + 1}`
@@ -88,6 +91,7 @@ function mapMembersToPlayers(
       attacks,
       attackDestruction,
       defenses,
+      avgCups,
     )
 
     return {
@@ -128,13 +132,25 @@ export async function fetchRankedSeasonData(
   }
   const formattedTag = cleanTag.startsWith('#') ? cleanTag : `#${cleanTag}`
 
-  // 1. Lấy thông tin người chơi & group metadata
-  const playerRes = await fetch(`/api/coc?path=${encodeURIComponent(`/players/${formattedTag}`)}`)
+  // 1. Lấy thông tin người chơi & lịch sử giải đấu song song
+  const [playerRes, historyRes] = await Promise.all([
+    fetch(`/api/coc?path=${encodeURIComponent(`/players/${formattedTag}`)}`),
+    fetch(`/api/coc?path=${encodeURIComponent(`/players/${formattedTag}/leaguehistory`)}`).catch(() => null),
+  ])
+
   if (!playerRes.ok) {
     const errData = await playerRes.json().catch(() => ({}))
     throw new Error(errData.error || `Không thể tải hồ sơ người chơi (${playerRes.status})`)
   }
   const playerData = await playerRes.json()
+
+  let leagueHistory: LeagueHistoryItem[] = []
+  if (historyRes?.ok) {
+    const historyData = await historyRes.json().catch(() => null)
+    if (Array.isArray(historyData?.items)) {
+      leagueHistory = historyData.items
+    }
+  }
 
   const groupTag = playerData.currentLeagueGroupTag as string | undefined
   const seasonId = playerData.currentLeagueSeasonId ? String(playerData.currentLeagueSeasonId) : undefined
@@ -246,6 +262,25 @@ export async function fetchRankedSeasonData(
     groupTag,
     seasonId,
     membersCount: currentPlayers.length,
+    leagueHistory,
+  }
+}
+
+/**
+ * Lấy lịch sử tất cả các mùa giải Ranked của người chơi qua endpoint /players/{tag}/leaguehistory
+ */
+export async function fetchPlayerLeagueHistory(playerTag: string): Promise<LeagueHistoryItem[]> {
+  const cleanTag = playerTag.trim().toUpperCase()
+  if (!cleanTag) return []
+  const formattedTag = cleanTag.startsWith('#') ? cleanTag : `#${cleanTag}`
+  try {
+    const res = await fetch(`/api/coc?path=${encodeURIComponent(`/players/${formattedTag}/leaguehistory`)}`)
+    if (!res.ok) return []
+    const data = await res.json()
+    return Array.isArray(data?.items) ? data.items : []
+  } catch (err) {
+    console.warn('Không thể tải lịch sử giải đấu (leaguehistory):', err)
+    return []
   }
 }
 

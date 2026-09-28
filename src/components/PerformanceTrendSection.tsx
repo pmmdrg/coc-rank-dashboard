@@ -1,199 +1,255 @@
 import { useMemo, useState } from 'react'
-import { Award, ChevronDown, ChevronUp, Flame, Shield, TrendingUp, Trophy } from 'lucide-react'
-import type { RatingCategory, Season } from '../types'
-import { formatDestruction, normalizeSeason, ratingColors, ratingLabels } from '../lib/ranking'
+import {
+  Award,
+  ChevronDown,
+  ChevronUp,
+  Flame,
+  Shield,
+  TrendingUp,
+  Trophy,
+  Calendar,
+  Swords,
+  ShieldAlert,
+} from 'lucide-react'
+import type { LeagueHistoryItem } from '../types'
+import { parseSeasonDateRange } from '../lib/cocApi'
+import { RANKED_TIERS_METADATA } from '../data/rankedTierMetadata'
 
 export interface PerformanceTrendSectionProps {
-  seasons: Season[]
-  myPlayerName: string
-  activeSeasonIndex: number
+  leagueHistory?: LeagueHistoryItem[]
+  myPlayerName?: string
+  playerTag?: string
 }
 
-interface SeasonDataPoint {
-  seasonId: string
-  seasonName: string
-  rank: number
-  totalPlayers: number
-  currentCups: number
-  maxPossibleCups: number
-  attackDestruction: number
-  defenseDestruction: number
-  attacks: number
-  defenses: number
-  maxAttacks: number
-  maxDefenses: number
-  rating: RatingCategory
+interface ProcessedSeasonPoint {
+  seasonId: number
+  displayPeriod: string
+  tierName: string
+  placement: number
+  trophies: number
+  attackWins: number
+  attackLosses: number
+  totalAttacks: number
+  attackWinRate: number
+  defenseWins: number
+  defenseLosses: number
+  totalDefenses: number
+  defenseStars: number
+  maxBattles: number
 }
 
 export function PerformanceTrendSection({
-  seasons,
-  myPlayerName,
-  activeSeasonIndex,
+  leagueHistory = [],
+  myPlayerName = '',
+  playerTag = '',
 }: PerformanceTrendSectionProps) {
   const [isCollapsed, setIsCollapsed] = useState(false)
-  const [activeMetric, setActiveMetric] = useState<'cups_rank' | 'destruction'>('cups_rank')
+  const [activeMetric, setActiveMetric] = useState<'cups_rank' | 'battles_stars'>('cups_rank')
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+  const [showTable, setShowTable] = useState(true)
 
-  // Trích xuất dữ liệu phong độ của tài khoản qua từng mùa giải
-  const history = useMemo(() => {
-    const points: SeasonDataPoint[] = []
+  // Xử lý và chuẩn hóa dữ liệu lịch sử các mùa giải từ Supercell endpoint /players/{tag}/leaguehistory
+  const chronologicalHistory = useMemo<ProcessedSeasonPoint[]>(() => {
+    if (!leagueHistory || leagueHistory.length === 0) return []
 
-    seasons.forEach((rawSeason) => {
-      const s = normalizeSeason(rawSeason)
-      const myPlayer = s.players.find(
-        (p) =>
-          p.id === s.myPlayerId ||
-          p.name.trim().toLowerCase() === myPlayerName.trim().toLowerCase(),
-      )
+    // Sắp xếp theo thứ tự thời gian tăng dần (từ mùa cũ nhất đến mùa mới nhất)
+    const sorted = [...leagueHistory].sort((a, b) => a.leagueSeasonId - b.leagueSeasonId)
 
-      if (myPlayer) {
-        points.push({
-          seasonId: s.seasonName + (s.startsAt || ''),
-          seasonName: s.seasonName,
-          rank: myPlayer.rank,
-          totalPlayers: s.players.length,
-          currentCups: myPlayer.currentCups,
-          maxPossibleCups: myPlayer.maxPossibleCups,
-          attackDestruction: myPlayer.attackDestruction ?? 0,
-          defenseDestruction: myPlayer.defenseDestruction ?? 0,
-          attacks: myPlayer.attacks,
-          defenses: myPlayer.defenses,
-          maxAttacks: s.maxAttacks ?? 24,
-          maxDefenses: s.maxDefenses ?? 24,
-          rating: myPlayer.rating,
-        })
+    return sorted.map((item) => {
+      const { displayPeriod } = parseSeasonDateRange(item.leagueSeasonId)
+      const matchedTier = RANKED_TIERS_METADATA.find((t) => t.id === item.leagueTierId)
+      const tierName = matchedTier ? matchedTier.name : `Cấp bậc #${item.leagueTierId}`
+
+      const totalAttacks = (item.attackWins || 0) + (item.attackLosses || 0)
+      const attackWinRate = totalAttacks > 0 ? Math.round(((item.attackWins || 0) / totalAttacks) * 1000) / 10 : 0
+
+      const totalDefenses = (item.defenseWins || 0) + (item.defenseLosses || 0)
+
+      return {
+        seasonId: item.leagueSeasonId,
+        displayPeriod: displayPeriod !== '--' ? displayPeriod : `Mùa ${item.leagueSeasonId}`,
+        tierName,
+        placement: item.placement,
+        trophies: item.leagueTrophies,
+        attackWins: item.attackWins || 0,
+        attackLosses: item.attackLosses || 0,
+        totalAttacks,
+        attackWinRate,
+        defenseWins: item.defenseWins || 0,
+        defenseLosses: item.defenseLosses || 0,
+        totalDefenses,
+        defenseStars: item.defenseStars || 0,
+        maxBattles: item.maxBattles,
       }
     })
+  }, [leagueHistory])
 
-    return points
-  }, [seasons, myPlayerName])
+  // Thống kê tổng hợp qua các mùa giải
+  const overallStats = useMemo(() => {
+    if (chronologicalHistory.length === 0) return null
 
-  if (history.length === 0) {
+    const latest = chronologicalHistory[chronologicalHistory.length - 1]
+    const placements = chronologicalHistory.map((s) => s.placement).filter((p) => p > 0)
+    const bestPlacement = placements.length > 0 ? Math.min(...placements) : latest.placement
+
+    const allTrophies = chronologicalHistory.map((s) => s.trophies)
+    const maxTrophies = Math.max(...allTrophies)
+
+    const totalWins = chronologicalHistory.reduce((acc, s) => acc + s.attackWins, 0)
+    const totalAtks = chronologicalHistory.reduce((acc, s) => acc + s.totalAttacks, 0)
+    const overallWinRate = totalAtks > 0 ? Math.round((totalWins / totalAtks) * 1000) / 10 : 0
+
+    return {
+      latest,
+      bestPlacement,
+      maxTrophies,
+      totalWins,
+      totalAtks,
+      overallWinRate,
+    }
+  }, [chronologicalHistory])
+
+  if (chronologicalHistory.length === 0) {
     return (
       <section className="glass-panel rounded-xl shadow-sm transition-all">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/60 p-4 sm:p-5 dark:border-slate-700/60">
           <div className="flex items-center gap-2.5">
             <TrendingUp className="h-5 w-5 text-sky-500" />
-            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
-              Theo dõi phong độ qua các mùa giải
-            </h2>
+            <div>
+              <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
+                Theo dõi phong độ qua các mùa giải
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Lịch sử thứ hạng, cúp, và tỷ lệ chiến đấu lấy trực tiếp từ Supercell API
+              </p>
+            </div>
           </div>
         </div>
-        <div className="p-8 text-center text-sm font-medium text-slate-400 dark:text-slate-500">
-          Chưa có dữ liệu
+        <div className="py-10 text-center px-4">
+          <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500 mb-3">
+            <Calendar className="h-6 w-6" />
+          </div>
+          <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+            Chưa có dữ liệu lịch sử mùa giải
+          </p>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">
+            {playerTag
+              ? 'Người chơi chưa có dữ liệu lưu trữ trên endpoint League History của Supercell hoặc vừa tạo bảng mới.'
+              : 'Vui lòng nhập Player Tag và bấm "Tải dữ liệu từ Supercell API" để xem toàn bộ phong độ qua các mùa.'}
+          </p>
         </div>
       </section>
     )
   }
 
-  const latestPoint = history[history.length - 1]
-  const currentSeasonPoint = history[activeSeasonIndex] ?? latestPoint
-  const hasMultipleSeasons = history.length >= 2
-
-  // Tính toán tọa độ biểu đồ SVG cho >= 2 mùa giải
-  const chartWidth = 720
+  // --- THIẾT LẬP VẼ BIỂU ĐỒ SVG TƯƠNG TÁC ---
+  const chartWidth = 760
   const chartHeight = 220
-  const paddingX = 60
-  const paddingTop = 30
+  const paddingX = 64
+  const paddingTop = 32
   const paddingBottom = 40
   const plotWidth = chartWidth - paddingX * 2
   const plotHeight = chartHeight - paddingTop - paddingBottom
 
-  // Tìm min/max theo metric
-  const cupsValues = history.map((d) => d.currentCups)
-  const minCups = Math.min(...cupsValues, 5000)
-  const maxCups = Math.max(...cupsValues, 5500)
+  // Trục Cups: min/max
+  const cupsValues = chronologicalHistory.map((d) => d.trophies)
+  const minCups = Math.min(...cupsValues)
+  const maxCups = Math.max(...cupsValues)
   const cupsSpan = Math.max(1, maxCups - minCups)
 
-  const atkDestValues = history.map((d) => d.attackDestruction)
-  const defDestValues = history.map((d) => d.defenseDestruction)
-  const minDest = Math.max(0, Math.min(...atkDestValues, ...defDestValues) - 5)
-  const maxDest = Math.min(100, Math.max(...atkDestValues, ...defDestValues) + 5)
-  const destSpan = Math.max(1, maxDest - minDest)
+  // Trục Rank/Placement (Nghịch đảo: #1 ở đỉnh, #100 ở đáy)
+  const rankValues = chronologicalHistory.map((d) => d.placement)
+  const minRank = Math.min(...rankValues) // Hạng tốt nhất (số nhỏ nhất)
+  const maxRank = Math.max(...rankValues) // Hạng thấp nhất (số lớn nhất)
+  const rankSpan = Math.max(1, maxRank - minRank)
+
+  // Trục WinRate (0% - 100%)
+  const minRate = 0
+  const rateSpan = 100
+
+  // Trục Stars phòng thủ bị mất (0 - maxDefenseStars)
+  const starsValues = chronologicalHistory.map((d) => d.defenseStars)
+  const minStars = 0
+  const maxStars = Math.max(1, ...starsValues)
+  const starsSpan = maxStars - minStars
 
   const getX = (index: number) => {
-    if (history.length <= 1) return chartWidth / 2
-    return paddingX + (index / (history.length - 1)) * plotWidth
+    if (chronologicalHistory.length <= 1) return chartWidth / 2
+    return paddingX + (index / (chronologicalHistory.length - 1)) * plotWidth
   }
 
+  // Cúp: càng cao càng ở trên
   const getCupsY = (cups: number) => {
     return paddingTop + plotHeight - ((cups - minCups) / cupsSpan) * plotHeight
   }
 
-  const getDestY = (dest: number) => {
-    return paddingTop + plotHeight - ((dest - minDest) / destSpan) * plotHeight
+  // Rank: càng nhỏ (#1) càng ở trên
+  const getRankY = (rank: number) => {
+    return paddingTop + ((rank - minRank) / rankSpan) * plotHeight
   }
 
-  // Tạo chuỗi đường path cho SVG
-  const cupsPath = history
-    .map((d, i) => `${i === 0 ? 'M' : 'L'} ${getX(i)} ${getCupsY(d.currentCups)}`)
-    .join(' ')
+  // WinRate: 100% ở trên, 0% ở dưới
+  const getRateY = (rate: number) => {
+    return paddingTop + plotHeight - ((rate - minRate) / rateSpan) * plotHeight
+  }
 
-  const atkDestPath = history
-    .map((d, i) => `${i === 0 ? 'M' : 'L'} ${getX(i)} ${getDestY(d.attackDestruction)}`)
-    .join(' ')
+  // Sao thủ mất: càng ít càng ở trên
+  const getStarsY = (stars: number) => {
+    return paddingTop + ((stars - minStars) / starsSpan) * plotHeight
+  }
 
-  const defDestPath = history
-    .map((d, i) => `${i === 0 ? 'M' : 'L'} ${getX(i)} ${getDestY(d.defenseDestruction)}`)
-    .join(' ')
+  // Tạo đường dẫn path SVG
+  const makeLinePath = (getY: (d: ProcessedSeasonPoint) => number) => {
+    return chronologicalHistory
+      .map((d, i) => `${i === 0 ? 'M' : 'L'} ${getX(i).toFixed(1)} ${getY(d).toFixed(1)}`)
+      .join(' ')
+  }
+
+  const cupsPath = makeLinePath((d) => getCupsY(d.trophies))
+  const rankPath = makeLinePath((d) => getRankY(d.placement))
+  const ratePath = makeLinePath((d) => getRateY(d.attackWinRate))
+  const starsPath = makeLinePath((d) => getStarsY(d.defenseStars))
 
   return (
     <section className="glass-panel rounded-xl shadow-sm transition-all">
-      {/* Header thanh tiêu đề */}
+      {/* Header & Toggle */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/60 p-4 sm:p-5 dark:border-slate-700/60">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-500/10 text-sky-600 dark:bg-sky-500/20 dark:text-sky-400">
-            <TrendingUp className="h-4.5 w-4.5" />
-          </div>
+          <TrendingUp className="h-5 w-5 text-sky-500" />
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100">
-                Theo Dõi Phong Độ Qua Các Mùa Giải
+              <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
+                Theo dõi phong độ qua các mùa giải
               </h2>
-              <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-300">
-                {myPlayerName}
+              <span className="rounded-full bg-sky-500/15 px-2 py-0.5 text-[10px] font-bold text-sky-700 dark:text-sky-300">
+                {chronologicalHistory.length} mùa
               </span>
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              {hasMultipleSeasons
-                ? `Lịch sử thi đấu qua ${history.length} mùa giải`
-                : 'Thông số phong độ mùa giải hiện tại'}
+              Đồng bộ dữ liệu lịch sử chính thức từ endpoint Supercell API ({myPlayerName || playerTag || 'Bạn'})
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          {hasMultipleSeasons && !isCollapsed && (
-            <div className="flex items-center rounded-lg bg-slate-100 p-0.5 dark:bg-slate-800/80">
-              <button
-                type="button"
-                onClick={() => setActiveMetric('cups_rank')}
-                className={`rounded-md px-2.5 py-1 text-xs font-semibold transition-all ${
-                  activeMetric === 'cups_rank'
-                    ? 'bg-white text-slate-900 shadow-xs dark:bg-slate-700 dark:text-slate-100'
-                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
-                }`}
-              >
-                Cúp & Thứ hạng
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveMetric('destruction')}
-                className={`rounded-md px-2.5 py-1 text-xs font-semibold transition-all ${
-                  activeMetric === 'destruction'
-                    ? 'bg-white text-slate-900 shadow-xs dark:bg-slate-700 dark:text-slate-100'
-                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
-                }`}
-              >
-                % Công vs % Thủ
-              </button>
-            </div>
-          )}
+          {/* Nút bật/tắt bảng chi tiết */}
+          <button
+            type="button"
+            onClick={() => setShowTable((prev) => !prev)}
+            className={`rounded-lg border px-2.5 py-1 text-xs font-semibold transition-all ${
+              showTable
+                ? 'border-sky-500/40 bg-sky-500/10 text-sky-700 dark:text-sky-300'
+                : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400'
+            }`}
+          >
+            {showTable ? 'Ẩn bảng chi tiết' : 'Xem bảng chi tiết'}
+          </button>
 
+          {/* Nút thu gọn / mở rộng section */}
           <button
             type="button"
             onClick={() => setIsCollapsed((prev) => !prev)}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-300"
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition-colors hover:bg-slate-100 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800"
             title={isCollapsed ? 'Mở rộng' : 'Thu gọn'}
           >
             {isCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
@@ -201,310 +257,482 @@ export function PerformanceTrendSection({
         </div>
       </div>
 
-      {!isCollapsed && (
-        <div className="p-4 sm:p-5 space-y-4">
-          {/* Lưới các thẻ chỉ số tóm tắt */}
+      {!isCollapsed && overallStats && (
+        <div className="p-4 sm:p-5 space-y-5">
+          {/* 4 THẺ THỐNG KÊ TỔNG HỢP PHONG ĐỘ */}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {/* Thứ hạng */}
-            <div className="rounded-lg border border-slate-200/60 bg-white/40 p-3 dark:border-slate-800/60 dark:bg-slate-900/40">
-              <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                <span>Thứ Hạng Mùa Này</span>
-                <Trophy className="h-3.5 w-3.5 text-amber-500" />
-              </div>
-              <div className="mt-1 flex items-baseline gap-1.5">
-                <span className="text-xl font-black text-slate-900 dark:text-slate-100">
-                  #{currentSeasonPoint.rank}
+            {/* Thẻ 1: Thứ hạng */}
+            <div className="rounded-xl border border-slate-200/80 bg-white/60 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  Hạng mùa gần nhất
                 </span>
-                <span className="text-xs text-slate-400">/ {currentSeasonPoint.totalPlayers}</span>
+                <Award className="h-4 w-4 text-emerald-500" />
+              </div>
+              <div className="mt-2 flex items-baseline gap-1.5">
+                <span className="text-xl font-extrabold text-slate-900 dark:text-slate-100">
+                  #{overallStats.latest.placement}
+                </span>
+                <span className="text-[11px] font-medium text-slate-400">/ 100</span>
+              </div>
+              <div className="mt-1 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+                Kỷ lục: #{overallStats.bestPlacement}
               </div>
             </div>
 
-            {/* Cúp hiện tại */}
-            <div className="rounded-lg border border-slate-200/60 bg-white/40 p-3 dark:border-slate-800/60 dark:bg-slate-900/40">
-              <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                <span>Điểm Cúp Hiện Tại</span>
-                <Award className="h-3.5 w-3.5 text-sky-500" />
-              </div>
-              <div className="mt-1 flex items-baseline gap-1.5">
-                <span className="text-xl font-black text-sky-600 dark:text-sky-400">
-                  {currentSeasonPoint.currentCups.toLocaleString('vi-VN')}
+            {/* Thẻ 2: Cúp mùa giải */}
+            <div className="rounded-xl border border-slate-200/80 bg-white/60 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  Cúp mùa gần nhất
                 </span>
-                <span className="text-[11px] text-slate-400">
-                  (Trần: {currentSeasonPoint.maxPossibleCups.toLocaleString('vi-VN')})
-                </span>
+                <Trophy className="h-4 w-4 text-amber-500" />
               </div>
-            </div>
-
-            {/* % Công */}
-            <div className="rounded-lg border border-slate-200/60 bg-white/40 p-3 dark:border-slate-800/60 dark:bg-slate-900/40">
-              <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                <span>% Công Trung Bình</span>
-                <Flame className="h-3.5 w-3.5 text-rose-500" />
-              </div>
-              <div className="mt-1 flex items-baseline gap-2">
-                <span className="text-xl font-black text-slate-900 dark:text-slate-100">
-                  {currentSeasonPoint.attacks > 0
-                    ? `${formatDestruction(currentSeasonPoint.attackDestruction)}%`
-                    : 'Chưa đánh'}
+              <div className="mt-2 flex items-baseline gap-1.5">
+                <span className="text-xl font-extrabold text-amber-600 dark:text-amber-400">
+                  {overallStats.latest.trophies}
                 </span>
-                {currentSeasonPoint.attacks > 0 && (
-                  <span
-                    className="rounded px-1.5 py-0.2 text-[10px] font-bold"
-                    style={{
-                      backgroundColor: `${ratingColors[currentSeasonPoint.rating]}20`,
-                      color: ratingColors[currentSeasonPoint.rating],
-                    }}
-                  >
-                    {ratingLabels[currentSeasonPoint.rating]}
-                  </span>
-                )}
+                <span className="text-[11px] font-medium text-slate-400">cúp</span>
+              </div>
+              <div className="mt-1 text-[11px] text-amber-600 dark:text-amber-400 font-medium">
+                Kỷ lục: {overallStats.maxTrophies} cúp
               </div>
             </div>
 
-            {/* % Thủ */}
-            <div className="rounded-lg border border-slate-200/60 bg-white/40 p-3 dark:border-slate-800/60 dark:bg-slate-900/40">
-              <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                <span>% Thủ Trung Bình</span>
-                <Shield className="h-3.5 w-3.5 text-emerald-500" />
+            {/* Thẻ 3: Tỷ lệ thắng công */}
+            <div className="rounded-xl border border-slate-200/80 bg-white/60 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  Tỷ lệ thắng công
+                </span>
+                <Flame className="h-4 w-4 text-rose-500" />
               </div>
-              <div className="mt-1 flex items-baseline gap-1.5">
-                <span className="text-xl font-black text-slate-900 dark:text-slate-100">
-                  {currentSeasonPoint.defenses > 0
-                    ? `${formatDestruction(currentSeasonPoint.defenseDestruction)}%`
-                    : 'Chưa thủ'}
+              <div className="mt-2 flex items-baseline gap-1.5">
+                <span className="text-xl font-extrabold text-rose-600 dark:text-rose-400">
+                  {overallStats.overallWinRate.toFixed(1)}%
                 </span>
-                <span className="text-[11px] text-slate-400">
-                  ({currentSeasonPoint.defenses}/{currentSeasonPoint.maxDefenses} trận)
+              </div>
+              <div className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+                Thắng {overallStats.totalWins}/{overallStats.totalAtks} trận
+              </div>
+            </div>
+
+            {/* Thẻ 4: Cấp giải đấu */}
+            <div className="rounded-xl border border-slate-200/80 bg-white/60 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  Cấp bậc hiện tại
                 </span>
+                <Shield className="h-4 w-4 text-sky-500" />
+              </div>
+              <div className="mt-2 truncate font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-base" title={overallStats.latest.tierName}>
+                {overallStats.latest.tierName}
+              </div>
+              <div className="mt-1 text-[11px] text-sky-600 dark:text-sky-400 font-medium">
+                Tối đa {overallStats.latest.maxBattles} lượt/mùa
               </div>
             </div>
           </div>
 
-          {/* Biểu đồ SVG nếu có từ 2 mùa giải trở lên */}
-          {hasMultipleSeasons ? (
-            <div className="relative overflow-x-auto rounded-lg border border-slate-200/60 bg-slate-50/50 p-4 dark:border-slate-800/60 dark:bg-slate-900/50">
-              <div className="mb-2 flex items-center justify-between text-xs font-semibold text-slate-600 dark:text-slate-300">
-                <span>
-                  {activeMetric === 'cups_rank'
-                    ? '📈 Biểu đồ điểm Cúp & Thứ hạng qua các mùa'
-                    : '⚔️ Biểu đồ % Công (Đỏ) vs % Thủ (Xanh ngọc) qua các mùa'}
+          {/* KHU VỰC BIỂU ĐỒ SVG TƯƠNG TÁC */}
+          <div className="rounded-xl border border-slate-200/70 bg-white/40 p-4 dark:border-slate-700/70 dark:bg-slate-900/40">
+            {/* Chuyển đổi tab đo lường */}
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-slate-200/60 dark:border-slate-700/60">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                  Chỉ số biểu đồ:
                 </span>
-                <div className="flex items-center gap-3">
-                  {activeMetric === 'cups_rank' ? (
-                    <span className="flex items-center gap-1.5 text-sky-600 dark:text-sky-400">
-                      <span className="h-2 w-2 rounded-full bg-sky-500" />
-                      Điểm Cúp
-                    </span>
-                  ) : (
-                    <>
-                      <span className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400">
-                        <span className="h-2 w-2 rounded-full bg-rose-500" />
-                        % Công
-                      </span>
-                      <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
-                        <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                        % Thủ
-                      </span>
-                    </>
-                  )}
+                <div className="inline-flex rounded-lg border border-slate-200 bg-slate-100/70 p-0.5 text-xs font-semibold dark:border-slate-700 dark:bg-slate-800/70">
+                  <button
+                    type="button"
+                    onClick={() => setActiveMetric('cups_rank')}
+                    className={`rounded-md px-2.5 py-1 transition-all ${
+                      activeMetric === 'cups_rank'
+                        ? 'bg-white text-slate-900 shadow-2xs dark:bg-slate-700 dark:text-white'
+                        : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+                    }`}
+                  >
+                    🏆 Cúp & Thứ hạng
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveMetric('battles_stars')}
+                    className={`rounded-md px-2.5 py-1 transition-all ${
+                      activeMetric === 'battles_stars'
+                        ? 'bg-white text-slate-900 shadow-2xs dark:bg-slate-700 dark:text-white'
+                        : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+                    }`}
+                  >
+                    ⚔️ Thắng công & Sao thủ bị mất
+                  </button>
                 </div>
               </div>
 
-              <div className="min-w-[600px]">
-                <svg
-                  viewBox={`0 0 ${chartWidth} ${chartHeight}`}
-                  className="w-full h-auto overflow-visible select-none"
-                >
-                  {/* Đường lưới ngang */}
-                  {[0, 0.25, 0.5, 0.75, 1].map((pct) => {
-                    const y = paddingTop + plotHeight * pct
-                    const val =
-                      activeMetric === 'cups_rank'
-                        ? Math.round(maxCups - pct * cupsSpan)
-                        : Math.round(maxDest - pct * destSpan)
-                    return (
-                      <g key={pct}>
-                        <line
-                          x1={paddingX}
-                          y1={y}
-                          x2={chartWidth - paddingX}
-                          y2={y}
-                          stroke="currentColor"
-                          className="text-slate-200/70 dark:text-slate-800"
-                          strokeDasharray="4 4"
-                          strokeWidth="1"
-                        />
-                        <text
-                          x={paddingX - 8}
-                          y={y + 3}
-                          textAnchor="end"
-                          className="fill-slate-400 text-[10px] font-mono"
-                        >
-                          {val}
-                          {activeMetric === 'destruction' ? '%' : ''}
-                        </text>
-                      </g>
-                    )
-                  })}
+              {/* Chú giải màu sắc */}
+              <div className="flex flex-wrap items-center gap-4 text-xs font-medium">
+                {activeMetric === 'cups_rank' ? (
+                  <>
+                    <span className="inline-flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
+                      <span className="h-2 w-2 rounded-full bg-amber-500" />
+                      Điểm Cúp ({minCups} - {maxCups})
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 text-sky-600 dark:text-sky-400">
+                      <span className="h-2 w-2 rounded-full bg-sky-500" />
+                      Thứ hạng (#{minRank} - #{maxRank})
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span className="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+                      <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                      Tỷ lệ thắng công (%)
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 text-rose-600 dark:text-rose-400">
+                      <span className="h-2 w-2 rounded-full bg-rose-500" />
+                      Số sao phòng thủ bị cướp
+                    </span>
+                  </>
+                )}
+              </div>
+            </div>
 
-                  {/* Đường biểu đồ */}
-                  {activeMetric === 'cups_rank' ? (
-                    <path
-                      d={cupsPath}
-                      fill="none"
-                      stroke="#0284c7"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="drop-shadow-sm transition-all duration-300"
+            {/* SVG Visualizer */}
+            <div className="relative mt-2 overflow-x-auto">
+              <svg
+                viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+                className="w-full min-w-[620px] select-none overflow-visible"
+              >
+                {/* Lưới đường ngang mờ */}
+                {[0, 0.25, 0.5, 0.75, 1].map((ratio) => {
+                  const y = paddingTop + plotHeight * ratio
+                  return (
+                    <line
+                      key={ratio}
+                      x1={paddingX}
+                      y1={y}
+                      x2={chartWidth - paddingX}
+                      y2={y}
+                      stroke="currentColor"
+                      className="text-slate-200/80 dark:text-slate-800"
+                      strokeDasharray="4 4"
+                      strokeWidth="1"
                     />
-                  ) : (
-                    <>
-                      <path
-                        d={atkDestPath}
-                        fill="none"
-                        stroke="#f43f5e"
-                        strokeWidth="3"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="drop-shadow-sm transition-all duration-300"
-                      />
-                      <path
-                        d={defDestPath}
-                        fill="none"
-                        stroke="#10b981"
-                        strokeWidth="3"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="drop-shadow-sm transition-all duration-300"
-                      />
-                    </>
-                  )}
+                  )
+                })}
 
-                  {/* Các điểm nút tròn tương tác */}
-                  {history.map((point, i) => {
-                    const x = getX(i)
-                    const isHovered = hoveredIndex === i
+                {/* Các đường thẳng đứng ứng với từng mùa giải */}
+                {chronologicalHistory.map((_, i) => {
+                  const x = getX(i)
+                  return (
+                    <line
+                      key={i}
+                      x1={x}
+                      y1={paddingTop}
+                      x2={x}
+                      y2={paddingTop + plotHeight}
+                      stroke="currentColor"
+                      className={
+                        hoveredIndex === i
+                          ? 'text-sky-400 dark:text-sky-500 stroke-[1.5]'
+                          : 'text-slate-200/50 dark:text-slate-800'
+                      }
+                      strokeDasharray={hoveredIndex === i ? undefined : '2 2'}
+                    />
+                  )
+                })}
 
-                    if (activeMetric === 'cups_rank') {
-                      const y = getCupsY(point.currentCups)
-                      return (
-                        <g
-                          key={point.seasonId}
-                          onMouseEnter={() => setHoveredIndex(i)}
-                          onMouseLeave={() => setHoveredIndex(null)}
-                          className="cursor-pointer"
-                        >
-                          {/* Trục X nhãn mùa giải */}
-                          <text
-                            x={x}
-                            y={chartHeight - 12}
-                            textAnchor="middle"
-                            className={`text-[11px] font-semibold transition-colors ${
-                              isHovered
-                                ? 'fill-sky-600 dark:fill-sky-400 font-bold'
-                                : 'fill-slate-500 dark:fill-slate-400'
-                            }`}
-                          >
-                            {point.seasonName}
-                          </text>
+                {/* Đường vẽ theo Metric */}
+                {chronologicalHistory.length >= 2 && (
+                  <>
+                    {activeMetric === 'cups_rank' ? (
+                      <>
+                        {/* Đường Cup */}
+                        <path
+                          d={cupsPath}
+                          fill="none"
+                          stroke="#f59e0b"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        {/* Đường Rank */}
+                        <path
+                          d={rankPath}
+                          fill="none"
+                          stroke="#0284c7"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeDasharray="5 3"
+                        />
+                      </>
+                    ) : (
+                      <>
+                        {/* Đường Thắng công */}
+                        <path
+                          d={ratePath}
+                          fill="none"
+                          stroke="#10b981"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        {/* Đường Sao thủ bị cướp */}
+                        <path
+                          d={starsPath}
+                          fill="none"
+                          stroke="#f43f5e"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeDasharray="5 3"
+                        />
+                      </>
+                    )}
+                  </>
+                )}
 
-                          {/* Vòng tròn điểm */}
-                          <circle
-                            cx={x}
-                            cy={y}
-                            r={isHovered ? 6 : 4.5}
-                            fill="#0284c7"
-                            stroke="#ffffff"
-                            strokeWidth="2"
-                            className="transition-all duration-150 drop-shadow-sm"
-                          />
+                {/* Các điểm mốc tròn (Data points) */}
+                {chronologicalHistory.map((d, i) => {
+                  const x = getX(i)
+                  const isHovered = hoveredIndex === i
 
-                          {/* Nhãn điểm cúp & thứ hạng trên đầu */}
-                          <text
-                            x={x}
-                            y={y - 10}
-                            textAnchor="middle"
-                            className="fill-slate-800 dark:fill-slate-100 text-[10px] font-bold"
-                          >
-                            {point.currentCups} (#{point.rank})
-                          </text>
-                        </g>
-                      )
-                    }
-
-                    const yAtk = getDestY(point.attackDestruction)
-                    const yDef = getDestY(point.defenseDestruction)
+                  if (activeMetric === 'cups_rank') {
+                    const yCups = getCupsY(d.trophies)
+                    const yRank = getRankY(d.placement)
                     return (
-                      <g
-                        key={point.seasonId}
-                        onMouseEnter={() => setHoveredIndex(i)}
-                        onMouseLeave={() => setHoveredIndex(null)}
-                        className="cursor-pointer"
-                      >
-                        {/* Trục X nhãn mùa giải */}
-                        <text
-                          x={x}
-                          y={chartHeight - 12}
-                          textAnchor="middle"
-                          className={`text-[11px] font-semibold transition-colors ${
-                            isHovered
-                              ? 'fill-slate-900 dark:fill-slate-100 font-bold'
-                              : 'fill-slate-500 dark:fill-slate-400'
-                          }`}
-                        >
-                          {point.seasonName}
-                        </text>
-
-                        {/* Điểm % công */}
+                      <g key={i}>
+                        {/* Điểm Cúp */}
                         <circle
                           cx={x}
-                          cy={yAtk}
+                          cy={yCups}
                           r={isHovered ? 6 : 4.5}
-                          fill="#f43f5e"
+                          fill="#f59e0b"
                           stroke="#ffffff"
                           strokeWidth="2"
-                          className="transition-all duration-150 drop-shadow-sm"
+                          className="transition-all duration-150"
                         />
-                        <text
-                          x={x}
-                          y={yAtk - 8}
-                          textAnchor="middle"
-                          className="fill-rose-700 dark:fill-rose-300 text-[9px] font-bold"
-                        >
-                          {point.attackDestruction.toFixed(1)}%
-                        </text>
-
-                        {/* Điểm % thủ */}
+                        {/* Điểm Rank */}
                         <circle
                           cx={x}
-                          cy={yDef}
+                          cy={yRank}
+                          r={isHovered ? 6 : 4.5}
+                          fill="#0284c7"
+                          stroke="#ffffff"
+                          strokeWidth="2"
+                          className="transition-all duration-150"
+                        />
+                      </g>
+                    )
+                  } else {
+                    const yRate = getRateY(d.attackWinRate)
+                    const yStars = getStarsY(d.defenseStars)
+                    return (
+                      <g key={i}>
+                        {/* Điểm Win Rate */}
+                        <circle
+                          cx={x}
+                          cy={yRate}
                           r={isHovered ? 6 : 4.5}
                           fill="#10b981"
                           stroke="#ffffff"
                           strokeWidth="2"
-                          className="transition-all duration-150 drop-shadow-sm"
+                          className="transition-all duration-150"
                         />
-                        <text
-                          x={x}
-                          y={yDef + 16}
-                          textAnchor="middle"
-                          className="fill-emerald-700 dark:fill-emerald-300 text-[9px] font-bold"
-                        >
-                          {point.defenseDestruction.toFixed(1)}%
-                        </text>
+                        {/* Điểm Stars */}
+                        <circle
+                          cx={x}
+                          cy={yStars}
+                          r={isHovered ? 6 : 4.5}
+                          fill="#f43f5e"
+                          stroke="#ffffff"
+                          strokeWidth="2"
+                          className="transition-all duration-150"
+                        />
                       </g>
                     )
-                  })}
-                </svg>
-              </div>
+                  }
+                })}
+
+                {/* Nhãn trục X: Mùa giải */}
+                {chronologicalHistory.map((d, i) => {
+                  const x = getX(i)
+                  return (
+                    <text
+                      key={i}
+                      x={x}
+                      y={chartHeight - 10}
+                      textAnchor="middle"
+                      className={`text-[10px] font-semibold transition-colors ${
+                        hoveredIndex === i
+                          ? 'fill-sky-600 font-bold dark:fill-sky-400'
+                          : 'fill-slate-500 dark:fill-slate-400'
+                      }`}
+                    >
+                      {d.displayPeriod.split(' - ')[0]}
+                    </text>
+                  )
+                })}
+
+                {/* Lớp bắt sự kiện hover vô hình */}
+                {chronologicalHistory.map((_, i) => {
+                  const x = getX(i)
+                  const colWidth = plotWidth / Math.max(1, chronologicalHistory.length)
+                  return (
+                    <rect
+                      key={i}
+                      x={x - colWidth / 2}
+                      y={0}
+                      width={colWidth}
+                      height={chartHeight}
+                      fill="transparent"
+                      className="cursor-pointer"
+                      onMouseEnter={() => setHoveredIndex(i)}
+                      onMouseLeave={() => setHoveredIndex(null)}
+                    />
+                  )
+                })}
+              </svg>
+
+              {/* Tooltip khi hover điểm mốc */}
+              {hoveredIndex !== null && (
+                <div
+                  className="pointer-events-none absolute z-20 rounded-lg border border-slate-700/30 bg-slate-900/90 p-3 text-xs text-white shadow-xl backdrop-blur -translate-x-1/2 dark:border-slate-600 dark:bg-slate-950/95 transition-all"
+                  style={{
+                    left: `${(getX(hoveredIndex) / chartWidth) * 100}%`,
+                    top: '8px',
+                  }}
+                >
+                  <div className="font-bold text-sky-300">
+                    {chronologicalHistory[hoveredIndex].displayPeriod}
+                  </div>
+                  <div className="mt-0.5 text-[11px] text-slate-300">
+                    {chronologicalHistory[hoveredIndex].tierName}
+                  </div>
+                  <div className="mt-2 space-y-1 text-[11px]">
+                    <div className="flex items-center justify-between gap-4">
+                      <span className="text-amber-400 font-medium">🏆 Điểm cúp:</span>
+                      <span className="font-mono font-bold">
+                        {chronologicalHistory[hoveredIndex].trophies} cúp
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between gap-4">
+                      <span className="text-sky-400 font-medium">🎖️ Thứ hạng:</span>
+                      <span className="font-mono font-bold">
+                        #{chronologicalHistory[hoveredIndex].placement} / 100
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between gap-4">
+                      <span className="text-emerald-400 font-medium">⚔️ Tấn công:</span>
+                      <span className="font-mono font-bold">
+                        {chronologicalHistory[hoveredIndex].attackWins}T - {chronologicalHistory[hoveredIndex].attackLosses}B ({chronologicalHistory[hoveredIndex].attackWinRate}%)
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between gap-4">
+                      <span className="text-rose-400 font-medium">🛡️ Phòng thủ:</span>
+                      <span className="font-mono font-bold">
+                        Bị trừ {chronologicalHistory[hoveredIndex].defenseStars} sao
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-          ) : (
-            <div className="flex items-center gap-2 rounded-lg border border-sky-200/60 bg-sky-50/50 p-3 text-xs text-sky-800 dark:border-sky-900/50 dark:bg-sky-950/30 dark:text-sky-300">
-              <span>💡</span>
-              <span>
-                <strong>Mẹo thi đấu:</strong> Đồ thị đường xu hướng (Trend Line) sẽ tự động vẽ biến thiên phong độ qua từng tuần khi bạn bấm nút <strong>"+ Mùa mới"</strong> để lưu trữ giải đấu tiếp theo.
-              </span>
+          </div>
+
+          {/* BẢNG CHI TIẾT LỊCH SỬ TỪNG MÙA GIẢI */}
+          {showTable && (
+            <div className="overflow-x-auto rounded-xl border border-slate-200/70 dark:border-slate-700/70">
+              <table className="w-full text-left text-xs">
+                <thead className="soft-table-head uppercase tracking-wider text-[11px]">
+                  <tr>
+                    <th className="px-3.5 py-2.5 font-bold">Khoảng thời gian</th>
+                    <th className="px-3 py-2.5 font-bold">Cấp giải đấu</th>
+                    <th className="px-3 py-2.5 font-bold">Thứ hạng</th>
+                    <th className="px-3 py-2.5 font-bold">Điểm Cúp</th>
+                    <th className="px-3 py-2.5 font-bold">Tấn công</th>
+                    <th className="px-3 py-2.5 font-bold">Phòng thủ</th>
+                    <th className="px-3 py-2.5 font-bold">Số trận tối đa</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200/50 dark:divide-slate-800/60">
+                  {/* Hiển thị mùa mới nhất lên trên cùng của bảng */}
+                  {[...chronologicalHistory].reverse().map((item, idx) => {
+                    const isLatest = idx === 0
+                    return (
+                      <tr
+                        key={item.seasonId}
+                        className={`hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors ${
+                          isLatest ? 'bg-sky-500/[0.04] dark:bg-sky-500/[0.08]' : ''
+                        }`}
+                      >
+                        {/* Thời gian */}
+                        <td className="px-3.5 py-3 align-middle whitespace-nowrap font-medium text-slate-800 dark:text-slate-200">
+                          <div className="flex items-center gap-1.5">
+                            <span>{item.displayPeriod}</span>
+                            {isLatest && (
+                              <span className="rounded bg-sky-500/20 px-1 py-0.2 text-[9px] font-bold text-sky-700 dark:text-sky-300">
+                                Mới nhất
+                              </span>
+                            )}
+                          </div>
+                        </td>
+
+                        {/* Cấp giải đấu */}
+                        <td className="px-3 py-3 align-middle whitespace-nowrap font-semibold text-slate-700 dark:text-slate-300">
+                          {item.tierName}
+                        </td>
+
+                        {/* Thứ hạng */}
+                        <td className="px-3 py-3 align-middle whitespace-nowrap font-mono font-bold text-slate-900 dark:text-slate-100">
+                          <span
+                            className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs ${
+                              item.placement <= 10
+                                ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30'
+                                : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
+                            }`}
+                          >
+                            #{item.placement}
+                          </span>
+                        </td>
+
+                        {/* Điểm Cúp */}
+                        <td className="px-3 py-3 align-middle whitespace-nowrap font-mono font-bold text-amber-600 dark:text-amber-400">
+                          {item.trophies} cúp
+                        </td>
+
+                        {/* Tấn công */}
+                        <td className="px-3 py-3 align-middle whitespace-nowrap">
+                          <div className="flex items-center gap-1.5">
+                            <Swords className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                            <span className="font-semibold text-slate-800 dark:text-slate-200">
+                              {item.attackWins}T - {item.attackLosses}B
+                            </span>
+                            <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                              ({item.attackWinRate}%)
+                            </span>
+                          </div>
+                        </td>
+
+                        {/* Phòng thủ */}
+                        <td className="px-3 py-3 align-middle whitespace-nowrap">
+                          <div className="flex items-center gap-1.5">
+                            <ShieldAlert className="h-3.5 w-3.5 text-rose-500 shrink-0" />
+                            <span className="font-medium text-slate-700 dark:text-slate-300">
+                              Mất {item.defenseStars} sao
+                            </span>
+                          </div>
+                        </td>
+
+                        {/* Giới hạn trận */}
+                        <td className="px-3 py-3 align-middle whitespace-nowrap font-mono text-slate-500 dark:text-slate-400">
+                          {item.maxBattles} lượt/mùa
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
             </div>
           )}
         </div>
