@@ -723,7 +723,7 @@ export function PerformanceTrendSection({
                     <div className="flex items-center justify-between gap-4">
                       <span className="text-sky-400 font-medium">Thứ hạng:</span>
                       <span className="font-mono font-bold">
-                        #{chronologicalHistory[hoveredIndex].placement} / 100 ({chronologicalHistory[hoveredIndex].tierName})
+                        #{chronologicalHistory[hoveredIndex].placement} / 100
                       </span>
                     </div>
                     <div className="flex items-center justify-between gap-4">
