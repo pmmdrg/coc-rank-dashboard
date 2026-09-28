@@ -218,7 +218,13 @@ export function SeasonHeader({
           </button>
 
           {/* Ô nhập Player Tag */}
-          <div className="relative inline-flex h-10 items-center rounded-md border border-emerald-400/80 bg-emerald-500/10 p-0.5 shadow-sm backdrop-blur dark:border-emerald-500/40 dark:bg-emerald-400/10">
+          <div
+            className={`relative inline-flex h-10 items-center rounded-md border p-0.5 shadow-sm backdrop-blur transition-all ${
+              !playerTag
+                ? 'border-emerald-500 bg-emerald-500/20 ring-2 ring-emerald-500/70 shadow-md shadow-emerald-500/25 animate-pulse dark:border-emerald-400 dark:ring-emerald-400/80'
+                : 'border-emerald-400/80 bg-emerald-500/10 dark:border-emerald-500/40 dark:bg-emerald-400/10'
+            }`}
+          >
             <span className="pointer-events-none absolute left-2.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
               #
             </span>

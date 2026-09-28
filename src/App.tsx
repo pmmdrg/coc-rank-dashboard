@@ -24,6 +24,7 @@ import { SeasonMetaForm } from './components/SeasonMetaForm'
 import { StatCardsGrid } from './components/StatCardsGrid'
 import { HighlightStatsTable } from './components/HighlightStatsTable'
 import { PerformanceTrendSection } from './components/PerformanceTrendSection'
+import { PlayerTagPromptBanner } from './components/PlayerTagPromptBanner'
 import { Footer } from './components/Footer'
 import { Analytics } from '@vercel/analytics/react'
 
@@ -510,10 +511,19 @@ function App() {
         ) : null}
 
         {/* Thông báo trạng thái hoặc lỗi */}
-        {error ? (
+        {error && (
           <div className="animate-fade-in rounded-xl border border-rose-300/60 bg-rose-50/80 px-4 py-3 text-sm text-rose-700 backdrop-blur dark:border-rose-500/30 dark:bg-rose-950/40 dark:text-rose-200">
             {error}
           </div>
+        )}
+
+        {!playerTag ? (
+          <PlayerTagPromptBanner
+            playerTag={playerTag}
+            isSyncingApi={isSyncingApi}
+            onSync={handleSyncCocApi}
+            onOpenLocalFile={handleOpen}
+          />
         ) : (
           <div className="glass-panel animate-fade-in rounded-xl px-4 py-3 text-sm text-slate-600 dark:text-slate-300 flex items-center justify-between">
             <span>{status}</span>
