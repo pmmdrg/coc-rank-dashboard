@@ -1,6 +1,6 @@
 import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { AlertTriangle, Plus, Scale } from 'lucide-react'
+import { AlertTriangle, Plus, RefreshCw, Scale } from 'lucide-react'
 import type { Player, RankingStats, Season } from '../types'
 import { ConfirmDeleteModal } from './ConfirmDeleteModal'
 import { PlayerRow } from './PlayerRow'
@@ -10,6 +10,8 @@ interface PlayerTableProps {
   season: Season
   rankedPlayers: Player[]
   stats: RankingStats
+  isSyncing?: boolean
+  onSyncCocApi?: () => void
   onAddPlayer: () => void
   onRemovePlayer: (playerId: string) => void
   onSelectMyPlayer: (playerId: string) => void
@@ -124,6 +126,8 @@ export function PlayerTable({
   season,
   rankedPlayers,
   stats,
+  isSyncing = false,
+  onSyncCocApi,
   onAddPlayer,
   onRemovePlayer,
   onSelectMyPlayer,
@@ -485,17 +489,31 @@ export function PlayerTable({
             )}
           </div>
           <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-            Dùng phím <kbd className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[10px] dark:bg-slate-800">Tab</kbd> (sang ngang) / <kbd className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[10px] dark:bg-slate-800">Enter</kbd> (xuống dưới cùng cột) / <kbd className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[10px] dark:bg-slate-800">Shift+Enter</kbd> (lên trên) để nhập liệu theo hàng hoặc theo cột nhanh chóng.
+            Dữ liệu Tên, Lượt đánh, Lượt thủ, Cúp được đồng bộ trực tiếp từ Supercell API. Dùng <kbd className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[10px] dark:bg-slate-800">Tab</kbd> (sang % tiếp theo) / <kbd className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[10px] dark:bg-slate-800">Enter</kbd> (xuống hàng dưới) để nhập tỉ lệ % phá huỷ.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={onAddPlayer}
-          className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg bg-blue-600 px-3.5 text-xs font-semibold text-white shadow-sm transition-all duration-200 hover:scale-105 hover:bg-blue-700 hover:shadow-md active:scale-95 dark:bg-sky-600 dark:hover:bg-sky-500"
-        >
-          <Plus className="h-4 w-4" aria-hidden="true" />
-          Thêm người chơi
-        </button>
+        <div className="flex items-center gap-2 shrink-0">
+          {onSyncCocApi && (
+            <button
+              type="button"
+              disabled={isSyncing}
+              onClick={onSyncCocApi}
+              className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg border border-emerald-400/80 bg-emerald-500/10 px-3 text-xs font-semibold text-emerald-700 shadow-xs backdrop-blur hover:bg-emerald-500/20 disabled:opacity-50 dark:border-emerald-500/40 dark:bg-emerald-400/10 dark:text-emerald-300"
+              title="Đồng bộ lại dữ liệu 100 người chơi từ Supercell API"
+            >
+              <RefreshCw className={`h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 ${isSyncing ? 'animate-spin' : ''}`} />
+              {isSyncing ? 'Đang tải...' : 'Đồng bộ API'}
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={onAddPlayer}
+            className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg bg-blue-600 px-3.5 text-xs font-semibold text-white shadow-sm transition-all duration-200 hover:scale-105 hover:bg-blue-700 hover:shadow-md active:scale-95 dark:bg-sky-600 dark:hover:bg-sky-500"
+          >
+            <Plus className="h-4 w-4" aria-hidden="true" />
+            Thêm người chơi
+          </button>
+        </div>
       </div>
 
       <div className="overflow-x-auto">

@@ -21,6 +21,14 @@ export type Player = {
   rating: RatingCategory
   attackCups?: number
   defenseCups?: number
+  // Thông tin từ CoC API
+  playerTag?: string
+  clanTag?: string
+  clanName?: string
+  attackWinCount?: number
+  attackLoseCount?: number
+  defenseWinCount?: number
+  defenseLoseCount?: number
 }
 
 export type Season = {
@@ -34,6 +42,10 @@ export type Season = {
   demotionCount?: number
   myPlayerId: string
   players: Player[]
+  // Thông tin bảng đấu CoC API
+  leagueGroupTag?: string
+  leagueSeasonId?: string | number
+  lastSyncedAt?: string
 }
 
 export type AttackStatusCategory = 'finished' | 'inProgress' | 'notStarted'

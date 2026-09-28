@@ -13,6 +13,7 @@ import {
 } from './lib/ranking'
 import { createFileSystemAdapter } from './storage/fileSystemAdapter'
 import { createGoogleDriveAdapter } from './storage/googleDriveAdapter'
+import { fetchRankedSeasonData } from './lib/cocApi'
 import type { AutoSaveStatus, Player, RatingCategory, Season, StorageDocument, StorageFormat, StorageSource } from './types'
 
 import { ChartsSection } from './components/ChartsSection'
@@ -61,10 +62,22 @@ function loadInitialDocument(): StorageDocument {
         ? parsed.activeSeasonIndex
         : 0
 
+      const currentSeason = seasons[activeIndex] ?? defaultSeason
+      // Nếu draft cũ chỉ có 1 người chơi dummy ("p-01"), ưu tiên nạp sampleSeason mới có 100 người từ API
+      if (currentSeason.players.length <= 1) {
+        return {
+          name: parsed.name || 'rank-season.json',
+          format: parsed.format || 'json',
+          season: defaultSeason,
+          seasons: [defaultSeason],
+          activeSeasonIndex: 0,
+        }
+      }
+
       return {
         name: parsed.name || 'rank-season.json',
         format: parsed.format || 'json',
-        season: seasons[activeIndex] ?? defaultSeason,
+        season: currentSeason,
         seasons,
         activeSeasonIndex: activeIndex,
       }
@@ -87,6 +100,7 @@ function App() {
   const [isDriveConfigOpen, setIsDriveConfigOpen] = useState(false)
   const [isCreateSeasonModalOpen, setIsCreateSeasonModalOpen] = useState(false)
   const [isApiTesterOpen, setIsApiTesterOpen] = useState(false)
+  const [isSyncingApi, setIsSyncingApi] = useState(false)
   const [document, setDocument] = useState<StorageDocument>(loadInitialDocument)
   const [status, setStatus] = useState('Dữ liệu đã sẵn sàng.')
   const [error, setError] = useState('')
@@ -399,6 +413,21 @@ function App() {
     })
   }
 
+  async function handleSyncCocApi(targetTag?: string) {
+    setIsSyncingApi(true)
+    setError('')
+    try {
+      const tagToSync = targetTag || stats.myPlayer?.playerTag || stats.myPlayer?.id || 'G9GRJCRPQ'
+      const result = await fetchRankedSeasonData(tagToSync)
+      updateCurrentSeason(result.season)
+      setStatus(`Đã đồng bộ thành công bảng đấu ${result.groupTag} (${result.membersCount} người chơi) từ Supercell API lúc ${result.season.lastSyncedAt}!`)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Đồng bộ từ Supercell API thất bại.')
+    } finally {
+      setIsSyncingApi(false)
+    }
+  }
+
   return (
     <div className="app-surface flex min-h-screen flex-col">
       {/* Header điều khiển, Live Auto-save & đổi nguồn lưu trữ */}
@@ -408,6 +437,8 @@ function App() {
         storageSource={storageSource}
         autoSaveStatus={autoSaveStatus}
         hasActiveFile={currentAdapter.hasActiveFile()}
+        isSyncingApi={isSyncingApi}
+        onSyncCocApi={() => handleSyncCocApi()}
         onStorageSourceChange={setStorageSource}
         onOpen={handleOpen}
         onSave={handleSave}
@@ -482,6 +513,8 @@ function App() {
           season={rankedSeason}
           rankedPlayers={rankedSeason.players}
           stats={stats}
+          isSyncing={isSyncingApi}
+          onSyncCocApi={() => handleSyncCocApi()}
           onAddPlayer={handleAddPlayer}
           onRemovePlayer={handleRemovePlayer}
           onSelectMyPlayer={handleSelectMyPlayer}

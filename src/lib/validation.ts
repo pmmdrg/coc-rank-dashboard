@@ -40,8 +40,10 @@ export function validatePlayer(
   const atkDest = player.attackDestruction ?? 0
   const defDest = player.defenseDestruction ?? 0
 
-  // 2. Tương quan giữa số lượt và % phá hủy
-  if (player.attacks > 0 && atkDest <= 0) {
+  // 2. Tương quan giữa số lượt và % phá hủy (chỉ cảnh báo để trống đối với người chơi nhập tay thủ công)
+  const isApiPlayer = Boolean(player.playerTag)
+
+  if (!isApiPlayer && player.attacks > 0 && atkDest <= 0) {
     warnings.push({
       field: 'attackDestruction',
       message: `Đã có ${player.attacks} lượt công nhưng tỉ lệ % công đang để trống (0%)`,
@@ -54,7 +56,7 @@ export function validatePlayer(
     })
   }
 
-  if (player.defenses > 0 && defDest <= 0) {
+  if (!isApiPlayer && player.defenses > 0 && defDest <= 0) {
     warnings.push({
       field: 'defenseDestruction',
       message: `Đã có ${player.defenses} lượt thủ nhưng tỉ lệ % thủ đang để trống (0%)`,

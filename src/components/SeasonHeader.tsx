@@ -8,6 +8,7 @@ import {
   FolderOpen,
   HardDrive,
   Loader2,
+  RefreshCw,
   Settings,
   Zap,
 } from 'lucide-react'
@@ -21,6 +22,8 @@ interface SeasonHeaderProps {
   storageSource: StorageSource
   autoSaveStatus: AutoSaveStatus
   hasActiveFile: boolean
+  isSyncingApi?: boolean
+  onSyncCocApi?: () => void
   onStorageSourceChange: (source: StorageSource) => void
   onOpen: () => void
   onSave: () => void
@@ -35,6 +38,8 @@ export function SeasonHeader({
   storageSource,
   autoSaveStatus,
   hasActiveFile,
+  isSyncingApi = false,
+  onSyncCocApi,
   onStorageSourceChange,
   onOpen,
   onSave,
@@ -182,6 +187,20 @@ export function SeasonHeader({
             <Download className="h-4 w-4 text-sky-500" aria-hidden="true" />
             CSV
           </button>
+
+          {/* Nút Đồng bộ CoC API */}
+          {onSyncCocApi && (
+            <button
+              type="button"
+              disabled={isSyncingApi}
+              onClick={onSyncCocApi}
+              className="inline-flex h-10 items-center gap-1.5 rounded-md border border-emerald-400/80 bg-emerald-500/10 px-3 text-xs font-semibold text-emerald-700 shadow-sm backdrop-blur hover:bg-emerald-500/20 disabled:opacity-50 dark:border-emerald-500/40 dark:bg-emerald-400/10 dark:text-emerald-300 dark:hover:bg-emerald-400/20"
+              title="Đồng bộ trực tiếp bảng đấu Ranked từ Supercell API"
+            >
+              <RefreshCw className={`h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 ${isSyncingApi ? 'animate-spin' : ''}`} />
+              {isSyncingApi ? 'Đang đồng bộ...' : 'Đồng bộ Game'}
+            </button>
+          )}
 
           {/* Nút Test CoC API */}
           <button

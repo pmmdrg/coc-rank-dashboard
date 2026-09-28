@@ -56,9 +56,16 @@ export function SeasonMetaForm({
   return (
     <div className="glass-panel rounded-xl p-4 sm:p-5 shadow-sm">
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-          Thông tin mùa giải
-        </h2>
+        <div className="flex items-center gap-2">
+          <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            Thông tin mùa giải
+          </h2>
+          {season.lastSyncedAt && (
+            <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:bg-emerald-400/10 dark:text-emerald-400">
+              ⚡ API: {season.lastSyncedAt}
+            </span>
+          )}
+        </div>
         <span className="rounded-full bg-slate-500/10 px-2 py-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400">
           Tổng cộng: {seasons.length} mùa giải
         </span>
@@ -68,9 +75,16 @@ export function SeasonMetaForm({
         {/* Cột 1: Giải đấu */}
         <div className="flex flex-col justify-between rounded-xl border border-slate-200/60 bg-white/40 p-3.5 backdrop-blur dark:border-slate-800 dark:bg-slate-900/40">
           <div className="flex items-center justify-between gap-2 flex-wrap">
-            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 shrink-0">
-              Giải đấu
-            </span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs font-medium text-slate-500 dark:text-slate-400 shrink-0">
+                Giải đấu
+              </span>
+              {season.leagueGroupTag && (
+                <span className="rounded-md bg-amber-500/10 px-1.5 py-0.2 text-[10px] font-bold text-amber-600 dark:bg-amber-400/10 dark:text-amber-400">
+                  {season.leagueGroupTag}
+                </span>
+              )}
+            </div>
             <span className="rounded-md bg-blue-500/10 px-2 py-0.5 text-[11px] font-semibold text-blue-600 dark:bg-sky-500/10 dark:text-sky-400 shrink-0">
               Tối đa: {season.maxAttacks ?? 24} đánh • {season.maxDefenses ?? 24} thủ
             </span>
