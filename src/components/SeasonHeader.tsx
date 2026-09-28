@@ -19,11 +19,13 @@ import { ThemeToggle } from './ThemeToggle'
 interface SeasonHeaderProps {
   league: string
   myPlayerName: string
+  playerTag: string
+  onPlayerTagChange: (tag: string) => void
   storageSource: StorageSource
   autoSaveStatus: AutoSaveStatus
   hasActiveFile: boolean
   isSyncingApi?: boolean
-  onSyncCocApi?: () => void
+  onSyncCocApi?: (tag?: string) => void
   onStorageSourceChange: (source: StorageSource) => void
   onOpen: () => void
   onSave: () => void
@@ -35,6 +37,8 @@ interface SeasonHeaderProps {
 export function SeasonHeader({
   league,
   myPlayerName,
+  playerTag,
+  onPlayerTagChange,
   storageSource,
   autoSaveStatus,
   hasActiveFile,
@@ -62,7 +66,13 @@ export function SeasonHeader({
             </span>
           </div>
           <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">
-            <span className="font-medium text-slate-700 dark:text-slate-200">{myPlayerName}</span> • {displayLeague}
+            <span className="font-medium text-slate-700 dark:text-slate-200">{myPlayerName}</span>
+            {playerTag ? (
+              <span className="ml-1 text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400">
+                ({playerTag.startsWith('#') ? playerTag : `#${playerTag}`})
+              </span>
+            ) : null}{' '}
+            • {displayLeague}
           </p>
         </div>
 
@@ -188,18 +198,40 @@ export function SeasonHeader({
             CSV
           </button>
 
-          {/* Nút Đồng bộ CoC API */}
+          {/* Cụm nhập Player Tag & Nút Đồng bộ Game từ API */}
           {onSyncCocApi && (
-            <button
-              type="button"
-              disabled={isSyncingApi}
-              onClick={onSyncCocApi}
-              className="inline-flex h-10 items-center gap-1.5 rounded-md border border-emerald-400/80 bg-emerald-500/10 px-3 text-xs font-semibold text-emerald-700 shadow-sm backdrop-blur hover:bg-emerald-500/20 disabled:opacity-50 dark:border-emerald-500/40 dark:bg-emerald-400/10 dark:text-emerald-300 dark:hover:bg-emerald-400/20"
-              title="Đồng bộ trực tiếp bảng đấu Ranked từ Supercell API"
-            >
-              <RefreshCw className={`h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 ${isSyncingApi ? 'animate-spin' : ''}`} />
-              {isSyncingApi ? 'Đang đồng bộ...' : 'Đồng bộ Game'}
-            </button>
+            <div className="inline-flex h-10 items-center rounded-md border border-emerald-400/80 bg-emerald-500/10 p-0.5 shadow-sm backdrop-blur dark:border-emerald-500/40 dark:bg-emerald-400/10">
+              <div className="relative flex items-center h-full">
+                <span className="pointer-events-none absolute left-2 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                  #
+                </span>
+                <input
+                  type="text"
+                  value={playerTag.replace(/^#/, '')}
+                  onChange={(e) => onPlayerTagChange(e.target.value.toUpperCase().trim())}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      onSyncCocApi(playerTag)
+                    }
+                  }}
+                  placeholder="G9GRJCRPQ"
+                  title="Nhập Player Tag (ví dụ: G9GRJCRPQ) và nhấn Enter hoặc nút Đồng bộ"
+                  className="h-8 w-24 sm:w-28 rounded bg-white/90 pl-5 pr-1.5 font-mono text-xs font-bold tracking-wider text-slate-900 transition-all focus:bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:bg-slate-900/90 dark:text-slate-100 dark:focus:bg-slate-900"
+                />
+              </div>
+              <button
+                type="button"
+                disabled={isSyncingApi}
+                onClick={() => onSyncCocApi(playerTag)}
+                className="inline-flex h-8 items-center gap-1.5 rounded bg-emerald-600 px-2.5 text-xs font-semibold text-white shadow-xs transition-all hover:bg-emerald-700 active:scale-95 disabled:opacity-50 dark:bg-emerald-600 dark:hover:bg-emerald-500 cursor-pointer ml-1"
+                title="Đồng bộ trực tiếp bảng đấu Ranked từ Supercell API theo Player Tag này"
+              >
+                <RefreshCw className={`h-3.5 w-3.5 ${isSyncingApi ? 'animate-spin' : ''}`} />
+                <span className="hidden sm:inline">
+                  {isSyncingApi ? 'Đang tải...' : 'Đồng bộ'}
+                </span>
+              </button>
+            </div>
           )}
 
           {/* Nút Test CoC API */}

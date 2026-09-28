@@ -91,29 +91,25 @@ export function SeasonMetaForm({
           </div>
           <div className="mt-2.5 flex h-9 items-center gap-2 font-semibold text-slate-900 dark:text-slate-100">
             <Trophy className="h-4 w-4 shrink-0 text-amber-500" aria-hidden="true" />
-            {onUpdateSeasonMeta ? (
-              <input
-                type="text"
-                value={season.league || 'Legend League'}
-                onChange={(e) => onUpdateSeasonMeta('league', e.target.value)}
-                className="soft-field h-9 w-full min-w-0 flex-1 rounded-lg px-2.5 text-sm font-bold text-slate-900 dark:text-slate-100"
-                title="Chỉnh sửa tên giải đấu (ví dụ: Legend League, Champion 1, Master 2...)"
-                placeholder="Legend League"
-              />
-            ) : (
-              <span className="truncate text-sm font-bold tracking-tight">
-                {formatLeagueName(season.league)}
-              </span>
-            )}
+            <span className="truncate text-base font-bold tracking-tight text-slate-900 dark:text-slate-100">
+              {formatLeagueName(season.league) || 'Legend League'}
+            </span>
           </div>
         </div>
 
         {/* Cột 2: Thời gian mùa giải (có thể chỉnh sửa trực tiếp) & Vạch thăng/xuống hạng */}
         <div className="flex flex-col justify-between rounded-xl border border-slate-200/60 bg-white/40 p-3.5 backdrop-blur dark:border-slate-800 dark:bg-slate-900/40">
           <div className="flex items-center justify-between gap-2 flex-wrap">
-            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 shrink-0">
-              Thời gian mùa giải
-            </span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs font-medium text-slate-500 dark:text-slate-400 shrink-0">
+                Thời gian mùa giải
+              </span>
+              {season.leagueSeasonId && (
+                <span className="rounded-md bg-sky-500/10 px-1.5 py-0.2 text-[10px] font-semibold text-sky-600 dark:bg-sky-400/10 dark:text-sky-400" title="Mùa giải Ranked của Supercell kéo dài 7 ngày (1 tuần)">
+                  Chu kỳ 7 ngày
+                </span>
+              )}
+            </div>
             {onUpdateSeasonMeta ? (
               <div className="flex items-center gap-2 text-[11px] shrink-0">
                 <label className="flex items-center gap-1 font-semibold text-emerald-600 dark:text-emerald-400" title="Số người thăng hạng ở top đầu">

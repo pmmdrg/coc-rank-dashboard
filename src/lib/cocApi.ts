@@ -108,17 +108,31 @@ export async function fetchRankedSeasonData(
     }
   })
 
-  // 5. Tạo đối tượng Season hoàn chỉnh
+  // 5. Tạo đối tượng Season hoàn chỉnh với thời gian chuẩn từ Supercell API
   const leagueName = (playerData.leagueTier?.name as string) || 'Legend III'
   const seasonName = `Bảng đấu ${leagueName} (${groupTag})`
   const now = new Date()
   const syncedTime = now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
 
+  // currentLeagueSeasonId là Unix timestamp tính bằng giây đánh dấu mốc bắt đầu tuần thi đấu (chu kỳ 7 ngày)
+  const startSec = Number(seasonId)
+  let startsAt: string
+  let endsAt: string
+  if (!isNaN(startSec) && startSec > 1000000000) {
+    const startDate = new Date(startSec * 1000)
+    const endDate = new Date((startSec + 7 * 86400) * 1000)
+    startsAt = startDate.toISOString().slice(0, 10)
+    endsAt = endDate.toISOString().slice(0, 10)
+  } else {
+    startsAt = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0, 10)
+    endsAt = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().slice(0, 10)
+  }
+
   const season: Season = {
     league: leagueName,
     seasonName,
-    startsAt: new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0, 10),
-    endsAt: new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().slice(0, 10),
+    startsAt,
+    endsAt,
     maxAttacks,
     maxDefenses,
     promotionCount: 10,

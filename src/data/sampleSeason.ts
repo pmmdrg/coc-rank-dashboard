@@ -3,8 +3,8 @@ import type { Season } from '../types'
 export const sampleSeason: Season = {
   "league": "Legend III",
   "seasonName": "Bảng đấu Legend III (#8JC9LJU)",
-  "startsAt": "2026-09-01",
-  "endsAt": "2026-09-30",
+  "startsAt": "2026-09-21",
+  "endsAt": "2026-09-28",
   "maxAttacks": 24,
   "maxDefenses": 24,
   "promotionCount": 10,

@@ -5,7 +5,6 @@ import {
   attackStatusLabels,
   calculateMaxPossibleCups,
   calculatePlayerRating,
-  createPlayer,
   getRankingStats,
   normalizeSeason,
   ratingColors,
@@ -134,6 +133,9 @@ function App() {
   const [isCreateSeasonModalOpen, setIsCreateSeasonModalOpen] = useState(false)
   const [isApiTesterOpen, setIsApiTesterOpen] = useState(false)
   const [isSyncingApi, setIsSyncingApi] = useState(false)
+  const [playerTag, setPlayerTag] = useState<string>(() => {
+    return localStorage.getItem('coc_player_tag') || 'G9GRJCRPQ'
+  })
   const [document, setDocument] = useState<StorageDocument>(loadInitialDocument)
   const [status, setStatus] = useState('Dữ liệu đã sẵn sàng.')
   const [error, setError] = useState('')
@@ -408,20 +410,6 @@ function App() {
     })
   }
 
-  function handleAddPlayer() {
-    const newPlayer = createPlayer(
-      rankedSeason.maxAttacks ?? 24,
-      rankedSeason.maxDefenses ?? 24,
-    )
-    updateCurrentSeason({
-      ...rankedSeason,
-      myPlayerId: rankedSeason.myPlayerId || newPlayer.id,
-      players: [...rankedSeason.players, newPlayer],
-    })
-    setStatus('Đã thêm người chơi mới vào bảng.')
-  }
-
-
   function handleSelectMyPlayer(playerId: string) {
     updateCurrentSeason({
       ...rankedSeason,
@@ -436,15 +424,26 @@ function App() {
     })
   }
 
+  function handlePlayerTagChange(tag: string) {
+    const clean = tag.replace(/^#/, '').trim()
+    setPlayerTag(clean)
+    localStorage.setItem('coc_player_tag', clean)
+  }
+
   async function handleSyncCocApi(targetTag?: string) {
     setIsSyncingApi(true)
     setError('')
     try {
-      const tagToSync = targetTag || stats.myPlayer?.playerTag || stats.myPlayer?.id || 'G9GRJCRPQ'
+      const rawTag = targetTag || playerTag || stats.myPlayer?.playerTag || stats.myPlayer?.id || 'G9GRJCRPQ'
+      const cleanTag = rawTag.replace(/^#/, '').trim()
+      if (cleanTag && cleanTag !== playerTag) {
+        setPlayerTag(cleanTag)
+        localStorage.setItem('coc_player_tag', cleanTag)
+      }
       const existingMap = new Map(rankedSeason.players.map((p) => [(p.playerTag || p.id).toUpperCase(), p]))
-      const result = await fetchRankedSeasonData(tagToSync, existingMap)
+      const result = await fetchRankedSeasonData(cleanTag, existingMap)
       updateCurrentSeason(result.season)
-      setStatus(`Đã đồng bộ thành công bảng đấu ${result.groupTag} (${result.membersCount} người chơi) từ Supercell API lúc ${result.season.lastSyncedAt}!`)
+      setStatus(`Đã đồng bộ thành công bảng đấu ${result.groupTag} (${result.membersCount} người chơi) của ${result.playerName} (${result.playerTag}) từ Supercell API lúc ${result.season.lastSyncedAt}!`)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Đồng bộ từ Supercell API thất bại.')
     } finally {
@@ -458,11 +457,13 @@ function App() {
       <SeasonHeader
         league={rankedSeason.league}
         myPlayerName={myPlayerName}
+        playerTag={playerTag}
+        onPlayerTagChange={handlePlayerTagChange}
         storageSource={storageSource}
         autoSaveStatus={autoSaveStatus}
         hasActiveFile={currentAdapter.hasActiveFile()}
         isSyncingApi={isSyncingApi}
-        onSyncCocApi={() => handleSyncCocApi()}
+        onSyncCocApi={handleSyncCocApi}
         onStorageSourceChange={setStorageSource}
         onOpen={handleOpen}
         onSave={handleSave}
@@ -538,8 +539,7 @@ function App() {
           rankedPlayers={rankedSeason.players}
           stats={stats}
           isSyncing={isSyncingApi}
-          onSyncCocApi={() => handleSyncCocApi()}
-          onAddPlayer={handleAddPlayer}
+          onSyncCocApi={handleSyncCocApi}
           onSelectMyPlayer={handleSelectMyPlayer}
           onUpdatePlayerField={handleUpdatePlayerField}
         />
