@@ -350,26 +350,12 @@ export function PlayerRow({
                 </span>
               )}
             </div>
-            <div className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 truncate cursor-default">
-              {player.clanName ? (
-                <span
-                  className="truncate font-medium text-slate-600 dark:text-slate-300"
-                  title={`Clan: ${player.clanName}${player.clanTag ? ` (${player.clanTag})` : ''}`}
-                >
-                  🛡️ {player.clanName}
-                </span>
-              ) : (
-                <span className="opacity-60 italic">Không clan</span>
-              )}
-              {player.playerTag ? (
-                <span
-                  className="shrink-0 font-mono text-[10px] opacity-75"
-                  title={`Mã người chơi: ${player.playerTag}`}
-                >
-                  {player.playerTag}
-                </span>
-              ) : null}
-            </div>
+            <span
+              className="text-xs text-slate-500 dark:text-slate-400 truncate cursor-default font-normal"
+              title={`Clan: ${player.clanName || 'Không clan'}`}
+            >
+              {player.clanName || 'Không clan'}
+            </span>
           </div>
           {warnings.length > 0 && (
             <span

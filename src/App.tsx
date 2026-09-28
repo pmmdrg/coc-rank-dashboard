@@ -77,20 +77,32 @@ function loadInitialDocument(): StorageDocument {
         }
       }
 
-      // Tự động bổ sung clanName / clanTag từ sampleSeason nếu draft lưu trước đó chưa có trường này
+      // Tự động bổ sung clanName / clanTag / % công / % thủ từ sampleSeason nếu draft lưu trước đó chưa có hoặc bị mất sạch (toàn bộ bằng 0)
       const sampleMap = new Map(sampleSeason.players.map((p) => [p.id, p]))
+      const draftHasAnyDestruction = seasons.some((s) => s.players.some((p) => (p.attackDestruction ?? 0) > 0))
+
       const enrichedSeasons = seasons.map((s) => ({
         ...s,
         players: s.players.map((p) => {
-          if (!p.clanName && sampleMap.has(p.id)) {
-            const sp = sampleMap.get(p.id)
-            return {
-              ...p,
-              clanName: sp?.clanName || p.clanName,
-              clanTag: sp?.clanTag || p.clanTag,
-            }
+          const sp = sampleMap.get(p.id)
+          const clanName = p.clanName || sp?.clanName
+          const clanTag = p.clanTag || sp?.clanTag
+          const attackDestruction =
+            !draftHasAnyDestruction && sp?.attackDestruction
+              ? sp.attackDestruction
+              : (p.attackDestruction ?? sp?.attackDestruction ?? 0)
+          const defenseDestruction =
+            !draftHasAnyDestruction && sp?.defenseDestruction
+              ? sp.defenseDestruction
+              : (p.defenseDestruction ?? sp?.defenseDestruction ?? 0)
+
+          return {
+            ...p,
+            clanName,
+            clanTag,
+            attackDestruction,
+            defenseDestruction,
           }
-          return p
         }),
       }))
       const enrichedCurrent = enrichedSeasons[activeIndex] ?? defaultSeason
@@ -429,7 +441,8 @@ function App() {
     setError('')
     try {
       const tagToSync = targetTag || stats.myPlayer?.playerTag || stats.myPlayer?.id || 'G9GRJCRPQ'
-      const result = await fetchRankedSeasonData(tagToSync)
+      const existingMap = new Map(rankedSeason.players.map((p) => [(p.playerTag || p.id).toUpperCase(), p]))
+      const result = await fetchRankedSeasonData(tagToSync, existingMap)
       updateCurrentSeason(result.season)
       setStatus(`Đã đồng bộ thành công bảng đấu ${result.groupTag} (${result.membersCount} người chơi) từ Supercell API lúc ${result.season.lastSyncedAt}!`)
     } catch (err) {
