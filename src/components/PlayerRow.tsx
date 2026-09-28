@@ -334,7 +334,7 @@ export function PlayerRow({
       </td>
 
       {/* Tên người chơi */}
-      <td className="w-52 min-w-[160px] max-w-[220px] px-2 py-2 align-middle">
+      <td className="w-56 min-w-[170px] max-w-[240px] px-2 py-2 align-middle">
         <div className="relative flex items-center justify-between">
           <div className="flex flex-col justify-center min-w-0 pr-2">
             <div className="flex items-center gap-1.5 truncate">
@@ -350,39 +350,33 @@ export function PlayerRow({
                 </span>
               )}
             </div>
-            {player.playerTag ? (
-              <span
-                className="font-mono text-[11px] text-slate-500 dark:text-slate-400 opacity-75 truncate cursor-default"
-                title={`Mã người chơi: ${player.playerTag}`}
-              >
-                {player.playerTag}
-              </span>
-            ) : null}
+            <div className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 truncate cursor-default">
+              {player.clanName ? (
+                <span className="truncate max-w-[130px] font-medium" title={`Clan: ${player.clanName}`}>
+                  🛡️ {player.clanName}
+                </span>
+              ) : (
+                <span className="opacity-60 italic">Không clan</span>
+              )}
+              {player.playerTag ? (
+                <span
+                  className="font-mono text-[10px] opacity-75"
+                  title={`Mã người chơi: ${player.playerTag}`}
+                >
+                  {player.playerTag}
+                </span>
+              ) : null}
+            </div>
           </div>
           {warnings.length > 0 && (
             <span
-              className="shrink-0 flex items-center text-amber-500 hover:text-amber-600 dark:text-amber-400 cursor-help"
+              className="shrink-0 flex items-center text-amber-500 hover:text-amber-600 dark:text-amber-400 cursor-default"
               title={`⚠️ Cảnh báo dữ liệu (${warnings.length}):\n${warnings.map((w) => '• ' + w.message).join('\n')}`}
             >
               <AlertTriangle className="h-4 w-4 drop-shadow-xs" />
             </span>
           )}
         </div>
-      </td>
-
-      {/* Tên Clan */}
-      <td className="w-40 min-w-[130px] max-w-[180px] px-2 py-2 align-middle">
-        {player.clanName ? (
-          <div
-            className="flex items-center gap-1 text-xs font-semibold text-slate-700 dark:text-slate-300 truncate cursor-default"
-            title={`Clan: ${player.clanName}`}
-          >
-            <span className="shrink-0 text-xs">🛡️</span>
-            <span className="truncate">{player.clanName}</span>
-          </div>
-        ) : (
-          <span className="text-xs text-slate-400/70 italic cursor-default">Không clan</span>
-        )}
       </td>
 
       {/* Nút đánh dấu Tài khoản của tôi */}
@@ -568,7 +562,7 @@ export function PlayerRow({
               tabIndex={0}
               role="button"
               aria-label="Cảnh báo có thể vượt bạn"
-              className="inline-flex items-center text-amber-500 hover:text-amber-600 dark:text-amber-400 cursor-help transition-transform hover:scale-110 active:scale-95 focus:outline-hidden"
+              className="inline-flex items-center text-amber-500 hover:text-amber-600 dark:text-amber-400 cursor-default transition-transform hover:scale-110 active:scale-95 focus:outline-hidden"
               title={`⚠️ Có thể vượt: Người này có thể đạt tối đa ${player.maxPossibleCups.toLocaleString('vi-VN')} cúp, cao hơn mốc cúp tối đa của bạn!`}
             >
               <AlertTriangle className="h-4 w-4 drop-shadow-xs" />
