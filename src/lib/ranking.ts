@@ -285,3 +285,45 @@ export function createPlayer(maxAttacks: number = 24, _maxDefenses: number = 24)
     defenseCups: 0,
   }
 }
+
+const LEAGUE_RULES_STORAGE_KEY = 'coc_league_rules'
+
+export function getLeagueRuleKey(leagueIdentifier?: string | number): string {
+  if (!leagueIdentifier) return ''
+  return String(leagueIdentifier).trim().toLowerCase().replace(/\s+/g, '')
+}
+
+export function saveLeagueRules(
+  leagueIdentifier: string | number,
+  rules: { promotionCount: number; demotionCount: number },
+) {
+  const key = getLeagueRuleKey(leagueIdentifier)
+  if (!key || key === '--') return
+  try {
+    const raw = localStorage.getItem(LEAGUE_RULES_STORAGE_KEY)
+    const map = raw ? JSON.parse(raw) : {}
+    map[key] = {
+      promotionCount: rules.promotionCount,
+      demotionCount: rules.demotionCount,
+    }
+    localStorage.setItem(LEAGUE_RULES_STORAGE_KEY, JSON.stringify(map))
+  } catch (err) {
+    console.warn('Lỗi lưu quy tắc giải đấu vào localStorage:', err)
+  }
+}
+
+export function getSavedLeagueRules(
+  leagueIdentifier?: string | number,
+): { promotionCount: number; demotionCount: number } | null {
+  const key = getLeagueRuleKey(leagueIdentifier)
+  if (!key || key === '--') return null
+  try {
+    const raw = localStorage.getItem(LEAGUE_RULES_STORAGE_KEY)
+    if (!raw) return null
+    const map = JSON.parse(raw)
+    return map[key] || null
+  } catch {
+    return null
+  }
+}
+

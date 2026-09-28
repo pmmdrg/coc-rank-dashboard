@@ -1,5 +1,5 @@
 import type { Season, Player, LeagueHistoryItem } from '../types'
-import { calculateMaxPossibleCups, calculatePlayerRating } from './ranking'
+import { calculateMaxPossibleCups, calculatePlayerRating, getSavedLeagueRules } from './ranking'
 import { getLeagueIconUrl } from './leagueIcons'
 import { getRankedTierMaxAttacks, type RankedTierDefinition } from '../data/rankedTierMetadata'
 
@@ -193,6 +193,13 @@ export async function fetchRankedSeasonData(
     existingPlayersMap,
   )
 
+  const savedCurrentRules =
+    getSavedLeagueRules(leagueName) ||
+    getSavedLeagueRules(currentLimits.matchedTier?.name) ||
+    getSavedLeagueRules(currentLimits.matchedTier?.id)
+  const currentPromotionCount = savedCurrentRules?.promotionCount ?? 10
+  const currentDemotionCount = savedCurrentRules?.demotionCount ?? 10
+
   const currentSeason: Season = {
     league: leagueName,
     leagueIconUrl,
@@ -201,8 +208,8 @@ export async function fetchRankedSeasonData(
     endsAt: currentPeriod.endsAt,
     maxAttacks: currentLimits.maxAttacks,
     maxDefenses: currentLimits.maxDefenses,
-    promotionCount: 10,
-    demotionCount: 10,
+    promotionCount: currentPromotionCount,
+    demotionCount: currentDemotionCount,
     myPlayerId: formattedTag,
     players: currentPlayers,
     leagueGroupTag: groupTag,
@@ -231,16 +238,24 @@ export async function fetchRankedSeasonData(
           existingPlayersMap,
         )
 
+        const prevLeagueName = prevLimits.matchedTier?.name || leagueName
+        const savedPrevRules =
+          getSavedLeagueRules(prevLeagueName) ||
+          getSavedLeagueRules(prevLimits.matchedTier?.name) ||
+          getSavedLeagueRules(prevLimits.matchedTier?.id)
+        const prevPromotionCount = savedPrevRules?.promotionCount ?? 10
+        const prevDemotionCount = savedPrevRules?.demotionCount ?? 10
+
         previousSeason = {
-          league: prevLimits.matchedTier?.name || leagueName,
+          league: prevLeagueName,
           leagueIconUrl,
           seasonName: `Mùa giải trước (${prevPeriod.displayPeriod})`,
           startsAt: prevPeriod.startsAt,
           endsAt: prevPeriod.endsAt,
           maxAttacks: prevLimits.maxAttacks,
           maxDefenses: prevLimits.maxDefenses,
-          promotionCount: 10,
-          demotionCount: 10,
+          promotionCount: prevPromotionCount,
+          demotionCount: prevDemotionCount,
           myPlayerId: formattedTag,
           players: prevPlayers,
           leagueGroupTag: prevGroupTag,

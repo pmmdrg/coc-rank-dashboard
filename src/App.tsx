@@ -8,16 +8,14 @@ import {
   normalizeSeason,
   ratingColors,
   ratingLabels,
+  saveLeagueRules,
 } from './lib/ranking'
-import { createFileSystemAdapter } from './storage/fileSystemAdapter'
-import { createGoogleDriveAdapter } from './storage/googleDriveAdapter'
+import { seasonsToCsv } from './lib/csv'
 import { fetchRankedSeasonData } from './lib/cocApi'
-import type { AutoSaveStatus, LeagueHistoryItem, Player, RatingCategory, Season, StorageDocument, StorageFormat, StorageSource } from './types'
+import type { LeagueHistoryItem, Player, RatingCategory, Season, StorageDocument } from './types'
 
 import { ChartsSection } from './components/ChartsSection'
 import { CreateSeasonModal } from './components/CreateSeasonModal'
-import { GoogleDriveConfigModal } from './components/GoogleDriveConfigModal'
-import { ApiTesterModal } from './components/ApiTesterModal'
 import { PlayerTable } from './components/PlayerTable'
 import { SeasonHeader } from './components/SeasonHeader'
 import { SeasonMetaForm } from './components/SeasonMetaForm'
@@ -37,8 +35,8 @@ const emptySeason: Season = {
   endsAt: '',
   maxAttacks: 24,
   maxDefenses: 24,
-  promotionCount: 2,
-  demotionCount: 1,
+  promotionCount: 10,
+  demotionCount: 10,
   myPlayerId: '',
   players: [],
 }
@@ -54,6 +52,18 @@ const ratingOptions: RatingCategory[] = [
   'potential',
   'alarm',
 ]
+
+function downloadFile(content: string, filename: string, mimeType: string) {
+  const blob = new Blob([content], { type: mimeType })
+  const url = URL.createObjectURL(blob)
+  const anchor = document.createElement('a')
+  anchor.href = url
+  anchor.download = filename
+  document.body.appendChild(anchor)
+  anchor.click()
+  document.body.removeChild(anchor)
+  URL.revokeObjectURL(url)
+}
 
 function loadInitialDocument(): StorageDocument {
   try {
@@ -102,10 +112,7 @@ function loadInitialDocument(): StorageDocument {
 }
 
 function App() {
-  const [storageSource, setStorageSource] = useState<StorageSource>('local')
-  const [isDriveConfigOpen, setIsDriveConfigOpen] = useState(false)
   const [isCreateSeasonModalOpen, setIsCreateSeasonModalOpen] = useState(false)
-  const [isApiTesterOpen, setIsApiTesterOpen] = useState(false)
   const [isSyncingApi, setIsSyncingApi] = useState(false)
   const [playerTag, setPlayerTag] = useState<string>(() => {
     return localStorage.getItem('coc_player_tag') || ''
@@ -129,11 +136,6 @@ function App() {
       : 'Vui lòng nhập Player Tag ở góc trên bên phải để tải dữ liệu bảng đấu.'
   })
   const [error, setError] = useState('')
-  const [autoSaveStatus, setAutoSaveStatus] = useState<AutoSaveStatus>('draft')
-
-  const localAdapter = useMemo(() => createFileSystemAdapter(), [])
-  const driveAdapter = useMemo(() => createGoogleDriveAdapter(), [])
-  const currentAdapter = storageSource === 'local' ? localAdapter : driveAdapter
 
   const season = document.season
   const rankedSeason = useMemo(() => normalizeSeason(season), [season])
@@ -141,29 +143,19 @@ function App() {
   const myPlayerName = stats.myPlayer?.name || (playerTag ? 'Tài khoản của tôi' : '--')
 
   const isInitialMount = useRef(true)
-  const isOpeningFile = useRef(false)
 
-  // Cơ chế Tự động lưu (Auto-save) có Debounce 800ms
+  // Cơ chế Tự động lưu bản nháp vào localStorage có Debounce 800ms
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false
       return
     }
 
-    // Nếu vừa mới mở file xong, không cần lưu đè ngược lại file đó ngay lập tức
-    if (isOpeningFile.current) {
-      isOpeningFile.current = false
-      return
-    }
-
-    // Không tự động lưu nháp nếu bảng hoàn toàn rỗng và chưa có người chơi
     if (rankedSeason.players.length === 0) {
       return
     }
 
-    setAutoSaveStatus('saving')
-
-    const timer = setTimeout(async () => {
+    const timer = setTimeout(() => {
       try {
         const nextSeasons = document.seasons.map((s, idx) =>
           idx === document.activeSeasonIndex ? rankedSeason : normalizeSeason(s),
@@ -175,30 +167,14 @@ function App() {
           seasons: nextSeasons,
         }
 
-        // 1. Luôn lưu bản nháp an toàn vào localStorage
         localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draftDoc))
-
-        // 2. Nếu đã có file liên kết trên máy hoặc Drive, tự động ghi ngầm
-        if (currentAdapter.hasActiveFile()) {
-          // Bảo vệ an toàn: Chỉ ghi đè nếu dữ liệu người chơi hợp lệ
-          if (rankedSeason.players.length > 0) {
-            await currentAdapter.save(draftDoc)
-            setAutoSaveStatus('saved')
-            setStatus(`Đã tự động lưu vào file ${document.name} lúc ${new Date().toLocaleTimeString('vi-VN')}`)
-          }
-        } else {
-          setAutoSaveStatus('draft')
-          setStatus(`Đã tự động lưu bản nháp vào trình duyệt lúc ${new Date().toLocaleTimeString('vi-VN')}`)
-        }
       } catch (err) {
-        console.error('Lỗi tự động lưu:', err)
-        setAutoSaveStatus('error')
-        setError(err instanceof Error ? err.message : 'Tự động lưu thất bại.')
+        console.error('Lỗi tự động lưu bản nháp:', err)
       }
     }, 800)
 
     return () => clearTimeout(timer)
-  }, [rankedSeason, document, currentAdapter])
+  }, [rankedSeason, document])
 
   // Đảm bảo vị trí "Tôi" trong bảng luôn được quyết định dựa vào playerTag người dùng đã nhập
   useEffect(() => {
@@ -264,15 +240,15 @@ function App() {
   }
 
   function handleSelectSeasonIndex(index: number) {
-    const targetSeason = document.seasons[index]
-    if (!targetSeason) return
-
-    setDocument((current) => ({
-      ...current,
-      activeSeasonIndex: index,
-      season: targetSeason,
-    }))
-    setStatus(`Đang xem mùa giải: ${targetSeason.seasonName}`)
+    if (index >= 0 && index < document.seasons.length) {
+      const targetSeason = document.seasons[index]
+      setDocument((current) => ({
+        ...current,
+        activeSeasonIndex: index,
+        season: targetSeason,
+      }))
+      setStatus(`Đang xem dữ liệu của: ${targetSeason.seasonName}`)
+    }
   }
 
   function handleCreateSeason(data: {
@@ -283,20 +259,23 @@ function App() {
     maxDefenses: number
     promotionCount: number
     demotionCount: number
+    copyPlayersFromCurrent?: boolean
   }) {
-    const resetPlayers: Player[] = season.players.map((p) => ({
-      id: p.id,
-      name: p.name,
-      rank: 0,
-      attacks: 0,
-      defenses: 0,
-      currentCups: 0,
-      maxPossibleCups: 0,
-      rating: 'alarm' as const,
-    }))
+    const resetPlayers: Player[] = data.copyPlayersFromCurrent
+      ? rankedSeason.players.map((p) => ({
+          ...p,
+          attacks: 0,
+          attackDestruction: 0,
+          defenses: 0,
+          defenseDestruction: 0,
+          currentCups: 0,
+          maxPossibleCups: (data.maxAttacks + data.maxDefenses) * 40,
+          rating: 'alarm' as const,
+        }))
+      : []
 
-    const newSeason: Season = normalizeSeason({
-      league: season.league || 'Legend 3',
+    const newSeason = normalizeSeason({
+      league: rankedSeason.league,
       seasonName: data.seasonName,
       startsAt: data.startsAt,
       endsAt: data.endsAt,
@@ -321,47 +300,32 @@ function App() {
     setStatus(`Đã tạo thành công mùa giải mới: ${data.seasonName}`)
   }
 
-  async function runStorageAction(action: () => Promise<StorageDocument>, successMessage: string) {
-    try {
-      setError('')
-      const nextDocument = await action()
-      setDocument(nextDocument)
-      setStatus(successMessage)
-      setAutoSaveStatus('saved')
-      localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(nextDocument))
-    } catch (storageError) {
-      const message = storageError instanceof Error ? storageError.message : 'Thao tác lưu trữ thất bại.'
-      setError(message)
-    }
-  }
-
-  async function handleOpen() {
-    try {
-      setError('')
-      const nextDocument = await currentAdapter.open()
-      isOpeningFile.current = true
-      setDocument(nextDocument)
-      setStatus(`Đã mở dữ liệu từ ${currentAdapter.label} thành công.`)
-      setAutoSaveStatus('saved')
-      localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(nextDocument))
-    } catch (storageError) {
-      const message = storageError instanceof Error ? storageError.message : 'Thao tác lưu trữ thất bại.'
-      setError(message)
-    }
-  }
-
-  async function handleSave() {
-    await runStorageAction(
-      () => currentAdapter.save({ ...document, season: rankedSeason }),
-      `Đã lưu dữ liệu vào ${document.name} (${currentAdapter.label}).`,
+  function handleExport(format: 'json' | 'csv') {
+    const currentSeason = rankedSeason
+    const allSeasons = document.seasons.map((s, idx) =>
+      idx === document.activeSeasonIndex ? currentSeason : normalizeSeason(s),
     )
-  }
 
-  async function handleSaveAs(format: StorageFormat) {
-    await runStorageAction(
-      () => currentAdapter.saveAs({ ...document, season: rankedSeason }, format),
-      `Đã xuất file ${format.toUpperCase()} (${currentAdapter.label}).`,
-    )
+    const timestamp = new Date().toISOString().slice(0, 10)
+    const rawLeague = currentSeason.league && currentSeason.league !== '--' ? currentSeason.league : 'coc_rank'
+    const safeLeagueName = rawLeague.replace(/\s+/g, '_').toLowerCase()
+    const fileName = `${safeLeagueName}_${timestamp}.${format}`
+
+    if (format === 'json') {
+      const exportDoc: StorageDocument = {
+        name: fileName,
+        format: 'json',
+        season: currentSeason,
+        seasons: allSeasons,
+        activeSeasonIndex: document.activeSeasonIndex,
+      }
+      downloadFile(JSON.stringify(exportDoc, null, 2), fileName, 'application/json;charset=utf-8;')
+      setStatus(`Đã xuất file ${fileName} thành công.`)
+    } else {
+      const csvData = seasonsToCsv(allSeasons)
+      downloadFile(csvData, fileName, 'text/csv;charset=utf-8;')
+      setStatus(`Đã xuất file ${fileName} thành công.`)
+    }
   }
 
   function handleUpdatePlayerField(
@@ -421,10 +385,17 @@ function App() {
   }
 
   function handleUpdateSeasonMeta(field: keyof Season, value: string | number) {
-    updateCurrentSeason({
+    const updated = {
       ...rankedSeason,
       [field]: value,
-    })
+    }
+    updateCurrentSeason(updated)
+
+    if (field === 'promotionCount' || field === 'demotionCount') {
+      const promotionCount = field === 'promotionCount' ? Number(value) : (rankedSeason.promotionCount ?? 10)
+      const demotionCount = field === 'demotionCount' ? Number(value) : (rankedSeason.demotionCount ?? 10)
+      saveLeagueRules(rankedSeason.league, { promotionCount, demotionCount })
+    }
   }
 
   function handlePlayerTagChange(tag: string) {
@@ -497,35 +468,20 @@ function App() {
 
   return (
     <div className="app-surface flex min-h-screen flex-col">
-      {/* Header điều khiển, Live Auto-save & đổi nguồn lưu trữ */}
+      {/* Header điều khiển: Player Tag, Xuất JSON/CSV, Theme */}
       <SeasonHeader
         league={rankedSeason.league}
         leagueIconUrl={rankedSeason.leagueIconUrl}
         myPlayerName={myPlayerName}
         playerTag={playerTag}
         onPlayerTagChange={handlePlayerTagChange}
-        storageSource={storageSource}
-        autoSaveStatus={autoSaveStatus}
-        hasActiveFile={currentAdapter.hasActiveFile()}
         isSyncingApi={isSyncingApi}
         onSyncCocApi={handleSyncCocApi}
-        onStorageSourceChange={setStorageSource}
-        onOpen={handleOpen}
-        onSave={handleSave}
-        onSaveAs={handleSaveAs}
-        onOpenDriveConfig={() => setIsDriveConfigOpen(true)}
-        onOpenApiTester={() => setIsApiTesterOpen(true)}
+        onExport={handleExport}
       />
 
       <main className="mx-auto w-full max-w-[1320px] flex-1 px-4 py-6 sm:px-6 lg:px-8 space-y-6">
-        {/* Cảnh báo trình duyệt cho Local File System */}
-        {storageSource === 'local' && !localAdapter.canWriteBack ? (
-          <div className="animate-fade-in rounded-xl border border-amber-300/60 bg-amber-50/80 px-4 py-3 text-sm text-amber-900 backdrop-blur dark:border-amber-500/30 dark:bg-amber-950/40 dark:text-amber-200">
-            Trình duyệt hiện tại có thể không hỗ trợ File System Access API ghi file trực tiếp. Khuyến nghị sử dụng Google Chrome, Edge hoặc chuyển sang nguồn lưu trữ Google Drive.
-          </div>
-        ) : null}
-
-        {/* Thông báo trạng thái hoặc lỗi */}
+        {/* Thông báo lỗi */}
         {error && (
           <div className="animate-fade-in rounded-xl border border-rose-300/60 bg-rose-50/80 px-4 py-3 text-sm text-rose-700 backdrop-blur dark:border-rose-500/30 dark:bg-rose-950/40 dark:text-rose-200">
             {error}
@@ -537,14 +493,10 @@ function App() {
             playerTag={playerTag}
             isSyncingApi={isSyncingApi}
             onSync={handleSyncCocApi}
-            onOpenLocalFile={handleOpen}
           />
         ) : (
           <div className="glass-panel animate-fade-in rounded-xl px-4 py-3 text-sm text-slate-600 dark:text-slate-300 flex items-center justify-between">
             <span>{status}</span>
-            <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-              Nguồn: {currentAdapter.label}
-            </span>
           </div>
         )}
 
@@ -603,20 +555,6 @@ function App() {
         isOpen={isCreateSeasonModalOpen}
         onClose={() => setIsCreateSeasonModalOpen(false)}
         onCreateSeason={handleCreateSeason}
-      />
-
-      {/* Modal cấu hình Google Drive */}
-      <GoogleDriveConfigModal
-        isOpen={isDriveConfigOpen}
-        onClose={() => setIsDriveConfigOpen(false)}
-        onConfigSaved={() => setStatus('Đã cập nhật cấu hình Google Drive.')}
-      />
-
-      {/* Modal thử nghiệm CoC API */}
-      <ApiTesterModal
-        isOpen={isApiTesterOpen}
-        onClose={() => setIsApiTesterOpen(false)}
-        defaultTag={playerTag ? (playerTag.startsWith('#') ? playerTag : `#${playerTag}`) : (stats.myPlayer?.playerTag || '')}
       />
 
       {/* Vercel Web Analytics */}

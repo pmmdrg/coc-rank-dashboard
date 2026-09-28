@@ -1,18 +1,16 @@
 import { useState } from 'react'
-import { ArrowRight, Loader2, Sparkles, FolderOpen } from 'lucide-react'
+import { ArrowRight, Loader2, Sparkles } from 'lucide-react'
 
 interface PlayerTagPromptBannerProps {
   playerTag: string
   isSyncingApi: boolean
   onSync: (tag: string) => void
-  onOpenLocalFile: () => void
 }
 
 export function PlayerTagPromptBanner({
   playerTag,
   isSyncingApi,
   onSync,
-  onOpenLocalFile,
 }: PlayerTagPromptBannerProps) {
   const [inputVal, setInputVal] = useState(playerTag)
 
@@ -82,18 +80,6 @@ export function PlayerTagPromptBanner({
             )}
           </button>
         </form>
-      </div>
-
-      <div className="relative z-10 mt-4 flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400 border-t border-emerald-500/25 pt-3">
-        <span>💡 Hoặc nếu bạn đã có file dữ liệu trước đó:</span>
-        <button
-          type="button"
-          onClick={onOpenLocalFile}
-          className="inline-flex items-center gap-1 font-bold text-emerald-700 hover:text-emerald-800 hover:underline dark:text-emerald-400 dark:hover:text-emerald-300"
-        >
-          <FolderOpen className="h-3.5 w-3.5 text-amber-500" />
-          Mở file dữ liệu (.json / .csv)
-        </button>
       </div>
     </div>
   )

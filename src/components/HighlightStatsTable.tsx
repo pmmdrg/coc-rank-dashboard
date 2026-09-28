@@ -64,14 +64,19 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
   const innerContentRef = useRef<HTMLDivElement>(null)
   const prevHeightRef = useRef<number | null>(null)
 
-  // Tìm tài khoản của tôi và các đối thủ khác trong bảng
+  // Lọc chỉ những người chơi đã tham gia đánh hoặc thủ (loại bỏ người chưa đánh và chưa thủ)
+  const activePlayers = useMemo(() => {
+    return players.filter((p) => (p.attacks ?? 0) > 0 || (p.defenses ?? 0) > 0)
+  }, [players])
+
+  // Tìm tài khoản của tôi và các đối thủ khác trong danh sách người chơi đã thi đấu
   const myPlayer = useMemo(() => {
-    return players.find((p) => p.id === myPlayerId)
-  }, [players, myPlayerId])
+    return activePlayers.find((p) => p.id === myPlayerId)
+  }, [activePlayers, myPlayerId])
 
   const otherPlayers = useMemo(() => {
-    return players.filter((p) => p.id !== myPlayerId)
-  }, [players, myPlayerId])
+    return activePlayers.filter((p) => p.id !== myPlayerId)
+  }, [activePlayers, myPlayerId])
 
   // --- TÍNH TOÁN SO SÁNH NĂNG LỰC CỦA TÔI SO VỚI TOÀN BẢNG ---
   const myComparisonStats = useMemo(() => {
@@ -168,60 +173,60 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
 
   // --- 1. NHÓM CUP HIỆN TẠI (Cao nhất & Thấp nhất) ---
   const topCurrentCups = useMemo(() => {
-    if (players.length === 0) return null
-    const maxVal = Math.max(...players.map((p) => p.currentCups ?? 0))
-    const tiedPlayers = players.filter((p) => (p.currentCups ?? 0) === maxVal)
+    if (activePlayers.length === 0) return null
+    const maxVal = Math.max(...activePlayers.map((p) => p.currentCups ?? 0))
+    const tiedPlayers = activePlayers.filter((p) => (p.currentCups ?? 0) === maxVal)
     return {
       cups: maxVal,
       players: tiedPlayers,
     }
-  }, [players])
+  }, [activePlayers])
 
   const worstCurrentCups = useMemo(() => {
-    if (players.length === 0) return null
-    const minVal = Math.min(...players.map((p) => p.currentCups ?? 0))
-    const tiedPlayers = players.filter((p) => (p.currentCups ?? 0) === minVal)
+    if (activePlayers.length === 0) return null
+    const minVal = Math.min(...activePlayers.map((p) => p.currentCups ?? 0))
+    const tiedPlayers = activePlayers.filter((p) => (p.currentCups ?? 0) === minVal)
     return {
       cups: minVal,
       players: tiedPlayers,
     }
-  }, [players])
+  }, [activePlayers])
 
   // --- 2. NHÓM CUP TỐI ĐA (Cup tối đa cao nhất & Cup tối đa thấp nhất) ---
   const topMaxCups = useMemo(() => {
-    if (players.length === 0) return null
-    const maxVal = Math.max(...players.map((p) => p.maxPossibleCups ?? 0))
-    const tiedPlayers = players.filter((p) => (p.maxPossibleCups ?? 0) === maxVal)
+    if (activePlayers.length === 0) return null
+    const maxVal = Math.max(...activePlayers.map((p) => p.maxPossibleCups ?? 0))
+    const tiedPlayers = activePlayers.filter((p) => (p.maxPossibleCups ?? 0) === maxVal)
     return {
       maxCups: maxVal,
       players: tiedPlayers,
     }
-  }, [players])
+  }, [activePlayers])
 
   const worstMaxCups = useMemo(() => {
-    if (players.length === 0) return null
-    const minVal = Math.min(...players.map((p) => p.maxPossibleCups ?? 0))
-    const tiedPlayers = players.filter((p) => (p.maxPossibleCups ?? 0) === minVal)
+    if (activePlayers.length === 0) return null
+    const minVal = Math.min(...activePlayers.map((p) => p.maxPossibleCups ?? 0))
+    const tiedPlayers = activePlayers.filter((p) => (p.maxPossibleCups ?? 0) === minVal)
     return {
       maxCups: minVal,
       players: tiedPlayers,
     }
-  }, [players])
+  }, [activePlayers])
 
   const allPlayersShareMaxCups =
     topMaxCups !== null &&
-    players.length > 5 &&
-    topMaxCups.players.length === players.length
+    activePlayers.length > 5 &&
+    topMaxCups.players.length === activePlayers.length
 
   const allPlayersShareMinCups =
     worstMaxCups !== null &&
-    players.length > 5 &&
-    worstMaxCups.players.length === players.length
+    activePlayers.length > 5 &&
+    worstMaxCups.players.length === activePlayers.length
 
   const showBest = filterMode === 'all' || filterMode === 'best'
   const showWorst = filterMode === 'all' || filterMode === 'worst'
 
-  if (players.length === 0) {
+  if (activePlayers.length === 0) {
     return (
       <section>
         <div className="glass-panel rounded-xl p-5 shadow-sm space-y-4">
@@ -232,7 +237,7 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
             </h3>
           </div>
           <div className="py-8 text-center text-sm font-medium text-slate-400 dark:text-slate-500">
-            Chưa có dữ liệu
+            Chưa có người chơi nào thực hiện lượt đánh hoặc thủ trong mùa này
           </div>
         </div>
       </section>
@@ -292,7 +297,7 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
             </div>
 
             <span className="hidden text-xs text-slate-500 sm:inline dark:text-slate-400">
-              Tổng cộng: <strong className="text-slate-800 dark:text-slate-200">{players.length}</strong> người chơi
+              Tổng cộng: <strong className="text-slate-800 dark:text-slate-200">{activePlayers.length}</strong> người chơi đã thi đấu
             </span>
           </div>
         </div>

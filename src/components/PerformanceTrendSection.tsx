@@ -1,16 +1,4 @@
 import { useMemo, useState } from 'react'
-import {
-  Award,
-  ChevronDown,
-  ChevronUp,
-  Flame,
-  Shield,
-  TrendingUp,
-  Trophy,
-  Calendar,
-  Swords,
-  ShieldAlert,
-} from 'lucide-react'
 import type { LeagueHistoryItem } from '../types'
 import { parseSeasonDateRange } from '../lib/cocApi'
 import { RANKED_TIERS_METADATA } from '../data/rankedTierMetadata'
@@ -49,11 +37,14 @@ export function PerformanceTrendSection({
   const [showTable, setShowTable] = useState(true)
 
   // Xử lý và chuẩn hóa dữ liệu lịch sử các mùa giải từ Supercell endpoint /players/{tag}/leaguehistory
+  // Giới hạn tối đa 10 mùa giải gần nhất theo yêu cầu
   const chronologicalHistory = useMemo<ProcessedSeasonPoint[]>(() => {
     if (!leagueHistory || leagueHistory.length === 0) return []
 
-    // Sắp xếp theo thứ tự thời gian tăng dần (từ mùa cũ nhất đến mùa mới nhất)
-    const sorted = [...leagueHistory].sort((a, b) => a.leagueSeasonId - b.leagueSeasonId)
+    // Sắp xếp theo thứ tự thời gian tăng dần và lấy tối đa 10 mùa gần nhất
+    const sorted = [...leagueHistory]
+      .sort((a, b) => a.leagueSeasonId - b.leagueSeasonId)
+      .slice(-10)
 
     return sorted.map((item) => {
       const { displayPeriod } = parseSeasonDateRange(item.leagueSeasonId)
@@ -113,22 +104,16 @@ export function PerformanceTrendSection({
     return (
       <section className="glass-panel rounded-xl shadow-sm transition-all">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/60 p-4 sm:p-5 dark:border-slate-700/60">
-          <div className="flex items-center gap-2.5">
-            <TrendingUp className="h-5 w-5 text-sky-500" />
-            <div>
-              <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
-                Theo dõi phong độ qua các mùa giải
-              </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Lịch sử thứ hạng, cúp, và tỷ lệ chiến đấu lấy trực tiếp từ Supercell API
-              </p>
-            </div>
+          <div>
+            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
+              Theo dõi phong độ qua các mùa giải
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Lịch sử thứ hạng, cúp, và tỷ lệ chiến đấu lấy trực tiếp từ Supercell API
+            </p>
           </div>
         </div>
         <div className="py-10 text-center px-4">
-          <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500 mb-3">
-            <Calendar className="h-6 w-6" />
-          </div>
           <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
             Chưa có dữ liệu lịch sử mùa giải
           </p>
@@ -214,21 +199,18 @@ export function PerformanceTrendSection({
     <section className="glass-panel rounded-xl shadow-sm transition-all">
       {/* Header & Toggle */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/60 p-4 sm:p-5 dark:border-slate-700/60">
-        <div className="flex items-center gap-2.5">
-          <TrendingUp className="h-5 w-5 text-sky-500" />
-          <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
-                Theo dõi phong độ qua các mùa giải
-              </h2>
-              <span className="rounded-full bg-sky-500/15 px-2 py-0.5 text-[10px] font-bold text-sky-700 dark:text-sky-300">
-                {chronologicalHistory.length} mùa
-              </span>
-            </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Đồng bộ dữ liệu lịch sử chính thức từ endpoint Supercell API ({myPlayerName || playerTag || 'Bạn'})
-            </p>
+        <div>
+          <div className="flex items-center gap-2">
+            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
+              Theo dõi phong độ qua các mùa giải
+            </h2>
+            <span className="rounded-full bg-sky-500/15 px-2 py-0.5 text-[10px] font-bold text-sky-700 dark:text-sky-300">
+              {chronologicalHistory.length} mùa gần nhất
+            </span>
           </div>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            Đồng bộ dữ liệu lịch sử chính thức từ endpoint Supercell API ({myPlayerName || playerTag || 'Bạn'})
+          </p>
         </div>
 
         <div className="flex items-center gap-2">
@@ -249,10 +231,9 @@ export function PerformanceTrendSection({
           <button
             type="button"
             onClick={() => setIsCollapsed((prev) => !prev)}
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition-colors hover:bg-slate-100 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800"
-            title={isCollapsed ? 'Mở rộng' : 'Thu gọn'}
+            className="rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-100 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800"
           >
-            {isCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+            {isCollapsed ? 'Mở rộng' : 'Thu gọn'}
           </button>
         </div>
       </div>
@@ -263,12 +244,9 @@ export function PerformanceTrendSection({
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {/* Thẻ 1: Thứ hạng */}
             <div className="rounded-xl border border-slate-200/80 bg-white/60 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                  Hạng mùa gần nhất
-                </span>
-                <Award className="h-4 w-4 text-emerald-500" />
-              </div>
+              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                Hạng mùa gần nhất
+              </span>
               <div className="mt-2 flex items-baseline gap-1.5">
                 <span className="text-xl font-extrabold text-slate-900 dark:text-slate-100">
                   #{overallStats.latest.placement}
@@ -282,12 +260,9 @@ export function PerformanceTrendSection({
 
             {/* Thẻ 2: Cúp mùa giải */}
             <div className="rounded-xl border border-slate-200/80 bg-white/60 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                  Cúp mùa gần nhất
-                </span>
-                <Trophy className="h-4 w-4 text-amber-500" />
-              </div>
+              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                Cúp mùa gần nhất
+              </span>
               <div className="mt-2 flex items-baseline gap-1.5">
                 <span className="text-xl font-extrabold text-amber-600 dark:text-amber-400">
                   {overallStats.latest.trophies}
@@ -301,12 +276,9 @@ export function PerformanceTrendSection({
 
             {/* Thẻ 3: Tỷ lệ thắng công */}
             <div className="rounded-xl border border-slate-200/80 bg-white/60 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                  Tỷ lệ thắng công
-                </span>
-                <Flame className="h-4 w-4 text-rose-500" />
-              </div>
+              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                Tỷ lệ thắng công
+              </span>
               <div className="mt-2 flex items-baseline gap-1.5">
                 <span className="text-xl font-extrabold text-rose-600 dark:text-rose-400">
                   {overallStats.overallWinRate.toFixed(1)}%
@@ -319,12 +291,9 @@ export function PerformanceTrendSection({
 
             {/* Thẻ 4: Cấp giải đấu */}
             <div className="rounded-xl border border-slate-200/80 bg-white/60 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                  Cấp bậc hiện tại
-                </span>
-                <Shield className="h-4 w-4 text-sky-500" />
-              </div>
+              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                Cấp bậc hiện tại
+              </span>
               <div className="mt-2 truncate font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-base" title={overallStats.latest.tierName}>
                 {overallStats.latest.tierName}
               </div>
@@ -352,7 +321,7 @@ export function PerformanceTrendSection({
                         : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
                     }`}
                   >
-                    🏆 Cúp & Thứ hạng
+                    Cúp & Thứ hạng
                   </button>
                   <button
                     type="button"
@@ -363,7 +332,7 @@ export function PerformanceTrendSection({
                         : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
                     }`}
                   >
-                    ⚔️ Thắng công & Sao thủ bị mất
+                    Thắng công & Sao thủ bị mất
                   </button>
                 </div>
               </div>
@@ -594,7 +563,7 @@ export function PerformanceTrendSection({
                 })}
               </svg>
 
-              {/* Tooltip khi hover điểm mốc */}
+              {/* Tooltip khi hover điểm mốc (Không có icon/emoji) */}
               {hoveredIndex !== null && (
                 <div
                   className="pointer-events-none absolute z-20 rounded-lg border border-slate-700/30 bg-slate-900/90 p-3 text-xs text-white shadow-xl backdrop-blur -translate-x-1/2 dark:border-slate-600 dark:bg-slate-950/95 transition-all"
@@ -611,25 +580,25 @@ export function PerformanceTrendSection({
                   </div>
                   <div className="mt-2 space-y-1 text-[11px]">
                     <div className="flex items-center justify-between gap-4">
-                      <span className="text-amber-400 font-medium">🏆 Điểm cúp:</span>
+                      <span className="text-amber-400 font-medium">Điểm cúp:</span>
                       <span className="font-mono font-bold">
                         {chronologicalHistory[hoveredIndex].trophies} cúp
                       </span>
                     </div>
                     <div className="flex items-center justify-between gap-4">
-                      <span className="text-sky-400 font-medium">🎖️ Thứ hạng:</span>
+                      <span className="text-sky-400 font-medium">Thứ hạng:</span>
                       <span className="font-mono font-bold">
                         #{chronologicalHistory[hoveredIndex].placement} / 100
                       </span>
                     </div>
                     <div className="flex items-center justify-between gap-4">
-                      <span className="text-emerald-400 font-medium">⚔️ Tấn công:</span>
+                      <span className="text-emerald-400 font-medium">Tấn công:</span>
                       <span className="font-mono font-bold">
                         {chronologicalHistory[hoveredIndex].attackWins}T - {chronologicalHistory[hoveredIndex].attackLosses}B ({chronologicalHistory[hoveredIndex].attackWinRate}%)
                       </span>
                     </div>
                     <div className="flex items-center justify-between gap-4">
-                      <span className="text-rose-400 font-medium">🛡️ Phòng thủ:</span>
+                      <span className="text-rose-400 font-medium">Phòng thủ:</span>
                       <span className="font-mono font-bold">
                         Bị trừ {chronologicalHistory[hoveredIndex].defenseStars} sao
                       </span>
@@ -703,25 +672,19 @@ export function PerformanceTrendSection({
 
                         {/* Tấn công */}
                         <td className="px-3 py-3 align-middle whitespace-nowrap">
-                          <div className="flex items-center gap-1.5">
-                            <Swords className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
-                            <span className="font-semibold text-slate-800 dark:text-slate-200">
-                              {item.attackWins}T - {item.attackLosses}B
-                            </span>
-                            <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                              ({item.attackWinRate}%)
-                            </span>
-                          </div>
+                          <span className="font-semibold text-slate-800 dark:text-slate-200">
+                            {item.attackWins}T - {item.attackLosses}B
+                          </span>{' '}
+                          <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                            ({item.attackWinRate}%)
+                          </span>
                         </td>
 
                         {/* Phòng thủ */}
                         <td className="px-3 py-3 align-middle whitespace-nowrap">
-                          <div className="flex items-center gap-1.5">
-                            <ShieldAlert className="h-3.5 w-3.5 text-rose-500 shrink-0" />
-                            <span className="font-medium text-slate-700 dark:text-slate-300">
-                              Mất {item.defenseStars} sao
-                            </span>
-                          </div>
+                          <span className="font-medium text-slate-700 dark:text-slate-300">
+                            Mất {item.defenseStars} sao
+                          </span>
                         </td>
 
                         {/* Giới hạn trận */}
