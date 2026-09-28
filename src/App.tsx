@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { sampleSeason } from './data/sampleSeason'
+import { samplePreviousSeason, sampleSeason } from './data/sampleSeason'
 import {
   attackStatusColors,
   attackStatusLabels,
@@ -13,12 +13,7 @@ import {
 import { getLeagueIconUrl } from './lib/leagueIcons'
 import { createFileSystemAdapter } from './storage/fileSystemAdapter'
 import { createGoogleDriveAdapter } from './storage/googleDriveAdapter'
-import {
-  fetchLeagueSeasonList,
-  fetchRankedSeasonData,
-  fetchSeasonRankings,
-  type LeagueSeasonOption,
-} from './lib/cocApi'
+import { fetchRankedSeasonData } from './lib/cocApi'
 import type { AutoSaveStatus, Player, RatingCategory, Season, StorageDocument, StorageFormat, StorageSource } from './types'
 
 import { ChartsSection } from './components/ChartsSection'
@@ -54,14 +49,20 @@ const ratingOptions: RatingCategory[] = [
 
 function loadInitialDocument(): StorageDocument {
   const defaultSeason = normalizeSeason(sampleSeason)
+  const defaultPrevSeason = normalizeSeason(samplePreviousSeason)
+  const defaultSeasons = [defaultSeason, defaultPrevSeason]
 
   try {
     const rawDraft = localStorage.getItem(DRAFT_STORAGE_KEY)
     if (rawDraft) {
       const parsed = JSON.parse(rawDraft) as Partial<StorageDocument>
-      const seasons = Array.isArray(parsed.seasons) && parsed.seasons.length > 0
+      let seasons = Array.isArray(parsed.seasons) && parsed.seasons.length > 0
         ? parsed.seasons.map(normalizeSeason)
         : [parsed.season ? normalizeSeason(parsed.season) : defaultSeason]
+
+      if (seasons.length === 1) {
+        seasons = [seasons[0], defaultPrevSeason]
+      }
 
       const activeIndex = typeof parsed.activeSeasonIndex === 'number' && parsed.activeSeasonIndex < seasons.length
         ? parsed.activeSeasonIndex
@@ -77,7 +78,7 @@ function loadInitialDocument(): StorageDocument {
           name: parsed.name || 'rank-season.json',
           format: parsed.format || 'json',
           season: defaultSeason,
-          seasons: [defaultSeason],
+          seasons: defaultSeasons,
           activeSeasonIndex: 0,
         }
       }
@@ -117,7 +118,7 @@ function loadInitialDocument(): StorageDocument {
         name: parsed.name || 'rank-season.json',
         format: parsed.format || 'json',
         season: enrichedCurrent,
-        seasons: enrichedSeasons,
+        seasons: enrichedSeasons.slice(0, 2),
         activeSeasonIndex: activeIndex,
       }
     }
@@ -129,7 +130,7 @@ function loadInitialDocument(): StorageDocument {
     name: 'rank-season.json',
     format: 'json',
     season: defaultSeason,
-    seasons: [defaultSeason],
+    seasons: defaultSeasons,
     activeSeasonIndex: 0,
   }
 }
@@ -144,22 +145,9 @@ function App() {
     return localStorage.getItem('coc_player_tag') || 'G9GRJCRPQ'
   })
   const [document, setDocument] = useState<StorageDocument>(loadInitialDocument)
-  const [availableApiSeasons, setAvailableApiSeasons] = useState<LeagueSeasonOption[]>([])
-  const [isLoadingSeasonRankings, setIsLoadingSeasonRankings] = useState(false)
   const [status, setStatus] = useState('Dữ liệu đã sẵn sàng.')
   const [error, setError] = useState('')
   const [autoSaveStatus, setAutoSaveStatus] = useState<AutoSaveStatus>('draft')
-
-  // Tự động tải danh sách các mùa giải từ Supercell API (v2 trong 30 ngày)
-  useEffect(() => {
-    fetchLeagueSeasonList()
-      .then((list) => {
-        setAvailableApiSeasons(list)
-      })
-      .catch((err) => {
-        console.warn('Không thể tải danh sách mùa giải API:', err)
-      })
-  }, [])
 
   const localAdapter = useMemo(() => createFileSystemAdapter(), [])
   const driveAdapter = useMemo(() => createGoogleDriveAdapter(), [])
@@ -298,40 +286,6 @@ function App() {
       season: targetSeason,
     }))
     setStatus(`Đang xem mùa giải: ${targetSeason.seasonName}`)
-  }
-
-  async function handleSelectSeasonById(targetSeasonId: string) {
-    // 1. Kiểm tra nếu mùa giải đã có trong document.seasons
-    const existingIdx = document.seasons.findIndex(
-      (s, idx) => (s.leagueSeasonId && s.leagueSeasonId === targetSeasonId) || `doc-${idx}` === targetSeasonId,
-    )
-    if (existingIdx >= 0) {
-      handleSelectSeasonIndex(existingIdx)
-      return
-    }
-
-    // 2. Nếu là mùa v2 từ Supercell API, tải bảng xếp hạng
-    try {
-      setIsLoadingSeasonRankings(true)
-      setError('')
-      setStatus(`Đang tải dữ liệu mùa giải ${targetSeasonId} từ Supercell API...`)
-      const newSeason = await fetchSeasonRankings(targetSeasonId, '29000022', playerTag)
-      const normalized = normalizeSeason(newSeason)
-      const nextSeasons = [...document.seasons, normalized]
-      const nextIndex = nextSeasons.length - 1
-
-      setDocument((current) => ({
-        ...current,
-        seasons: nextSeasons,
-        activeSeasonIndex: nextIndex,
-        season: normalized,
-      }))
-      setStatus(`Đã tải thành công mùa giải ${normalized.seasonName} (${normalized.players.length} người chơi) từ Supercell API!`)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Tải bảng xếp hạng mùa giải thất bại.')
-    } finally {
-      setIsLoadingSeasonRankings(false)
-    }
   }
 
   function handleCreateSeason(data: {
@@ -509,8 +463,17 @@ function App() {
       }
       const existingMap = new Map(rankedSeason.players.map((p) => [(p.playerTag || p.id).toUpperCase(), p]))
       const result = await fetchRankedSeasonData(cleanTag, existingMap)
-      updateCurrentSeason(result.season)
-      setStatus(`Đã đồng bộ thành công bảng đấu ${result.groupTag} (${result.membersCount} người chơi) của ${result.playerName} (${result.playerTag}) từ Supercell API lúc ${result.season.lastSyncedAt}!`)
+      const syncedSeasons = [
+        normalizeSeason(result.currentSeason),
+        normalizeSeason(result.previousSeason || samplePreviousSeason),
+      ]
+      setDocument((current) => ({
+        ...current,
+        seasons: syncedSeasons,
+        activeSeasonIndex: 0,
+        season: syncedSeasons[0],
+      }))
+      setStatus(`Đã đồng bộ thành công bảng đấu mùa hiện tại (${result.groupTag}) và mùa trước của ${result.playerName} (${result.playerTag}) từ Supercell API lúc ${result.currentSeason.lastSyncedAt}!`)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Đồng bộ từ Supercell API thất bại.')
     } finally {
@@ -567,11 +530,7 @@ function App() {
           season={rankedSeason}
           seasons={document.seasons.map(normalizeSeason)}
           activeSeasonIndex={document.activeSeasonIndex}
-          availableApiSeasons={availableApiSeasons}
-          isLoadingSeason={isLoadingSeasonRankings}
           onSelectSeasonIndex={handleSelectSeasonIndex}
-          onSelectSeasonId={handleSelectSeasonById}
-          onOpenCreateModal={() => setIsCreateSeasonModalOpen(true)}
           onUpdateSeasonMeta={handleUpdateSeasonMeta}
         />
 

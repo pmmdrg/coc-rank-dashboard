@@ -3,7 +3,9 @@ import { calculateMaxPossibleCups, calculatePlayerRating } from './ranking'
 import { getLeagueIconUrl } from './leagueIcons'
 
 export interface SyncResult {
-  season: Season
+  currentSeason: Season
+  previousSeason?: Season
+  season: Season // Giữ tương thích ngược với code cũ
   playerName: string
   playerTag: string
   groupTag: string
@@ -12,46 +14,16 @@ export interface SyncResult {
 }
 
 /**
- * Đồng bộ dữ liệu bảng đấu Ranked từ Supercell API
- * @param inputTag Tag người chơi (mặc định #G9GRJCRPQ)
+ * Ánh xạ danh sách thành viên từ Supercell API sang danh sách Player của dashboard
  */
-export async function fetchRankedSeasonData(
-  inputTag: string = 'G9GRJCRPQ',
+function mapMembersToPlayers(
+  members: Record<string, unknown>[],
   existingPlayersMap?: Map<string, Player>,
-): Promise<SyncResult> {
-  const cleanTag = inputTag.trim().toUpperCase()
-  const formattedTag = cleanTag.startsWith('#') ? cleanTag : `#${cleanTag}`
-
-  // 1. Lấy thông tin người chơi & group metadata
-  const playerRes = await fetch(`/api/coc?path=${encodeURIComponent(`/players/${formattedTag}`)}`)
-  if (!playerRes.ok) {
-    const errData = await playerRes.json().catch(() => ({}))
-    throw new Error(errData.error || `Không thể tải hồ sơ người chơi (${playerRes.status})`)
-  }
-  const playerData = await playerRes.json()
-
-  const groupTag = playerData.currentLeagueGroupTag as string | undefined
-  const seasonId = playerData.currentLeagueSeasonId ? String(playerData.currentLeagueSeasonId) : undefined
-
-  if (!groupTag || !seasonId) {
-    throw new Error(`Người chơi ${playerData.name || formattedTag} hiện chưa tham gia bảng đấu Ranked nào.`)
-  }
-
-  // 2. Lấy dữ liệu 100 người chơi trong bảng đấu
-  const groupPath = `/leaguegroup/${encodeURIComponent(groupTag)}/${encodeURIComponent(seasonId)}?playerTag=${encodeURIComponent(formattedTag)}`
-  const groupRes = await fetch(`/api/coc?path=${encodeURIComponent(groupPath)}`)
-  if (!groupRes.ok) {
-    const errData = await groupRes.json().catch(() => ({}))
-    throw new Error(errData.error || `Không thể tải bảng đấu ${groupTag} (${groupRes.status})`)
-  }
-  const groupData = await groupRes.json()
-
+): Player[] {
   const maxAttacks = 24
   const maxDefenses = 24
-  const members = Array.isArray(groupData.members) ? groupData.members : []
 
-  // 3. Ánh xạ từng thành viên trong bảng đấu vào danh sách Player
-  const players: Player[] = members.map((m: Record<string, unknown>, index: number) => {
+  return members.map((m: Record<string, unknown>, index: number) => {
     const tag = (m.playerTag as string) || `#PLAYER_${index + 1}`
 
     const atkWin = Number(m.attackWinCount) || 0
@@ -108,8 +80,35 @@ export async function fetchRankedSeasonData(
       defenseCups,
     }
   })
+}
 
-  // 5. Tạo đối tượng Season hoàn chỉnh với thời gian chuẩn từ Supercell API
+/**
+ * Đồng bộ dữ liệu bảng đấu Ranked (mùa hiện tại & mùa ngay trước đó) từ Supercell API
+ * @param inputTag Tag người chơi (mặc định #G9GRJCRPQ)
+ */
+export async function fetchRankedSeasonData(
+  inputTag: string = 'G9GRJCRPQ',
+  existingPlayersMap?: Map<string, Player>,
+): Promise<SyncResult> {
+  const cleanTag = inputTag.trim().toUpperCase()
+  const formattedTag = cleanTag.startsWith('#') ? cleanTag : `#${cleanTag}`
+
+  // 1. Lấy thông tin người chơi & group metadata
+  const playerRes = await fetch(`/api/coc?path=${encodeURIComponent(`/players/${formattedTag}`)}`)
+  if (!playerRes.ok) {
+    const errData = await playerRes.json().catch(() => ({}))
+    throw new Error(errData.error || `Không thể tải hồ sơ người chơi (${playerRes.status})`)
+  }
+  const playerData = await playerRes.json()
+
+  const groupTag = playerData.currentLeagueGroupTag as string | undefined
+  const seasonId = playerData.currentLeagueSeasonId ? String(playerData.currentLeagueSeasonId) : undefined
+
+  if (!groupTag || !seasonId) {
+    throw new Error(`Người chơi ${playerData.name || formattedTag} hiện chưa tham gia bảng đấu Ranked nào.`)
+  }
+
+  // 2. Lấy icon giải đấu
   const leagueTier = playerData.leagueTier as {
     name?: string
     iconUrls?: { small?: string; large?: string; medium?: string; tiny?: string }
@@ -121,42 +120,89 @@ export async function fetchRankedSeasonData(
     leagueTier?.iconUrls?.medium ||
     leagueTier?.iconUrls?.tiny
   const leagueIconUrl = getLeagueIconUrl(leagueName, rawIconUrl)
-  const seasonName = `Bảng đấu ${leagueName} (${groupTag})`
   const now = new Date()
   const syncedTime = now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
 
-  // Phân tích thời gian mùa giải: ngày kết thúc luôn bằng ngày bắt đầu + 6 ngày
-  const { startsAt, endsAt, displayPeriod } = parseSeasonDateRange(seasonId)
+  // 3. Lấy dữ liệu 100 người chơi trong bảng đấu mùa hiện tại
+  const groupPath = `/leaguegroup/${encodeURIComponent(groupTag)}/${encodeURIComponent(seasonId)}?playerTag=${encodeURIComponent(formattedTag)}`
+  const groupRes = await fetch(`/api/coc?path=${encodeURIComponent(groupPath)}`)
+  if (!groupRes.ok) {
+    const errData = await groupRes.json().catch(() => ({}))
+    throw new Error(errData.error || `Không thể tải bảng đấu ${groupTag} (${groupRes.status})`)
+  }
+  const groupData = await groupRes.json()
+  const currentMembers = Array.isArray(groupData.members) ? groupData.members : []
+  const currentPlayers = mapMembersToPlayers(currentMembers, existingPlayersMap)
+  const currentPeriod = parseSeasonDateRange(seasonId)
 
-  const season: Season = {
+  const currentSeason: Season = {
     league: leagueName,
     leagueIconUrl,
-    seasonName: seasonName || `Mùa giải ${displayPeriod}`,
-    startsAt,
-    endsAt,
-    maxAttacks,
-    maxDefenses,
+    seasonName: `Mùa giải hiện tại (${currentPeriod.displayPeriod})`,
+    startsAt: currentPeriod.startsAt,
+    endsAt: currentPeriod.endsAt,
+    maxAttacks: 24,
+    maxDefenses: 24,
     promotionCount: 10,
     demotionCount: 10,
     myPlayerId: formattedTag,
-    players,
+    players: currentPlayers,
     leagueGroupTag: groupTag,
     leagueSeasonId: seasonId,
     lastSyncedAt: syncedTime,
   }
 
+  // 4. Lấy dữ liệu bảng đấu mùa ngay trước đó (nếu có)
+  let previousSeason: Season | undefined = undefined
+  const prevGroupTag = playerData.previousLeagueGroupTag as string | undefined
+  const prevSeasonId = playerData.previousLeagueSeasonId ? String(playerData.previousLeagueSeasonId) : undefined
+
+  if (prevGroupTag && prevSeasonId) {
+    try {
+      const prevPath = `/leaguegroup/${encodeURIComponent(prevGroupTag)}/${encodeURIComponent(prevSeasonId)}?playerTag=${encodeURIComponent(formattedTag)}`
+      const prevRes = await fetch(`/api/coc?path=${encodeURIComponent(prevPath)}`)
+      if (prevRes.ok) {
+        const prevData = await prevRes.json()
+        const prevMembers = Array.isArray(prevData.members) ? prevData.members : []
+        const prevPlayers = mapMembersToPlayers(prevMembers, existingPlayersMap)
+        const prevPeriod = parseSeasonDateRange(prevSeasonId)
+
+        previousSeason = {
+          league: leagueName,
+          leagueIconUrl,
+          seasonName: `Mùa giải trước (${prevPeriod.displayPeriod})`,
+          startsAt: prevPeriod.startsAt,
+          endsAt: prevPeriod.endsAt,
+          maxAttacks: 24,
+          maxDefenses: 24,
+          promotionCount: 10,
+          demotionCount: 10,
+          myPlayerId: formattedTag,
+          players: prevPlayers,
+          leagueGroupTag: prevGroupTag,
+          leagueSeasonId: prevSeasonId,
+          lastSyncedAt: syncedTime,
+        }
+      }
+    } catch (err) {
+      console.warn('Không thể tải bảng đấu mùa giải trước:', err)
+    }
+  }
+
   return {
-    season,
+    season: currentSeason,
+    currentSeason,
+    previousSeason,
     playerName: playerData.name || 'Manax',
     playerTag: formattedTag,
     groupTag,
     seasonId,
-    membersCount: players.length,
+    membersCount: currentPlayers.length,
   }
 }
 
 /**
- * Phân tích ngày bắt đầu và kết thúc (kết thúc = bắt đầu + 6 ngày)
+ * Phân tích ngày bắt đầu và kết thúc (kết thúc luôn bằng ngày bắt đầu + 6 ngày)
  */
 export function parseSeasonDateRange(
   seasonId?: string | number,
@@ -175,27 +221,26 @@ export function parseSeasonDateRange(
   }
 
   if (!startDate && seasonId) {
-    const idStr = String(seasonId).trim()
-    if (idStr.startsWith('v2-')) {
-      const parsed = new Date(idStr.slice(3))
-      if (!isNaN(parsed.getTime())) startDate = parsed
+    const num = Number(seasonId)
+    if (!isNaN(num) && num > 1000000000) {
+      // 1789966800 là mốc mùa hiện tại (22/09/2026), 1789362000 là mốc mùa trước (15/09/2026)
+      const refTime = 1789966800
+      const refDate = new Date(2026, 8, 22) // 22/09/2026
+      const diffSec = num - refTime
+      const diffDays = Math.round(diffSec / 86400)
+      startDate = new Date(refDate.getTime() + diffDays * 86400000)
     } else {
-      const numSec = Number(idStr)
-      if (!isNaN(numSec) && numSec > 1000000000) {
-        startDate = new Date(numSec * 1000)
-      } else {
-        const parsed = new Date(idStr)
-        if (!isNaN(parsed.getTime())) startDate = parsed
-      }
+      const parsed = new Date(String(seasonId))
+      if (!isNaN(parsed.getTime())) startDate = parsed
     }
   }
 
   if (!startDate || isNaN(startDate.getTime())) {
-    startDate = new Date()
+    startDate = new Date(2026, 8, 22)
   }
 
-  // Ngày kết thúc luôn là 6 ngày sau ngày bắt đầu (ví dụ 22/09 thì kết thúc là 28/09)
-  const endDate = new Date(startDate.getTime() + 6 * 24 * 60 * 60 * 1000)
+  // Ngày kết thúc luôn bằng ngày bắt đầu + 6 ngày (ví dụ 22/09 -> 28/09, 15/09 -> 21/09)
+  const endDate = new Date(startDate.getTime() + 6 * 86400000)
 
   const formatIso = (d: Date) => {
     const year = d.getFullYear()
@@ -216,147 +261,4 @@ export function parseSeasonDateRange(
   const displayPeriod = `${formatVn(startDate)} - ${formatVn(endDate)}`
 
   return { startsAt, endsAt, displayPeriod }
-}
-
-export interface LeagueSeasonOption {
-  seasonId: string
-  label: string
-  startsAt: string
-  endsAt: string
-  displayPeriod: string
-}
-
-/**
- * Lấy danh sách mùa giải từ Supercell API (/leagues/29000022/seasons),
- * lọc theo tiền tố "v2" và tối đa 30 ngày trước.
- */
-export async function fetchLeagueSeasonList(leagueId: string = '29000022'): Promise<LeagueSeasonOption[]> {
-  const res = await fetch(`/api/coc?path=${encodeURIComponent(`/leagues/${leagueId}/seasons`)}`)
-  if (!res.ok) {
-    const errData = await res.json().catch(() => ({}))
-    throw new Error(errData.error || `Không thể tải danh sách mùa giải (${res.status})`)
-  }
-  const data = await res.json()
-  const items = Array.isArray(data.items) ? data.items : []
-
-  // Lọc các mùa giải có tiền tố v2
-  const v2Items = items.filter((item: { id?: string }) => typeof item.id === 'string' && item.id.startsWith('v2'))
-
-  const now = new Date()
-  const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000
-  const thirtyDaysAgo = new Date(now.getTime() - thirtyDaysMs)
-
-  // Lọc tối đa 30 ngày trước (tức ngày bắt đầu >= thirtyDaysAgo)
-  const filtered = v2Items.filter((item: { id: string }) => {
-    const dateStr = item.id.replace(/^v2-/, '')
-    const d = new Date(dateStr)
-    if (isNaN(d.getTime())) return false
-    return d.getTime() >= thirtyDaysAgo.getTime()
-  })
-
-  // Nếu không có mùa nào trong 30 ngày qua, lấy mùa v2 gần nhất để không bị rỗng
-  const finalItems = filtered.length > 0 ? filtered : v2Items.slice(-2)
-
-  return finalItems
-    .map((item: { id: string }) => {
-      const { startsAt, endsAt, displayPeriod } = parseSeasonDateRange(item.id)
-      return {
-        seasonId: item.id,
-        label: `Mùa giải ${displayPeriod}`,
-        startsAt,
-        endsAt,
-        displayPeriod,
-      }
-    })
-    .reverse()
-}
-
-/**
- * Tải bảng xếp hạng người chơi của mùa giải theo seasonId (/leagues/29000022/seasons/{seasonId})
- */
-export async function fetchSeasonRankings(
-  seasonId: string,
-  leagueId: string = '29000022',
-  myPlayerTag?: string,
-): Promise<Season> {
-  const res = await fetch(`/api/coc?path=${encodeURIComponent(`/leagues/${leagueId}/seasons/${seasonId}?limit=100`)}`)
-  if (!res.ok) {
-    const errData = await res.json().catch(() => ({}))
-    throw new Error(errData.error || `Không thể tải bảng xếp hạng mùa giải ${seasonId} (${res.status})`)
-  }
-  const data = await res.json()
-  const items = Array.isArray(data.items) ? data.items : []
-
-  const { startsAt, endsAt, displayPeriod } = parseSeasonDateRange(seasonId)
-  const maxAttacks = 24
-  const maxDefenses = 24
-
-  const players: Player[] = items.map((m: Record<string, unknown>, index: number) => {
-    const tag = (m.tag as string) || `#PLAYER_${index + 1}`
-    const attacks = Number(m.attackWins) || 0
-    const defenses = Number(m.defenseWins) || 0
-    const currentCups = Number(m.trophies) || 0
-    const attackDestruction = 0
-    const defenseDestruction = 0
-
-    const maxPossibleCups = calculateMaxPossibleCups(
-      currentCups,
-      attacks,
-      defenses,
-      defenseDestruction,
-      maxAttacks,
-      maxDefenses,
-    )
-
-    const { rating, attackCups, defenseCups } = calculatePlayerRating(
-      currentCups,
-      attacks,
-      attackDestruction,
-      defenses,
-    )
-
-    const clan = m.clan as { tag?: string; name?: string } | undefined
-
-    return {
-      id: tag,
-      name: (m.name as string) || tag,
-      playerTag: tag,
-      clanTag: clan?.tag,
-      clanName: clan?.name,
-      rank: Number(m.rank) || index + 1,
-      attacks,
-      attackWinCount: attacks,
-      attackLoseCount: 0,
-      defenses,
-      defenseWinCount: defenses,
-      defenseLoseCount: 0,
-      attackDestruction,
-      defenseDestruction,
-      currentCups,
-      maxPossibleCups,
-      rating,
-      attackCups,
-      defenseCups,
-    }
-  })
-
-  const firstTier = items[0]?.leagueTier as { name?: string; iconUrls?: { small?: string; large?: string } } | undefined
-  const leagueName = firstTier?.name || 'Legend League'
-  const leagueIconUrl = getLeagueIconUrl(leagueName, firstTier?.iconUrls?.small || firstTier?.iconUrls?.large)
-
-  return {
-    league: leagueName,
-    leagueIconUrl,
-    seasonName: `Mùa giải ${displayPeriod}`,
-    startsAt,
-    endsAt,
-    maxAttacks,
-    maxDefenses,
-    promotionCount: 10,
-    demotionCount: 10,
-    myPlayerId: myPlayerTag || '',
-    players,
-    leagueSeasonId: seasonId,
-    lastSyncedAt: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-  }
 }
