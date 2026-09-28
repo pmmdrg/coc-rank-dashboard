@@ -90,7 +90,15 @@ export function SeasonMetaForm({
             </span>
           </div>
           <div className="mt-2.5 flex h-9 items-center gap-2 font-semibold text-slate-900 dark:text-slate-100">
-            <Trophy className="h-4 w-4 shrink-0 text-amber-500" aria-hidden="true" />
+            {season.leagueIconUrl ? (
+              <img
+                src={season.leagueIconUrl}
+                alt={season.league}
+                className="h-6 w-6 object-contain drop-shadow-xs"
+              />
+            ) : (
+              <Trophy className="h-4 w-4 shrink-0 text-amber-500" aria-hidden="true" />
+            )}
             <span className="truncate text-base font-bold tracking-tight text-slate-900 dark:text-slate-100">
               {formatLeagueName(season.league) || 'Legend League'}
             </span>

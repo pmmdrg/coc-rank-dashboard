@@ -456,6 +456,7 @@ function App() {
       {/* Header điều khiển, Live Auto-save & đổi nguồn lưu trữ */}
       <SeasonHeader
         league={rankedSeason.league}
+        leagueIconUrl={rankedSeason.leagueIconUrl}
         myPlayerName={myPlayerName}
         playerTag={playerTag}
         onPlayerTagChange={handlePlayerTagChange}

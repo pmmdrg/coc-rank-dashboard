@@ -109,7 +109,12 @@ export async function fetchRankedSeasonData(
   })
 
   // 5. Tạo đối tượng Season hoàn chỉnh với thời gian chuẩn từ Supercell API
-  const leagueName = (playerData.leagueTier?.name as string) || 'Legend III'
+  const leagueTier = playerData.leagueTier as {
+    name?: string
+    iconUrls?: { small?: string; large?: string }
+  } | undefined
+  const leagueName = leagueTier?.name || 'Legend III'
+  const leagueIconUrl = leagueTier?.iconUrls?.small || leagueTier?.iconUrls?.large
   const seasonName = `Bảng đấu ${leagueName} (${groupTag})`
   const now = new Date()
   const syncedTime = now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
@@ -130,6 +135,7 @@ export async function fetchRankedSeasonData(
 
   const season: Season = {
     league: leagueName,
+    leagueIconUrl,
     seasonName,
     startsAt,
     endsAt,

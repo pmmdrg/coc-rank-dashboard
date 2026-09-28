@@ -18,6 +18,7 @@ import { ThemeToggle } from './ThemeToggle'
 
 interface SeasonHeaderProps {
   league: string
+  leagueIconUrl?: string
   myPlayerName: string
   playerTag: string
   onPlayerTagChange: (tag: string) => void
@@ -36,6 +37,7 @@ interface SeasonHeaderProps {
 
 export function SeasonHeader({
   league,
+  leagueIconUrl,
   myPlayerName,
   playerTag,
   onPlayerTagChange,
@@ -65,14 +67,24 @@ export function SeasonHeader({
               Fan Tool
             </span>
           </div>
-          <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">
+          <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1.5 flex-wrap">
             <span className="font-medium text-slate-700 dark:text-slate-200">{myPlayerName}</span>
             {playerTag ? (
-              <span className="ml-1 text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400">
+              <span className="text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400">
                 ({playerTag.startsWith('#') ? playerTag : `#${playerTag}`})
               </span>
-            ) : null}{' '}
-            • {displayLeague}
+            ) : null}
+            <span>•</span>
+            <span className="inline-flex items-center gap-1.5 font-semibold text-slate-700 dark:text-slate-200">
+              {leagueIconUrl && (
+                <img
+                  src={leagueIconUrl}
+                  alt={displayLeague}
+                  className="h-4.5 w-4.5 object-contain drop-shadow-2xs"
+                />
+              )}
+              <span>{displayLeague}</span>
+            </span>
           </p>
         </div>
 

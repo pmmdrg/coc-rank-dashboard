@@ -33,6 +33,7 @@ export type Player = {
 
 export type Season = {
   league: string
+  leagueIconUrl?: string
   seasonName: string
   startsAt: string
   endsAt: string
