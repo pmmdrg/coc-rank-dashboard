@@ -14,14 +14,85 @@ export interface SyncResult {
 }
 
 /**
+ * Tự động xác định số lượt đánh/thủ tối đa của bảng đấu:
+ * Trong Clash of Clans Ranked Battles:
+ * - Supercell API KHÔNG có field nào trực tiếp cung cấp maxAttacks hay maxDefenses.
+ * - Thay vào đó, số lượt tối đa phụ thuộc vào cấp giải đấu (League Tier) của bảng đấu đó:
+ *   + Legend I: 48 lượt (hoặc 8 lượt/ngày)
+ *   + Legend II: 30 lượt (5 lượt/ngày)
+ *   + Legend III: 24 lượt (4 lượt/ngày)
+ *   + Các rank trung cấp (Titan, Dragon, Electro, ...): 18 lượt (3 lượt/ngày)
+ *   + Các rank thấp hơn (P.E.K.K.A, Witch, Valkyrie, ...): 12 hoặc 6 lượt
+ * Dashboard tự động nhận diện dựa trên số lượt đánh cao nhất quan sát được của 100 thành viên và tên cấp giải đấu.
+ */
+export function detectMaxAttacksAndDefenses(
+  members: Record<string, unknown>[],
+  leagueName?: string,
+): { maxAttacks: number; maxDefenses: number } {
+  let maxObservedAttacks = 0
+  let maxObservedDefenses = 0
+
+  for (const m of members) {
+    const atk = (Number(m.attackWinCount) || 0) + (Number(m.attackLoseCount) || 0)
+    const def = (Number(m.defenseWinCount) || 0) + (Number(m.defenseLoseCount) || 0)
+    if (atk > maxObservedAttacks) maxObservedAttacks = atk
+    if (def > maxObservedDefenses) maxObservedDefenses = def
+  }
+
+  const maxObserved = Math.max(maxObservedAttacks, maxObservedDefenses)
+
+  // 1. Nếu số lượt thực tế quan sát được trong bảng đã có người đạt tới các mốc chuẩn:
+  if (maxObserved > 24) {
+    return { maxAttacks: 30, maxDefenses: 30 }
+  }
+  if (maxObserved > 18) {
+    return { maxAttacks: 24, maxDefenses: 24 }
+  }
+  if (maxObserved > 12) {
+    return { maxAttacks: 18, maxDefenses: 18 }
+  }
+  if (maxObserved > 6) {
+    return { maxAttacks: 12, maxDefenses: 12 }
+  }
+
+  // 2. Nếu mùa giải mới tinh (chưa ai đánh nhiều), suy luận theo tên League Tier:
+  const clean = (leagueName || '').toLowerCase()
+  if (clean.includes('legend i') || clean.includes('legend 1')) {
+    return { maxAttacks: 48, maxDefenses: 48 }
+  }
+  if (clean.includes('legend ii') || clean.includes('legend 2')) {
+    return { maxAttacks: 30, maxDefenses: 30 }
+  }
+  if (clean.includes('legend iii') || clean.includes('legend 3') || clean.includes('legend')) {
+    return { maxAttacks: 24, maxDefenses: 24 }
+  }
+  if (clean.includes('electro') || clean.includes('dragon') || clean.includes('titan')) {
+    return { maxAttacks: 18, maxDefenses: 18 }
+  }
+  if (clean.includes('pekka') || clean.includes('p.e.k.k.a') || clean.includes('golem') || clean.includes('witch') || clean.includes('valkyrie')) {
+    return { maxAttacks: 12, maxDefenses: 12 }
+  }
+  if (clean.includes('wizard') || clean.includes('archer') || clean.includes('barbarian') || clean.includes('skeleton')) {
+    return { maxAttacks: 6, maxDefenses: 6 }
+  }
+
+  // 3. Fallback: nếu maxObserved > 0 dùng maxObserved, ngược lại mặc định 24
+  if (maxObserved > 0) {
+    return { maxAttacks: maxObserved, maxDefenses: maxObserved }
+  }
+
+  return { maxAttacks: 24, maxDefenses: 24 }
+}
+
+/**
  * Ánh xạ danh sách thành viên từ Supercell API sang danh sách Player của dashboard
  */
 function mapMembersToPlayers(
   members: Record<string, unknown>[],
+  maxAttacks: number = 24,
+  maxDefenses: number = 24,
   existingPlayersMap?: Map<string, Player>,
 ): Player[] {
-  const maxAttacks = 24
-  const maxDefenses = 24
 
   return members.map((m: Record<string, unknown>, index: number) => {
     const tag = (m.playerTag as string) || `#PLAYER_${index + 1}`
@@ -135,7 +206,13 @@ export async function fetchRankedSeasonData(
   }
   const groupData = await groupRes.json()
   const currentMembers = Array.isArray(groupData.members) ? groupData.members : []
-  const currentPlayers = mapMembersToPlayers(currentMembers, existingPlayersMap)
+  const currentLimits = detectMaxAttacksAndDefenses(currentMembers, leagueName)
+  const currentPlayers = mapMembersToPlayers(
+    currentMembers,
+    currentLimits.maxAttacks,
+    currentLimits.maxDefenses,
+    existingPlayersMap,
+  )
   const currentPeriod = parseSeasonDateRange(seasonId)
 
   const currentSeason: Season = {
@@ -144,8 +221,8 @@ export async function fetchRankedSeasonData(
     seasonName: `Mùa giải hiện tại (${currentPeriod.displayPeriod})`,
     startsAt: currentPeriod.startsAt,
     endsAt: currentPeriod.endsAt,
-    maxAttacks: 24,
-    maxDefenses: 24,
+    maxAttacks: currentLimits.maxAttacks,
+    maxDefenses: currentLimits.maxDefenses,
     promotionCount: 10,
     demotionCount: 10,
     myPlayerId: formattedTag,
@@ -167,7 +244,13 @@ export async function fetchRankedSeasonData(
       if (prevRes.ok) {
         const prevData = await prevRes.json()
         const prevMembers = Array.isArray(prevData.members) ? prevData.members : []
-        const prevPlayers = mapMembersToPlayers(prevMembers, existingPlayersMap)
+        const prevLimits = detectMaxAttacksAndDefenses(prevMembers, leagueName)
+        const prevPlayers = mapMembersToPlayers(
+          prevMembers,
+          prevLimits.maxAttacks,
+          prevLimits.maxDefenses,
+          existingPlayersMap,
+        )
         const prevPeriod = parseSeasonDateRange(prevSeasonId)
 
         previousSeason = {
@@ -176,8 +259,8 @@ export async function fetchRankedSeasonData(
           seasonName: `Mùa giải trước (${prevPeriod.displayPeriod})`,
           startsAt: prevPeriod.startsAt,
           endsAt: prevPeriod.endsAt,
-          maxAttacks: 24,
-          maxDefenses: 24,
+          maxAttacks: prevLimits.maxAttacks,
+          maxDefenses: prevLimits.maxDefenses,
           promotionCount: 10,
           demotionCount: 10,
           myPlayerId: formattedTag,
