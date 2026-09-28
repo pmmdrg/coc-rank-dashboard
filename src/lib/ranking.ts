@@ -6,6 +6,7 @@ import type {
   RatingCategory,
   Season,
 } from '../types'
+import { getLeagueIconUrl } from './leagueIcons'
 
 export const ratingLabels: Record<RatingCategory, string> = {
   outstanding: 'Xuất sắc',
@@ -227,6 +228,7 @@ export function normalizeSeason(season: Season): RankedSeason {
     ...safeSeason,
     league,
     seasonName,
+    leagueIconUrl: getLeagueIconUrl(league, safeSeason.leagueIconUrl),
     maxAttacks,
     maxDefenses,
     promotionCount,

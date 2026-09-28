@@ -1,6 +1,7 @@
-import { Calendar, CalendarPlus, Trophy } from 'lucide-react'
+import { Calendar, CalendarPlus } from 'lucide-react'
 import type { Season } from '../types'
 import { formatLeagueName } from '../lib/ranking'
+import { getLeagueIconUrl } from '../lib/leagueIcons'
 
 interface SeasonMetaFormProps {
   season: Season
@@ -90,15 +91,12 @@ export function SeasonMetaForm({
             </span>
           </div>
           <div className="mt-2.5 flex h-9 items-center gap-2 font-semibold text-slate-900 dark:text-slate-100">
-            {season.leagueIconUrl ? (
-              <img
-                src={season.leagueIconUrl}
-                alt={season.league}
-                className="h-6 w-6 object-contain drop-shadow-xs"
-              />
-            ) : (
-              <Trophy className="h-4 w-4 shrink-0 text-amber-500" aria-hidden="true" />
-            )}
+            <img
+              src={season.leagueIconUrl || getLeagueIconUrl(season.league)}
+              alt={season.league}
+              referrerPolicy="no-referrer"
+              className="h-7 w-7 shrink-0 object-contain drop-shadow-xs"
+            />
             <span className="truncate text-base font-bold tracking-tight text-slate-900 dark:text-slate-100">
               {formatLeagueName(season.league) || 'Legend League'}
             </span>

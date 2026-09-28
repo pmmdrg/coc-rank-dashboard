@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import type { AutoSaveStatus, StorageFormat, StorageSource } from '../types'
 import { formatLeagueName } from '../lib/ranking'
+import { getLeagueIconUrl } from '../lib/leagueIcons'
 import { ThemeToggle } from './ThemeToggle'
 
 interface SeasonHeaderProps {
@@ -76,13 +77,12 @@ export function SeasonHeader({
             ) : null}
             <span>•</span>
             <span className="inline-flex items-center gap-1.5 font-semibold text-slate-700 dark:text-slate-200">
-              {leagueIconUrl && (
-                <img
-                  src={leagueIconUrl}
-                  alt={displayLeague}
-                  className="h-4.5 w-4.5 object-contain drop-shadow-2xs"
-                />
-              )}
+              <img
+                src={leagueIconUrl || getLeagueIconUrl(league)}
+                alt={displayLeague}
+                referrerPolicy="no-referrer"
+                className="h-5 w-5 shrink-0 object-contain drop-shadow-xs"
+              />
               <span>{displayLeague}</span>
             </span>
           </p>

@@ -10,6 +10,7 @@ import {
   ratingColors,
   ratingLabels,
 } from './lib/ranking'
+import { getLeagueIconUrl } from './lib/leagueIcons'
 import { createFileSystemAdapter } from './storage/fileSystemAdapter'
 import { createGoogleDriveAdapter } from './storage/googleDriveAdapter'
 import { fetchRankedSeasonData } from './lib/cocApi'
@@ -82,6 +83,7 @@ function loadInitialDocument(): StorageDocument {
 
       const enrichedSeasons = seasons.map((s) => ({
         ...s,
+        leagueIconUrl: s.leagueIconUrl || getLeagueIconUrl(s.league),
         players: s.players.map((p) => {
           const sp = sampleMap.get(p.id)
           const clanName = p.clanName || sp?.clanName
