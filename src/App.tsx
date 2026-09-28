@@ -49,14 +49,10 @@ const comparisonColors = {
 }
 
 const ratingOptions: RatingCategory[] = [
-  'outstanding',
-  'elite',
-  'good',
+  'dominant',
+  'superior',
   'potential',
-  'needs_effort',
-  'not_good',
-  'terrible',
-  'safe',
+  'alarm',
 ]
 
 function loadInitialDocument(): StorageDocument {
@@ -296,7 +292,7 @@ function App() {
       defenses: 0,
       currentCups: 0,
       maxPossibleCups: 0,
-      rating: 'safe' as const,
+      rating: 'alarm' as const,
     }))
 
     const newSeason: Season = normalizeSeason({

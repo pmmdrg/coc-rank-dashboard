@@ -9,25 +9,17 @@ import type {
 import { getLeagueIconUrl } from './leagueIcons'
 
 export const ratingLabels: Record<RatingCategory, string> = {
-  outstanding: 'Thống trị',
-  elite: 'Dẫn đầu',
-  good: 'Vượt trội',
-  potential: 'Cân bằng',
-  needs_effort: 'Dưới chuẩn',
-  not_good: 'Nguy cơ',
-  terrible: 'Báo động',
-  safe: 'Chưa tham gia',
+  dominant: 'Thống trị',
+  superior: 'Vượt trội',
+  potential: 'Tiềm năng',
+  alarm: 'Báo động',
 }
 
 export const ratingColors: Record<RatingCategory, string> = {
-  outstanding: '#8b5cf6',
-  elite: '#059669',
-  good: '#0284c7',
-  potential: '#0d9488',
-  needs_effort: '#f59e0b',
-  not_good: '#ea580c',
-  terrible: '#e11d48',
-  safe: '#64748b',
+  dominant: '#8b5cf6', // Tím (Thống trị - >= 1200 cup)
+  superior: '#10b981', // Xanh lục (Vượt trội - 1000 đến < 1200 cup)
+  potential: '#0284c7', // Xanh lam (Tiềm năng - 800 đến < 1000 cup)
+  alarm: '#e11d48',    // Đỏ hồng (Báo động - < 800 cup)
 }
 
 export const attackStatusLabels: Record<AttackStatusCategory, string> = {
@@ -73,7 +65,7 @@ export function calculatePlayerRating(
   attacks: number = 0,
   _attackDestruction: number = 0,
   _defenses: number = 0,
-  avgCups: number = 0,
+  _avgCups: number = 0,
 ): {
   rating: RatingCategory
   avgCupsPerAttack: number
@@ -82,35 +74,21 @@ export function calculatePlayerRating(
   estimatedAttackCups: number
   estimatedDefenseCups: number
 } {
-  if (currentCups <= 0 && attacks <= 0) {
-    return {
-      rating: 'safe',
-      avgCupsPerAttack: 0,
-      attackCups: 0,
-      defenseCups: 0,
-      estimatedAttackCups: 0,
-      estimatedDefenseCups: 0,
-    }
-  }
+  // Bộ đánh giá theo đề xuất thực tế mùa giải:
+  // - Nhóm từ 1200 cup đổ lên: Thống trị
+  // - Nhóm từ 1000 tới dưới 1200 cup: Vượt trội
+  // - Nhóm từ 800 tới dưới 1000 cup: Tiềm năng
+  // - Nhóm dưới 800 cup: Báo động
+  let rating: RatingCategory = 'alarm'
 
-  // Đánh giá dựa theo độ chênh lệch điểm cúp so với mức cúp trung bình của cả bảng đấu
-  const diff = avgCups > 0 ? currentCups - avgCups : 0
-  let rating: RatingCategory = 'potential'
-
-  if (diff >= 80) {
-    rating = 'outstanding' // Thống trị (+80 cúp so với TB bảng)
-  } else if (diff >= 40) {
-    rating = 'elite'       // Dẫn đầu (+40 cúp so với TB bảng)
-  } else if (diff >= 10) {
-    rating = 'good'        // Vượt trội (+10 cúp so với TB bảng)
-  } else if (diff >= -15) {
-    rating = 'potential'   // Cân bằng (quanh mức TB)
-  } else if (diff >= -50) {
-    rating = 'needs_effort'// Dưới chuẩn (-15 đến -50 cúp)
-  } else if (diff >= -90) {
-    rating = 'not_good'    // Nguy cơ (-50 đến -90 cúp)
+  if (currentCups >= 1200) {
+    rating = 'dominant'
+  } else if (currentCups >= 1000) {
+    rating = 'superior'
+  } else if (currentCups >= 800) {
+    rating = 'potential'
   } else {
-    rating = 'terrible'    // Báo động (< -90 cúp so với TB)
+    rating = 'alarm'
   }
 
   const avgCupsPerAttack = attacks > 0 ? Math.round((currentCups / attacks) * 10) / 10 : 0
@@ -248,14 +226,10 @@ export function getRankingStats(season: Season): RankingStats {
       return counts
     },
     {
-      outstanding: 0,
-      elite: 0,
-      good: 0,
+      dominant: 0,
+      superior: 0,
       potential: 0,
-      needs_effort: 0,
-      not_good: 0,
-      terrible: 0,
-      safe: 0,
+      alarm: 0,
     } satisfies Record<RatingCategory, number>,
   )
 
@@ -306,7 +280,7 @@ export function createPlayer(maxAttacks: number = 24, _maxDefenses: number = 24)
     defenseDestruction: 0,
     currentCups: 0,
     maxPossibleCups: maxAttacks * 40,
-    rating: 'safe',
+    rating: 'alarm',
     attackCups: 0,
     defenseCups: 0,
   }

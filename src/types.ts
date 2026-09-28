@@ -1,12 +1,8 @@
 export type RatingCategory =
-  | 'outstanding'
-  | 'elite'
-  | 'good'
-  | 'potential'
-  | 'needs_effort'
-  | 'not_good'
-  | 'terrible'
-  | 'safe'
+  | 'dominant'   // Từ 1200 cup đổ lên: Thống trị
+  | 'superior'   // Từ 1000 tới dưới 1200 cup: Vượt trội
+  | 'potential'  // Từ 800 tới dưới 1000 cup: Tiềm năng
+  | 'alarm'      // Dưới 800 cup: Báo động
 
 export interface LeagueHistoryItem {
   leagueSeasonId: number

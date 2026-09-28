@@ -78,4 +78,4 @@ Hỗ trợ cả mùa giải đơn lẻ và file đa mùa giải (Multi-season):
 ```csv
 league,seasonName,startsAt,endsAt,myPlayerId,id,name,rank,attacks,defenses,currentCups,maxPossibleCups,rating
 ```
-Các hạng mục `rating`: `elite`, `contested`, `danger`, `safe`.
+Các hạng mục `rating`: `dominant` (Thống trị - ≥ 1200 cúp), `superior` (Vượt trội - 1000 đến < 1200 cúp), `potential` (Tiềm năng - 800 đến < 1000 cúp), `alarm` (Báo động - < 800 cúp).

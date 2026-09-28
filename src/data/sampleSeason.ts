@@ -32,7 +32,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 92.7,
       "currentCups": 1261,
       "maxPossibleCups": 1224,
-      "rating": "outstanding"
+      "rating": "dominant"
     },
     {
       "id": "#2CVYRPL2G",
@@ -51,7 +51,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 86.4,
       "currentCups": 1182,
       "maxPossibleCups": 1147,
-      "rating": "outstanding"
+      "rating": "dominant"
     },
     {
       "id": "#CGRLC0CP",
@@ -70,7 +70,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 80.1,
       "currentCups": 1150,
       "maxPossibleCups": 1086,
-      "rating": "outstanding"
+      "rating": "dominant"
     },
     {
       "id": "#YCUPGRLR",
@@ -89,7 +89,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 73.8,
       "currentCups": 1135,
       "maxPossibleCups": 1075,
-      "rating": "outstanding"
+      "rating": "dominant"
     },
     {
       "id": "#PC8PLQP2U",
@@ -108,7 +108,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 89.1,
       "currentCups": 1135,
       "maxPossibleCups": 1099,
-      "rating": "outstanding"
+      "rating": "dominant"
     },
     {
       "id": "#22UJC0YYR",
@@ -127,7 +127,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 82.8,
       "currentCups": 1121,
       "maxPossibleCups": 1088,
-      "rating": "outstanding"
+      "rating": "dominant"
     },
     {
       "id": "#9VUU99GCC",
@@ -146,7 +146,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 76.5,
       "currentCups": 1119,
       "maxPossibleCups": 1088,
-      "rating": "outstanding"
+      "rating": "dominant"
     },
     {
       "id": "#JUPPUJ8J",
@@ -165,7 +165,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 91.8,
       "currentCups": 1113,
       "maxPossibleCups": 1039,
-      "rating": "outstanding"
+      "rating": "dominant"
     },
     {
       "id": "#2PUL2V80",
@@ -184,7 +184,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 85.5,
       "currentCups": 1111,
       "maxPossibleCups": 1043,
-      "rating": "outstanding"
+      "rating": "dominant"
     },
     {
       "id": "#Q88RVQYYP",
@@ -203,7 +203,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 79.2,
       "currentCups": 1102,
       "maxPossibleCups": 1070,
-      "rating": "outstanding"
+      "rating": "dominant"
     },
     {
       "id": "#8QJ89U9G",
@@ -222,7 +222,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 72.9,
       "currentCups": 1101,
       "maxPossibleCups": 1043,
-      "rating": "elite"
+      "rating": "superior"
     },
     {
       "id": "#2CQR28PR8",
@@ -241,7 +241,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 88.2,
       "currentCups": 1085,
       "maxPossibleCups": 1015,
-      "rating": "elite"
+      "rating": "superior"
     },
     {
       "id": "#2CGCR92RP",
@@ -260,7 +260,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 81.9,
       "currentCups": 1080,
       "maxPossibleCups": 1047,
-      "rating": "elite"
+      "rating": "superior"
     },
     {
       "id": "#9L9CLGY",
@@ -279,7 +279,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 75.6,
       "currentCups": 1078,
       "maxPossibleCups": 1018,
-      "rating": "elite"
+      "rating": "superior"
     },
     {
       "id": "#YVVCRCJV9",
@@ -298,7 +298,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 90.9,
       "currentCups": 1077,
       "maxPossibleCups": 1041,
-      "rating": "elite"
+      "rating": "superior"
     },
     {
       "id": "#QJ9UVG98",
@@ -317,7 +317,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 84.6,
       "currentCups": 1076,
       "maxPossibleCups": 1042,
-      "rating": "elite"
+      "rating": "superior"
     },
     {
       "id": "#28URP2UPC",
@@ -336,7 +336,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 78.3,
       "currentCups": 1074,
       "maxPossibleCups": 1043,
-      "rating": "elite"
+      "rating": "superior"
     },
     {
       "id": "#R0L22J9L0",
@@ -355,7 +355,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 72,
       "currentCups": 1074,
       "maxPossibleCups": 1016,
-      "rating": "elite"
+      "rating": "superior"
     },
     {
       "id": "#8Q8VYGGUU",
@@ -374,7 +374,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 87.3,
       "currentCups": 1065,
       "maxPossibleCups": 1030,
-      "rating": "elite"
+      "rating": "superior"
     },
     {
       "id": "#LJGQUVV99",
@@ -393,7 +393,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 81,
       "currentCups": 1063,
       "maxPossibleCups": 1031,
-      "rating": "elite"
+      "rating": "superior"
     },
     {
       "id": "#9CGPPJRVC",
@@ -412,7 +412,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 74.7,
       "currentCups": 1060,
       "maxPossibleCups": 1000,
-      "rating": "elite"
+      "rating": "superior"
     },
     {
       "id": "#YPLRPJ9G",
@@ -431,7 +431,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 90,
       "currentCups": 1059,
       "maxPossibleCups": 987,
-      "rating": "elite"
+      "rating": "superior"
     },
     {
       "id": "#G88V8VV0",
@@ -450,7 +450,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 83.7,
       "currentCups": 1057,
       "maxPossibleCups": 991,
-      "rating": "elite"
+      "rating": "superior"
     },
     {
       "id": "#QLVL2L08Q",
@@ -469,7 +469,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 77.4,
       "currentCups": 1051,
       "maxPossibleCups": 989,
-      "rating": "elite"
+      "rating": "superior"
     },
     {
       "id": "#8RCLQ9C2",
@@ -488,7 +488,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 92.7,
       "currentCups": 1048,
       "maxPossibleCups": 974,
-      "rating": "elite"
+      "rating": "superior"
     },
     {
       "id": "#28PJ9C0LJ",
@@ -507,7 +507,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 86.4,
       "currentCups": 1034,
       "maxPossibleCups": 999,
-      "rating": "elite"
+      "rating": "superior"
     },
     {
       "id": "#8UJLV9Q80",
@@ -526,7 +526,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 80.1,
       "currentCups": 1022,
       "maxPossibleCups": 990,
-      "rating": "good"
+      "rating": "potential"
     },
     {
       "id": "#R0YQ8UP9",
@@ -545,7 +545,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 73.8,
       "currentCups": 1021,
       "maxPossibleCups": 961,
-      "rating": "good"
+      "rating": "potential"
     },
     {
       "id": "#2J9GRQJYP",
@@ -564,7 +564,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 89.1,
       "currentCups": 1013,
       "maxPossibleCups": 977,
-      "rating": "good"
+      "rating": "potential"
     },
     {
       "id": "#2J2QQJYGY",
@@ -583,7 +583,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 82.8,
       "currentCups": 1012,
       "maxPossibleCups": 979,
-      "rating": "good"
+      "rating": "potential"
     },
     {
       "id": "#8CLV9CQG9",
@@ -602,7 +602,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 76.5,
       "currentCups": 1011,
       "maxPossibleCups": 980,
-      "rating": "good"
+      "rating": "potential"
     },
     {
       "id": "#2LVL9P8PR",
@@ -621,7 +621,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 91.8,
       "currentCups": 1009,
       "maxPossibleCups": 972,
-      "rating": "good"
+      "rating": "potential"
     },
     {
       "id": "#Q8P9RUC2G",
@@ -640,7 +640,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 85.5,
       "currentCups": 1002,
       "maxPossibleCups": 968,
-      "rating": "good"
+      "rating": "potential"
     },
     {
       "id": "#GRV9YYJ89",
@@ -659,7 +659,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 79.2,
       "currentCups": 1001,
       "maxPossibleCups": 969,
-      "rating": "good"
+      "rating": "potential"
     },
     {
       "id": "#2Y009UCYG",
@@ -678,7 +678,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 72.9,
       "currentCups": 1000,
       "maxPossibleCups": 942,
-      "rating": "good"
+      "rating": "potential"
     },
     {
       "id": "#PRUQVP9JU",
@@ -697,7 +697,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 88.2,
       "currentCups": 997,
       "maxPossibleCups": 927,
-      "rating": "good"
+      "rating": "potential"
     },
     {
       "id": "#9GGUVGCCY",
@@ -716,7 +716,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 81.9,
       "currentCups": 994,
       "maxPossibleCups": 928,
-      "rating": "good"
+      "rating": "potential"
     },
     {
       "id": "#LJ0J99P8V",
@@ -735,7 +735,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 75.6,
       "currentCups": 994,
       "maxPossibleCups": 964,
-      "rating": "good"
+      "rating": "potential"
     },
     {
       "id": "#GJ2UQYPYC",
@@ -754,7 +754,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 90.9,
       "currentCups": 993,
       "maxPossibleCups": 957,
-      "rating": "good"
+      "rating": "potential"
     },
     {
       "id": "#Q29VU8RLC",
@@ -773,7 +773,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 84.6,
       "currentCups": 986,
       "maxPossibleCups": 918,
-      "rating": "good"
+      "rating": "potential"
     },
     {
       "id": "#Y920YL29U",
@@ -792,7 +792,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 78.3,
       "currentCups": 986,
       "maxPossibleCups": 924,
-      "rating": "good"
+      "rating": "potential"
     },
     {
       "id": "#QU22GLQY",
@@ -811,7 +811,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 72,
       "currentCups": 973,
       "maxPossibleCups": 944,
-      "rating": "good"
+      "rating": "potential"
     },
     {
       "id": "#QGU2L09GC",
@@ -830,7 +830,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 87.3,
       "currentCups": 971,
       "maxPossibleCups": 936,
-      "rating": "good"
+      "rating": "potential"
     },
     {
       "id": "#P89JPRR2",
@@ -849,7 +849,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 81,
       "currentCups": 942,
       "maxPossibleCups": 878,
-      "rating": "good"
+      "rating": "potential"
     },
     {
       "id": "#2YGR0VRUY",
@@ -887,7 +887,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 90,
       "currentCups": 939,
       "maxPossibleCups": 903,
-      "rating": "good"
+      "rating": "potential"
     },
     {
       "id": "#QY8P2RYLV",
@@ -1248,7 +1248,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 78.3,
       "currentCups": 874,
       "maxPossibleCups": 923,
-      "rating": "needs_effort"
+      "rating": "alarm"
     },
     {
       "id": "#JR2JVY2J",
@@ -1286,7 +1286,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 87.3,
       "currentCups": 861,
       "maxPossibleCups": 791,
-      "rating": "needs_effort"
+      "rating": "alarm"
     },
     {
       "id": "#22GJP80L2",
@@ -1305,7 +1305,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 81,
       "currentCups": 852,
       "maxPossibleCups": 900,
-      "rating": "needs_effort"
+      "rating": "alarm"
     },
     {
       "id": "#C9JRPJ02",
@@ -1324,7 +1324,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 74.7,
       "currentCups": 850,
       "maxPossibleCups": 940,
-      "rating": "needs_effort"
+      "rating": "alarm"
     },
     {
       "id": "#JRG0L8PJ",
@@ -1343,7 +1343,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 90,
       "currentCups": 846,
       "maxPossibleCups": 970,
-      "rating": "needs_effort"
+      "rating": "alarm"
     },
     {
       "id": "#Y8J0UUJ0",
@@ -1362,7 +1362,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 83.7,
       "currentCups": 836,
       "maxPossibleCups": 850,
-      "rating": "needs_effort"
+      "rating": "alarm"
     },
     {
       "id": "#2092LC90P",
@@ -1381,7 +1381,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 77.4,
       "currentCups": 827,
       "maxPossibleCups": 845,
-      "rating": "needs_effort"
+      "rating": "alarm"
     },
     {
       "id": "#PUCUVJV22",
@@ -1400,7 +1400,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 92.7,
       "currentCups": 826,
       "maxPossibleCups": 789,
-      "rating": "needs_effort"
+      "rating": "alarm"
     },
     {
       "id": "#89L9UJ0UC",
@@ -1419,7 +1419,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 86.4,
       "currentCups": 821,
       "maxPossibleCups": 786,
-      "rating": "needs_effort"
+      "rating": "alarm"
     },
     {
       "id": "#2VG0229JY",
@@ -1438,7 +1438,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 80.1,
       "currentCups": 820,
       "maxPossibleCups": 788,
-      "rating": "needs_effort"
+      "rating": "alarm"
     },
     {
       "id": "#L9LVV9R0C",
@@ -1457,7 +1457,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 73.8,
       "currentCups": 818,
       "maxPossibleCups": 788,
-      "rating": "needs_effort"
+      "rating": "alarm"
     },
     {
       "id": "#9VGGC0JY2",
@@ -1476,7 +1476,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 89.1,
       "currentCups": 809,
       "maxPossibleCups": 737,
-      "rating": "needs_effort"
+      "rating": "alarm"
     },
     {
       "id": "#G9GRJCRPQ",
@@ -1495,7 +1495,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 82,
       "currentCups": 802,
       "maxPossibleCups": 736,
-      "rating": "needs_effort"
+      "rating": "alarm"
     },
     {
       "id": "#8QVYLPLP0",
@@ -1514,7 +1514,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 76.5,
       "currentCups": 795,
       "maxPossibleCups": 733,
-      "rating": "needs_effort"
+      "rating": "alarm"
     },
     {
       "id": "#RUJ80YR",
@@ -1533,7 +1533,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 91.8,
       "currentCups": 787,
       "maxPossibleCups": 790,
-      "rating": "needs_effort"
+      "rating": "alarm"
     },
     {
       "id": "#LRGRL02R0",
@@ -1552,7 +1552,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 85.5,
       "currentCups": 785,
       "maxPossibleCups": 751,
-      "rating": "not_good"
+      "rating": "alarm"
     },
     {
       "id": "#C9Y2R00C",
@@ -1571,7 +1571,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 79.2,
       "currentCups": 781,
       "maxPossibleCups": 749,
-      "rating": "not_good"
+      "rating": "alarm"
     },
     {
       "id": "#28JJ200UC",
@@ -1590,7 +1590,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 72.9,
       "currentCups": 760,
       "maxPossibleCups": 731,
-      "rating": "not_good"
+      "rating": "alarm"
     },
     {
       "id": "#LP0P2VYY8",
@@ -1609,7 +1609,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 88.2,
       "currentCups": 753,
       "maxPossibleCups": 683,
-      "rating": "not_good"
+      "rating": "alarm"
     },
     {
       "id": "#2VG8JQVJ",
@@ -1628,7 +1628,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 81.9,
       "currentCups": 750,
       "maxPossibleCups": 724,
-      "rating": "not_good"
+      "rating": "alarm"
     },
     {
       "id": "#PGUPL9JRY",
@@ -1647,7 +1647,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 75.6,
       "currentCups": 748,
       "maxPossibleCups": 718,
-      "rating": "not_good"
+      "rating": "alarm"
     },
     {
       "id": "#L8092U00R",
@@ -1666,7 +1666,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 90.9,
       "currentCups": 739,
       "maxPossibleCups": 947,
-      "rating": "not_good"
+      "rating": "alarm"
     },
     {
       "id": "#G0LPCU000",
@@ -1685,7 +1685,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 84.6,
       "currentCups": 736,
       "maxPossibleCups": 702,
-      "rating": "not_good"
+      "rating": "alarm"
     },
     {
       "id": "#8V8QJGUG9",
@@ -1704,7 +1704,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 78.3,
       "currentCups": 733,
       "maxPossibleCups": 702,
-      "rating": "not_good"
+      "rating": "alarm"
     },
     {
       "id": "#29V2G22C0",
@@ -1723,7 +1723,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 72,
       "currentCups": 728,
       "maxPossibleCups": 699,
-      "rating": "not_good"
+      "rating": "alarm"
     },
     {
       "id": "#P9CL920U9",
@@ -1742,7 +1742,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 87.3,
       "currentCups": 705,
       "maxPossibleCups": 670,
-      "rating": "terrible"
+      "rating": "alarm"
     },
     {
       "id": "#LLJYLVQQ8",
@@ -1761,7 +1761,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 81,
       "currentCups": 687,
       "maxPossibleCups": 943,
-      "rating": "terrible"
+      "rating": "alarm"
     },
     {
       "id": "#22VLU29QU",
@@ -1780,7 +1780,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 74.7,
       "currentCups": 674,
       "maxPossibleCups": 764,
-      "rating": "terrible"
+      "rating": "alarm"
     },
     {
       "id": "#LJUPG9UUQ",
@@ -1799,7 +1799,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 90,
       "currentCups": 650,
       "maxPossibleCups": 614,
-      "rating": "terrible"
+      "rating": "alarm"
     },
     {
       "id": "#GLQUGR8RC",
@@ -1818,7 +1818,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 83.7,
       "currentCups": 502,
       "maxPossibleCups": 956,
-      "rating": "terrible"
+      "rating": "alarm"
     },
     {
       "id": "#80JJGQ2UL",
@@ -1837,7 +1837,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 77.4,
       "currentCups": 480,
       "maxPossibleCups": 1018,
-      "rating": "terrible"
+      "rating": "alarm"
     },
     {
       "id": "#YRYRV8C2",
@@ -1856,7 +1856,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 92.7,
       "currentCups": 465,
       "maxPossibleCups": 831,
-      "rating": "terrible"
+      "rating": "alarm"
     },
     {
       "id": "#P2RCJUQ89",
@@ -1875,7 +1875,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 86.4,
       "currentCups": 409,
       "maxPossibleCups": 1054,
-      "rating": "terrible"
+      "rating": "alarm"
     },
     {
       "id": "#PCLYLQC8V",
@@ -1894,7 +1894,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 80.1,
       "currentCups": 203,
       "maxPossibleCups": 1019,
-      "rating": "terrible"
+      "rating": "alarm"
     },
     {
       "id": "#PJJQLCVQ2",
@@ -1913,7 +1913,7 @@ export const sampleSeason: Season = {
       "defenseDestruction": 85,
       "currentCups": 93,
       "maxPossibleCups": 1019,
-      "rating": "safe"
+      "rating": "alarm"
     }
   ]
 }
@@ -1950,7 +1950,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 990,
       "maxPossibleCups": 990,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 990,
       "defenseCups": 0
     },
@@ -1971,7 +1971,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 990,
       "maxPossibleCups": 990,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 990,
       "defenseCups": 0
     },
@@ -1992,7 +1992,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 964,
       "maxPossibleCups": 964,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 964,
       "defenseCups": 0
     },
@@ -2011,7 +2011,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 898,
       "maxPossibleCups": 898,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 898,
       "defenseCups": 0
     },
@@ -2032,7 +2032,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 895,
       "maxPossibleCups": 895,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 895,
       "defenseCups": 0
     },
@@ -2053,7 +2053,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 862,
       "maxPossibleCups": 862,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 862,
       "defenseCups": 0
     },
@@ -2074,7 +2074,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 858,
       "maxPossibleCups": 858,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 858,
       "defenseCups": 0
     },
@@ -2095,7 +2095,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 842,
       "maxPossibleCups": 842,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 842,
       "defenseCups": 0
     },
@@ -2116,7 +2116,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 828,
       "maxPossibleCups": 828,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 828,
       "defenseCups": 0
     },
@@ -2137,7 +2137,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 824,
       "maxPossibleCups": 824,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 824,
       "defenseCups": 0
     },
@@ -2158,7 +2158,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 821,
       "maxPossibleCups": 821,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 821,
       "defenseCups": 0
     },
@@ -2179,7 +2179,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 818,
       "maxPossibleCups": 818,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 818,
       "defenseCups": 0
     },
@@ -2200,7 +2200,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 817,
       "maxPossibleCups": 817,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 817,
       "defenseCups": 0
     },
@@ -2221,7 +2221,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 813,
       "maxPossibleCups": 813,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 813,
       "defenseCups": 0
     },
@@ -2242,7 +2242,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 805,
       "maxPossibleCups": 805,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 805,
       "defenseCups": 0
     },
@@ -2263,7 +2263,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 801,
       "maxPossibleCups": 801,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 801,
       "defenseCups": 0
     },
@@ -2284,7 +2284,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 800,
       "maxPossibleCups": 800,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 800,
       "defenseCups": 0
     },
@@ -2305,7 +2305,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 795,
       "maxPossibleCups": 795,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 795,
       "defenseCups": 0
     },
@@ -2326,7 +2326,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 794,
       "maxPossibleCups": 794,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 794,
       "defenseCups": 0
     },
@@ -2347,7 +2347,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 788,
       "maxPossibleCups": 788,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 788,
       "defenseCups": 0
     },
@@ -2368,7 +2368,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 783,
       "maxPossibleCups": 783,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 783,
       "defenseCups": 0
     },
@@ -2389,7 +2389,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 783,
       "maxPossibleCups": 783,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 783,
       "defenseCups": 0
     },
@@ -2410,7 +2410,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 780,
       "maxPossibleCups": 780,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 780,
       "defenseCups": 0
     },
@@ -2431,7 +2431,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 780,
       "maxPossibleCups": 780,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 780,
       "defenseCups": 0
     },
@@ -2452,7 +2452,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 779,
       "maxPossibleCups": 779,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 779,
       "defenseCups": 0
     },
@@ -2473,7 +2473,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 775,
       "maxPossibleCups": 775,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 775,
       "defenseCups": 0
     },
@@ -2494,7 +2494,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 767,
       "maxPossibleCups": 767,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 767,
       "defenseCups": 0
     },
@@ -2515,7 +2515,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 760,
       "maxPossibleCups": 760,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 760,
       "defenseCups": 0
     },
@@ -2536,7 +2536,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 759,
       "maxPossibleCups": 759,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 759,
       "defenseCups": 0
     },
@@ -2557,7 +2557,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 758,
       "maxPossibleCups": 758,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 758,
       "defenseCups": 0
     },
@@ -2578,7 +2578,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 756,
       "maxPossibleCups": 756,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 756,
       "defenseCups": 0
     },
@@ -2599,7 +2599,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 747,
       "maxPossibleCups": 747,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 747,
       "defenseCups": 0
     },
@@ -2620,7 +2620,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 745,
       "maxPossibleCups": 745,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 745,
       "defenseCups": 0
     },
@@ -2641,7 +2641,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 744,
       "maxPossibleCups": 744,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 744,
       "defenseCups": 0
     },
@@ -2662,7 +2662,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 733,
       "maxPossibleCups": 733,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 733,
       "defenseCups": 0
     },
@@ -2683,7 +2683,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 729,
       "maxPossibleCups": 729,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 729,
       "defenseCups": 0
     },
@@ -2704,7 +2704,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 728,
       "maxPossibleCups": 728,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 728,
       "defenseCups": 0
     },
@@ -2725,7 +2725,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 728,
       "maxPossibleCups": 728,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 728,
       "defenseCups": 0
     },
@@ -2746,7 +2746,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 727,
       "maxPossibleCups": 727,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 727,
       "defenseCups": 0
     },
@@ -2767,7 +2767,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 724,
       "maxPossibleCups": 724,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 724,
       "defenseCups": 0
     },
@@ -2788,7 +2788,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 718,
       "maxPossibleCups": 718,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 718,
       "defenseCups": 0
     },
@@ -2809,7 +2809,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 718,
       "maxPossibleCups": 718,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 718,
       "defenseCups": 0
     },
@@ -2830,7 +2830,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 717,
       "maxPossibleCups": 717,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 717,
       "defenseCups": 0
     },
@@ -2851,7 +2851,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 715,
       "maxPossibleCups": 715,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 715,
       "defenseCups": 0
     },
@@ -2872,7 +2872,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 711,
       "maxPossibleCups": 711,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 711,
       "defenseCups": 0
     },
@@ -2893,7 +2893,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 710,
       "maxPossibleCups": 710,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 710,
       "defenseCups": 0
     },
@@ -2914,7 +2914,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 709,
       "maxPossibleCups": 709,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 709,
       "defenseCups": 0
     },
@@ -2935,7 +2935,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 708,
       "maxPossibleCups": 708,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 708,
       "defenseCups": 0
     },
@@ -2956,7 +2956,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 699,
       "maxPossibleCups": 699,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 699,
       "defenseCups": 0
     },
@@ -2977,7 +2977,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 696,
       "maxPossibleCups": 696,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 696,
       "defenseCups": 0
     },
@@ -2998,7 +2998,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 695,
       "maxPossibleCups": 695,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 695,
       "defenseCups": 0
     },
@@ -3019,7 +3019,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 691,
       "maxPossibleCups": 691,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 691,
       "defenseCups": 0
     },
@@ -3040,7 +3040,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 690,
       "maxPossibleCups": 690,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 690,
       "defenseCups": 0
     },
@@ -3061,7 +3061,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 688,
       "maxPossibleCups": 688,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 688,
       "defenseCups": 0
     },
@@ -3082,7 +3082,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 686,
       "maxPossibleCups": 686,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 686,
       "defenseCups": 0
     },
@@ -3103,7 +3103,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 685,
       "maxPossibleCups": 685,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 685,
       "defenseCups": 0
     },
@@ -3124,7 +3124,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 685,
       "maxPossibleCups": 685,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 685,
       "defenseCups": 0
     },
@@ -3145,7 +3145,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 679,
       "maxPossibleCups": 679,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 679,
       "defenseCups": 0
     },
@@ -3166,7 +3166,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 672,
       "maxPossibleCups": 672,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 672,
       "defenseCups": 0
     },
@@ -3187,7 +3187,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 665,
       "maxPossibleCups": 665,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 665,
       "defenseCups": 0
     },
@@ -3208,7 +3208,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 662,
       "maxPossibleCups": 662,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 662,
       "defenseCups": 0
     },
@@ -3229,7 +3229,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 661,
       "maxPossibleCups": 661,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 661,
       "defenseCups": 0
     },
@@ -3250,7 +3250,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 660,
       "maxPossibleCups": 660,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 660,
       "defenseCups": 0
     },
@@ -3271,7 +3271,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 659,
       "maxPossibleCups": 659,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 659,
       "defenseCups": 0
     },
@@ -3292,7 +3292,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 656,
       "maxPossibleCups": 656,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 656,
       "defenseCups": 0
     },
@@ -3313,7 +3313,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 655,
       "maxPossibleCups": 655,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 655,
       "defenseCups": 0
     },
@@ -3334,7 +3334,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 653,
       "maxPossibleCups": 653,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 653,
       "defenseCups": 0
     },
@@ -3355,7 +3355,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 644,
       "maxPossibleCups": 644,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 644,
       "defenseCups": 0
     },
@@ -3376,7 +3376,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 644,
       "maxPossibleCups": 644,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 644,
       "defenseCups": 0
     },
@@ -3397,7 +3397,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 639,
       "maxPossibleCups": 639,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 639,
       "defenseCups": 0
     },
@@ -3418,7 +3418,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 635,
       "maxPossibleCups": 635,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 635,
       "defenseCups": 0
     },
@@ -3439,7 +3439,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 630,
       "maxPossibleCups": 630,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 630,
       "defenseCups": 0
     },
@@ -3460,7 +3460,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 630,
       "maxPossibleCups": 630,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 630,
       "defenseCups": 0
     },
@@ -3481,7 +3481,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 615,
       "maxPossibleCups": 615,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 615,
       "defenseCups": 0
     },
@@ -3502,7 +3502,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 615,
       "maxPossibleCups": 615,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 615,
       "defenseCups": 0
     },
@@ -3523,7 +3523,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 612,
       "maxPossibleCups": 612,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 612,
       "defenseCups": 0
     },
@@ -3544,7 +3544,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 609,
       "maxPossibleCups": 609,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 609,
       "defenseCups": 0
     },
@@ -3565,7 +3565,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 602,
       "maxPossibleCups": 602,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 602,
       "defenseCups": 0
     },
@@ -3586,7 +3586,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 601,
       "maxPossibleCups": 601,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 601,
       "defenseCups": 0
     },
@@ -3607,7 +3607,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 596,
       "maxPossibleCups": 596,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 596,
       "defenseCups": 0
     },
@@ -3628,7 +3628,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 593,
       "maxPossibleCups": 593,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 593,
       "defenseCups": 0
     },
@@ -3649,7 +3649,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 591,
       "maxPossibleCups": 591,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 591,
       "defenseCups": 0
     },
@@ -3670,7 +3670,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 590,
       "maxPossibleCups": 590,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 590,
       "defenseCups": 0
     },
@@ -3691,7 +3691,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 582,
       "maxPossibleCups": 582,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 582,
       "defenseCups": 0
     },
@@ -3712,7 +3712,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 578,
       "maxPossibleCups": 578,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 578,
       "defenseCups": 0
     },
@@ -3733,7 +3733,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 571,
       "maxPossibleCups": 571,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 571,
       "defenseCups": 0
     },
@@ -3754,7 +3754,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 558,
       "maxPossibleCups": 558,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 558,
       "defenseCups": 0
     },
@@ -3775,7 +3775,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 536,
       "maxPossibleCups": 536,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 536,
       "defenseCups": 0
     },
@@ -3796,7 +3796,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 528,
       "maxPossibleCups": 528,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 528,
       "defenseCups": 0
     },
@@ -3817,7 +3817,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 481,
       "maxPossibleCups": 481,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 481,
       "defenseCups": 0
     },
@@ -3838,7 +3838,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 472,
       "maxPossibleCups": 472,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 472,
       "defenseCups": 0
     },
@@ -3859,7 +3859,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 467,
       "maxPossibleCups": 467,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 467,
       "defenseCups": 0
     },
@@ -3880,7 +3880,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 428,
       "maxPossibleCups": 428,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 428,
       "defenseCups": 0
     },
@@ -3901,7 +3901,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 383,
       "maxPossibleCups": 383,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 383,
       "defenseCups": 0
     },
@@ -3922,7 +3922,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 370,
       "maxPossibleCups": 370,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 370,
       "defenseCups": 0
     },
@@ -3943,7 +3943,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 350,
       "maxPossibleCups": 350,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 350,
       "defenseCups": 0
     },
@@ -3964,7 +3964,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 156,
       "maxPossibleCups": 156,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 156,
       "defenseCups": 0
     },
@@ -3985,7 +3985,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 116,
       "maxPossibleCups": 116,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 116,
       "defenseCups": 0
     },
@@ -4006,7 +4006,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 116,
       "maxPossibleCups": 116,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 116,
       "defenseCups": 0
     },
@@ -4027,7 +4027,7 @@ export const samplePreviousSeason: Season = {
       "defenseDestruction": 0,
       "currentCups": 104,
       "maxPossibleCups": 104,
-      "rating": "safe",
+      "rating": "alarm",
       "attackCups": 104,
       "defenseCups": 0
     }

@@ -18,14 +18,10 @@ interface PlayerRowProps {
 }
 
 const ratingTagColors: Record<RatingCategory, string> = {
-  outstanding: 'bg-purple-500/15 text-purple-700 dark:text-purple-300 border-purple-500/30',
-  elite: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30',
-  good: 'bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/30',
-  potential: 'bg-teal-500/15 text-teal-700 dark:text-teal-300 border-teal-500/30',
-  needs_effort: 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30',
-  not_good: 'bg-orange-500/15 text-orange-700 dark:text-orange-300 border-orange-500/30',
-  terrible: 'bg-rose-500/15 text-rose-700 dark:text-rose-300 border-rose-500/30',
-  safe: 'bg-slate-500/15 text-slate-700 dark:text-slate-300 border-slate-500/30',
+  dominant: 'bg-purple-500/15 text-purple-700 dark:text-purple-300 border-purple-500/30',
+  superior: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30',
+  potential: 'bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/30',
+  alarm: 'bg-rose-500/15 text-rose-700 dark:text-rose-300 border-rose-500/30',
 }
 
 export function PlayerRow({
@@ -263,11 +259,19 @@ export function PlayerRow({
         </div>
       </td>
 
-      {/* 7. Phân loại đánh giá (Theo cúp so với trung bình bảng) */}
+      {/* 7. Phân loại đánh giá (Theo các mốc cúp) */}
       <td className="px-2 py-2 align-middle">
         <div
           className={`flex h-9 w-full items-center justify-center rounded-md border text-xs font-bold shadow-xs select-none transition-colors ${ratingTagColors[player.rating]}`}
-          title={`Đánh giá: ${ratingLabels[player.rating]} • ${player.attacks > 0 ? `Hiệu suất ~${(player.currentCups / player.attacks).toFixed(1)} cúp/lượt` : 'Chưa đánh'}`}
+          title={`Đánh giá: ${ratingLabels[player.rating]} (${
+            player.rating === 'dominant'
+              ? '≥ 1.200 cúp'
+              : player.rating === 'superior'
+                ? '1.000 - 1.199 cúp'
+                : player.rating === 'potential'
+                  ? '800 - 999 cúp'
+                  : '< 800 cúp (Báo động nguy cơ rớt hạng)'
+          })${player.attacks > 0 ? ` • ~${(player.currentCups / player.attacks).toFixed(1)} cúp/lượt` : ''}`}
         >
           {ratingLabels[player.rating]}
         </div>
