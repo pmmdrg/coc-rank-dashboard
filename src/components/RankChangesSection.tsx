@@ -51,11 +51,7 @@ export function RankChangesSection({
   const changes = snapshot?.changes ?? EMPTY_CHANGES
   const cleanMyTag = myPlayerId.replace(/^#/, '').trim().toUpperCase()
 
-  // Thống kê số lượng tăng và hạ
-  const roseChanges = useMemo(() => changes.filter((c) => c.rankDiff > 0), [changes])
-  const fellChanges = useMemo(() => changes.filter((c) => c.rankDiff < 0), [changes])
-
-  // Biến động của người dùng (nếu có)
+  // Biến động của người dùng (nếu có) - giữ nguyên thông báo của bản thân dù bị đẩy xuống thụ động (cúp không đổi)
   const myChange = useMemo(() => {
     if (!cleanMyTag) return undefined
     return changes.find(
@@ -66,6 +62,15 @@ export function RankChangesSection({
     )
   }, [changes, cleanMyTag])
 
+  // Chỉ liệt kê các người chơi vừa thay đổi thứ hạng LẪN thay đổi số cúp (loại bỏ người chơi bị động bị đẩy xuống)
+  const activeChanges = useMemo(() => {
+    return changes.filter((c) => c.rankDiff !== 0 && c.cupsDiff !== 0)
+  }, [changes])
+
+  // Thống kê số lượng tăng và hạ (chỉ tính những người chủ động thi đấu thay đổi cúp)
+  const roseChanges = useMemo(() => activeChanges.filter((c) => c.rankDiff > 0), [activeChanges])
+  const fellChanges = useMemo(() => activeChanges.filter((c) => c.rankDiff < 0), [activeChanges])
+
   // Lọc danh sách theo tab và thanh tìm kiếm
   const filteredChanges = useMemo(() => {
     let list: RankChangeItem[] = []
@@ -74,7 +79,7 @@ export function RankChangesSection({
     } else if (filter === 'fell') {
       list = fellChanges
     } else {
-      list = changes
+      list = activeChanges
     }
 
     if (searchQuery.trim()) {
@@ -82,18 +87,17 @@ export function RankChangesSection({
       list = list.filter(
         (c) =>
           c.name.toLowerCase().includes(q) ||
-          (c.playerTag && c.playerTag.toLowerCase().includes(q)) ||
           String(c.newRank) === q ||
           String(c.oldRank) === q,
       )
     }
 
     return list
-  }, [changes, roseChanges, fellChanges, filter, searchQuery])
+  }, [activeChanges, roseChanges, fellChanges, filter, searchQuery])
 
   if (!snapshot) return null
 
-  const hasChanges = changes.length > 0
+  const hasActiveChanges = activeChanges.length > 0
   const isFirstSync = !snapshot.previousUpdatedAt
 
   return (
@@ -109,9 +113,9 @@ export function RankChangesSection({
               <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
                 Biến động thứ hạng gần nhất
               </h2>
-              {hasChanges ? (
+              {hasActiveChanges ? (
                 <span className="rounded-full bg-amber-500/15 px-2.5 py-0.5 text-xs font-extrabold text-amber-700 dark:bg-amber-400/15 dark:text-amber-300">
-                  {changes.length} thay đổi
+                  {activeChanges.length} thay đổi
                 </span>
               ) : isFirstSync ? (
                 <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-400">
@@ -136,7 +140,7 @@ export function RankChangesSection({
 
         {/* THẺ ĐẾM TÓM TẮT & NÚT THU GỌN */}
         <div className="flex items-center gap-2">
-          {hasChanges && (
+          {hasActiveChanges && (
             <div className="hidden sm:flex items-center gap-2 text-xs font-bold mr-1">
               {roseChanges.length > 0 && (
                 <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/10 px-2 py-1 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300">
@@ -235,17 +239,17 @@ export function RankChangesSection({
             </div>
           )}
 
-          {/* 2. KHI KHÔNG CÓ THAY ĐỔI NÀO TRONG BẢNG ĐẤU */}
-          {!hasChanges ? (
-            <div className="rounded-xl border border-slate-200/70 bg-white/30 py-8 text-center px-4 dark:border-slate-800 dark:bg-slate-900/30">
-              <CheckCircle2 className="mx-auto h-8 w-8 text-emerald-500/80 drop-shadow-xs" />
+          {/* 2. KHI KHÔNG CÓ THAY ĐỔI CÚP NÀO TRONG BẢNG ĐẤU */}
+          {!hasActiveChanges ? (
+            <div className="rounded-xl border border-slate-200/70 bg-white/30 py-6 text-center px-4 dark:border-slate-800 dark:bg-slate-900/30">
+              <CheckCircle2 className="mx-auto h-7 w-7 text-emerald-500/80 drop-shadow-xs" />
               <h3 className="mt-2 text-sm font-bold text-slate-800 dark:text-slate-200">
-                {isFirstSync ? 'Đã ghi nhận dữ liệu bảng đấu ban đầu' : 'Thứ hạng toàn bộ người chơi không đổi'}
+                {isFirstSync ? 'Đã ghi nhận dữ liệu bảng đấu ban đầu' : 'Không có người chơi nào thay đổi điểm cúp'}
               </h3>
               <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">
                 {isFirstSync
                   ? 'Đây là lần lấy dữ liệu đầu tiên của bảng đấu này. Mọi biến động tăng / hạ bậc sẽ được ghi nhận và thông báo ở các lần cập nhật tiếp theo.'
-                  : `Không có người chơi nào tăng hay tụt hạng so với thời điểm đồng bộ lúc ${snapshot.previousUpdatedAt || snapshot.updatedAt}.`}
+                  : `Không có biến động thứ hạng do thi đấu (thay đổi cúp) so với thời điểm đồng bộ lúc ${snapshot.previousUpdatedAt || snapshot.updatedAt}.`}
               </p>
             </div>
           ) : (
@@ -262,7 +266,7 @@ export function RankChangesSection({
                         : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
                     }`}
                   >
-                    Tất cả ({changes.length})
+                    Tất cả ({activeChanges.length})
                   </button>
                   <button
                     type="button"
@@ -290,14 +294,14 @@ export function RankChangesSection({
                   </button>
                 </div>
 
-                {changes.length > 5 && (
+                {activeChanges.length > 5 && (
                   <div className="relative w-full sm:w-56">
                     <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
                     <input
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Tìm tên hoặc tag..."
+                      placeholder="Tìm tên người chơi..."
                       className="w-full rounded-lg border border-slate-200 bg-white/70 pl-8 pr-3 py-1 text-xs text-slate-800 placeholder-slate-400 focus:border-amber-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-200"
                     />
                   </div>
@@ -321,7 +325,7 @@ export function RankChangesSection({
                     return (
                       <div
                         key={item.id}
-                        className={`flex flex-col justify-between rounded-xl border p-3 shadow-2xs transition-all hover:scale-[1.01] ${
+                        className={`flex flex-col justify-between rounded-xl border p-2.5 shadow-2xs transition-all hover:scale-[1.01] ${
                           isUser
                             ? 'border-sky-400/60 bg-sky-50/70 dark:border-sky-500/40 dark:bg-sky-950/30 ring-1 ring-sky-400/40'
                             : isRose
@@ -329,22 +333,15 @@ export function RankChangesSection({
                               : 'border-rose-200/80 bg-white/70 dark:border-rose-900/40 dark:bg-slate-900/60'
                         }`}
                       >
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="min-w-0 pr-1">
-                            <div className="flex items-center gap-1.5 truncate">
-                              <span className="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm truncate">
-                                {item.name}
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-1.5 truncate min-w-0 pr-1">
+                            <span className="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm truncate">
+                              {item.name}
+                            </span>
+                            {isUser && (
+                              <span className="rounded bg-sky-500/20 px-1 py-0.2 text-[9px] font-extrabold text-sky-700 dark:text-sky-300 shrink-0">
+                                BẠN
                               </span>
-                              {isUser && (
-                                <span className="rounded bg-sky-500/20 px-1 py-0.2 text-[9px] font-extrabold text-sky-700 dark:text-sky-300 shrink-0">
-                                  BẠN
-                                </span>
-                              )}
-                            </div>
-                            {item.playerTag && (
-                              <div className="font-mono text-[10px] text-slate-400 dark:text-slate-500">
-                                {item.playerTag}
-                              </div>
                             )}
                           </div>
 
@@ -364,7 +361,7 @@ export function RankChangesSection({
                         </div>
 
                         {/* Hàng chuyển đổi thứ hạng và điểm cúp */}
-                        <div className="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
+                        <div className="mt-2 pt-1.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
                           <div className="flex items-center gap-1.5 font-mono">
                             <span className="text-slate-400 line-through">#{item.oldRank}</span>
                             <span className="text-slate-400">➔</span>
@@ -374,15 +371,7 @@ export function RankChangesSection({
                           </div>
 
                           <div className="font-mono font-bold text-[11px] text-amber-600 dark:text-amber-400">
-                            {item.cupsDiff !== 0 ? (
-                              <span title={`Thay đổi cúp: ${item.cupsDiff > 0 ? `+${item.cupsDiff}` : item.cupsDiff}`}>
-                                {item.cupsDiff > 0 ? `+${item.cupsDiff}` : item.cupsDiff} cúp
-                              </span>
-                            ) : (
-                              <span className="text-slate-400 text-[10px] font-normal">
-                                {item.newCups} cúp
-                              </span>
-                            )}
+                            {item.cupsDiff > 0 ? `+${item.cupsDiff}` : item.cupsDiff} cúp
                           </div>
                         </div>
                       </div>
