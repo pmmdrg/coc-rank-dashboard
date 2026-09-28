@@ -51,8 +51,8 @@ export function PlayerTagPromptBanner({
 
         {/* Input box & Button nổi bật */}
         <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 shrink-0">
-          <div className="relative flex items-center">
-            <span className="pointer-events-none absolute left-3.5 text-base font-black text-emerald-600 dark:text-emerald-400">
+          <div className="group relative flex items-center">
+            <span className="pointer-events-none absolute left-3.5 text-base font-black text-slate-400 transition-colors group-focus-within:text-slate-900 dark:text-slate-500 dark:group-focus-within:text-white">
               #
             </span>
             <input
@@ -60,7 +60,7 @@ export function PlayerTagPromptBanner({
               value={inputVal.replace(/^#/, '')}
               onChange={(e) => setInputVal(e.target.value.toUpperCase().trim())}
               placeholder="Ví dụ: ABC123"
-              className="h-12 w-full sm:w-52 rounded-xl border-2 border-emerald-400/90 bg-white/95 pl-8 pr-3 text-sm font-mono font-bold tracking-wider text-slate-900 shadow-inner transition-all focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-emerald-500/25 dark:border-emerald-500/60 dark:bg-slate-900/95 dark:text-slate-100"
+              className="h-12 w-full sm:w-56 rounded-xl border-2 border-emerald-500/70 bg-white pl-8 pr-3 text-sm font-mono font-black tracking-wider text-slate-950 placeholder:text-slate-400 placeholder:font-normal caret-slate-950 shadow-inner transition-all focus:border-emerald-600 focus:bg-white focus:text-slate-950 focus:outline-none focus:ring-4 focus:ring-emerald-500/25 dark:border-emerald-500/60 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:caret-white dark:focus:bg-slate-900 dark:focus:text-white"
             />
           </div>
 

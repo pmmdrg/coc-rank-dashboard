@@ -219,13 +219,13 @@ export function SeasonHeader({
 
           {/* Ô nhập Player Tag */}
           <div
-            className={`relative inline-flex h-10 items-center rounded-md border p-0.5 shadow-sm backdrop-blur transition-all ${
+            className={`group relative inline-flex h-10 items-center rounded-md border p-0.5 shadow-sm backdrop-blur transition-all ${
               !playerTag
                 ? 'border-emerald-500 bg-emerald-500/20 ring-2 ring-emerald-500/70 shadow-md shadow-emerald-500/25 animate-pulse dark:border-emerald-400 dark:ring-emerald-400/80'
                 : 'border-emerald-400/80 bg-emerald-500/10 dark:border-emerald-500/40 dark:bg-emerald-400/10'
             }`}
           >
-            <span className="pointer-events-none absolute left-2.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+            <span className="pointer-events-none absolute left-2.5 text-xs font-bold text-slate-400 transition-colors group-focus-within:text-slate-900 dark:text-slate-500 dark:group-focus-within:text-white">
               #
             </span>
             <input
@@ -244,7 +244,7 @@ export function SeasonHeader({
               }}
               placeholder="Ví dụ: ABC123"
               title="Nhập Player Tag của bạn (nhấn Enter để tải dữ liệu)"
-              className="h-8 w-28 sm:w-32 rounded bg-white/90 pl-5 pr-7 font-mono text-xs font-bold tracking-wider text-slate-900 transition-all focus:bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:bg-slate-900/90 dark:text-slate-100 dark:focus:bg-slate-900"
+              className="h-8 w-28 sm:w-32 rounded bg-white pl-5 pr-7 font-mono text-xs font-black tracking-wider text-slate-950 placeholder:text-slate-400 placeholder:font-normal caret-slate-950 transition-all focus:bg-white focus:text-slate-950 focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:caret-white dark:focus:bg-slate-900 dark:focus:text-white"
             />
             {isSyncingApi && (
               <span className="pointer-events-none absolute right-2 text-emerald-600 dark:text-emerald-400" title="Đang tải dữ liệu từ Supercell API...">
