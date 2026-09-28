@@ -13,6 +13,7 @@ interface ProcessedSeasonPoint {
   seasonId: number
   displayPeriod: string
   tierName: string
+  tierNumber: number
   placement: number
   trophies: number
   attackWins: number
@@ -48,8 +49,27 @@ export function PerformanceTrendSection({
 
     return sorted.map((item) => {
       const { displayPeriod } = parseSeasonDateRange(item.leagueSeasonId)
-      const matchedTier = RANKED_TIERS_METADATA.find((t) => t.id === item.leagueTierId)
-      const tierName = matchedTier ? matchedTier.name : `Cấp bậc #${item.leagueTierId}`
+      const matchedTier = RANKED_TIERS_METADATA.find(
+        (t) => t.id === item.leagueTierId || t.tierNumber === item.leagueTierId,
+      )
+
+      let tierNumber = 0
+      let tierName = `Cấp bậc #${item.leagueTierId}`
+      if (matchedTier) {
+        tierName = matchedTier.name
+        tierNumber = matchedTier.tierNumber
+      } else {
+        const numId = Number(item.leagueTierId)
+        if (numId > 105000000 && numId <= 105000036) {
+          tierNumber = numId - 105000000
+          const fallbackTier = RANKED_TIERS_METADATA.find((t) => t.tierNumber === tierNumber)
+          if (fallbackTier) tierName = fallbackTier.name
+        } else if (numId >= 1 && numId <= 36) {
+          tierNumber = numId
+          const fallbackTier = RANKED_TIERS_METADATA.find((t) => t.tierNumber === tierNumber)
+          if (fallbackTier) tierName = fallbackTier.name
+        }
+      }
 
       const totalAttacks = (item.attackWins || 0) + (item.attackLosses || 0)
       const attackWinRate = totalAttacks > 0 ? Math.round(((item.attackWins || 0) / totalAttacks) * 1000) / 10 : 0
@@ -60,6 +80,7 @@ export function PerformanceTrendSection({
         seasonId: item.leagueSeasonId,
         displayPeriod: displayPeriod !== '--' ? displayPeriod : `Mùa ${item.leagueSeasonId}`,
         tierName,
+        tierNumber,
         placement: item.placement,
         trophies: item.leagueTrophies,
         attackWins: item.attackWins || 0,
@@ -80,11 +101,30 @@ export function PerformanceTrendSection({
     if (chronologicalHistory.length === 0) return null
 
     const latest = chronologicalHistory[chronologicalHistory.length - 1]
-    const placements = chronologicalHistory.map((s) => s.placement).filter((p) => p > 0)
-    const bestPlacement = placements.length > 0 ? Math.min(...placements) : latest.placement
 
-    const allTrophies = chronologicalHistory.map((s) => s.trophies)
-    const maxTrophies = Math.max(...allTrophies)
+    // 1. Kỷ lục thứ hạng: Ưu tiên giải đấu cao hơn trước, sau đó mới đến thứ hạng (#1 > #2)
+    // Quy tắc: Rank 80 của Legend 3 vẫn cao hơn rank 16 của Electro 33
+    const validPlacementSeasons = chronologicalHistory.filter((s) => s.placement > 0)
+    const bestRankSeason = validPlacementSeasons.reduce((best, cur) => {
+      if (!best) return cur
+      // Ưu tiên giải đấu cấp cao hơn (tierNumber cao hơn)
+      if (cur.tierNumber > best.tierNumber) return cur
+      if (cur.tierNumber < best.tierNumber) return best
+      // Trong cùng một giải đấu: Thứ hạng nhỏ hơn là tốt hơn (#1 tốt hơn #80)
+      if (cur.placement < best.placement) return cur
+      if (cur.placement > best.placement) return best
+      // Nếu cùng thứ hạng trong cùng một giải: Mùa cúp cao hơn hoặc mới hơn
+      return cur.trophies >= best.trophies ? cur : best
+    }, validPlacementSeasons[0] || latest)
+
+    // 2. Kỷ lục cúp: Ưu tiên số cúp cao nhất, nếu hòa cúp thì ưu tiên mùa ở giải đấu cao hơn
+    const bestCupsSeason = chronologicalHistory.reduce((best, cur) => {
+      if (!best) return cur
+      if (cur.trophies > best.trophies) return cur
+      if (cur.trophies < best.trophies) return best
+      if (cur.tierNumber > best.tierNumber) return cur
+      return best
+    }, chronologicalHistory[0])
 
     const totalWins = chronologicalHistory.reduce((acc, s) => acc + s.attackWins, 0)
     const totalAtks = chronologicalHistory.reduce((acc, s) => acc + s.totalAttacks, 0)
@@ -92,8 +132,8 @@ export function PerformanceTrendSection({
 
     return {
       latest,
-      bestPlacement,
-      maxTrophies,
+      bestRankSeason,
+      bestCupsSeason,
       totalWins,
       totalAtks,
       overallWinRate,
@@ -243,62 +283,97 @@ export function PerformanceTrendSection({
           {/* 4 THẺ THỐNG KÊ TỔNG HỢP PHONG ĐỘ */}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {/* Thẻ 1: Thứ hạng */}
-            <div className="rounded-xl border border-slate-200/80 bg-white/60 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60">
-              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                Hạng mùa gần nhất
-              </span>
-              <div className="mt-2 flex items-baseline gap-1.5">
-                <span className="text-xl font-extrabold text-slate-900 dark:text-slate-100">
-                  #{overallStats.latest.placement}
+            <div className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white/60 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60">
+              <div>
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  Hạng mùa gần nhất
                 </span>
-                <span className="text-[11px] font-medium text-slate-400">/ 100</span>
+                <div className="mt-2 flex items-baseline gap-1.5">
+                  <span className="text-xl font-extrabold text-slate-900 dark:text-slate-100">
+                    #{overallStats.latest.placement}
+                  </span>
+                  <span className="text-[11px] font-medium text-slate-400">/ 100</span>
+                </div>
+                <div
+                  className="mt-1 text-[11px] font-semibold text-slate-700 dark:text-slate-300 truncate"
+                  title={`Giải đấu: ${overallStats.latest.tierName}`}
+                >
+                  {overallStats.latest.tierName}
+                </div>
               </div>
-              <div className="mt-1 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
-                Kỷ lục: #{overallStats.bestPlacement}
+              <div
+                className="mt-2 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium truncate"
+                title={`Kỷ lục: #${overallStats.bestRankSeason.placement} (${overallStats.bestRankSeason.tierName})`}
+              >
+                Kỷ lục: #{overallStats.bestRankSeason.placement} ({overallStats.bestRankSeason.tierName})
               </div>
             </div>
 
             {/* Thẻ 2: Cúp mùa giải */}
-            <div className="rounded-xl border border-slate-200/80 bg-white/60 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60">
-              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                Cúp mùa gần nhất
-              </span>
-              <div className="mt-2 flex items-baseline gap-1.5">
-                <span className="text-xl font-extrabold text-amber-600 dark:text-amber-400">
-                  {overallStats.latest.trophies}
+            <div className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white/60 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60">
+              <div>
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  Cúp mùa gần nhất
                 </span>
-                <span className="text-[11px] font-medium text-slate-400">cúp</span>
+                <div className="mt-2 flex items-baseline gap-1.5">
+                  <span className="text-xl font-extrabold text-amber-600 dark:text-amber-400">
+                    {overallStats.latest.trophies}
+                  </span>
+                  <span className="text-[11px] font-medium text-slate-400">cúp</span>
+                </div>
+                <div
+                  className="mt-1 text-[11px] font-semibold text-slate-700 dark:text-slate-300 truncate"
+                  title={`Giải đấu: ${overallStats.latest.tierName}`}
+                >
+                  {overallStats.latest.tierName}
+                </div>
               </div>
-              <div className="mt-1 text-[11px] text-amber-600 dark:text-amber-400 font-medium">
-                Kỷ lục: {overallStats.maxTrophies} cúp
+              <div
+                className="mt-2 text-[11px] text-amber-600 dark:text-amber-400 font-medium truncate"
+                title={`Kỷ lục: ${overallStats.bestCupsSeason.trophies} cúp (${overallStats.bestCupsSeason.tierName})`}
+              >
+                Kỷ lục: {overallStats.bestCupsSeason.trophies} cúp ({overallStats.bestCupsSeason.tierName})
               </div>
             </div>
 
             {/* Thẻ 3: Tỷ lệ thắng công */}
-            <div className="rounded-xl border border-slate-200/80 bg-white/60 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60">
-              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                Tỷ lệ thắng công
-              </span>
-              <div className="mt-2 flex items-baseline gap-1.5">
-                <span className="text-xl font-extrabold text-rose-600 dark:text-rose-400">
-                  {overallStats.overallWinRate.toFixed(1)}%
+            <div className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white/60 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60">
+              <div>
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  Tỷ lệ thắng công
                 </span>
+                <div className="mt-2 flex items-baseline gap-1.5">
+                  <span className="text-xl font-extrabold text-rose-600 dark:text-rose-400">
+                    {overallStats.overallWinRate.toFixed(1)}%
+                  </span>
+                </div>
+                <div className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+                  Thắng {overallStats.totalWins}/{overallStats.totalAtks} trận
+                </div>
               </div>
-              <div className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
-                Thắng {overallStats.totalWins}/{overallStats.totalAtks} trận
+              <div className="mt-2 text-[11px] text-slate-400 dark:text-slate-500">
+                {chronologicalHistory.length} mùa gần nhất
               </div>
             </div>
 
             {/* Thẻ 4: Cấp giải đấu */}
-            <div className="rounded-xl border border-slate-200/80 bg-white/60 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60">
-              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                Cấp bậc hiện tại
-              </span>
-              <div className="mt-2 truncate font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-base" title={overallStats.latest.tierName}>
-                {overallStats.latest.tierName}
+            <div className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white/60 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60">
+              <div>
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  Cấp bậc hiện tại
+                </span>
+                <div
+                  className="mt-2 truncate font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-base"
+                  title={overallStats.latest.tierName}
+                >
+                  {overallStats.latest.tierName}
+                </div>
+                <div className="mt-1 text-[11px] text-sky-600 dark:text-sky-400 font-medium">
+                  Tối đa {overallStats.latest.maxBattles} lượt/mùa
+                </div>
               </div>
-              <div className="mt-1 text-[11px] text-sky-600 dark:text-sky-400 font-medium">
-                Tối đa {overallStats.latest.maxBattles} lượt/mùa
+              <div className="mt-2 text-[11px] text-slate-400 dark:text-slate-500">
+                Mùa {overallStats.latest.displayPeriod}
               </div>
             </div>
           </div>
