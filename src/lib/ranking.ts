@@ -165,7 +165,7 @@ function sortAndRankPlayers(players: Player[]): Player[] {
 }
 
 export function formatLeagueName(league?: string): string {
-  if (!league) return 'Legend League'
+  if (!league || league === '--') return '--'
   const trimmed = league.trim()
   return trimmed.replace(/\bleague\b/gi, 'League')
 }

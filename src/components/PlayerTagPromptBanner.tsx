@@ -45,7 +45,7 @@ export function PlayerTagPromptBanner({
             Nhập Player Tag để xem bảng đấu của bạn
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
-            Hệ thống sẽ kết nối trực tiếp với Supercell API để tự động tải bảng đấu Ranked Legend, thứ hạng 100 người chơi và tính toán tỷ lệ thăng/xuống hạng theo thời gian thực.
+            Hệ thống sẽ kết nối trực tiếp với Supercell API để tự động tải bảng đấu Ranked, thứ hạng các người chơi trong bảng và tính toán tỷ lệ thăng/xuống hạng theo thời gian thực.
           </p>
         </div>
 

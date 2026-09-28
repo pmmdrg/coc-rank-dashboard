@@ -18,7 +18,7 @@ export function Footer() {
                 Fan Tool
               </span>
               <span className="rounded-full bg-sky-500/10 px-2 py-0.5 text-[11px] font-semibold text-sky-600 dark:bg-sky-400/10 dark:text-sky-400">
-                Legend League
+                Ranked
               </span>
             </div>
             <p className="text-sm font-medium text-slate-700 dark:text-slate-300">

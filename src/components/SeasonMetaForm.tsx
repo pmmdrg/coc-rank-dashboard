@@ -84,7 +84,7 @@ export function SeasonMetaForm({
                   className="h-7 w-7 shrink-0 object-contain drop-shadow-xs"
                 />
                 <span className="truncate text-base font-bold tracking-tight text-slate-900 dark:text-slate-100">
-                  {formatLeagueName(season.league) || 'Legend League'}
+                  {formatLeagueName(season.league) || '--'}
                 </span>
               </>
             ) : (

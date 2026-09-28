@@ -116,7 +116,7 @@ export async function fetchRankedSeasonData(
     name?: string
     iconUrls?: { small?: string; large?: string; medium?: string; tiny?: string }
   } | undefined
-  const leagueName = leagueTier?.name || 'Legend III'
+  const leagueName = leagueTier?.name || '--'
   const rawIconUrl =
     leagueTier?.iconUrls?.small ||
     leagueTier?.iconUrls?.large ||
