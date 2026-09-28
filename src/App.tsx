@@ -587,16 +587,8 @@ function App() {
           </div>
         )}
 
-        {/* Form thông tin mùa giải: chọn mùa giải & nút thêm mùa mới */}
-        <SeasonMetaForm
-          season={rankedSeason}
-          seasons={document.seasons.map(normalizeSeason)}
-          activeSeasonIndex={document.activeSeasonIndex}
-          onSelectSeasonIndex={handleSelectSeasonIndex}
-          onUpdateSeasonMeta={handleUpdateSeasonMeta}
-        />
-
-        {/* 4 Thẻ thống kê nổi bật */}
+        {/* PHẦN 1: CÁC THÔNG TIN RIÊNG VỀ BẢN THÂN */}
+        {/* 4 Thẻ thống kê nổi bật của bản thân */}
         <StatCardsGrid
           stats={stats}
           season={rankedSeason}
@@ -612,19 +604,29 @@ function App() {
           />
         )}
 
-        {/* Khu vực biểu đồ thống kê */}
+        {/* Theo dõi phong độ qua các mùa giải & Kỷ lục cá nhân */}
+        <PerformanceTrendSection
+          leagueHistory={leagueHistory}
+          myPlayerName={myPlayerName}
+          playerTag={playerTag}
+        />
+
+        {/* PHẦN 2: CÁC THÔNG TIN LIÊN QUAN TỚI BẢNG XẾP HẠNG CỦA MÙA GIẢI */}
+        {/* Form thông tin mùa giải: chọn mùa giải & quy tắc thăng/xuống */}
+        <SeasonMetaForm
+          season={rankedSeason}
+          seasons={document.seasons.map(normalizeSeason)}
+          activeSeasonIndex={document.activeSeasonIndex}
+          onSelectSeasonIndex={handleSelectSeasonIndex}
+          onUpdateSeasonMeta={handleUpdateSeasonMeta}
+        />
+
+        {/* Khu vực biểu đồ thống kê mùa giải */}
         <ChartsSection
           comparisonData={comparisonChartData}
           attackStatusData={attackStatusChartData}
           ratingData={ratingChartData}
           myPlayerName={myPlayerName}
-        />
-
-        {/* Theo dõi phong độ qua các mùa giải */}
-        <PerformanceTrendSection
-          leagueHistory={leagueHistory}
-          myPlayerName={myPlayerName}
-          playerTag={playerTag}
         />
 
         {/* Bảng thống kê nổi bật & kỷ lục mùa giải */}
