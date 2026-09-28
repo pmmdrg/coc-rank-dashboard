@@ -76,6 +76,7 @@ function mapMembersToPlayers(
     const existing = existingPlayersMap?.get(tag.toUpperCase()) || existingPlayersMap?.get(tag)
     const attackDestruction = existing?.attackDestruction ?? 0
     const defenseDestruction = existing?.defenseDestruction ?? 0
+    const prevRank = existing && existing.rank > 0 ? existing.rank : undefined
 
     const maxPossibleCups = calculateMaxPossibleCups(
       currentCups,
@@ -101,6 +102,7 @@ function mapMembersToPlayers(
       clanTag: (m.clanTag as string) || undefined,
       clanName: (m.clanName as string) || undefined,
       rank: index + 1,
+      prevRank,
       attacks,
       attackWinCount: atkWin,
       attackLoseCount: atkLose,

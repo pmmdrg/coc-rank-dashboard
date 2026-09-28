@@ -22,6 +22,8 @@ export type Player = {
   id: string
   name: string
   rank: number
+  prevRank?: number
+  rankDiff?: number // rankDiff = prevRank - rank (dương: tăng bậc, âm: hạ bậc)
   attacks: number
   defenses: number
   attackDestruction?: number
@@ -39,6 +41,27 @@ export type Player = {
   attackLoseCount?: number
   defenseWinCount?: number
   defenseLoseCount?: number
+}
+
+export interface RankChangeItem {
+  id: string
+  name: string
+  playerTag?: string
+  oldRank: number
+  newRank: number
+  rankDiff: number // oldRank - newRank (dương: tăng bậc, âm: hạ bậc)
+  oldCups: number
+  newCups: number
+  cupsDiff: number
+  isMe: boolean
+}
+
+export interface RankChangesSnapshot {
+  seasonId?: string | number
+  groupTag?: string
+  updatedAt: string
+  previousUpdatedAt?: string
+  changes: RankChangeItem[]
 }
 
 export type Season = {

@@ -124,7 +124,17 @@ function sortAndRankPlayers(players: Player[]): Player[] {
 
       return a.id.localeCompare(b.id)
     })
-    .map((player, index) => ({ ...player, rank: index + 1 }))
+    .map((player, index) => {
+      const rank = index + 1
+      const prevRank = player.prevRank
+      const rankDiff = prevRank !== undefined && prevRank > 0 ? prevRank - rank : undefined
+      return {
+        ...player,
+        rank,
+        prevRank,
+        rankDiff,
+      }
+    })
 }
 
 export function formatLeagueName(league?: string): string {

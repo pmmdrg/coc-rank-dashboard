@@ -12,7 +12,15 @@ import {
 } from './lib/ranking'
 import { seasonsToCsv } from './lib/csv'
 import { fetchRankedSeasonData } from './lib/cocApi'
-import type { LeagueHistoryItem, Player, RatingCategory, Season, StorageDocument } from './types'
+import type {
+  LeagueHistoryItem,
+  Player,
+  RankChangeItem,
+  RankChangesSnapshot,
+  RatingCategory,
+  Season,
+  StorageDocument,
+} from './types'
 
 import { ChartsSection } from './components/ChartsSection'
 import { CreateSeasonModal } from './components/CreateSeasonModal'
@@ -23,6 +31,7 @@ import { StatCardsGrid } from './components/StatCardsGrid'
 import { HighlightStatsTable } from './components/HighlightStatsTable'
 import { PerformanceTrendSection } from './components/PerformanceTrendSection'
 import { PlayerTagPromptBanner } from './components/PlayerTagPromptBanner'
+import { RankChangesSection } from './components/RankChangesSection'
 import { Footer } from './components/Footer'
 import { Analytics } from '@vercel/analytics/react'
 
@@ -127,6 +136,14 @@ function App() {
       }
     }
     return []
+  })
+  const [rankChangesSnapshot, setRankChangesSnapshot] = useState<RankChangesSnapshot | null>(() => {
+    try {
+      const saved = localStorage.getItem('coc_rank_changes_snapshot')
+      return saved ? JSON.parse(saved) : null
+    } catch {
+      return null
+    }
   })
   const [document, setDocument] = useState<StorageDocument>(loadInitialDocument)
   const [status, setStatus] = useState(() => {
@@ -413,7 +430,9 @@ function App() {
     } else {
       localStorage.removeItem('coc_player_tag')
       localStorage.removeItem('coc_league_history')
+      localStorage.removeItem('coc_rank_changes_snapshot')
       setLeagueHistory([])
+      setRankChangesSnapshot(null)
     }
   }
 
@@ -432,7 +451,9 @@ function App() {
         setPlayerTag(cleanTag)
         localStorage.setItem('coc_player_tag', cleanTag)
       }
-      const existingMap = new Map(rankedSeason.players.map((p) => [(p.playerTag || p.id).toUpperCase(), p]))
+      const previousPlayers = rankedSeason.players
+      const hasPreviousSnapshot = previousPlayers.length > 0 && previousPlayers.some((p) => p.rank > 0)
+      const existingMap = new Map(previousPlayers.map((p) => [(p.playerTag || p.id).toUpperCase(), p]))
       const result = await fetchRankedSeasonData(cleanTag, existingMap)
       if (result.leagueHistory) {
         setLeagueHistory(result.leagueHistory)
@@ -442,6 +463,72 @@ function App() {
         normalizeSeason(result.currentSeason),
         ...(result.previousSeason ? [normalizeSeason(result.previousSeason)] : []),
       ]
+
+      // Tính toán danh sách thay đổi thứ hạng cho mục thông báo
+      const currentNormalized = syncedSeasons[0]
+      if (hasPreviousSnapshot) {
+        const changes: RankChangeItem[] = []
+        for (const p of currentNormalized.players) {
+          const oldP = existingMap.get((p.playerTag || p.id).toUpperCase())
+          if (oldP && oldP.rank > 0 && oldP.rank !== p.rank) {
+            const isMe = Boolean(
+              cleanTag && (
+                p.playerTag?.toUpperCase().replace(/^#/, '') === cleanTag ||
+                p.id.toUpperCase().replace(/^#/, '') === cleanTag
+              )
+            )
+            changes.push({
+              id: p.id,
+              name: p.name,
+              playerTag: p.playerTag,
+              oldRank: oldP.rank,
+              newRank: p.rank,
+              rankDiff: oldP.rank - p.rank, // dương: tăng bậc, âm: hạ bậc
+              oldCups: oldP.currentCups,
+              newCups: p.currentCups,
+              cupsDiff: p.currentCups - oldP.currentCups,
+              isMe,
+            })
+          }
+        }
+
+        // Sắp xếp: "Bạn" lên đầu, sau đó theo độ biến động lớn nhất
+        changes.sort((a, b) => {
+          if (a.isMe && !b.isMe) return -1
+          if (!a.isMe && b.isMe) return 1
+          return Math.abs(b.rankDiff) - Math.abs(a.rankDiff)
+        })
+
+        const newSnapshot: RankChangesSnapshot = {
+          seasonId: currentNormalized.leagueSeasonId,
+          groupTag: currentNormalized.leagueGroupTag,
+          updatedAt: result.currentSeason.lastSyncedAt || new Date().toLocaleTimeString('vi-VN'),
+          previousUpdatedAt: rankedSeason.lastSyncedAt || undefined,
+          changes,
+        }
+        setRankChangesSnapshot(newSnapshot)
+        try {
+          localStorage.setItem('coc_rank_changes_snapshot', JSON.stringify(newSnapshot))
+        } catch {
+          // ignore
+        }
+      } else {
+        // Lần đầu tiên đồng bộ bảng đấu này
+        const initialSnapshot: RankChangesSnapshot = {
+          seasonId: currentNormalized.leagueSeasonId,
+          groupTag: currentNormalized.leagueGroupTag,
+          updatedAt: result.currentSeason.lastSyncedAt || new Date().toLocaleTimeString('vi-VN'),
+          previousUpdatedAt: undefined,
+          changes: [],
+        }
+        setRankChangesSnapshot(initialSnapshot)
+        try {
+          localStorage.setItem('coc_rank_changes_snapshot', JSON.stringify(initialSnapshot))
+        } catch {
+          // ignore
+        }
+      }
+
       setDocument((current) => ({
         ...current,
         seasons: syncedSeasons,
@@ -515,6 +602,15 @@ function App() {
           season={rankedSeason}
           myPlayerName={myPlayerName}
         />
+
+        {/* Thông báo biến động thứ hạng kể từ lần gần nhất lấy thứ hạng */}
+        {rankChangesSnapshot && (
+          <RankChangesSection
+            snapshot={rankChangesSnapshot}
+            myPlayerId={rankedSeason.myPlayerId}
+            myPlayerName={myPlayerName}
+          />
+        )}
 
         {/* Khu vực biểu đồ thống kê */}
         <ChartsSection

@@ -101,6 +101,22 @@ export function PlayerRow({
             >
               {rankJump.fromRank > rankJump.toRank ? '▲' : '▼'} #{rankJump.fromRank} → #{rankJump.toRank}
             </span>
+          ) : player.rankDiff !== undefined && player.rankDiff !== 0 ? (
+            <span
+              className={`inline-flex shrink-0 items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[10px] font-black uppercase tracking-tight shadow-2xs select-none ${
+                player.rankDiff > 0
+                  ? 'bg-emerald-500/15 text-emerald-700 dark:bg-emerald-500/25 dark:text-emerald-300 border border-emerald-500/30'
+                  : 'bg-rose-500/15 text-rose-700 dark:bg-rose-500/25 dark:text-rose-300 border border-rose-500/30'
+              }`}
+              title={
+                player.rankDiff > 0
+                  ? `Tăng ${player.rankDiff} bậc (từ #${player.prevRank} lên #${player.rank})`
+                  : `Hạ ${Math.abs(player.rankDiff)} bậc (từ #${player.prevRank} xuống #${player.rank})`
+              }
+            >
+              {player.rankDiff > 0 ? '▲' : '▼'}
+              <span>{player.rankDiff > 0 ? `+${player.rankDiff}` : player.rankDiff}</span>
+            </span>
           ) : isPromotionZone ? (
             <span
               className="animate-fade-in inline-flex shrink-0 items-center gap-0.5 rounded-xs bg-emerald-500/20 px-1 py-0.5 text-[9px] font-black text-emerald-700 dark:text-emerald-300 uppercase tracking-tighter select-none border border-emerald-500/30"
