@@ -473,13 +473,21 @@ function App() {
         activeSeasonIndex: 0,
         season: syncedSeasons[0],
       }))
-      setStatus(`Đã đồng bộ thành công bảng đấu mùa hiện tại (${result.groupTag}) và mùa trước của ${result.playerName} (${result.playerTag}) từ Supercell API lúc ${result.currentSeason.lastSyncedAt}!`)
+      setStatus(`Đã cập nhật dữ liệu mới nhất từ Supercell API lúc ${result.currentSeason.lastSyncedAt}!`)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Đồng bộ từ Supercell API thất bại.')
+      console.warn('Tải dữ liệu Supercell API thất bại:', err)
+      setStatus('Dữ liệu đã sẵn sàng (bản lưu trên máy).')
     } finally {
       setIsSyncingApi(false)
     }
   }
+
+  // Tự động gọi Supercell API khi truy cập trang web hoặc refresh để luôn có dữ liệu mới nhất
+  useEffect(() => {
+    const savedTag = localStorage.getItem('coc_player_tag') || playerTag || 'G9GRJCRPQ'
+    handleSyncCocApi(savedTag)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className="app-surface flex min-h-screen flex-col">
@@ -568,8 +576,6 @@ function App() {
           season={rankedSeason}
           rankedPlayers={rankedSeason.players}
           stats={stats}
-          isSyncing={isSyncingApi}
-          onSyncCocApi={handleSyncCocApi}
           onUpdatePlayerField={handleUpdatePlayerField}
         />
       </main>

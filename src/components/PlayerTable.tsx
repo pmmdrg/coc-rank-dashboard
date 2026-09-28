@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { AlertTriangle, RefreshCw } from 'lucide-react'
+import { AlertTriangle } from 'lucide-react'
 import type { Player, RankingStats, Season } from '../types'
 import { PlayerRow } from './PlayerRow'
 import { validatePlayer } from '../lib/validation'
@@ -8,8 +8,6 @@ interface PlayerTableProps {
   season: Season
   rankedPlayers: Player[]
   stats: RankingStats
-  isSyncing?: boolean
-  onSyncCocApi?: () => void
   onUpdatePlayerField: (playerId: string, field: keyof Player, value: string | number) => void
 }
 
@@ -121,8 +119,6 @@ export function PlayerTable({
   season,
   rankedPlayers,
   stats,
-  isSyncing = false,
-  onSyncCocApi,
   onUpdatePlayerField,
 }: PlayerTableProps) {
   const [frozenOrderIds, setFrozenOrderIds] = useState<string[] | null>(null)
@@ -438,20 +434,6 @@ export function PlayerTable({
           <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
             Dữ liệu Tên, Lượt đánh, Lượt thủ, Cúp được đồng bộ trực tiếp từ Supercell API. Dùng <kbd className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[10px] dark:bg-slate-800">Tab</kbd> (sang % tiếp theo) / <kbd className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[10px] dark:bg-slate-800">Enter</kbd> (xuống hàng dưới) để nhập tỉ lệ % phá huỷ.
           </p>
-        </div>
-        <div className="flex items-center gap-2 shrink-0">
-          {onSyncCocApi && (
-            <button
-              type="button"
-              disabled={isSyncing}
-              onClick={onSyncCocApi}
-              className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg border border-emerald-400/80 bg-emerald-500/10 px-3 text-xs font-semibold text-emerald-700 shadow-xs backdrop-blur hover:bg-emerald-500/20 disabled:opacity-50 dark:border-emerald-500/40 dark:bg-emerald-400/10 dark:text-emerald-300 cursor-pointer"
-              title="Đồng bộ lại dữ liệu 100 người chơi từ Supercell API"
-            >
-              <RefreshCw className={`h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 ${isSyncing ? 'animate-spin' : ''}`} />
-              {isSyncing ? 'Đang tải...' : 'Đồng bộ API'}
-            </button>
-          )}
         </div>
       </div>
 
