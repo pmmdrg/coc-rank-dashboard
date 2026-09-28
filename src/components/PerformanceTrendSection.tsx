@@ -186,11 +186,24 @@ export function PerformanceTrendSection({
   const maxCups = Math.max(...cupsValues)
   const cupsSpan = Math.max(1, maxCups - minCups)
 
-  // Trục Rank/Placement (Nghịch đảo: #1 ở đỉnh, #100 ở đáy)
-  const rankValues = chronologicalHistory.map((d) => d.placement)
-  const minRank = Math.min(...rankValues) // Hạng tốt nhất (số nhỏ nhất)
-  const maxRank = Math.max(...rankValues) // Hạng thấp nhất (số lớn nhất)
-  const rankSpan = Math.max(1, maxRank - minRank)
+  // --- TÍNH TOÁN DÃY TẦNG GIẢI ĐẤU (100 HẠNG MỖI TẦNG) ---
+  // Mỗi giải đấu là 1 tầng gồm 100 bậc (hạng #100 ở đáy tầng, hạng #1 ở đỉnh tầng)
+  // Tầng của giải đấu cao hơn sẽ nằm chồng lên trên tầng của giải đấu thấp hơn
+  const minTierInHistory = Math.min(...chronologicalHistory.map((d) => (d.tierNumber > 0 ? d.tierNumber : 1)))
+  const maxTierInHistory = Math.max(...chronologicalHistory.map((d) => (d.tierNumber > 0 ? d.tierNumber : 1)))
+
+  // Score tính theo tầng giải đấu: tierNumber * 100 - placement
+  const getStackedRankScore = (d: ProcessedSeasonPoint) => {
+    const tier = d.tierNumber > 0 ? d.tierNumber : 1
+    const place = Math.min(100, Math.max(1, d.placement || 100))
+    return tier * 100 - place
+  }
+
+  // Đáy trục Y là hạng #100 của tầng thấp nhất trong lịch sử
+  const floorRankScore = (minTierInHistory - 1) * 100
+  // Đỉnh trục Y là hạng #1 của tầng cao nhất trong lịch sử
+  const ceilRankScore = maxTierInHistory * 100
+  const rankScoreSpan = Math.max(1, ceilRankScore - floorRankScore)
 
   // Trục WinRate (0% - 100%)
   const minRate = 0
@@ -212,9 +225,10 @@ export function PerformanceTrendSection({
     return paddingTop + plotHeight - ((cups - minCups) / cupsSpan) * plotHeight
   }
 
-  // Rank: càng nhỏ (#1) càng ở trên
-  const getRankY = (rank: number) => {
-    return paddingTop + ((rank - minRank) / rankSpan) * plotHeight
+  // Rank: Điểm tầng giải đấu càng cao (hoặc thứ hạng nhỏ hơn) càng ở trên đỉnh biểu đồ
+  const getRankY = (d: ProcessedSeasonPoint) => {
+    const score = getStackedRankScore(d)
+    return paddingTop + plotHeight - ((score - floorRankScore) / rankScoreSpan) * plotHeight
   }
 
   // WinRate: 100% ở trên, 0% ở dưới
@@ -235,7 +249,7 @@ export function PerformanceTrendSection({
   }
 
   const cupsPath = makeLinePath((d) => getCupsY(d.trophies))
-  const rankPath = makeLinePath((d) => getRankY(d.placement))
+  const rankPath = makeLinePath((d) => getRankY(d))
   const ratePath = makeLinePath((d) => getRateY(d.attackWinRate))
   const starsPath = makeLinePath((d) => getStarsY(d.defenseStars))
 
@@ -426,7 +440,7 @@ export function PerformanceTrendSection({
                     </span>
                     <span className="inline-flex items-center gap-1.5 text-sky-600 dark:text-sky-400">
                       <span className="h-2 w-2 rounded-full bg-sky-500" />
-                      Thứ hạng (#{minRank} - #{maxRank})
+                      Thứ hạng theo tầng (100 hạng/giải)
                     </span>
                   </>
                 ) : (
@@ -467,6 +481,48 @@ export function PerformanceTrendSection({
                     />
                   )
                 })}
+
+                {/* Đường phân chia các tầng giải đấu (mỗi tầng 100 hạng) */}
+                {activeMetric === 'cups_rank' &&
+                  maxTierInHistory > minTierInHistory &&
+                  Array.from({ length: maxTierInHistory - minTierInHistory }, (_, idx) => {
+                    const t = minTierInHistory + idx
+                    const boundaryScore = t * 100
+                    const boundaryY = paddingTop + plotHeight - ((boundaryScore - floorRankScore) / rankScoreSpan) * plotHeight
+                    return (
+                      <line
+                        key={`tier-boundary-${t}`}
+                        x1={paddingX}
+                        y1={boundaryY}
+                        x2={chartWidth - paddingX}
+                        y2={boundaryY}
+                        stroke="#0284c7"
+                        strokeDasharray="6 3"
+                        strokeWidth="1.2"
+                        className="opacity-30 dark:opacity-40"
+                      />
+                    )
+                  })}
+
+                {/* Nhãn tên từng tầng giải đấu hiển thị bên trong biểu đồ */}
+                {activeMetric === 'cups_rank' &&
+                  Array.from({ length: maxTierInHistory - minTierInHistory + 1 }, (_, idx) => {
+                    const t = minTierInHistory + idx
+                    const centerScore = (t - 0.5) * 100
+                    const centerY = paddingTop + plotHeight - ((centerScore - floorRankScore) / rankScoreSpan) * plotHeight
+                    const tierDef = RANKED_TIERS_METADATA.find((m) => m.tierNumber === t)
+                    const label = tierDef ? tierDef.name : `Cấp #${t}`
+                    return (
+                      <text
+                        key={`tier-label-${t}`}
+                        x={paddingX + 8}
+                        y={centerY - 4}
+                        className="fill-sky-700/50 text-[10px] font-bold select-none dark:fill-sky-300/50 pointer-events-none"
+                      >
+                        {label}
+                      </text>
+                    )
+                  })}
 
                 {/* Các đường thẳng đứng ứng với từng mùa giải */}
                 {chronologicalHistory.map((_, i) => {
@@ -547,7 +603,7 @@ export function PerformanceTrendSection({
 
                   if (activeMetric === 'cups_rank') {
                     const yCups = getCupsY(d.trophies)
-                    const yRank = getRankY(d.placement)
+                    const yRank = getRankY(d)
                     return (
                       <g key={i}>
                         {/* Điểm Cúp */}
@@ -667,7 +723,7 @@ export function PerformanceTrendSection({
                     <div className="flex items-center justify-between gap-4">
                       <span className="text-sky-400 font-medium">Thứ hạng:</span>
                       <span className="font-mono font-bold">
-                        #{chronologicalHistory[hoveredIndex].placement} / 100
+                        #{chronologicalHistory[hoveredIndex].placement} / 100 ({chronologicalHistory[hoveredIndex].tierName})
                       </span>
                     </div>
                     <div className="flex items-center justify-between gap-4">
