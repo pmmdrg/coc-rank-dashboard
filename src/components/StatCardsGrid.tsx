@@ -20,31 +20,44 @@ function formatDate(value: string) {
 }
 
 export function StatCardsGrid({ stats, season, myPlayerName }: StatCardsGridProps) {
+  const hasPlayers = season.players.length > 0
+  const hasMyPlayer = Boolean(stats.myPlayer)
+
   const cards = [
     {
       label: 'Thứ hạng của tôi',
-      value: stats.myPlayer ? `#${stats.myPlayer.rank}` : '--',
-      detail: stats.myPlayer
-        ? `${stats.myPlayer.name} • ${numberFormatter(stats.myPlayer.currentCups)} cup`
-        : 'Chưa chọn tài khoản',
+      value: hasMyPlayer ? `#${stats.myPlayer!.rank}` : '--',
+      detail: hasMyPlayer
+        ? `${stats.myPlayer!.name} • ${numberFormatter(stats.myPlayer!.currentCups)} cup`
+        : 'Chưa có dữ liệu',
       highlightColor: 'text-blue-600 dark:text-sky-400',
     },
     {
       label: 'Số người chơi có thể vượt tôi',
-      value: stats.playersWhoCanPassMe,
-      detail: `Cup tối đa của ${myPlayerName}: ${stats.myPlayer ? numberFormatter(stats.myPlayer.maxPossibleCups) : 0}`,
-      highlightColor: stats.playersWhoCanPassMe > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400',
+      value: hasMyPlayer ? stats.playersWhoCanPassMe : '--',
+      detail: hasMyPlayer
+        ? `Cup tối đa của ${myPlayerName}: ${numberFormatter(stats.myPlayer!.maxPossibleCups)}`
+        : 'Chưa có dữ liệu',
+      highlightColor:
+        hasMyPlayer && stats.playersWhoCanPassMe > 0
+          ? 'text-amber-600 dark:text-amber-400'
+          : 'text-emerald-600 dark:text-emerald-400',
     },
     {
       label: 'Tổng người chơi',
-      value: season.players.length,
-      detail: `${formatDate(season.startsAt)} - ${formatDate(season.endsAt)}`,
+      value: hasPlayers ? season.players.length : '--',
+      detail:
+        hasPlayers && (season.startsAt || season.endsAt)
+          ? `${formatDate(season.startsAt)} - ${formatDate(season.endsAt)}`
+          : 'Chưa có dữ liệu',
       highlightColor: 'text-slate-800 dark:text-slate-200',
     },
     {
       label: 'Rank thấp nhất có thể của tôi',
-      value: stats.lowestPossibleRank ? `#${stats.lowestPossibleRank}` : '--',
-      detail: 'Nếu các đối thủ đạt trần cup vượt mức tối đa của bạn',
+      value: hasMyPlayer && stats.lowestPossibleRank ? `#${stats.lowestPossibleRank}` : '--',
+      detail: hasMyPlayer
+        ? 'Nếu các đối thủ đạt trần cup vượt mức tối đa của bạn'
+        : 'Chưa có dữ liệu',
       highlightColor: 'text-rose-600 dark:text-rose-400',
     },
   ]

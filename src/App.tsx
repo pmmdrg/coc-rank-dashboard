@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { samplePreviousSeason, sampleSeason } from './data/sampleSeason'
 import {
   attackStatusColors,
   attackStatusLabels,
@@ -10,7 +9,6 @@ import {
   ratingColors,
   ratingLabels,
 } from './lib/ranking'
-import { getLeagueIconUrl } from './lib/leagueIcons'
 import { createFileSystemAdapter } from './storage/fileSystemAdapter'
 import { createGoogleDriveAdapter } from './storage/googleDriveAdapter'
 import { fetchRankedSeasonData } from './lib/cocApi'
@@ -31,6 +29,19 @@ import { Analytics } from '@vercel/analytics/react'
 
 const DRAFT_STORAGE_KEY = 'coc_rank_autosave_draft'
 
+const emptySeason: Season = {
+  league: '--',
+  seasonName: 'Chưa có mùa giải',
+  startsAt: '',
+  endsAt: '',
+  maxAttacks: 24,
+  maxDefenses: 24,
+  promotionCount: 2,
+  demotionCount: 1,
+  myPlayerId: '',
+  players: [],
+}
+
 const comparisonColors = {
   canPass: '#f59e0b',
   below: '#10b981',
@@ -48,78 +59,36 @@ const ratingOptions: RatingCategory[] = [
 ]
 
 function loadInitialDocument(): StorageDocument {
-  const defaultSeason = normalizeSeason(sampleSeason)
-  const defaultPrevSeason = normalizeSeason(samplePreviousSeason)
-  const defaultSeasons = [defaultSeason, defaultPrevSeason]
-
   try {
     const rawDraft = localStorage.getItem(DRAFT_STORAGE_KEY)
+    const savedPlayerTag = localStorage.getItem('coc_player_tag')
+
     if (rawDraft) {
       const parsed = JSON.parse(rawDraft) as Partial<StorageDocument>
-      let seasons = Array.isArray(parsed.seasons) && parsed.seasons.length > 0
-        ? parsed.seasons.map(normalizeSeason)
-        : [parsed.season ? normalizeSeason(parsed.season) : defaultSeason]
+      const hasOldPersonalData =
+        parsed.season?.myPlayerId === '#G9GRJCRPQ' ||
+        parsed.season?.players?.some((p) => p.id === '#G9GRJCRPQ')
 
-      if (seasons.length === 1) {
-        seasons = [seasons[0], defaultPrevSeason]
-      }
+      if (!savedPlayerTag && hasOldPersonalData) {
+        localStorage.removeItem(DRAFT_STORAGE_KEY)
+      } else {
+        const seasons = Array.isArray(parsed.seasons) && parsed.seasons.length > 0
+          ? parsed.seasons.map(normalizeSeason)
+          : [parsed.season ? normalizeSeason(parsed.season) : emptySeason]
 
-      const activeIndex = typeof parsed.activeSeasonIndex === 'number' && parsed.activeSeasonIndex < seasons.length
-        ? parsed.activeSeasonIndex
-        : 0
+        const activeIndex = typeof parsed.activeSeasonIndex === 'number' && parsed.activeSeasonIndex < seasons.length
+          ? parsed.activeSeasonIndex
+          : 0
 
-      const currentSeason = seasons[activeIndex] ?? defaultSeason
-      // Nếu draft cũ là dữ liệu giả lập ban đầu (dưới 50 người hoặc có ID dummy "p-"), ưu tiên nạp sampleSeason 100 người từ Supercell API
-      const isOldDummyData =
-        currentSeason.players.length < 50 ||
-        currentSeason.players.some((p) => p.id.startsWith('p-'))
-      if (isOldDummyData) {
+        const currentSeason = seasons[activeIndex] ?? emptySeason
+
         return {
           name: parsed.name || 'rank-season.json',
           format: parsed.format || 'json',
-          season: defaultSeason,
-          seasons: defaultSeasons,
-          activeSeasonIndex: 0,
+          season: currentSeason,
+          seasons: seasons.slice(0, 2),
+          activeSeasonIndex: activeIndex,
         }
-      }
-
-      // Tự động bổ sung clanName / clanTag / % công / % thủ từ sampleSeason nếu draft lưu trước đó chưa có hoặc bị mất sạch (toàn bộ bằng 0)
-      const sampleMap = new Map(sampleSeason.players.map((p) => [p.id, p]))
-      const draftHasAnyDestruction = seasons.some((s) => s.players.some((p) => (p.attackDestruction ?? 0) > 0))
-
-      const enrichedSeasons = seasons.map((s) => ({
-        ...s,
-        leagueIconUrl: s.leagueIconUrl || getLeagueIconUrl(s.league),
-        players: s.players.map((p) => {
-          const sp = sampleMap.get(p.id)
-          const clanName = p.clanName || sp?.clanName
-          const clanTag = p.clanTag || sp?.clanTag
-          const attackDestruction =
-            !draftHasAnyDestruction && sp?.attackDestruction
-              ? sp.attackDestruction
-              : (p.attackDestruction ?? sp?.attackDestruction ?? 0)
-          const defenseDestruction =
-            !draftHasAnyDestruction && sp?.defenseDestruction
-              ? sp.defenseDestruction
-              : (p.defenseDestruction ?? sp?.defenseDestruction ?? 0)
-
-          return {
-            ...p,
-            clanName,
-            clanTag,
-            attackDestruction,
-            defenseDestruction,
-          }
-        }),
-      }))
-      const enrichedCurrent = enrichedSeasons[activeIndex] ?? defaultSeason
-
-      return {
-        name: parsed.name || 'rank-season.json',
-        format: parsed.format || 'json',
-        season: enrichedCurrent,
-        seasons: enrichedSeasons.slice(0, 2),
-        activeSeasonIndex: activeIndex,
       }
     }
   } catch {
@@ -129,8 +98,8 @@ function loadInitialDocument(): StorageDocument {
   return {
     name: 'rank-season.json',
     format: 'json',
-    season: defaultSeason,
-    seasons: defaultSeasons,
+    season: emptySeason,
+    seasons: [emptySeason],
     activeSeasonIndex: 0,
   }
 }
@@ -142,10 +111,15 @@ function App() {
   const [isApiTesterOpen, setIsApiTesterOpen] = useState(false)
   const [isSyncingApi, setIsSyncingApi] = useState(false)
   const [playerTag, setPlayerTag] = useState<string>(() => {
-    return localStorage.getItem('coc_player_tag') || 'G9GRJCRPQ'
+    return localStorage.getItem('coc_player_tag') || ''
   })
   const [document, setDocument] = useState<StorageDocument>(loadInitialDocument)
-  const [status, setStatus] = useState('Dữ liệu đã sẵn sàng.')
+  const [status, setStatus] = useState(() => {
+    const savedTag = localStorage.getItem('coc_player_tag')
+    return savedTag
+      ? 'Đang tải dữ liệu...'
+      : 'Vui lòng nhập Player Tag ở góc trên bên phải để tải dữ liệu bảng đấu.'
+  })
   const [error, setError] = useState('')
   const [autoSaveStatus, setAutoSaveStatus] = useState<AutoSaveStatus>('draft')
 
@@ -156,7 +130,7 @@ function App() {
   const season = document.season
   const rankedSeason = useMemo(() => normalizeSeason(season), [season])
   const stats = useMemo(() => getRankingStats(rankedSeason), [rankedSeason])
-  const myPlayerName = stats.myPlayer?.name || 'Tài khoản của tôi'
+  const myPlayerName = stats.myPlayer?.name || (playerTag ? 'Tài khoản của tôi' : '--')
 
   const isInitialMount = useRef(true)
   const isOpeningFile = useRef(false)
@@ -171,6 +145,11 @@ function App() {
     // Nếu vừa mới mở file xong, không cần lưu đè ngược lại file đó ngay lập tức
     if (isOpeningFile.current) {
       isOpeningFile.current = false
+      return
+    }
+
+    // Không tự động lưu nháp nếu bảng hoàn toàn rỗng và chưa có người chơi
+    if (rankedSeason.players.length === 0) {
       return
     }
 
@@ -441,23 +420,32 @@ function App() {
   function handlePlayerTagChange(tag: string) {
     const clean = tag.replace(/^#/, '').trim().toUpperCase()
     setPlayerTag(clean)
-    localStorage.setItem('coc_player_tag', clean)
-    const formatted = `#${clean}`
-    if (rankedSeason.myPlayerId !== formatted && rankedSeason.myPlayerId !== clean) {
-      updateCurrentSeason({
-        ...rankedSeason,
-        myPlayerId: formatted,
-      })
+    if (clean) {
+      localStorage.setItem('coc_player_tag', clean)
+      const formatted = `#${clean}`
+      if (rankedSeason.myPlayerId !== formatted && rankedSeason.myPlayerId !== clean) {
+        updateCurrentSeason({
+          ...rankedSeason,
+          myPlayerId: formatted,
+        })
+      }
+    } else {
+      localStorage.removeItem('coc_player_tag')
     }
   }
 
   async function handleSyncCocApi(targetTag?: string) {
+    const rawTag = targetTag || playerTag || stats.myPlayer?.playerTag || stats.myPlayer?.id || ''
+    const cleanTag = rawTag.replace(/^#/, '').trim()
+    if (!cleanTag) {
+      setStatus('Vui lòng nhập Player Tag ở góc trên bên phải để tải dữ liệu bảng đấu.')
+      return
+    }
+
     setIsSyncingApi(true)
     setError('')
     try {
-      const rawTag = targetTag || playerTag || stats.myPlayer?.playerTag || stats.myPlayer?.id || 'G9GRJCRPQ'
-      const cleanTag = rawTag.replace(/^#/, '').trim()
-      if (cleanTag && cleanTag !== playerTag) {
+      if (cleanTag !== playerTag) {
         setPlayerTag(cleanTag)
         localStorage.setItem('coc_player_tag', cleanTag)
       }
@@ -465,7 +453,7 @@ function App() {
       const result = await fetchRankedSeasonData(cleanTag, existingMap)
       const syncedSeasons = [
         normalizeSeason(result.currentSeason),
-        normalizeSeason(result.previousSeason || samplePreviousSeason),
+        ...(result.previousSeason ? [normalizeSeason(result.previousSeason)] : []),
       ]
       setDocument((current) => ({
         ...current,
@@ -476,16 +464,18 @@ function App() {
       setStatus(`Đã cập nhật dữ liệu mới nhất từ Supercell API lúc ${result.currentSeason.lastSyncedAt}!`)
     } catch (err) {
       console.warn('Tải dữ liệu Supercell API thất bại:', err)
-      setStatus('Dữ liệu đã sẵn sàng (bản lưu trên máy).')
+      setError(err instanceof Error ? err.message : 'Không thể tải dữ liệu từ Supercell API.')
     } finally {
       setIsSyncingApi(false)
     }
   }
 
-  // Tự động gọi Supercell API khi truy cập trang web hoặc refresh để luôn có dữ liệu mới nhất
+  // Tự động gọi Supercell API khi truy cập trang web hoặc refresh (nếu đã có playerTag)
   useEffect(() => {
-    const savedTag = localStorage.getItem('coc_player_tag') || playerTag || 'G9GRJCRPQ'
-    handleSyncCocApi(savedTag)
+    const savedTag = localStorage.getItem('coc_player_tag') || playerTag
+    if (savedTag) {
+      handleSyncCocApi(savedTag)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -601,7 +591,7 @@ function App() {
       <ApiTesterModal
         isOpen={isApiTesterOpen}
         onClose={() => setIsApiTesterOpen(false)}
-        defaultTag={stats.myPlayer?.name && stats.myPlayer.name !== 'Tài khoản của tôi' && stats.myPlayer.name.startsWith('#') ? stats.myPlayer.name : ''}
+        defaultTag={playerTag ? (playerTag.startsWith('#') ? playerTag : `#${playerTag}`) : (stats.myPlayer?.playerTag || '')}
       />
 
       {/* Vercel Web Analytics */}

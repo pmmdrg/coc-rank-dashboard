@@ -23,9 +23,19 @@ export function SeasonMetaForm({
   const currentPeriodInfo = parseSeasonDateRange(season.leagueSeasonId, season.startsAt)
 
   // Select box chỉ có đúng 2 giá trị: Mùa giải hiện tại và Mùa giải ngay trước đó
-  const seasonOptions = seasons.slice(0, 2).map((s, idx) => {
+  const validSeasons = seasons.filter(
+    (s) => s.players.length > 0 || (s.league && s.league !== '--') || s.leagueSeasonId,
+  )
+  const effectiveSeasons = validSeasons.length > 0 ? validSeasons : seasons
+  const seasonOptions = effectiveSeasons.slice(0, 2).map((s, idx) => {
     const period = parseSeasonDateRange(s.leagueSeasonId, s.startsAt)
     const isCurrent = idx === 0
+    if (!period.displayPeriod || period.displayPeriod === '--') {
+      return {
+        index: idx,
+        label: 'Chưa có dữ liệu',
+      }
+    }
     return {
       index: idx,
       label: isCurrent
@@ -65,15 +75,23 @@ export function SeasonMetaForm({
             </div>
           </div>
           <div className="mt-2.5 flex h-9 items-center gap-2 font-semibold text-slate-900 dark:text-slate-100">
-            <img
-              src={season.leagueIconUrl || getLeagueIconUrl(season.league)}
-              alt={season.league}
-              referrerPolicy="no-referrer"
-              className="h-7 w-7 shrink-0 object-contain drop-shadow-xs"
-            />
-            <span className="truncate text-base font-bold tracking-tight text-slate-900 dark:text-slate-100">
-              {formatLeagueName(season.league) || 'Legend League'}
-            </span>
+            {season.league && season.league !== '--' ? (
+              <>
+                <img
+                  src={season.leagueIconUrl || getLeagueIconUrl(season.league)}
+                  alt={season.league}
+                  referrerPolicy="no-referrer"
+                  className="h-7 w-7 shrink-0 object-contain drop-shadow-xs"
+                />
+                <span className="truncate text-base font-bold tracking-tight text-slate-900 dark:text-slate-100">
+                  {formatLeagueName(season.league) || 'Legend League'}
+                </span>
+              </>
+            ) : (
+              <span className="text-base font-bold tracking-tight text-slate-400 dark:text-slate-500">
+                --
+              </span>
+            )}
           </div>
         </div>
 
@@ -85,7 +103,11 @@ export function SeasonMetaForm({
                 Thời gian mùa giải
               </span>
             </div>
-            {onUpdateSeasonMeta ? (
+            {season.players.length === 0 ? (
+              <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500">
+                Thăng: -- • Xuống: --
+              </span>
+            ) : onUpdateSeasonMeta ? (
               <div className="flex items-center gap-2 text-[11px] shrink-0">
                 <label className="flex items-center gap-1 font-semibold text-emerald-600 dark:text-emerald-400" title="Số người thăng hạng ở top đầu">
                   <span>▲ Thăng:</span>
@@ -117,7 +139,7 @@ export function SeasonMetaForm({
           <div className="mt-2.5 flex h-9 items-center gap-2">
             <Calendar className="h-4.5 w-4.5 shrink-0 text-sky-500" aria-hidden="true" />
             <span className="text-sm font-semibold tracking-tight text-slate-800 dark:text-slate-100">
-              {currentPeriodInfo.displayPeriod}
+              {currentPeriodInfo.displayPeriod || '--'}
             </span>
           </div>
         </div>

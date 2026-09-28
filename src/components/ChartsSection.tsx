@@ -53,78 +53,82 @@ function PercentagePieChart({
           {title}
         </h3>
         <span className="text-xs text-slate-400 dark:text-slate-500 shrink-0 font-medium">
-          Tổng: {numberFormatter(total)}
+          Tổng: {hasData ? numberFormatter(total) : '--'}
         </span>
       </div>
 
-      <div className="my-auto flex flex-col sm:flex-row items-center gap-3.5 sm:gap-4 pt-3 sm:pt-4">
-        <div className="relative flex shrink-0 items-center justify-center">
-          <svg viewBox="0 0 42 42" className="h-32 w-32 sm:h-34 sm:w-34 -rotate-90 drop-shadow-sm">
-            <circle
-              cx="21"
-              cy="21"
-              r="15.9"
-              fill="transparent"
-              stroke="currentColor"
-              className="text-slate-200/80 dark:text-slate-800"
-              strokeWidth="8.5"
-            />
-            {hasData
-              ? slices.map((slice) => (
-                  <circle
-                    key={slice.label}
-                    cx="21"
-                    cy="21"
-                    r="15.9"
-                    fill="transparent"
-                    stroke={slice.color}
-                    strokeWidth="8.5"
-                    strokeDasharray={slice.dashArray}
-                    strokeDashoffset={slice.dashOffset}
-                    style={{
-                      transition:
-                        'stroke-dasharray 450ms ease, stroke-dashoffset 450ms ease, stroke 300ms ease',
-                    }}
-                  />
-                ))
-              : null}
-          </svg>
-          {/* Tâm Donut */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
-            <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500">Tỷ lệ</span>
-            <span className="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-100">
-              {hasData ? '100%' : '0%'}
-            </span>
+      {!hasData ? (
+        <div className="my-auto flex flex-col items-center justify-center py-10 text-center text-sm font-medium text-slate-400 dark:text-slate-500">
+          Chưa có dữ liệu
+        </div>
+      ) : (
+        <div className="my-auto flex flex-col sm:flex-row items-center gap-3.5 sm:gap-4 pt-3 sm:pt-4">
+          <div className="relative flex shrink-0 items-center justify-center">
+            <svg viewBox="0 0 42 42" className="h-32 w-32 sm:h-34 sm:w-34 -rotate-90 drop-shadow-sm">
+              <circle
+                cx="21"
+                cy="21"
+                r="15.9"
+                fill="transparent"
+                stroke="currentColor"
+                className="text-slate-200/80 dark:text-slate-800"
+                strokeWidth="8.5"
+              />
+              {slices.map((slice) => (
+                <circle
+                  key={slice.label}
+                  cx="21"
+                  cy="21"
+                  r="15.9"
+                  fill="transparent"
+                  stroke={slice.color}
+                  strokeWidth="8.5"
+                  strokeDasharray={slice.dashArray}
+                  strokeDashoffset={slice.dashOffset}
+                  style={{
+                    transition:
+                      'stroke-dasharray 450ms ease, stroke-dashoffset 450ms ease, stroke 300ms ease',
+                  }}
+                />
+              ))}
+            </svg>
+            {/* Tâm Donut */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+              <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500">Tỷ lệ</span>
+              <span className="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-100">
+                100%
+              </span>
+            </div>
+          </div>
+
+          <div className="w-full min-w-0 flex-1 space-y-2">
+            {values.map((item) => {
+              const percent = ((item.value / total) * 100).toFixed(1)
+
+              return (
+                <div key={item.label} className="flex items-center justify-between gap-1.5 text-xs sm:text-[13px]">
+                  <span className="flex min-w-0 items-center gap-1.5 text-slate-700 dark:text-slate-300">
+                    <span
+                      className="h-2.5 w-2.5 shrink-0 rounded-full ring-2 ring-white/50 dark:ring-slate-900/50"
+                      style={{ backgroundColor: item.color }}
+                      aria-hidden="true"
+                    />
+                    <span className="truncate font-medium" title={item.label}>{item.label}</span>
+                  </span>
+                  <span className="font-bold text-slate-900 dark:text-slate-50 shrink-0 whitespace-nowrap pl-1">
+                    {numberFormatter(item.value)}
+                    {showPercentage && (
+                      <span className="ml-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                        ({percent}%)
+                      </span>
+                    )}
+                  </span>
+                </div>
+              )
+            })}
           </div>
         </div>
-
-        <div className="w-full min-w-0 flex-1 space-y-2">
-          {values.map((item) => {
-            const percent = total > 0 ? ((item.value / total) * 100).toFixed(1) : '0.0'
-
-            return (
-              <div key={item.label} className="flex items-center justify-between gap-1.5 text-xs sm:text-[13px]">
-                <span className="flex min-w-0 items-center gap-1.5 text-slate-700 dark:text-slate-300">
-                  <span
-                    className="h-2.5 w-2.5 shrink-0 rounded-full ring-2 ring-white/50 dark:ring-slate-900/50"
-                    style={{ backgroundColor: item.color }}
-                    aria-hidden="true"
-                  />
-                  <span className="truncate font-medium" title={item.label}>{item.label}</span>
-                </span>
-                <span className="font-bold text-slate-900 dark:text-slate-50 shrink-0 whitespace-nowrap pl-1">
-                  {numberFormatter(item.value)}
-                  {showPercentage && (
-                    <span className="ml-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                      ({percent}%)
-                    </span>
-                  )}
-                </span>
-              </div>
-            )
-          })}
-        </div>
-      </div>
+      )}
     </div>
   )
 }
@@ -135,10 +139,15 @@ export function ChartsSection({
   ratingData,
   myPlayerName,
 }: ChartsSectionProps) {
+  const comparisonTitle =
+    myPlayerName && myPlayerName !== '--'
+      ? `Tỷ lệ đối thủ so với ${myPlayerName}`
+      : 'Tỷ lệ đối thủ so với tôi'
+
   return (
     <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       <PercentagePieChart
-        title={`Tỷ lệ đối thủ so với ${myPlayerName}`}
+        title={comparisonTitle}
         values={comparisonData}
       />
       <PercentagePieChart

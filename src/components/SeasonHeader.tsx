@@ -68,7 +68,9 @@ export function SeasonHeader({
             </span>
           </div>
           <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1.5 flex-wrap">
-            <span className="font-medium text-slate-700 dark:text-slate-200">{myPlayerName}</span>
+            <span className="font-medium text-slate-700 dark:text-slate-200">
+              {myPlayerName && myPlayerName !== '--' ? myPlayerName : '--'}
+            </span>
             {playerTag ? (
               <span className="text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400">
                 ({playerTag.startsWith('#') ? playerTag : `#${playerTag}`})
@@ -76,13 +78,19 @@ export function SeasonHeader({
             ) : null}
             <span>•</span>
             <span className="inline-flex items-center gap-1.5 font-semibold text-slate-700 dark:text-slate-200">
-              <img
-                src={leagueIconUrl || getLeagueIconUrl(league)}
-                alt={displayLeague}
-                referrerPolicy="no-referrer"
-                className="h-5 w-5 shrink-0 object-contain drop-shadow-xs"
-              />
-              <span>{displayLeague}</span>
+              {league && league !== '--' ? (
+                <>
+                  <img
+                    src={leagueIconUrl || getLeagueIconUrl(league)}
+                    alt={displayLeague}
+                    referrerPolicy="no-referrer"
+                    className="h-5 w-5 shrink-0 object-contain drop-shadow-xs"
+                  />
+                  <span>{displayLeague}</span>
+                </>
+              ) : (
+                <span>Giải đấu: --</span>
+              )}
             </span>
           </p>
         </div>
@@ -223,8 +231,13 @@ export function SeasonHeader({
                   onSyncCocApi(playerTag)
                 }
               }}
-              placeholder="G9GRJCRPQ"
-              title="Player Tag của bạn (nhấn Enter để chuyển tài khoản)"
+              onBlur={() => {
+                if (playerTag.trim().length >= 3 && onSyncCocApi) {
+                  onSyncCocApi(playerTag)
+                }
+              }}
+              placeholder="Ví dụ: ABC123"
+              title="Nhập Player Tag của bạn (nhấn Enter để tải dữ liệu)"
               className="h-8 w-28 sm:w-32 rounded bg-white/90 pl-5 pr-7 font-mono text-xs font-bold tracking-wider text-slate-900 transition-all focus:bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:bg-slate-900/90 dark:text-slate-100 dark:focus:bg-slate-900"
             />
             {isSyncingApi && (

@@ -23,7 +23,7 @@ type EndpointCategory =
   | 'league_seasons'
   | 'season_rankings'
 
-export function ApiTesterModal({ isOpen, onClose, defaultTag = 'G9GRJCRPQ' }: ApiTesterModalProps) {
+export function ApiTesterModal({ isOpen, onClose, defaultTag = '' }: ApiTesterModalProps) {
   const [selectedEndpoint, setSelectedEndpoint] = useState<EndpointCategory>('leaguegroup')
 
   // Parameter states
@@ -290,7 +290,7 @@ export function ApiTesterModal({ isOpen, onClose, defaultTag = 'G9GRJCRPQ' }: Ap
                       type="text"
                       value={groupPlayerTag}
                       onChange={(e) => setGroupPlayerTag(e.target.value.toUpperCase())}
-                      placeholder="#G9GRJCRPQ"
+                      placeholder="#Ví dụ: #ABC123"
                       className="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 font-mono text-xs uppercase text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                     />
                   </div>

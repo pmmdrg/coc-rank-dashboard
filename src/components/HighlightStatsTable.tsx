@@ -290,6 +290,24 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
   const showBest = filterMode === 'all' || filterMode === 'best'
   const showWorst = filterMode === 'all' || filterMode === 'worst'
 
+  if (players.length === 0) {
+    return (
+      <section>
+        <div className="glass-panel rounded-xl p-5 shadow-sm space-y-4">
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-amber-500" aria-hidden="true" />
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-200">
+              Thống kê nổi bật & kỷ lục mùa giải
+            </h3>
+          </div>
+          <div className="py-8 text-center text-sm font-medium text-slate-400 dark:text-slate-500">
+            Chưa có dữ liệu
+          </div>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <section>
       <div className="glass-panel rounded-xl p-5 shadow-sm space-y-4">

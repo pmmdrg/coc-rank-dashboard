@@ -432,7 +432,9 @@ export function PlayerTable({
             )}
           </div>
           <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-            Dữ liệu Tên, Lượt đánh, Lượt thủ, Cúp được đồng bộ trực tiếp từ Supercell API. Dùng <kbd className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[10px] dark:bg-slate-800">Tab</kbd> (sang % tiếp theo) / <kbd className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[10px] dark:bg-slate-800">Enter</kbd> (xuống hàng dưới) để nhập tỉ lệ % phá huỷ.
+            {season.players.length === 0
+              ? 'Dữ liệu người chơi sẽ được tự động tải từ Supercell API hoặc từ file dữ liệu.'
+              : 'Dữ liệu Tên, Lượt đánh, Lượt thủ, Cúp được đồng bộ trực tiếp từ Supercell API. Dùng Tab (sang % tiếp theo) / Enter (xuống hàng dưới) để nhập tỉ lệ % phá huỷ.'}
           </p>
         </div>
       </div>
@@ -465,7 +467,7 @@ export function PlayerTable({
           <tbody className="divide-y divide-slate-200/50 dark:divide-slate-800/60">
             {effectivePlayers.length === 0 ? (
               <tr>
-                <td colSpan={9} className="py-12 text-center text-sm font-medium text-slate-500 dark:text-slate-400">
+                <td colSpan={9} className="py-12 text-center text-sm font-medium text-slate-400 dark:text-slate-500">
                   {filterWarnedOnly ? (
                     <div className="flex flex-col items-center justify-center gap-1.5">
                       <span className="text-base">🎉 Không có người chơi nào có dữ liệu bất thường!</span>
@@ -474,11 +476,11 @@ export function PlayerTable({
                         onClick={() => setFilterWarnedOnly(false)}
                         className="mt-1 text-xs text-blue-600 hover:underline dark:text-sky-400"
                       >
-                        Quay lại xem toàn bộ 100 người chơi
+                        Quay lại xem toàn bộ danh sách
                       </button>
                     </div>
                   ) : (
-                    'Không có người chơi nào trong bảng.'
+                    'Chưa có dữ liệu'
                   )}
                 </td>
               </tr>

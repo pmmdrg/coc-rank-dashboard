@@ -84,13 +84,16 @@ function mapMembersToPlayers(
 
 /**
  * Đồng bộ dữ liệu bảng đấu Ranked (mùa hiện tại & mùa ngay trước đó) từ Supercell API
- * @param inputTag Tag người chơi (mặc định #G9GRJCRPQ)
+ * @param inputTag Tag người chơi
  */
 export async function fetchRankedSeasonData(
-  inputTag: string = 'G9GRJCRPQ',
+  inputTag: string,
   existingPlayersMap?: Map<string, Player>,
 ): Promise<SyncResult> {
   const cleanTag = inputTag.trim().toUpperCase()
+  if (!cleanTag) {
+    throw new Error('Vui lòng nhập Player Tag để tải dữ liệu bảng đấu.')
+  }
   const formattedTag = cleanTag.startsWith('#') ? cleanTag : `#${cleanTag}`
 
   // 1. Lấy thông tin người chơi & group metadata
@@ -193,7 +196,7 @@ export async function fetchRankedSeasonData(
     season: currentSeason,
     currentSeason,
     previousSeason,
-    playerName: playerData.name || 'Manax',
+    playerName: playerData.name || '',
     playerTag: formattedTag,
     groupTag,
     seasonId,
@@ -208,6 +211,10 @@ export function parseSeasonDateRange(
   seasonId?: string | number,
   fallbackStartsAt?: string,
 ): { startsAt: string; endsAt: string; displayPeriod: string } {
+  if (!seasonId && !fallbackStartsAt) {
+    return { startsAt: '', endsAt: '', displayPeriod: '--' }
+  }
+
   let startDate: Date | null = null
 
   if (fallbackStartsAt) {
@@ -236,7 +243,7 @@ export function parseSeasonDateRange(
   }
 
   if (!startDate || isNaN(startDate.getTime())) {
-    startDate = new Date(2026, 8, 22)
+    return { startsAt: '', endsAt: '', displayPeriod: '--' }
   }
 
   // Ngày kết thúc luôn bằng ngày bắt đầu + 6 ngày (ví dụ 22/09 -> 28/09, 15/09 -> 21/09)

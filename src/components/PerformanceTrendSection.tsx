@@ -69,7 +69,21 @@ export function PerformanceTrendSection({
   }, [seasons, myPlayerName])
 
   if (history.length === 0) {
-    return null
+    return (
+      <section className="glass-panel rounded-xl shadow-sm transition-all">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/60 p-4 sm:p-5 dark:border-slate-700/60">
+          <div className="flex items-center gap-2.5">
+            <TrendingUp className="h-5 w-5 text-sky-500" />
+            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
+              Theo dõi phong độ qua các mùa giải
+            </h2>
+          </div>
+        </div>
+        <div className="p-8 text-center text-sm font-medium text-slate-400 dark:text-slate-500">
+          Chưa có dữ liệu
+        </div>
+      </section>
+    )
   }
 
   const latestPoint = history[history.length - 1]
