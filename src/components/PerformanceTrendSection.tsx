@@ -117,13 +117,17 @@ export function PerformanceTrendSection({
       return cur.trophies >= best.trophies ? cur : best
     }, validPlacementSeasons[0] || latest)
 
-    // 2. Kỷ lục cúp: Ưu tiên số cúp cao nhất, nếu hòa cúp thì ưu tiên mùa ở giải đấu cao hơn
+    // 2. Kỷ lục cúp: Ưu tiên giải đấu cao hơn trước, sau đó mới đến số cúp (tương tự quy tắc kỷ lục hạng)
     const bestCupsSeason = chronologicalHistory.reduce((best, cur) => {
       if (!best) return cur
+      // Ưu tiên giải đấu cấp cao hơn trước (tierNumber cao hơn)
+      if (cur.tierNumber > best.tierNumber) return cur
+      if (cur.tierNumber < best.tierNumber) return best
+      // Trong cùng một giải đấu: Số cúp cao hơn là tốt hơn
       if (cur.trophies > best.trophies) return cur
       if (cur.trophies < best.trophies) return best
-      if (cur.tierNumber > best.tierNumber) return cur
-      return best
+      // Nếu cùng số cúp trong cùng một giải đấu: Chọn mùa có thứ hạng tốt hơn hoặc mới hơn
+      return cur.placement <= best.placement ? cur : best
     }, chronologicalHistory[0])
 
     const totalWins = chronologicalHistory.reduce((acc, s) => acc + s.attackWins, 0)
