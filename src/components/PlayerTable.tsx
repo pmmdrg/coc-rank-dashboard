@@ -10,7 +10,6 @@ interface PlayerTableProps {
   stats: RankingStats
   isSyncing?: boolean
   onSyncCocApi?: () => void
-  onSelectMyPlayer: (playerId: string) => void
   onUpdatePlayerField: (playerId: string, field: keyof Player, value: string | number) => void
 }
 
@@ -124,7 +123,6 @@ export function PlayerTable({
   stats,
   isSyncing = false,
   onSyncCocApi,
-  onSelectMyPlayer,
   onUpdatePlayerField,
 }: PlayerTableProps) {
   const [frozenOrderIds, setFrozenOrderIds] = useState<string[] | null>(null)
@@ -463,7 +461,6 @@ export function PlayerTable({
             <tr>
               <th className="w-[136px] min-w-[136px] max-w-[136px] px-2.5 py-2.5 whitespace-nowrap">Rank</th>
               <th className="w-56 min-w-[170px] max-w-[240px] px-2 py-2.5">Tên người chơi</th>
-              <th className="w-11 min-w-[40px] px-1 py-2.5 text-center">Tôi</th>
               <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap">Lượt đánh</th>
               <th className="w-22 min-w-[84px] px-1.5 py-2.5 whitespace-nowrap text-center">
                 <div className="leading-tight">
@@ -486,7 +483,7 @@ export function PlayerTable({
           <tbody className="divide-y divide-slate-200/50 dark:divide-slate-800/60">
             {effectivePlayers.length === 0 ? (
               <tr>
-                <td colSpan={10} className="py-12 text-center text-sm font-medium text-slate-500 dark:text-slate-400">
+                <td colSpan={9} className="py-12 text-center text-sm font-medium text-slate-500 dark:text-slate-400">
                   {filterWarnedOnly ? (
                     <div className="flex flex-col items-center justify-center gap-1.5">
                       <span className="text-base">🎉 Không có người chơi nào có dữ liệu bất thường!</span>
@@ -505,7 +502,12 @@ export function PlayerTable({
               </tr>
             ) : (
               effectivePlayers.map((player, index) => {
-                const isMyPlayer = player.id === season.myPlayerId
+                const targetMyTag = (season.myPlayerId || '').trim().toUpperCase().replace(/^#/, '')
+                const isMyPlayer = Boolean(
+                  targetMyTag &&
+                  ((player.id || '').toUpperCase().replace(/^#/, '') === targetMyTag ||
+                   (player.playerTag || '').toUpperCase().replace(/^#/, '') === targetMyTag)
+                )
                 const canPassMe = Boolean(
                   stats.myPlayer &&
                     !isMyPlayer &&
@@ -531,7 +533,6 @@ export function PlayerTable({
                       isDemotionZone={isDemotionZone}
                       isHighlighted={highlightedPlayerId === player.id}
                       rankJump={rankJumpInfo?.playerId === player.id ? rankJumpInfo : null}
-                      onSelectMyPlayer={() => onSelectMyPlayer(player.id)}
                       onUpdateField={(field, value) => handleFieldChange(player.id, field, value)}
                       onFinishEditing={() => handleFinishEditing(player.id)}
                       setRowRef={(el) => setPlayerRowRef(player.id, el)}
@@ -540,7 +541,7 @@ export function PlayerTable({
                     {/* Vạch Phân Cách Thăng Hạng */}
                     {isAfterPromotionLine && (
                       <tr key="divider-promotion" className="select-none animate-fade-in">
-                        <td colSpan={10} className="p-0 border-y-2 border-emerald-500 bg-emerald-500/20 dark:bg-emerald-950/70">
+                        <td colSpan={9} className="p-0 border-y-2 border-emerald-500 bg-emerald-500/20 dark:bg-emerald-950/70">
                           <div className="flex items-center justify-between px-4 py-2 text-xs font-black text-emerald-800 dark:text-emerald-300">
                             <div className="flex items-center gap-2">
                               <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-emerald-500 text-[10px] text-white">
@@ -559,7 +560,7 @@ export function PlayerTable({
                     {/* Vạch Phân Cách Xuống Hạng */}
                     {isBeforeDemotionLine && (
                       <tr key="divider-demotion" className="select-none animate-fade-in">
-                        <td colSpan={10} className="p-0 border-y-2 border-rose-500 bg-rose-500/20 dark:bg-rose-950/70">
+                        <td colSpan={9} className="p-0 border-y-2 border-rose-500 bg-rose-500/20 dark:bg-rose-950/70">
                           <div className="flex items-center justify-between px-4 py-2 text-xs font-black text-rose-800 dark:text-rose-300">
                             <div className="flex items-center gap-2">
                               <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-rose-500 text-[10px] text-white">

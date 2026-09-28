@@ -239,7 +239,12 @@ export function normalizeSeason(season: Season): RankedSeason {
 export function getRankingStats(season: Season): RankingStats {
   const rankedSeason = normalizeSeason(season)
   const maxAttacks = rankedSeason.maxAttacks ?? 24
-  const myPlayer = rankedSeason.players.find((player) => player.id === season.myPlayerId)
+  const targetMyTag = (season.myPlayerId || '').trim().toUpperCase().replace(/^#/, '')
+  const myPlayer = rankedSeason.players.find((player) => {
+    const pId = (player.id || '').toUpperCase().replace(/^#/, '')
+    const pTag = (player.playerTag || '').toUpperCase().replace(/^#/, '')
+    return Boolean(targetMyTag && (pId === targetMyTag || pTag === targetMyTag))
+  })
 
   const ratingCounts = rankedSeason.players.reduce(
     (counts, player) => {

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { AlertTriangle, Shield } from 'lucide-react'
+import { AlertTriangle } from 'lucide-react'
 import type { Player, RatingCategory } from '../types'
 import { calculatePlayerRating, getCupsPerRemainingDefense, ratingLabels } from '../lib/ranking'
 import { validatePlayer } from '../lib/validation'
@@ -14,7 +14,6 @@ interface PlayerRowProps {
   isDemotionZone?: boolean
   isHighlighted?: boolean
   rankJump?: { fromRank: number; toRank: number } | null
-  onSelectMyPlayer: () => void
   onUpdateField: (field: keyof Player, value: string | number) => void
   onFinishEditing?: () => void
   setRowRef: (element: HTMLTableRowElement | null) => void
@@ -46,7 +45,6 @@ export function PlayerRow({
   isDemotionZone = false,
   isHighlighted = false,
   rankJump = null,
-  onSelectMyPlayer,
   onUpdateField,
   onFinishEditing,
   setRowRef,
@@ -368,22 +366,6 @@ export function PlayerRow({
         </div>
       </td>
 
-      {/* Nút đánh dấu Tài khoản của tôi */}
-      <td className="px-1 py-2 text-center align-middle">
-        <button
-          type="button"
-          tabIndex={-1}
-          onClick={onSelectMyPlayer}
-          className={`inline-flex h-9 w-9 items-center justify-center rounded-md border transition-all ${
-            isMyPlayer
-              ? 'border-blue-500 bg-blue-500 text-white shadow-sm dark:bg-sky-500 dark:border-sky-400'
-              : 'border-slate-300/60 bg-white/50 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:border-slate-700/60 dark:bg-slate-800/50 dark:hover:text-sky-400'
-          }`}
-          title={isMyPlayer ? 'Tài khoản của bạn' : 'Chọn làm tài khoản của tôi'}
-        >
-          <Shield className="h-4 w-4" aria-hidden="true" />
-        </button>
-      </td>
 
       {/* Số lượt đánh (Đã công = thắng + thua) */}
       <td className="px-2 py-2 align-middle">

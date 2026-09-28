@@ -205,6 +205,19 @@ function App() {
     return () => clearTimeout(timer)
   }, [rankedSeason, document, currentAdapter])
 
+  // Đảm bảo vị trí "Tôi" trong bảng luôn được quyết định dựa vào playerTag người dùng đã nhập
+  useEffect(() => {
+    if (!playerTag) return
+    const cleanTag = playerTag.replace(/^#/, '').trim().toUpperCase()
+    const currentClean = (season.myPlayerId || '').replace(/^#/, '').trim().toUpperCase()
+    if (cleanTag && currentClean !== cleanTag) {
+      updateCurrentSeason({
+        ...season,
+        myPlayerId: `#${cleanTag}`,
+      })
+    }
+  }, [playerTag, season])
+
   const comparisonChartData = [
     {
       label: `Có thể vượt ${myPlayerName}`,
@@ -410,13 +423,6 @@ function App() {
     })
   }
 
-  function handleSelectMyPlayer(playerId: string) {
-    updateCurrentSeason({
-      ...rankedSeason,
-      myPlayerId: playerId,
-    })
-  }
-
   function handleUpdateSeasonMeta(field: keyof Season, value: string | number) {
     updateCurrentSeason({
       ...rankedSeason,
@@ -425,9 +431,16 @@ function App() {
   }
 
   function handlePlayerTagChange(tag: string) {
-    const clean = tag.replace(/^#/, '').trim()
+    const clean = tag.replace(/^#/, '').trim().toUpperCase()
     setPlayerTag(clean)
     localStorage.setItem('coc_player_tag', clean)
+    const formatted = `#${clean}`
+    if (rankedSeason.myPlayerId !== formatted && rankedSeason.myPlayerId !== clean) {
+      updateCurrentSeason({
+        ...rankedSeason,
+        myPlayerId: formatted,
+      })
+    }
   }
 
   async function handleSyncCocApi(targetTag?: string) {
@@ -541,7 +554,6 @@ function App() {
           stats={stats}
           isSyncing={isSyncingApi}
           onSyncCocApi={handleSyncCocApi}
-          onSelectMyPlayer={handleSelectMyPlayer}
           onUpdatePlayerField={handleUpdatePlayerField}
         />
       </main>
