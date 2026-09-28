@@ -595,15 +595,6 @@ function App() {
           myPlayerName={myPlayerName}
         />
 
-        {/* Thông báo biến động thứ hạng kể từ lần gần nhất lấy thứ hạng */}
-        {rankChangesSnapshot && (
-          <RankChangesSection
-            snapshot={rankChangesSnapshot}
-            myPlayerId={rankedSeason.myPlayerId}
-            myPlayerName={myPlayerName}
-          />
-        )}
-
         {/* Theo dõi phong độ qua các mùa giải & Kỷ lục cá nhân */}
         <PerformanceTrendSection
           leagueHistory={leagueHistory}
@@ -634,6 +625,15 @@ function App() {
           players={rankedSeason.players}
           myPlayerId={rankedSeason.myPlayerId}
         />
+
+        {/* Thông báo biến động thứ hạng kể từ lần gần nhất lấy thứ hạng */}
+        {rankChangesSnapshot && (
+          <RankChangesSection
+            snapshot={rankChangesSnapshot}
+            myPlayerId={rankedSeason.myPlayerId}
+            myPlayerName={myPlayerName}
+          />
+        )}
 
         {/* Bảng danh sách người chơi chi tiết */}
         <PlayerTable
