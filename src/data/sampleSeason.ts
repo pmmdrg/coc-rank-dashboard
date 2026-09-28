@@ -4,7 +4,7 @@ export const sampleSeason: Season = {
   "league": "Legend III",
   "leagueIconUrl": "https://api-assets.clashofclans.com/leaguetiers/125/BvEu_UE53UzADvTRiU9AdyOrlvb1RqvBmMau_uX6xm0.png",
   "seasonName": "Bảng đấu Legend III (#8JC9LJU)",
-  "startsAt": "2026-09-21",
+  "startsAt": "2026-09-22",
   "endsAt": "2026-09-28",
   "maxAttacks": 24,
   "maxDefenses": 24,

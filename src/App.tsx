@@ -13,7 +13,12 @@ import {
 import { getLeagueIconUrl } from './lib/leagueIcons'
 import { createFileSystemAdapter } from './storage/fileSystemAdapter'
 import { createGoogleDriveAdapter } from './storage/googleDriveAdapter'
-import { fetchRankedSeasonData } from './lib/cocApi'
+import {
+  fetchLeagueSeasonList,
+  fetchRankedSeasonData,
+  fetchSeasonRankings,
+  type LeagueSeasonOption,
+} from './lib/cocApi'
 import type { AutoSaveStatus, Player, RatingCategory, Season, StorageDocument, StorageFormat, StorageSource } from './types'
 
 import { ChartsSection } from './components/ChartsSection'
@@ -139,9 +144,22 @@ function App() {
     return localStorage.getItem('coc_player_tag') || 'G9GRJCRPQ'
   })
   const [document, setDocument] = useState<StorageDocument>(loadInitialDocument)
+  const [availableApiSeasons, setAvailableApiSeasons] = useState<LeagueSeasonOption[]>([])
+  const [isLoadingSeasonRankings, setIsLoadingSeasonRankings] = useState(false)
   const [status, setStatus] = useState('Dữ liệu đã sẵn sàng.')
   const [error, setError] = useState('')
   const [autoSaveStatus, setAutoSaveStatus] = useState<AutoSaveStatus>('draft')
+
+  // Tự động tải danh sách các mùa giải từ Supercell API (v2 trong 30 ngày)
+  useEffect(() => {
+    fetchLeagueSeasonList()
+      .then((list) => {
+        setAvailableApiSeasons(list)
+      })
+      .catch((err) => {
+        console.warn('Không thể tải danh sách mùa giải API:', err)
+      })
+  }, [])
 
   const localAdapter = useMemo(() => createFileSystemAdapter(), [])
   const driveAdapter = useMemo(() => createGoogleDriveAdapter(), [])
@@ -280,6 +298,40 @@ function App() {
       season: targetSeason,
     }))
     setStatus(`Đang xem mùa giải: ${targetSeason.seasonName}`)
+  }
+
+  async function handleSelectSeasonById(targetSeasonId: string) {
+    // 1. Kiểm tra nếu mùa giải đã có trong document.seasons
+    const existingIdx = document.seasons.findIndex(
+      (s, idx) => (s.leagueSeasonId && s.leagueSeasonId === targetSeasonId) || `doc-${idx}` === targetSeasonId,
+    )
+    if (existingIdx >= 0) {
+      handleSelectSeasonIndex(existingIdx)
+      return
+    }
+
+    // 2. Nếu là mùa v2 từ Supercell API, tải bảng xếp hạng
+    try {
+      setIsLoadingSeasonRankings(true)
+      setError('')
+      setStatus(`Đang tải dữ liệu mùa giải ${targetSeasonId} từ Supercell API...`)
+      const newSeason = await fetchSeasonRankings(targetSeasonId, '29000022', playerTag)
+      const normalized = normalizeSeason(newSeason)
+      const nextSeasons = [...document.seasons, normalized]
+      const nextIndex = nextSeasons.length - 1
+
+      setDocument((current) => ({
+        ...current,
+        seasons: nextSeasons,
+        activeSeasonIndex: nextIndex,
+        season: normalized,
+      }))
+      setStatus(`Đã tải thành công mùa giải ${normalized.seasonName} (${normalized.players.length} người chơi) từ Supercell API!`)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Tải bảng xếp hạng mùa giải thất bại.')
+    } finally {
+      setIsLoadingSeasonRankings(false)
+    }
   }
 
   function handleCreateSeason(data: {
@@ -515,7 +567,10 @@ function App() {
           season={rankedSeason}
           seasons={document.seasons.map(normalizeSeason)}
           activeSeasonIndex={document.activeSeasonIndex}
+          availableApiSeasons={availableApiSeasons}
+          isLoadingSeason={isLoadingSeasonRankings}
           onSelectSeasonIndex={handleSelectSeasonIndex}
+          onSelectSeasonId={handleSelectSeasonById}
           onOpenCreateModal={() => setIsCreateSeasonModalOpen(true)}
           onUpdateSeasonMeta={handleUpdateSeasonMeta}
         />

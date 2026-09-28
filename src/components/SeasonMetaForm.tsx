@@ -1,59 +1,80 @@
-import { Calendar, CalendarPlus } from 'lucide-react'
+import { Calendar, CalendarPlus, Loader2 } from 'lucide-react'
 import type { Season } from '../types'
 import { formatLeagueName } from '../lib/ranking'
 import { getLeagueIconUrl } from '../lib/leagueIcons'
+import { parseSeasonDateRange, type LeagueSeasonOption } from '../lib/cocApi'
 
 interface SeasonMetaFormProps {
   season: Season
   seasons: Season[]
   activeSeasonIndex: number
+  availableApiSeasons?: LeagueSeasonOption[]
+  isLoadingSeason?: boolean
   onSelectSeasonIndex: (index: number) => void
+  onSelectSeasonId?: (seasonId: string) => void
   onOpenCreateModal: () => void
   onUpdateSeasonMeta?: (field: keyof Season, value: string | number) => void
-}
-
-function formatDate(value: string) {
-  if (!value) return 'Chưa đặt'
-  try {
-    return new Intl.DateTimeFormat('vi-VN', { dateStyle: 'medium' }).format(new Date(value))
-  } catch {
-    return value
-  }
-}
-
-function formatSeasonPeriod(startsAt?: string, endsAt?: string) {
-  if (!startsAt && !endsAt) return ''
-
-  const formatShort = (val?: string) => {
-    if (!val) return '...'
-    try {
-      return new Intl.DateTimeFormat('vi-VN', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-      }).format(new Date(val))
-    } catch {
-      return val
-    }
-  }
-
-  if (startsAt && endsAt) {
-    return `(${formatShort(startsAt)} - ${formatShort(endsAt)})`
-  }
-  if (startsAt) {
-    return `(Từ ${formatShort(startsAt)})`
-  }
-  return `(Đến ${formatShort(endsAt)})`
 }
 
 export function SeasonMetaForm({
   season,
   seasons,
   activeSeasonIndex,
+  availableApiSeasons = [],
+  isLoadingSeason = false,
   onSelectSeasonIndex,
+  onSelectSeasonId,
   onOpenCreateModal,
   onUpdateSeasonMeta,
 }: SeasonMetaFormProps) {
+  // Thời gian mùa giải luôn hiển thị từ ngày bắt đầu đến 6 ngày sau (ví dụ 22/09/2026 - 28/09/2026)
+  const currentPeriodInfo = parseSeasonDateRange(season.leagueSeasonId, season.startsAt)
+
+  // Xây dựng danh sách các mùa giải cho select box
+  // Kết hợp từ document.seasons (mùa hiện tại / bản nháp) và list season từ API (v2 trong 30 ngày)
+  const combinedOptions: { id: string; label: string; isApi?: boolean; docIndex?: number }[] = []
+  const seenIds = new Set<string>()
+
+  // 1. Các mùa trong document hiện tại
+  seasons.forEach((s, idx) => {
+    const sId = String(s.leagueSeasonId || `doc-${idx}`)
+    seenIds.add(sId)
+    const { displayPeriod } = parseSeasonDateRange(s.leagueSeasonId, s.startsAt)
+    let label = s.seasonName || `Mùa giải ${displayPeriod}`
+    if (!label.includes(displayPeriod)) {
+      label = `${label} (${displayPeriod})`
+    }
+    combinedOptions.push({
+      id: sId,
+      label,
+      docIndex: idx,
+    })
+  })
+
+  // 2. Các mùa giải v2 từ Supercell API (tối đa 30 ngày trước)
+  availableApiSeasons.forEach((apiOpt) => {
+    if (!seenIds.has(apiOpt.seasonId)) {
+      seenIds.add(apiOpt.seasonId)
+      combinedOptions.push({
+        id: apiOpt.seasonId,
+        label: apiOpt.label,
+        isApi: true,
+      })
+    }
+  })
+
+  const currentSelectedValue = String(season.leagueSeasonId || `doc-${activeSeasonIndex}`)
+
+  const handleSelectChange = (val: string) => {
+    const opt = combinedOptions.find((o) => o.id === val)
+    if (!opt) return
+    if (opt.docIndex !== undefined) {
+      onSelectSeasonIndex(opt.docIndex)
+    } else if (opt.isApi && onSelectSeasonId) {
+      onSelectSeasonId(opt.id)
+    }
+  }
+
   return (
     <div className="glass-panel rounded-xl p-4 sm:p-5 shadow-sm">
       <div className="mb-3 flex items-center justify-between">
@@ -68,7 +89,7 @@ export function SeasonMetaForm({
           )}
         </div>
         <span className="rounded-full bg-slate-500/10 px-2 py-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-          Tổng cộng: {seasons.length} mùa giải
+          Tổng cộng: {combinedOptions.length} mùa giải
         </span>
       </div>
 
@@ -86,9 +107,6 @@ export function SeasonMetaForm({
                 </span>
               )}
             </div>
-            <span className="rounded-md bg-blue-500/10 px-2 py-0.5 text-[11px] font-semibold text-blue-600 dark:bg-sky-500/10 dark:text-sky-400 shrink-0">
-              Tối đa: {season.maxAttacks ?? 24} đánh • {season.maxDefenses ?? 24} thủ
-            </span>
           </div>
           <div className="mt-2.5 flex h-9 items-center gap-2 font-semibold text-slate-900 dark:text-slate-100">
             <img
@@ -103,18 +121,13 @@ export function SeasonMetaForm({
           </div>
         </div>
 
-        {/* Cột 2: Thời gian mùa giải (có thể chỉnh sửa trực tiếp) & Vạch thăng/xuống hạng */}
+        {/* Cột 2: Thời gian mùa giải (chỉ hiển thị text từ ngày bắt đầu đến 6 ngày sau) & Vạch thăng/xuống hạng */}
         <div className="flex flex-col justify-between rounded-xl border border-slate-200/60 bg-white/40 p-3.5 backdrop-blur dark:border-slate-800 dark:bg-slate-900/40">
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <div className="flex items-center gap-1.5">
               <span className="text-xs font-medium text-slate-500 dark:text-slate-400 shrink-0">
                 Thời gian mùa giải
               </span>
-              {season.leagueSeasonId && (
-                <span className="rounded-md bg-sky-500/10 px-1.5 py-0.2 text-[10px] font-semibold text-sky-600 dark:bg-sky-400/10 dark:text-sky-400" title="Mùa giải Ranked của Supercell kéo dài 7 ngày (1 tuần)">
-                  Chu kỳ 7 ngày
-                </span>
-              )}
             </div>
             {onUpdateSeasonMeta ? (
               <div className="flex items-center gap-2 text-[11px] shrink-0">
@@ -145,40 +158,11 @@ export function SeasonMetaForm({
               </span>
             )}
           </div>
-          <div className="mt-2.5 flex items-start sm:items-center gap-2">
-            <Calendar className="mt-2.5 sm:mt-0 h-4 w-4 shrink-0 text-sky-500" aria-hidden="true" />
-            {onUpdateSeasonMeta ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 flex-1 min-w-0">
-                <div className="flex items-center gap-1.5 min-w-0">
-                  <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 shrink-0 sm:hidden">
-                    Từ:
-                  </span>
-                  <input
-                    type="date"
-                    value={season.startsAt || ''}
-                    onChange={(e) => onUpdateSeasonMeta('startsAt', e.target.value)}
-                    className="soft-field h-9 w-full min-w-0 rounded-lg px-2 text-xs font-semibold cursor-pointer"
-                    title="Chỉnh sửa ngày bắt đầu mùa giải"
-                  />
-                </div>
-                <div className="flex items-center gap-1.5 min-w-0">
-                  <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 shrink-0 sm:hidden">
-                    Đến:
-                  </span>
-                  <input
-                    type="date"
-                    value={season.endsAt || ''}
-                    onChange={(e) => onUpdateSeasonMeta('endsAt', e.target.value)}
-                    className="soft-field h-9 w-full min-w-0 rounded-lg px-2 text-xs font-semibold cursor-pointer"
-                    title="Chỉnh sửa ngày kết thúc mùa giải"
-                  />
-                </div>
-              </div>
-            ) : (
-              <span className="truncate text-sm font-semibold tracking-tight">
-                {formatDate(season.startsAt)} — {formatDate(season.endsAt)}
-              </span>
-            )}
+          <div className="mt-2.5 flex h-9 items-center gap-2">
+            <Calendar className="h-4.5 w-4.5 shrink-0 text-sky-500" aria-hidden="true" />
+            <span className="text-sm font-semibold tracking-tight text-slate-800 dark:text-slate-100">
+              {currentPeriodInfo.displayPeriod}
+            </span>
           </div>
         </div>
 
@@ -188,21 +172,28 @@ export function SeasonMetaForm({
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
               Chọn mùa giải muốn xem
             </span>
+            {isLoadingSeason && (
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-sky-600 dark:text-sky-400">
+                <Loader2 className="h-3 w-3 animate-spin" />
+                Đang tải...
+              </span>
+            )}
           </div>
           <div className="mt-2.5 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
             <div className="relative min-w-0 flex-1">
               <select
-                value={activeSeasonIndex}
-                onChange={(e) => onSelectSeasonIndex(Number(e.target.value))}
-                className="soft-field h-9 w-full rounded-lg px-2.5 pr-8 text-xs font-semibold truncate cursor-pointer"
+                value={currentSelectedValue}
+                onChange={(e) => handleSelectChange(e.target.value)}
+                disabled={isLoadingSeason}
+                className="soft-field h-9 w-full rounded-lg px-2.5 pr-8 text-xs font-semibold truncate cursor-pointer disabled:opacity-60"
               >
-                {seasons.map((s, index) => (
+                {combinedOptions.map((opt) => (
                   <option
-                    key={`${formatLeagueName(s.league)}-${index}`}
-                    value={index}
+                    key={opt.id}
+                    value={opt.id}
                     className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
                   >
-                    {formatLeagueName(s.league)} {formatSeasonPeriod(s.startsAt, s.endsAt)}
+                    {opt.label}
                   </option>
                 ))}
               </select>
