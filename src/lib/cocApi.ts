@@ -230,7 +230,12 @@ export async function fetchRankedSeasonData(
         const prevData = await prevRes.json()
         const prevMembers = Array.isArray(prevData.members) ? prevData.members : []
         const prevPeriod = parseSeasonDateRange(prevSeasonId)
-        const prevLimits = detectMaxAttacksAndDefenses(prevMembers, leagueName, prevPeriod)
+
+        // Tra cứu tier ID chính thức của mùa trước từ lịch sử giải đấu leagueHistory
+        const prevHistItem = leagueHistory.find((item) => String(item.leagueSeasonId) === String(prevSeasonId))
+        const prevTierId = prevHistItem?.leagueTierId
+
+        const prevLimits = detectMaxAttacksAndDefenses(prevMembers, prevTierId || leagueName, prevPeriod)
         const prevPlayers = mapMembersToPlayers(
           prevMembers,
           prevLimits.maxAttacks,
@@ -238,7 +243,9 @@ export async function fetchRankedSeasonData(
           existingPlayersMap,
         )
 
-        const prevLeagueName = prevLimits.matchedTier?.name || leagueName
+        const prevLeagueName =
+          prevLimits.matchedTier?.name ||
+          (prevTierId ? `Cấp bậc #${prevTierId}` : leagueName)
         const savedPrevRules =
           getSavedLeagueRules(prevLeagueName) ||
           getSavedLeagueRules(prevLimits.matchedTier?.name) ||
@@ -248,7 +255,7 @@ export async function fetchRankedSeasonData(
 
         previousSeason = {
           league: prevLeagueName,
-          leagueIconUrl,
+          leagueIconUrl: getLeagueIconUrl(prevLeagueName),
           seasonName: `Mùa giải trước (${prevPeriod.displayPeriod})`,
           startsAt: prevPeriod.startsAt,
           endsAt: prevPeriod.endsAt,

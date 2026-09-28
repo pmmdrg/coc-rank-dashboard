@@ -131,28 +131,35 @@ export function getRankedTierMaxAttacks(
   // 3. Tra cứu theo tên giải đấu (chuỗi chữ)
   const clean = String(leagueIdentifier || '').toLowerCase().trim()
   if (clean) {
-    // Legend 1
-    if (clean.includes('legend i') && !clean.includes('legend ii') && !clean.includes('legend iii')) {
-      const tier = RANKED_TIERS_METADATA.find((t) => t.id === 105000036)
-      const attacks = seasonDays * 8
-      return { maxAttacks: attacks, maxDefenses: attacks, matchedTier: tier }
+    // Khớp chính xác tên hoặc nhóm giải đấu trước tiên
+    const exactMatch = RANKED_TIERS_METADATA.find(
+      (t) => t.name.toLowerCase() === clean || t.group.toLowerCase() === clean,
+    )
+    if (exactMatch) {
+      const attacks = exactMatch.isPerDay ? seasonDays * exactMatch.baseAttacks : exactMatch.baseAttacks
+      return { maxAttacks: attacks, maxDefenses: attacks, matchedTier: exactMatch }
     }
-    if (clean.includes('legend 1')) {
-      const tier = RANKED_TIERS_METADATA.find((t) => t.id === 105000036)
-      const attacks = seasonDays * 8
-      return { maxAttacks: attacks, maxDefenses: attacks, matchedTier: tier }
+
+    // Legend 3 (phải kiểm tra trước Legend 2 và Legend 1 để tránh 'legend iii' chứa chuỗi con 'legend ii' hoặc 'legend i')
+    if (clean.includes('legend iii') || clean.includes('legend 3') || clean === 'legend') {
+      const tier = RANKED_TIERS_METADATA.find((t) => t.id === 105000034)
+      return { maxAttacks: 24, maxDefenses: 24, matchedTier: tier }
     }
 
     // Legend 2
-    if (clean.includes('legend ii') || clean.includes('legend 2')) {
+    if ((clean.includes('legend ii') && !clean.includes('legend iii')) || clean.includes('legend 2')) {
       const tier = RANKED_TIERS_METADATA.find((t) => t.id === 105000035)
       return { maxAttacks: 30, maxDefenses: 30, matchedTier: tier }
     }
 
-    // Legend 3
-    if (clean.includes('legend iii') || clean.includes('legend 3') || clean === 'legend') {
-      const tier = RANKED_TIERS_METADATA.find((t) => t.id === 105000034)
-      return { maxAttacks: 24, maxDefenses: 24, matchedTier: tier }
+    // Legend 1
+    if (
+      (clean.includes('legend i') && !clean.includes('legend ii') && !clean.includes('legend iii')) ||
+      clean.includes('legend 1')
+    ) {
+      const tier = RANKED_TIERS_METADATA.find((t) => t.id === 105000036)
+      const attacks = seasonDays * 8
+      return { maxAttacks: attacks, maxDefenses: attacks, matchedTier: tier }
     }
 
     // Electro League
@@ -174,53 +181,68 @@ export function getRankedTierMaxAttacks(
       clean.includes('p.e.k.k.a') ||
       clean.includes('titan')
     ) {
-      return { maxAttacks: 12, maxDefenses: 12 }
+      const tier = RANKED_TIERS_METADATA.find(
+        (t) => t.group === 'Titan' || t.group === 'P.E.K.K.A' || t.group === 'Golem',
+      )
+      return { maxAttacks: 12, maxDefenses: 12, matchedTier: tier }
     }
 
     // Valkyrie, Witch
     if (clean.includes('valkyrie') || clean.includes('witch')) {
-      return { maxAttacks: 10, maxDefenses: 10 }
+      const tier = RANKED_TIERS_METADATA.find((t) => t.group === 'Valkyrie' || t.group === 'Witch')
+      return { maxAttacks: 10, maxDefenses: 10, matchedTier: tier }
     }
 
     // Archer, Wizard
     if (clean.includes('archer') || clean.includes('wizard')) {
-      return { maxAttacks: 8, maxDefenses: 8 }
+      const tier = RANKED_TIERS_METADATA.find((t) => t.group === 'Archer' || t.group === 'Wizard')
+      return { maxAttacks: 8, maxDefenses: 8, matchedTier: tier }
     }
 
     // Skeleton, Barbarian
     if (clean.includes('skeleton') || clean.includes('barbarian')) {
-      return { maxAttacks: 6, maxDefenses: 6 }
+      const tier = RANKED_TIERS_METADATA.find((t) => t.group === 'Skeleton' || t.group === 'Barbarian')
+      return { maxAttacks: 6, maxDefenses: 6, matchedTier: tier }
     }
   }
 
   // 4. Nếu không rõ tên rank (hoặc mùa trước do Supercell API không kèm tên rank):
   // Nhận diện chuẩn xác dựa trên số lượt đánh thực tế cao nhất của các thành viên trong bảng
   if (observedMax > 30) {
-    return { maxAttacks: seasonDays * 8, maxDefenses: seasonDays * 8 }
+    const tier = RANKED_TIERS_METADATA.find((t) => t.id === 105000036)
+    return { maxAttacks: seasonDays * 8, maxDefenses: seasonDays * 8, matchedTier: tier }
   }
   if (observedMax > 24) {
-    return { maxAttacks: 30, maxDefenses: 30 }
+    const tier = RANKED_TIERS_METADATA.find((t) => t.id === 105000035)
+    return { maxAttacks: 30, maxDefenses: 30, matchedTier: tier }
   }
   if (observedMax > 18) {
-    return { maxAttacks: 24, maxDefenses: 24 }
+    const tier = RANKED_TIERS_METADATA.find((t) => t.id === 105000034)
+    return { maxAttacks: 24, maxDefenses: 24, matchedTier: tier }
   }
   if (observedMax > 14) {
-    return { maxAttacks: 18, maxDefenses: 18 } // Electro
+    const tier = RANKED_TIERS_METADATA.find((t) => t.group === 'Electro')
+    return { maxAttacks: 18, maxDefenses: 18, matchedTier: tier } // Electro
   }
   if (observedMax > 12) {
-    return { maxAttacks: 14, maxDefenses: 14 } // Dragon
+    const tier = RANKED_TIERS_METADATA.find((t) => t.group === 'Dragon')
+    return { maxAttacks: 14, maxDefenses: 14, matchedTier: tier } // Dragon
   }
   if (observedMax > 10) {
-    return { maxAttacks: 12, maxDefenses: 12 } // Golem / PEKKA / Titan
+    const tier = RANKED_TIERS_METADATA.find((t) => t.group === 'Titan' || t.group === 'Golem')
+    return { maxAttacks: 12, maxDefenses: 12, matchedTier: tier } // Golem / PEKKA / Titan
   }
   if (observedMax > 8) {
-    return { maxAttacks: 10, maxDefenses: 10 } // Valkyrie / Witch
+    const tier = RANKED_TIERS_METADATA.find((t) => t.group === 'Valkyrie' || t.group === 'Witch')
+    return { maxAttacks: 10, maxDefenses: 10, matchedTier: tier } // Valkyrie / Witch
   }
   if (observedMax > 6) {
-    return { maxAttacks: 8, maxDefenses: 8 } // Archer / Wizard
+    const tier = RANKED_TIERS_METADATA.find((t) => t.group === 'Archer' || t.group === 'Wizard')
+    return { maxAttacks: 8, maxDefenses: 8, matchedTier: tier } // Archer / Wizard
   }
   if (observedMax > 0) {
-    return { maxAttacks: 6, maxDefenses: 6 } // Skeleton / Barbarian
+    const tier = RANKED_TIERS_METADATA.find((t) => t.group === 'Skeleton' || t.group === 'Barbarian')
+    return { maxAttacks: 6, maxDefenses: 6, matchedTier: tier } // Skeleton / Barbarian
   }
 
   // Mặc định an toàn
