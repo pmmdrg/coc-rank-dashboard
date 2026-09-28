@@ -729,7 +729,7 @@ export function PerformanceTrendSection({
                     <div className="flex items-center justify-between gap-4">
                       <span className="text-emerald-400 font-medium">Tấn công:</span>
                       <span className="font-mono font-bold">
-                        {chronologicalHistory[hoveredIndex].attackWins}T - {chronologicalHistory[hoveredIndex].attackLosses}B ({chronologicalHistory[hoveredIndex].attackWinRate}%)
+                        {chronologicalHistory[hoveredIndex].attackWins}W - {chronologicalHistory[hoveredIndex].attackLosses}L ({chronologicalHistory[hoveredIndex].attackWinRate}%)
                       </span>
                     </div>
                     <div className="flex items-center justify-between gap-4">
@@ -808,7 +808,7 @@ export function PerformanceTrendSection({
                         {/* Tấn công */}
                         <td className="px-3 py-3 align-middle whitespace-nowrap">
                           <span className="font-semibold text-slate-800 dark:text-slate-200">
-                            {item.attackWins}T - {item.attackLosses}B
+                            {item.attackWins}W - {item.attackLosses}L
                           </span>{' '}
                           <span className="text-[11px] text-slate-500 dark:text-slate-400">
                             ({item.attackWinRate}%)

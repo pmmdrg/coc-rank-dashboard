@@ -166,7 +166,7 @@ export function PlayerRow({
                 className="mt-0.5 text-[9px] font-semibold text-emerald-600 dark:text-emerald-400 leading-none"
                 title={`Thắng: ${player.attackWinCount} • Thua: ${player.attackLoseCount ?? 0}`}
               >
-                {player.attackWinCount}T{player.attackLoseCount ? `-${player.attackLoseCount}B` : ''}
+                {player.attackWinCount}W{player.attackLoseCount ? `-${player.attackLoseCount}L` : ''}
               </span>
             )}
           </div>
@@ -199,7 +199,7 @@ export function PlayerRow({
                 className="mt-0.5 text-[9px] font-semibold text-slate-500 dark:text-slate-400 leading-none"
                 title={`Thủ thành công: ${player.defenseWinCount ?? 0} • Bị phá: ${player.defenseLoseCount}`}
               >
-                {player.defenseWinCount ? `${player.defenseWinCount}T-` : ''}{player.defenseLoseCount}B
+                {player.defenseWinCount ? `${player.defenseWinCount}W-` : ''}{player.defenseLoseCount}L
               </span>
             )}
           </div>
