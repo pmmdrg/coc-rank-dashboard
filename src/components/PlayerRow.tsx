@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { AlertTriangle, Shield, Trash2, Trophy } from 'lucide-react'
+import { AlertTriangle, Shield } from 'lucide-react'
 import type { Player, RatingCategory } from '../types'
 import { calculatePlayerRating, getCupsPerRemainingDefense, ratingLabels } from '../lib/ranking'
 import { validatePlayer } from '../lib/validation'
@@ -10,7 +10,6 @@ interface PlayerRowProps {
   maxDefenses: number
   isMyPlayer: boolean
   canPassMe: boolean
-  isRemoving?: boolean
   isPromotionZone?: boolean
   isDemotionZone?: boolean
   isHighlighted?: boolean
@@ -18,7 +17,6 @@ interface PlayerRowProps {
   onSelectMyPlayer: () => void
   onUpdateField: (field: keyof Player, value: string | number) => void
   onFinishEditing?: () => void
-  onRequestRemove: () => void
   setRowRef: (element: HTMLTableRowElement | null) => void
 }
 
@@ -44,7 +42,6 @@ export function PlayerRow({
   maxDefenses,
   isMyPlayer,
   canPassMe,
-  isRemoving = false,
   isPromotionZone = false,
   isDemotionZone = false,
   isHighlighted = false,
@@ -52,7 +49,6 @@ export function PlayerRow({
   onSelectMyPlayer,
   onUpdateField,
   onFinishEditing,
-  onRequestRemove,
   setRowRef,
 }: PlayerRowProps) {
   const rowClass = isMyPlayer
@@ -278,8 +274,8 @@ export function PlayerRow({
     <tr
       ref={setRowRef}
       className={`${rowClass} ${borderClass} ${
-        isRemoving ? 'animate-row-exit' : ''
-      } ${isHighlighted ? 'row-jump-highlight' : ''} transition-colors duration-200`}
+        isHighlighted ? 'row-jump-highlight' : ''
+      } transition-colors duration-200`}
     >
       {/* Cột Rank */}
       <td className="w-[136px] min-w-[136px] max-w-[136px] px-2.5 py-2.5 align-middle whitespace-nowrap">
@@ -338,7 +334,7 @@ export function PlayerRow({
       </td>
 
       {/* Tên người chơi */}
-      <td className="w-56 min-w-[170px] max-w-[240px] px-2 py-2 align-middle">
+      <td className="w-52 min-w-[160px] max-w-[220px] px-2 py-2 align-middle">
         <div className="relative flex items-center justify-between">
           <div className="flex flex-col justify-center min-w-0 pr-2">
             <div className="flex items-center gap-1.5 truncate">
@@ -354,20 +350,14 @@ export function PlayerRow({
                 </span>
               )}
             </div>
-            <div className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 truncate">
-              {player.clanName ? (
-                <span className="truncate max-w-[120px]" title={`Clan: ${player.clanName}`}>
-                  🛡️ {player.clanName}
-                </span>
-              ) : (
-                <span className="opacity-60">Không clan</span>
-              )}
-              {player.playerTag ? (
-                <span className="font-mono text-[10px] opacity-75">
-                  {player.playerTag}
-                </span>
-              ) : null}
-            </div>
+            {player.playerTag ? (
+              <span
+                className="font-mono text-[11px] text-slate-500 dark:text-slate-400 opacity-75 truncate cursor-default"
+                title={`Mã người chơi: ${player.playerTag}`}
+              >
+                {player.playerTag}
+              </span>
+            ) : null}
           </div>
           {warnings.length > 0 && (
             <span
@@ -378,6 +368,21 @@ export function PlayerRow({
             </span>
           )}
         </div>
+      </td>
+
+      {/* Tên Clan */}
+      <td className="w-40 min-w-[130px] max-w-[180px] px-2 py-2 align-middle">
+        {player.clanName ? (
+          <div
+            className="flex items-center gap-1 text-xs font-semibold text-slate-700 dark:text-slate-300 truncate cursor-default"
+            title={`Clan: ${player.clanName}`}
+          >
+            <span className="shrink-0 text-xs">🛡️</span>
+            <span className="truncate">{player.clanName}</span>
+          </div>
+        ) : (
+          <span className="text-xs text-slate-400/70 italic cursor-default">Không clan</span>
+        )}
       </td>
 
       {/* Nút đánh dấu Tài khoản của tôi */}
@@ -530,52 +535,45 @@ export function PlayerRow({
       </td>
 
       {/* Số cup hiện tại */}
-      <td className="px-2 py-2 align-middle">
-        <div className="flex items-center gap-1.5 font-mono text-sm font-bold text-amber-600 dark:text-amber-400">
-          <Trophy className="h-3.5 w-3.5 shrink-0 text-amber-500/90" />
-          <span>{player.currentCups.toLocaleString('vi-VN')}</span>
-        </div>
+      <td className="w-24 min-w-[88px] px-2 py-2 align-middle">
+        <span className="font-mono text-sm font-bold text-amber-600 dark:text-amber-400">
+          {player.currentCups.toLocaleString('vi-VN')}
+        </span>
       </td>
 
-      {/* Số cup tối đa có thể đạt (tự động tính theo công thức & chỉ báo so sánh) */}
-      <td className="w-48 min-w-[195px] px-2 py-2 align-middle">
-        <div className="relative flex h-9 items-center">
-          <input
-            type="text"
-            readOnly
-            tabIndex={-1}
-            value={player.maxPossibleCups.toLocaleString('vi-VN')}
-            title={
-              player.defenses <= 0
-                ? `Công thức: ${player.currentCups} cup hiện tại + (${maxAttacks} - ${player.attacks}) lượt công × 40 + (${remainingDefenses}) lượt thủ × 0 cup (chưa có trận thủ) = ${player.maxPossibleCups} cup`
-                : `Công thức: ${player.currentCups} cup hiện tại + (${maxAttacks} - ${player.attacks}) lượt công × 40 + (${remainingDefenses}) lượt thủ × ${cupsPerRemainingDefense} cup (theo ${formatDestruction(player.defenseDestruction)}% thủ) = ${player.maxPossibleCups} cup`
-            }
-            className={`soft-field h-9 w-full rounded-md px-2 pr-[98px] text-sm font-bold select-all cursor-default transition-colors ${
-              isMyPlayer
-                ? 'border-sky-400/40 bg-sky-500/10 text-sky-700 dark:border-sky-500/40 dark:bg-sky-950/40 dark:text-sky-300'
-                : canPassMe
-                  ? 'border-amber-400/50 bg-amber-500/10 text-amber-800 dark:border-amber-500/40 dark:bg-amber-950/30 dark:text-amber-200'
-                  : 'border-slate-300/40 bg-slate-100/40 text-slate-600 dark:border-slate-700/40 dark:bg-slate-800/30 dark:text-slate-400'
-            }`}
-          />
+      {/* Số cup tối đa có thể đạt */}
+      <td className="w-36 min-w-[120px] px-2 py-2 align-middle">
+        <div
+          className="flex items-center gap-1.5 font-mono text-sm font-bold cursor-default"
+          title={
+            player.defenses <= 0
+              ? `Công thức: ${player.currentCups} cup hiện tại + (${maxAttacks} - ${player.attacks}) lượt công × 40 + (${remainingDefenses}) lượt thủ × 0 cup (chưa có trận thủ) = ${player.maxPossibleCups} cup`
+              : `Công thức: ${player.currentCups} cup hiện tại + (${maxAttacks} - ${player.attacks}) lượt công × 40 + (${remainingDefenses}) lượt thủ × ${cupsPerRemainingDefense} cup (theo ${formatDestruction(player.defenseDestruction)}% thủ) = ${player.maxPossibleCups} cup`
+          }
+        >
           <span
-            className={`pointer-events-none absolute right-1 inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-black tracking-tight select-none border ${
+            className={
               isMyPlayer
-                ? 'border-sky-400/40 bg-sky-500/20 text-sky-700 dark:border-sky-400/30 dark:bg-sky-500/30 dark:text-sky-300'
+                ? 'text-sky-600 dark:text-sky-400 font-extrabold'
                 : canPassMe
-                  ? 'border-amber-400/50 bg-amber-500/20 text-amber-800 dark:border-amber-400/40 dark:bg-amber-500/30 dark:text-amber-200'
-                  : 'border-slate-300/40 bg-slate-200/50 text-slate-500 dark:border-slate-700/40 dark:bg-slate-800/60 dark:text-slate-400'
-            }`}
-            title={
-              isMyPlayer
-                ? 'Mục tiêu cúp của bạn'
-                : canPassMe
-                  ? `Người này có thể đạt tới ${player.maxPossibleCups} cúp, cao hơn cúp tối đa của bạn!`
-                  : `Cúp tối đa (${player.maxPossibleCups}) không thể vượt bạn.`
+                  ? 'text-amber-600 dark:text-amber-400'
+                  : 'text-slate-600 dark:text-slate-300'
             }
           >
-            {isMyPlayer ? 'BẠN' : canPassMe ? '⚠ CÓ THỂ VƯỢT' : '✓ DƯỚI BẠN'}
+            {player.maxPossibleCups.toLocaleString('vi-VN')}
           </span>
+
+          {canPassMe && (
+            <span
+              tabIndex={0}
+              role="button"
+              aria-label="Cảnh báo có thể vượt bạn"
+              className="inline-flex items-center text-amber-500 hover:text-amber-600 dark:text-amber-400 cursor-help transition-transform hover:scale-110 active:scale-95 focus:outline-hidden"
+              title={`⚠️ Có thể vượt: Người này có thể đạt tối đa ${player.maxPossibleCups.toLocaleString('vi-VN')} cúp, cao hơn mốc cúp tối đa của bạn!`}
+            >
+              <AlertTriangle className="h-4 w-4 drop-shadow-xs" />
+            </span>
+          )}
         </div>
       </td>
 
@@ -591,19 +589,6 @@ export function PlayerRow({
         >
           {ratingLabels[player.rating]}
         </div>
-      </td>
-
-      {/* Nút Xóa người chơi */}
-      <td className="px-1 py-2 text-center align-middle">
-        <button
-          type="button"
-          tabIndex={-1}
-          onClick={onRequestRemove}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-slate-300/60 bg-white/50 text-slate-400 transition-all duration-200 hover:scale-105 active:scale-90 hover:border-rose-300 hover:bg-rose-50 hover:text-rose-600 dark:border-slate-700/60 dark:bg-slate-800/50 dark:hover:bg-rose-950/50 dark:hover:text-rose-400"
-          title="Xóa người chơi"
-        >
-          <Trash2 className="h-4 w-4" aria-hidden="true" />
-        </button>
       </td>
     </tr>
   )

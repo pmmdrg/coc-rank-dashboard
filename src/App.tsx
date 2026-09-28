@@ -388,16 +388,6 @@ function App() {
     setStatus('Đã thêm người chơi mới vào bảng.')
   }
 
-  function handleRemovePlayer(playerId: string) {
-    const remainingPlayers = rankedSeason.players.filter((p) => p.id !== playerId)
-    updateCurrentSeason({
-      ...rankedSeason,
-      myPlayerId:
-        rankedSeason.myPlayerId === playerId ? remainingPlayers[0]?.id || '' : rankedSeason.myPlayerId,
-      players: remainingPlayers,
-    })
-    setStatus('Đã xóa người chơi và cập nhật lại thứ hạng.')
-  }
 
   function handleSelectMyPlayer(playerId: string) {
     updateCurrentSeason({
@@ -516,7 +506,6 @@ function App() {
           isSyncing={isSyncingApi}
           onSyncCocApi={() => handleSyncCocApi()}
           onAddPlayer={handleAddPlayer}
-          onRemovePlayer={handleRemovePlayer}
           onSelectMyPlayer={handleSelectMyPlayer}
           onUpdatePlayerField={handleUpdatePlayerField}
         />
