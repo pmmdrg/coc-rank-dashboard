@@ -258,6 +258,18 @@ export function PerformanceTrendSection({
   const ratePath = makeSmoothPath((d) => getRateY(d.attackWinRate))
   const starsPath = makeSmoothPath((d) => getStarsY(d.defenseStars))
 
+  // Tính vị trí tooltip thông minh (linh hoạt đổi bên để không bị che khuất / tràn mép)
+  const tooltipPos = (() => {
+    if (hoveredIndex === null || chronologicalHistory.length === 0) return null
+    const total = chronologicalHistory.length
+    const isOnRight = hoveredIndex < Math.ceil(total / 2)
+    const pointX = getX(hoveredIndex)
+    const offset = 14
+    const targetX = isOnRight ? pointX + offset : pointX - offset
+    const leftPercent = (targetX / chartWidth) * 100
+    return { isOnRight, leftPercent }
+  })()
+
   return (
     <section className="glass-panel rounded-xl shadow-sm transition-all">
       {/* Header & Toggle */}
@@ -379,10 +391,11 @@ export function PerformanceTrendSection({
 
             {/* SVG Visualizer */}
             <div className="relative mt-2 overflow-x-auto">
-              <svg
-                viewBox={`0 0 ${chartWidth} ${chartHeight}`}
-                className="w-full min-w-[620px] select-none overflow-visible"
-              >
+              <div className="relative w-full min-w-[620px]">
+                <svg
+                  viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+                  className="w-full select-none overflow-visible"
+                >
                 {/* Lưới đường ngang mờ */}
                 {[0, 0.25, 0.5, 0.75, 1].map((ratio) => {
                   const y = paddingTop + plotHeight * ratio
@@ -617,50 +630,63 @@ export function PerformanceTrendSection({
                 })}
               </svg>
 
-              {/* Tooltip khi hover điểm mốc (Không có icon/emoji) */}
-              {hoveredIndex !== null && (
+              {/* Tooltip khi hover điểm mốc (Không có icon/emoji, định vị thông minh chống tràn) */}
+              {tooltipPos && hoveredIndex !== null && (
                 <div
-                  className="pointer-events-none absolute z-20 rounded-lg border border-slate-700/30 bg-slate-900/90 p-3 text-xs text-white shadow-xl backdrop-blur -translate-x-1/2 dark:border-slate-600 dark:bg-slate-950/95 animate-tooltip-pop transition-[left,top] duration-200 ease-out"
+                  className="pointer-events-none absolute z-20 transition-[left,top] duration-200 ease-out"
                   style={{
-                    left: `${(getX(hoveredIndex) / chartWidth) * 100}%`,
-                    top: '8px',
+                    left: `${tooltipPos.leftPercent}%`,
+                    top: '12px',
+                    transform: tooltipPos.isOnRight ? 'translateX(0)' : 'translateX(-100%)',
                   }}
                 >
-                  <div className="font-bold text-sky-300">
-                    {chronologicalHistory[hoveredIndex].displayPeriod}
-                  </div>
-                  <div className="mt-0.5 text-[11px] text-slate-300">
-                    {chronologicalHistory[hoveredIndex].tierName}
-                  </div>
-                  <div className="mt-2 space-y-1 text-[11px]">
-                    <div className="flex items-center justify-between gap-4">
-                      <span className="text-amber-400 font-medium">Điểm cúp:</span>
-                      <span className="font-mono font-bold">
-                        {chronologicalHistory[hoveredIndex].trophies} cúp
-                      </span>
+                  <div className="relative animate-tooltip-pop rounded-lg border border-slate-700/40 bg-slate-900/90 p-3 text-xs text-white shadow-xl backdrop-blur dark:border-slate-600/50 dark:bg-slate-950/95 max-w-[260px] sm:max-w-xs">
+                    {/* Mũi tên định hướng (pointer arrow) */}
+                    <div
+                      className={`absolute top-4 h-2.5 w-2.5 rotate-45 border-slate-700/50 bg-slate-900/90 dark:border-slate-600 dark:bg-slate-950/95 ${
+                        tooltipPos.isOnRight
+                          ? '-left-[5px] border-b border-l'
+                          : '-right-[5px] border-t border-r'
+                      }`}
+                      aria-hidden="true"
+                    />
+                    <div className="font-bold text-sky-300">
+                      {chronologicalHistory[hoveredIndex].displayPeriod}
                     </div>
-                    <div className="flex items-center justify-between gap-4">
-                      <span className="text-sky-400 font-medium">Thứ hạng:</span>
-                      <span className="font-mono font-bold">
-                        #{chronologicalHistory[hoveredIndex].placement} / 100
-                      </span>
+                    <div className="mt-0.5 text-[11px] text-slate-300">
+                      {chronologicalHistory[hoveredIndex].tierName}
                     </div>
-                    <div className="flex items-center justify-between gap-4">
-                      <span className="text-emerald-400 font-medium">Tấn công:</span>
-                      <span className="font-mono font-bold">
-                        {chronologicalHistory[hoveredIndex].attackWins}W - {chronologicalHistory[hoveredIndex].attackLosses}L ({chronologicalHistory[hoveredIndex].attackWinRate}%)
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between gap-4">
-                      <span className="text-rose-400 font-medium">Phòng thủ:</span>
-                      <span className="font-mono font-bold">
-                        Bị trừ {chronologicalHistory[hoveredIndex].defenseStars} sao
-                      </span>
+                    <div className="mt-2 space-y-1 text-[11px]">
+                      <div className="flex items-center justify-between gap-4">
+                        <span className="text-amber-400 font-medium">Điểm cúp:</span>
+                        <span className="font-mono font-bold">
+                          {chronologicalHistory[hoveredIndex].trophies} cúp
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between gap-4">
+                        <span className="text-sky-400 font-medium">Thứ hạng:</span>
+                        <span className="font-mono font-bold">
+                          #{chronologicalHistory[hoveredIndex].placement} / 100
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between gap-4">
+                        <span className="text-emerald-400 font-medium">Tấn công:</span>
+                        <span className="font-mono font-bold">
+                          {chronologicalHistory[hoveredIndex].attackWins}W - {chronologicalHistory[hoveredIndex].attackLosses}L ({chronologicalHistory[hoveredIndex].attackWinRate}%)
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between gap-4">
+                        <span className="text-rose-400 font-medium">Phòng thủ:</span>
+                        <span className="font-mono font-bold">
+                          Bị trừ {chronologicalHistory[hoveredIndex].defenseStars} sao
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
               )}
             </div>
+          </div>
           </div>
 
           {/* BẢNG CHI TIẾT LỊCH SỬ TỪNG MÙA GIẢI */}
