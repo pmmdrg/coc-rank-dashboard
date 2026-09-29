@@ -1,14 +1,4 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
-import {
-  Trophy,
-  Sparkles,
-  TrendingDown,
-  TrendingUp,
-  Award,
-  AlertTriangle,
-  Shield,
-  UserCheck,
-} from 'lucide-react'
 import type { Player } from '../types'
 
 export interface HighlightStatsTableProps {
@@ -231,7 +221,6 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
       <section>
         <div className="glass-panel rounded-xl p-5 shadow-sm space-y-4">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-amber-500" aria-hidden="true" />
             <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-200">
               Thống kê nổi bật & kỷ lục mùa giải
             </h3>
@@ -250,7 +239,6 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
         {/* Header với Tiêu đề, Bộ lọc nhanh & Tổng số người chơi */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-amber-500" aria-hidden="true" />
             <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-200">
               Thống kê nổi bật & kỷ lục mùa giải
             </h3>
@@ -273,26 +261,24 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
               <button
                 type="button"
                 onClick={() => handleFilterChange('best')}
-                className={`inline-flex items-center gap-1 rounded-md px-2.5 py-1 transition-all ${
+                className={`rounded-md px-2.5 py-1 transition-all ${
                   filterMode === 'best'
                     ? 'bg-emerald-600 text-white shadow-2xs dark:bg-emerald-500'
                     : 'text-slate-600 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400'
                 }`}
               >
-                <Award className="h-3 w-3" />
-                <span>Tốt nhất (2)</span>
+                Tốt nhất (2)
               </button>
               <button
                 type="button"
                 onClick={() => handleFilterChange('worst')}
-                className={`inline-flex items-center gap-1 rounded-md px-2.5 py-1 transition-all ${
+                className={`rounded-md px-2.5 py-1 transition-all ${
                   filterMode === 'worst'
                     ? 'bg-rose-600 text-white shadow-2xs dark:bg-rose-500'
                     : 'text-slate-600 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400'
                 }`}
               >
-                <AlertTriangle className="h-3 w-3" />
-                <span>Thấp nhất (2)</span>
+                Thấp nhất (2)
               </button>
             </div>
 
@@ -306,14 +292,9 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
         {myPlayer && myComparisonStats ? (
           <div className="rounded-xl border border-sky-500/20 bg-sky-500/5 p-4 dark:border-sky-500/30 dark:bg-sky-950/20">
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-3.5">
-              <div className="flex items-center gap-2">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-sky-500/20 text-sky-600 dark:text-sky-400">
-                  <UserCheck className="h-3.5 w-3.5" />
-                </span>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-100">
-                  Vị thế năng lực của bạn ({myPlayer.name}) so với các đối thủ trong bảng
-                </h4>
-              </div>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-100">
+                Vị thế năng lực của bạn ({myPlayer.name}) so với các đối thủ trong bảng
+              </h4>
               <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
                 Đo lường trên {myComparisonStats.totalOpponents} đối thủ
               </span>
@@ -324,8 +305,7 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
               <div className="flex flex-col justify-between rounded-lg border border-amber-500/25 bg-white/80 p-3.5 shadow-2xs transition-all hover:border-amber-500/40 dark:border-amber-500/25 dark:bg-slate-900/70">
                 <div>
                   <div className="flex items-center justify-between">
-                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300">
-                      <TrendingUp className="h-3.5 w-3.5 text-amber-500" />
+                    <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                       Cúp hiện tại
                     </span>
                     <span className="rounded-md border border-amber-500/30 bg-amber-500/15 px-2 py-0.5 text-xs font-bold text-amber-700 dark:text-amber-300">
@@ -376,8 +356,7 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
               <div className="flex flex-col justify-between rounded-lg border border-indigo-500/25 bg-white/80 p-3.5 shadow-2xs transition-all hover:border-indigo-500/40 dark:border-indigo-500/25 dark:bg-slate-900/70">
                 <div>
                   <div className="flex items-center justify-between">
-                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300">
-                      <Trophy className="h-3.5 w-3.5 text-indigo-500" />
+                    <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                       Cúp tối đa có thể đạt
                     </span>
                     <span className="rounded-md border border-indigo-500/30 bg-indigo-500/15 px-2 py-0.5 text-xs font-bold text-indigo-700 dark:text-indigo-300">
@@ -426,8 +405,7 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
             </div>
           </div>
         ) : (
-          <div className="flex items-center gap-3 rounded-xl border border-dashed border-slate-300/80 bg-slate-50/50 p-3.5 text-xs text-slate-500 dark:border-slate-700/80 dark:bg-slate-800/30 dark:text-slate-400">
-            <Shield className="h-4 w-4 text-sky-500 shrink-0" />
+          <div className="rounded-xl border border-dashed border-slate-300/80 bg-slate-50/50 p-3.5 text-xs text-slate-500 dark:border-slate-700/80 dark:bg-slate-800/30 dark:text-slate-400">
             <span>
               Tài khoản của bạn được đánh dấu với nhãn <strong>"Tôi"</strong> trong bảng danh sách để theo dõi tỷ lệ năng lực vượt trội hơn bao nhiêu % người chơi trong bảng.
             </span>
@@ -461,10 +439,7 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
                           colSpan={3}
                           className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-300"
                         >
-                          <span className="inline-flex items-center gap-1.5">
-                            <Award className="h-3.5 w-3.5" />
-                            Hạng mục thành tích tốt nhất
-                          </span>
+                          Hạng mục thành tích tốt nhất
                         </td>
                       </tr>
                     )}
@@ -472,18 +447,13 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
                     {/* 1.1: Cúp hiện tại cao nhất */}
                     <tr className="animate-filter-row hover:bg-slate-500/5 transition-colors">
                       <td className="px-4 py-3 align-middle">
-                        <div className="flex items-center gap-3">
-                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400 shadow-2xs">
-                            <TrendingUp className="h-4 w-4" aria-hidden="true" />
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="font-semibold text-slate-800 dark:text-slate-100">
-                              Cúp hiện tại cao nhất
-                            </span>
-                            <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                              Dẫn đầu điểm số hiện tại của bảng đấu
-                            </span>
-                          </div>
+                        <div className="flex flex-col">
+                          <span className="font-semibold text-slate-800 dark:text-slate-100">
+                            Cúp hiện tại cao nhất
+                          </span>
+                          <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                            Dẫn đầu điểm số hiện tại của bảng đấu
+                          </span>
                         </div>
                       </td>
                       <td className="px-4 py-3 text-center align-middle">
@@ -520,18 +490,13 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
                     {/* 1.2: Cup tối đa cao nhất */}
                     <tr className="animate-filter-row hover:bg-slate-500/5 transition-colors">
                       <td className="px-4 py-3 align-middle">
-                        <div className="flex items-center gap-3">
-                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-indigo-500/30 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 shadow-2xs">
-                            <Trophy className="h-4 w-4" aria-hidden="true" />
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="font-semibold text-slate-800 dark:text-slate-100">
-                              Cúp tối đa cao nhất
-                            </span>
-                            <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                              Trần cúp lý thuyết cao nhất bảng đấu
-                            </span>
-                          </div>
+                        <div className="flex flex-col">
+                          <span className="font-semibold text-slate-800 dark:text-slate-100">
+                            Cúp tối đa cao nhất
+                          </span>
+                          <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                            Trần cúp lý thuyết cao nhất bảng đấu
+                          </span>
                         </div>
                       </td>
                       <td className="px-4 py-3 text-center align-middle">
@@ -592,10 +557,7 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
                           colSpan={3}
                           className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-rose-700 dark:text-rose-300"
                         >
-                          <span className="inline-flex items-center gap-1.5">
-                            <AlertTriangle className="h-3.5 w-3.5" />
-                            Hạng mục thành tích thấp nhất / Cần nỗ lực
-                          </span>
+                          Hạng mục thành tích thấp nhất / Cần nỗ lực
                         </td>
                       </tr>
                     )}
@@ -603,18 +565,13 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
                     {/* 2.1: Cúp hiện tại thấp nhất */}
                     <tr className="animate-filter-row hover:bg-slate-500/5 transition-colors">
                       <td className="px-4 py-3 align-middle">
-                        <div className="flex items-center gap-3">
-                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-rose-500/30 bg-rose-500/10 text-rose-600 dark:text-rose-400 shadow-2xs">
-                            <TrendingDown className="h-4 w-4" aria-hidden="true" />
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="font-semibold text-slate-800 dark:text-slate-100">
-                              Cúp hiện tại thấp nhất
-                            </span>
-                            <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                              Điểm số cúp thấp nhất bảng đấu hiện tại
-                            </span>
-                          </div>
+                        <div className="flex flex-col">
+                          <span className="font-semibold text-slate-800 dark:text-slate-100">
+                            Cúp hiện tại thấp nhất
+                          </span>
+                          <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                            Điểm số cúp thấp nhất bảng đấu hiện tại
+                          </span>
                         </div>
                       </td>
                       <td className="px-4 py-3 text-center align-middle">
@@ -652,18 +609,13 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
                     {/* 2.2: Cup tối đa thấp nhất */}
                     <tr className="animate-filter-row hover:bg-slate-500/5 transition-colors">
                       <td className="px-4 py-3 align-middle">
-                        <div className="flex items-center gap-3">
-                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-500/30 bg-slate-500/10 text-slate-600 dark:text-slate-400 shadow-2xs">
-                            <TrendingDown className="h-4 w-4" aria-hidden="true" />
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="font-semibold text-slate-800 dark:text-slate-100">
-                              Cúp tối đa thấp nhất
-                            </span>
-                            <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                              Trần cúp lý thuyết thấp nhất mùa giải
-                            </span>
-                          </div>
+                        <div className="flex flex-col">
+                          <span className="font-semibold text-slate-800 dark:text-slate-100">
+                            Cúp tối đa thấp nhất
+                          </span>
+                          <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                            Trần cúp lý thuyết thấp nhất mùa giải
+                          </span>
                         </div>
                       </td>
                       <td className="px-4 py-3 text-center align-middle">

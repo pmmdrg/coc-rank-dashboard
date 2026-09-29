@@ -1,4 +1,3 @@
-import { Calendar } from 'lucide-react'
 import type { Season } from '../types'
 import { formatLeagueName } from '../lib/ranking'
 import { getLeagueIconUrl } from '../lib/leagueIcons'
@@ -41,7 +40,7 @@ export function SeasonMetaForm({
           </h2>
           {season.lastSyncedAt && (
             <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:bg-emerald-400/10 dark:text-emerald-400">
-              ⚡ API: {season.lastSyncedAt}
+              API: {season.lastSyncedAt}
             </span>
           )}
         </div>
@@ -96,7 +95,7 @@ export function SeasonMetaForm({
             ) : onUpdateSeasonMeta ? (
               <div className="flex items-center gap-2 text-[11px] shrink-0">
                 <label className="flex items-center gap-1 font-semibold text-emerald-600 dark:text-emerald-400" title="Số người thăng hạng ở top đầu">
-                  <span>▲ Thăng:</span>
+                  <span>Thăng:</span>
                   <input
                     type="number"
                     min="0"
@@ -106,7 +105,7 @@ export function SeasonMetaForm({
                   />
                 </label>
                 <label className="flex items-center gap-1 font-semibold text-rose-600 dark:text-rose-400" title="Số người xuống hạng ở top cuối">
-                  <span>▼ Xuống:</span>
+                  <span>Xuống:</span>
                   <input
                     type="number"
                     min="0"
@@ -122,8 +121,7 @@ export function SeasonMetaForm({
               </span>
             )}
           </div>
-          <div className="mt-2.5 flex items-center gap-2.5">
-            <Calendar className="h-5 w-5 shrink-0 text-sky-500" aria-hidden="true" />
+          <div className="mt-2.5 flex items-center">
             <span className="text-sm sm:text-base font-bold tracking-tight text-slate-800 dark:text-slate-100">
               {currentPeriodInfo.displayPeriod || '--'}
             </span>

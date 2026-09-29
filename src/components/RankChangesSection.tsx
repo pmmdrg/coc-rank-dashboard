@@ -1,14 +1,7 @@
 import { useMemo, useState } from 'react'
 import {
-  TrendingUp,
-  TrendingDown,
   ChevronDown,
-  ArrowUpDown,
   Search,
-  CheckCircle2,
-  Clock,
-  Swords,
-  Shield,
 } from 'lucide-react'
 import type { RankChangesSnapshot, RankChangeItem } from '../types'
 
@@ -109,38 +102,30 @@ export function RankChangesSection({
     <section className="glass-panel rounded-xl shadow-xs transition-all overflow-hidden border border-slate-200/80 dark:border-slate-800/80">
       {/* HEADER SECTION */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/60 p-4 sm:p-5 dark:border-slate-800/60">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:bg-amber-400/10 dark:text-amber-400">
-            <ArrowUpDown className="h-5 w-5 drop-shadow-xs" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
-                Biến động thứ hạng gần nhất
-              </h2>
-              {hasActiveChanges ? (
-                <span className="rounded-full bg-amber-500/15 px-2.5 py-0.5 text-xs font-extrabold text-amber-700 dark:bg-amber-400/15 dark:text-amber-300">
-                  {activeChanges.length} thay đổi
-                </span>
-              ) : isFirstSync ? (
-                <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-400">
-                  Khởi tạo bảng
-                </span>
-              ) : (
-                <span className="rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 dark:bg-emerald-400/15 dark:text-emerald-300">
-                  Không đổi
-                </span>
-              )}
-            </div>
-            <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5 flex-wrap">
-              <Clock className="h-3.5 w-3.5 shrink-0" />
-              <span>
-                {snapshot.previousUpdatedAt
-                  ? `So với lần đồng bộ lúc ${snapshot.previousUpdatedAt} • Cập nhật lúc ${snapshot.updatedAt}`
-                  : `Đồng bộ lần đầu lúc ${snapshot.updatedAt}`}
+        <div>
+          <div className="flex items-center gap-2 flex-wrap">
+            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
+              Biến động thứ hạng gần nhất
+            </h2>
+            {hasActiveChanges ? (
+              <span className="rounded-full bg-amber-500/15 px-2.5 py-0.5 text-xs font-extrabold text-amber-700 dark:bg-amber-400/15 dark:text-amber-300">
+                {activeChanges.length} thay đổi
               </span>
-            </p>
+            ) : isFirstSync ? (
+              <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-400">
+                Khởi tạo bảng
+              </span>
+            ) : (
+              <span className="rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 dark:bg-emerald-400/15 dark:text-emerald-300">
+                Không đổi
+              </span>
+            )}
           </div>
+          <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+            {snapshot.previousUpdatedAt
+              ? `So với lần đồng bộ lúc ${snapshot.previousUpdatedAt} • Cập nhật lúc ${snapshot.updatedAt}`
+              : `Đồng bộ lần đầu lúc ${snapshot.updatedAt}`}
+          </p>
         </div>
 
         {/* THẺ ĐẾM TÓM TẮT & NÚT THU GỌN */}
@@ -148,14 +133,12 @@ export function RankChangesSection({
           {hasActiveChanges && (
             <div className="hidden sm:flex items-center gap-2 text-xs font-bold mr-1">
               {roseChanges.length > 0 && (
-                <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/10 px-2 py-1 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300">
-                  <TrendingUp className="h-3.5 w-3.5" />
+                <span className="rounded-md bg-emerald-500/10 px-2.5 py-1 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300">
                   {roseChanges.length} tăng
                 </span>
               )}
               {fellChanges.length > 0 && (
-                <span className="inline-flex items-center gap-1 rounded-md bg-rose-500/10 px-2 py-1 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300">
-                  <TrendingDown className="h-3.5 w-3.5" />
+                <span className="rounded-md bg-rose-500/10 px-2.5 py-1 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300">
                   {fellChanges.length} hạ
                 </span>
               )}
@@ -194,47 +177,28 @@ export function RankChangesSection({
                   }`}
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                    <div className="flex items-center gap-2.5">
-                      <div
-                        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
-                          myChange.rankDiff > 0
-                            ? 'bg-emerald-500 text-white'
-                            : myChange.rankDiff < 0
-                              ? 'bg-rose-500 text-white'
-                              : 'bg-sky-500 text-white'
-                        }`}
-                      >
-                        {myChange.rankDiff > 0 ? (
-                          <TrendingUp className="h-5 w-5" />
-                        ) : myChange.rankDiff < 0 ? (
-                          <TrendingDown className="h-5 w-5" />
-                        ) : (
-                          <CheckCircle2 className="h-5 w-5" />
-                        )}
-                      </div>
-                      <div>
-                        <div className="text-sm font-extrabold flex items-center gap-2 flex-wrap">
-                          <span>
-                            {myChange.rankDiff > 0
-                              ? `Bạn đã tăng ${myChange.rankDiff} bậc!`
-                              : myChange.rankDiff < 0
-                                ? `Bạn đã hạ ${Math.abs(myChange.rankDiff)} bậc.`
-                                : 'Thứ hạng của bạn giữ nguyên!'}
-                          </span>
-                          <span className="font-mono text-xs font-bold px-2 py-0.5 rounded-full bg-white/70 dark:bg-slate-900/60 shadow-2xs">
-                            {myChange.oldRank !== myChange.newRank
-                              ? `#${myChange.oldRank} ➔ #${myChange.newRank}`
-                              : `#${myChange.newRank}`}
-                          </span>
-                        </div>
-                        <p className="text-xs opacity-90 mt-0.5">
+                    <div>
+                      <div className="text-sm font-extrabold flex items-center gap-2 flex-wrap">
+                        <span>
                           {myChange.rankDiff > 0
-                            ? `Xin chúc mừng ${myPlayerName || 'bạn'}! Thứ hạng đã được cải thiện từ #${myChange.oldRank} lên #${myChange.newRank}.`
+                            ? `Bạn đã tăng ${myChange.rankDiff} bậc!`
                             : myChange.rankDiff < 0
-                              ? `Thứ hạng của ${myPlayerName || 'bạn'} đã chuyển từ #${myChange.oldRank} xuống #${myChange.newRank}.`
-                              : `Thứ hạng của ${myPlayerName || 'bạn'} tiếp tục duy trì ổn định ở vị trí #${myChange.newRank}.`}
-                        </p>
+                              ? `Bạn đã hạ ${Math.abs(myChange.rankDiff)} bậc.`
+                              : 'Thứ hạng của bạn giữ nguyên!'}
+                        </span>
+                        <span className="font-mono text-xs font-bold px-2 py-0.5 rounded-full bg-white/70 dark:bg-slate-900/60 shadow-2xs">
+                          {myChange.oldRank !== myChange.newRank
+                            ? `#${myChange.oldRank} ➔ #${myChange.newRank}`
+                            : `#${myChange.newRank}`}
+                        </span>
                       </div>
+                      <p className="text-xs opacity-90 mt-0.5">
+                        {myChange.rankDiff > 0
+                          ? `Xin chúc mừng ${myPlayerName || 'bạn'}! Thứ hạng đã được cải thiện từ #${myChange.oldRank} lên #${myChange.newRank}.`
+                          : myChange.rankDiff < 0
+                            ? `Thứ hạng của ${myPlayerName || 'bạn'} đã chuyển từ #${myChange.oldRank} xuống #${myChange.newRank}.`
+                            : `Thứ hạng của ${myPlayerName || 'bạn'} tiếp tục duy trì ổn định ở vị trí #${myChange.newRank}.`}
+                      </p>
                     </div>
 
                     <div className="flex items-center gap-2 flex-wrap self-end sm:self-center">
@@ -245,34 +209,28 @@ export function RankChangesSection({
                       )}
                       {(myChange.attacksDiff !== undefined && myChange.attacksDiff !== 0) && (
                         <div
-                          className="flex items-center gap-1.5 font-mono text-xs font-bold px-2.5 py-1 rounded-lg bg-white/80 dark:bg-slate-900/70 shadow-2xs text-emerald-600 dark:text-emerald-400"
+                          className="font-mono text-xs font-bold px-2.5 py-1 rounded-lg bg-white/80 dark:bg-slate-900/70 shadow-2xs text-emerald-600 dark:text-emerald-400"
                           title={`Số lượt đánh: ${myChange.oldAttacks ?? 0} ➔ ${myChange.newAttacks ?? 0}`}
                         >
-                          <Swords className="h-3.5 w-3.5 shrink-0" />
-                          <span>
-                            {(myChange.attacksDiff ?? 0) > 0 ? `+${myChange.attacksDiff}` : myChange.attacksDiff} đánh
-                            {myChange.oldAttacks !== undefined && myChange.newAttacks !== undefined && (
-                              <span className="font-normal text-[11px] opacity-80 ml-1">
-                                ({myChange.oldAttacks}➔{myChange.newAttacks})
-                              </span>
-                            )}
-                          </span>
+                          {(myChange.attacksDiff ?? 0) > 0 ? `+${myChange.attacksDiff}` : myChange.attacksDiff} đánh
+                          {myChange.oldAttacks !== undefined && myChange.newAttacks !== undefined && (
+                            <span className="font-normal text-[11px] opacity-80 ml-1">
+                              ({myChange.oldAttacks}➔{myChange.newAttacks})
+                            </span>
+                          )}
                         </div>
                       )}
                       {(myChange.defensesDiff !== undefined && myChange.defensesDiff !== 0) && (
                         <div
-                          className="flex items-center gap-1.5 font-mono text-xs font-bold px-2.5 py-1 rounded-lg bg-white/80 dark:bg-slate-900/70 shadow-2xs text-sky-600 dark:text-sky-400"
+                          className="font-mono text-xs font-bold px-2.5 py-1 rounded-lg bg-white/80 dark:bg-slate-900/70 shadow-2xs text-sky-600 dark:text-sky-400"
                           title={`Số lượt thủ: ${myChange.oldDefenses ?? 0} ➔ ${myChange.newDefenses ?? 0}`}
                         >
-                          <Shield className="h-3.5 w-3.5 shrink-0" />
-                          <span>
-                            {(myChange.defensesDiff ?? 0) > 0 ? `+${myChange.defensesDiff}` : myChange.defensesDiff} thủ
-                            {myChange.oldDefenses !== undefined && myChange.newDefenses !== undefined && (
-                              <span className="font-normal text-[11px] opacity-80 ml-1">
-                                ({myChange.oldDefenses}➔{myChange.newDefenses})
-                              </span>
-                            )}
-                          </span>
+                          {(myChange.defensesDiff ?? 0) > 0 ? `+${myChange.defensesDiff}` : myChange.defensesDiff} thủ
+                          {myChange.oldDefenses !== undefined && myChange.newDefenses !== undefined && (
+                            <span className="font-normal text-[11px] opacity-80 ml-1">
+                              ({myChange.oldDefenses}➔{myChange.newDefenses})
+                            </span>
+                          )}
                         </div>
                       )}
                     </div>
@@ -296,8 +254,7 @@ export function RankChangesSection({
           {/* 2. KHI KHÔNG CÓ THAY ĐỔI CÚP NÀO TRONG BẢNG ĐẤU */}
           {!hasActiveChanges ? (
             <div className="rounded-xl border border-slate-200/70 bg-white/30 py-6 text-center px-4 dark:border-slate-800 dark:bg-slate-900/30">
-              <CheckCircle2 className="mx-auto h-7 w-7 text-emerald-500/80 drop-shadow-xs" />
-              <h3 className="mt-2 text-sm font-bold text-slate-800 dark:text-slate-200">
+              <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">
                 {isFirstSync ? 'Đã ghi nhận dữ liệu bảng đấu ban đầu' : 'Không có người chơi nào thay đổi điểm cúp hoặc lượt đấu'}
               </h3>
               <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">
@@ -325,26 +282,24 @@ export function RankChangesSection({
                   <button
                     type="button"
                     onClick={() => setFilter('rose')}
-                    className={`inline-flex items-center gap-1 rounded-md px-3 py-1 text-xs font-bold transition-all cursor-pointer ${
+                    className={`rounded-md px-3 py-1 text-xs font-bold transition-all cursor-pointer ${
                       filter === 'rose'
                         ? 'bg-emerald-500 text-white shadow-2xs'
                         : 'text-slate-600 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400'
                     }`}
                   >
-                    <TrendingUp className="h-3.5 w-3.5" />
-                    <span>Tăng ({roseChanges.length})</span>
+                    Tăng ({roseChanges.length})
                   </button>
                   <button
                     type="button"
                     onClick={() => setFilter('fell')}
-                    className={`inline-flex items-center gap-1 rounded-md px-3 py-1 text-xs font-bold transition-all cursor-pointer ${
+                    className={`rounded-md px-3 py-1 text-xs font-bold transition-all cursor-pointer ${
                       filter === 'fell'
                         ? 'bg-rose-500 text-white shadow-2xs'
                         : 'text-slate-600 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400'
                     }`}
                   >
-                    <TrendingDown className="h-3.5 w-3.5" />
-                    <span>Hạ ({fellChanges.length})</span>
+                    Hạ ({fellChanges.length})
                   </button>
                 </div>
 
@@ -401,16 +356,13 @@ export function RankChangesSection({
 
                           {/* Badge tăng / hạ */}
                           <span
-                            className={`inline-flex shrink-0 items-center gap-0.5 rounded-md px-1.5 py-0.5 text-xs font-black select-none shadow-2xs ${
+                            className={`inline-flex shrink-0 items-center justify-center rounded-md px-2 py-0.5 text-xs font-black select-none shadow-2xs ${
                               isRose
                                 ? 'bg-emerald-500/15 text-emerald-700 dark:bg-emerald-500/25 dark:text-emerald-300'
                                 : 'bg-rose-500/15 text-rose-700 dark:bg-rose-500/25 dark:text-rose-300'
                             }`}
                           >
-                            {isRose ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}
-                            <span>
-                              {isRose ? `+${item.rankDiff}` : item.rankDiff}
-                            </span>
+                            {isRose ? `+${item.rankDiff}` : item.rankDiff}
                           </span>
                         </div>
 
@@ -432,7 +384,7 @@ export function RankChangesSection({
                         {/* Hàng biến động số lượt đánh và số lượt thủ */}
                         <div className="mt-1.5 pt-1.5 border-t border-slate-100/80 dark:border-slate-800/60 flex items-center justify-between text-[11px]">
                           <span
-                            className={`inline-flex items-center gap-1 font-semibold ${
+                            className={`font-semibold ${
                               (item.attacksDiff ?? 0) > 0
                                 ? 'text-emerald-600 dark:text-emerald-400 font-bold'
                                 : 'text-slate-400 dark:text-slate-500'
@@ -443,14 +395,11 @@ export function RankChangesSection({
                                 : undefined
                             }
                           >
-                            <Swords className="h-3 w-3 shrink-0" />
-                            <span>
-                              {(item.attacksDiff ?? 0) > 0 ? `+${item.attacksDiff}` : (item.attacksDiff ?? 0)} đánh
-                            </span>
+                            {(item.attacksDiff ?? 0) > 0 ? `+${item.attacksDiff}` : (item.attacksDiff ?? 0)} đánh
                           </span>
 
                           <span
-                            className={`inline-flex items-center gap-1 font-semibold ${
+                            className={`font-semibold ${
                               (item.defensesDiff ?? 0) > 0
                                 ? 'text-sky-600 dark:text-sky-400 font-bold'
                                 : 'text-slate-400 dark:text-slate-500'
@@ -461,10 +410,7 @@ export function RankChangesSection({
                                 : undefined
                             }
                           >
-                            <Shield className="h-3 w-3 shrink-0" />
-                            <span>
-                              {(item.defensesDiff ?? 0) > 0 ? `+${item.defensesDiff}` : (item.defensesDiff ?? 0)} thủ
-                            </span>
+                            {(item.defensesDiff ?? 0) > 0 ? `+${item.defensesDiff}` : (item.defensesDiff ?? 0)} thủ
                           </span>
                         </div>
                       </div>

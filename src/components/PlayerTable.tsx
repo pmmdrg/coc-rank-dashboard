@@ -316,14 +316,13 @@ export function PlayerTable({
               <button
                 type="button"
                 onClick={() => setFilterWarnedOnly((prev) => !prev)}
-                className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold transition-all cursor-pointer ${
+                className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-semibold transition-all cursor-pointer ${
                   filterWarnedOnly
                     ? 'border-amber-500 bg-amber-500 text-white shadow-xs dark:bg-amber-600'
                     : 'border-amber-400/60 bg-amber-500/10 text-amber-800 hover:bg-amber-500/20 dark:border-amber-500/40 dark:bg-amber-950/40 dark:text-amber-300'
                 }`}
                 title="Nhấp để chỉ xem các người chơi có dữ liệu bất thường cần rà soát"
               >
-                <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
                 <span>
                   {warnedPlayerIds.size} người chơi cần rà soát {filterWarnedOnly ? '(Đang lọc)' : ''}
                 </span>
@@ -357,7 +356,7 @@ export function PlayerTable({
                 <td colSpan={7} className="py-12 text-center text-sm font-medium text-slate-400 dark:text-slate-500">
                   {filterWarnedOnly ? (
                     <div className="flex flex-col items-center justify-center gap-1.5">
-                      <span className="text-base">🎉 Không có người chơi nào có dữ liệu bất thường!</span>
+                      <span className="text-base font-semibold text-slate-700 dark:text-slate-200">Không có người chơi nào có dữ liệu bất thường!</span>
                       <button
                         type="button"
                         onClick={() => setFilterWarnedOnly(false)}
@@ -412,12 +411,7 @@ export function PlayerTable({
                       <tr key="divider-promotion" className="select-none animate-fade-in">
                         <td colSpan={7} className="p-0 border-y-2 border-emerald-500 bg-emerald-500/20 dark:bg-emerald-950/70">
                           <div className="flex items-center justify-between px-4 py-2 text-xs font-black text-emerald-800 dark:text-emerald-300">
-                            <div className="flex items-center gap-2">
-                              <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-emerald-500 text-[10px] text-white">
-                                ▲
-                              </span>
-                              <span className="tracking-wide">VẠCH THĂNG HẠNG (Top {promotionCount} người chơi đứng đầu)</span>
-                            </div>
+                            <span className="tracking-wide">VẠCH THĂNG HẠNG (Top {promotionCount} người chơi đứng đầu)</span>
                             <span className="text-[11px] font-semibold text-emerald-700/90 dark:text-emerald-400">
                               Các vị trí từ #1 đến #{promotionCount} sẽ được thăng hạng
                             </span>
@@ -431,12 +425,7 @@ export function PlayerTable({
                       <tr key="divider-demotion" className="select-none animate-fade-in">
                         <td colSpan={7} className="p-0 border-y-2 border-rose-500 bg-rose-500/20 dark:bg-rose-950/70">
                           <div className="flex items-center justify-between px-4 py-2 text-xs font-black text-rose-800 dark:text-rose-300">
-                            <div className="flex items-center gap-2">
-                              <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-rose-500 text-[10px] text-white">
-                                ▼
-                              </span>
-                              <span className="tracking-wide">VẠCH XUỐNG HẠNG ({demotionCount} người chơi cuối bảng)</span>
-                            </div>
+                            <span className="tracking-wide">VẠCH XUỐNG HẠNG ({demotionCount} người chơi cuối bảng)</span>
                             <span className="text-[11px] font-semibold text-rose-700/90 dark:text-rose-400">
                               Các vị trí từ #{totalPlayers - demotionCount + 1} đến #{totalPlayers} sẽ bị xuống hạng
                             </span>
@@ -466,13 +455,13 @@ export function PlayerTable({
         {promotionCount > 0 && (
           <span className="inline-flex items-center gap-1.5 font-medium text-emerald-600 dark:text-emerald-400">
             <span className="h-2 w-2 rounded-full bg-emerald-500" />
-            ▲ Thăng hạng (Top {promotionCount})
+            Thăng hạng (Top {promotionCount})
           </span>
         )}
         {demotionCount > 0 && (
           <span className="inline-flex items-center gap-1.5 font-medium text-rose-600 dark:text-rose-400">
             <span className="h-2 w-2 rounded-full bg-rose-500" />
-            ▼ Xuống hạng ({demotionCount} người cuối)
+            Xuống hạng ({demotionCount} người cuối)
           </span>
         )}
       </div>

@@ -1,4 +1,4 @@
-import { Download, FileJson, Loader2 } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { formatLeagueName } from '../lib/ranking'
 import { getLeagueIconUrl } from '../lib/leagueIcons'
 import { ThemeToggle } from './ThemeToggle'
@@ -107,20 +107,18 @@ export function SeasonHeader({
           <button
             type="button"
             onClick={() => onExport('json')}
-            className="inline-flex h-10 items-center gap-1.5 rounded-md border border-slate-300/60 bg-white/60 px-3 text-sm font-medium text-slate-700 shadow-sm backdrop-blur hover:bg-white dark:border-slate-700/60 dark:bg-slate-900/60 dark:text-slate-200 dark:hover:bg-slate-800"
+            className="inline-flex h-10 items-center rounded-md border border-slate-300/60 bg-white/60 px-3 text-sm font-medium text-slate-700 shadow-sm backdrop-blur hover:bg-white dark:border-slate-700/60 dark:bg-slate-900/60 dark:text-slate-200 dark:hover:bg-slate-800"
             title="Xuất sang file JSON"
           >
-            <FileJson className="h-4 w-4 text-emerald-500" aria-hidden="true" />
             JSON
           </button>
 
           <button
             type="button"
             onClick={() => onExport('csv')}
-            className="inline-flex h-10 items-center gap-1.5 rounded-md border border-slate-300/60 bg-white/60 px-3 text-sm font-medium text-slate-700 shadow-sm backdrop-blur hover:bg-white dark:border-slate-700/60 dark:bg-slate-900/60 dark:text-slate-200 dark:hover:bg-slate-800"
+            className="inline-flex h-10 items-center rounded-md border border-slate-300/60 bg-white/60 px-3 text-sm font-medium text-slate-700 shadow-sm backdrop-blur hover:bg-white dark:border-slate-700/60 dark:bg-slate-900/60 dark:text-slate-200 dark:hover:bg-slate-800"
             title="Xuất sang file CSV"
           >
-            <Download className="h-4 w-4 text-sky-500" aria-hidden="true" />
             CSV
           </button>
 

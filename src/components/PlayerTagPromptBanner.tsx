@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ArrowRight, Loader2, Sparkles } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 
 interface PlayerTagPromptBannerProps {
   playerTag: string
@@ -31,8 +31,7 @@ export function PlayerTagPromptBanner({
       <div className="relative z-10 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="space-y-1.5 max-w-2xl">
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-extrabold text-emerald-700 dark:bg-emerald-400/20 dark:text-emerald-300 ring-1 ring-emerald-500/40">
-              <Sparkles className="h-3.5 w-3.5 text-amber-500 animate-spin" style={{ animationDuration: '4s' }} />
+            <span className="inline-flex items-center rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-extrabold text-emerald-700 dark:bg-emerald-400/20 dark:text-emerald-300 ring-1 ring-emerald-500/40">
               BƯỚC ĐẦU TIÊN
             </span>
             <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
@@ -65,18 +64,15 @@ export function PlayerTagPromptBanner({
           <button
             type="submit"
             disabled={!inputVal.trim() || isSyncingApi}
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-sky-600 px-6 text-sm font-black text-white shadow-lg shadow-emerald-600/30 transition-all hover:scale-[1.02] hover:shadow-emerald-600/40 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 dark:from-emerald-500 dark:via-teal-500 dark:to-sky-500"
+            className="inline-flex h-12 items-center justify-center rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-sky-600 px-6 text-sm font-black text-white shadow-lg shadow-emerald-600/30 transition-all hover:scale-[1.02] hover:shadow-emerald-600/40 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 dark:from-emerald-500 dark:via-teal-500 dark:to-sky-500"
           >
             {isSyncingApi ? (
-              <>
+              <span className="inline-flex items-center gap-2">
                 <Loader2 className="h-4 w-4 animate-spin" />
                 <span>Đang tải...</span>
-              </>
+              </span>
             ) : (
-              <>
-                <span>Xem bảng đấu</span>
-                <ArrowRight className="h-4 w-4" />
-              </>
+              <span>Xem bảng đấu</span>
             )}
           </button>
         </form>

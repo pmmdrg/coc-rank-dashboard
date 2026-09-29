@@ -88,7 +88,7 @@ export function PlayerRow({
           {/* Badge báo vị trí vừa nhảy hạng */}
           {rankJump && rankJump.fromRank !== rankJump.toRank ? (
             <span
-              className={`animate-badge-jump inline-flex shrink-0 items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[10px] font-black uppercase tracking-tight shadow-xs select-none ${
+              className={`animate-badge-jump inline-flex shrink-0 items-center rounded-md px-1.5 py-0.5 text-[10px] font-black uppercase tracking-tight shadow-xs select-none ${
                 rankJump.fromRank > rankJump.toRank
                   ? 'bg-emerald-600 text-white dark:bg-emerald-500'
                   : 'bg-rose-600 text-white dark:bg-rose-500'
@@ -99,11 +99,11 @@ export function PlayerRow({
                   : `Vừa giảm ${rankJump.toRank - rankJump.fromRank} bậc (từ #${rankJump.fromRank} xuống #${rankJump.toRank})`
               }
             >
-              {rankJump.fromRank > rankJump.toRank ? '▲' : '▼'} #{rankJump.fromRank} → #{rankJump.toRank}
+              #{rankJump.fromRank} → #{rankJump.toRank}
             </span>
           ) : player.rankDiff !== undefined && player.rankDiff !== 0 ? (
             <span
-              className={`inline-flex shrink-0 items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[10px] font-black uppercase tracking-tight shadow-2xs select-none ${
+              className={`inline-flex shrink-0 items-center rounded-md px-1.5 py-0.5 text-[10px] font-black uppercase tracking-tight shadow-2xs select-none ${
                 player.rankDiff > 0
                   ? 'bg-emerald-500/15 text-emerald-700 dark:bg-emerald-500/25 dark:text-emerald-300 border border-emerald-500/30'
                   : 'bg-rose-500/15 text-rose-700 dark:bg-rose-500/25 dark:text-rose-300 border border-rose-500/30'
@@ -114,22 +114,21 @@ export function PlayerRow({
                   : `Hạ ${Math.abs(player.rankDiff)} bậc (từ #${player.prevRank} xuống #${player.rank})`
               }
             >
-              {player.rankDiff > 0 ? '▲' : '▼'}
               <span>{player.rankDiff > 0 ? `+${player.rankDiff}` : player.rankDiff}</span>
             </span>
           ) : isPromotionZone ? (
             <span
-              className="animate-fade-in inline-flex shrink-0 items-center gap-0.5 rounded-xs bg-emerald-500/20 px-1 py-0.5 text-[9px] font-black text-emerald-700 dark:text-emerald-300 uppercase tracking-tighter select-none border border-emerald-500/30"
+              className="animate-fade-in inline-flex shrink-0 items-center rounded-xs bg-emerald-500/20 px-1 py-0.5 text-[9px] font-black text-emerald-700 dark:text-emerald-300 uppercase tracking-tighter select-none border border-emerald-500/30"
               title="Vị trí thăng hạng"
             >
-              ▲ Thăng
+              Thăng
             </span>
           ) : isDemotionZone ? (
             <span
-              className="animate-fade-in inline-flex shrink-0 items-center gap-0.5 rounded-xs bg-rose-500/20 px-1 py-0.5 text-[9px] font-black text-rose-700 dark:text-rose-300 uppercase tracking-tighter select-none border border-rose-500/30"
+              className="animate-fade-in inline-flex shrink-0 items-center rounded-xs bg-rose-500/20 px-1 py-0.5 text-[9px] font-black text-rose-700 dark:text-rose-300 uppercase tracking-tighter select-none border border-rose-500/30"
               title="Vị trí xuống hạng"
             >
-              ▼ Xuống
+              Xuống
             </span>
           ) : null}
         </div>
@@ -162,7 +161,7 @@ export function PlayerRow({
           {warnings.length > 0 && (
             <span
               className="shrink-0 flex items-center text-amber-500 hover:text-amber-600 dark:text-amber-400 cursor-default"
-              title={`⚠️ Cảnh báo dữ liệu (${warnings.length}):\n${warnings.map((w) => '• ' + w.message).join('\n')}`}
+              title={`Cảnh báo dữ liệu (${warnings.length}):\n${warnings.map((w) => '• ' + w.message).join('\n')}`}
             >
               <AlertTriangle className="h-4 w-4 drop-shadow-xs" />
             </span>
@@ -267,7 +266,7 @@ export function PlayerRow({
               role="button"
               aria-label="Cảnh báo có thể vượt bạn"
               className="inline-flex items-center text-amber-500 hover:text-amber-600 dark:text-amber-400 cursor-default transition-transform hover:scale-110 active:scale-95 focus:outline-hidden"
-              title={`⚠️ Có thể vượt: Người này có thể đạt tối đa ${player.maxPossibleCups.toLocaleString('vi-VN')} cúp, cao hơn mốc cúp tối đa của bạn!`}
+              title={`Có thể vượt: Người này có thể đạt tối đa ${player.maxPossibleCups.toLocaleString('vi-VN')} cúp, cao hơn mốc cúp tối đa của bạn!`}
             >
               <AlertTriangle className="h-4 w-4 drop-shadow-xs" />
             </span>
