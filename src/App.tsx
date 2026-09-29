@@ -468,6 +468,7 @@ function App() {
             snapshot={rankChangesSnapshot}
             myPlayerId={rankedSeason.myPlayerId}
             myPlayerName={myPlayerName}
+            isSyncing={isSyncingApi}
           />
         )}
 

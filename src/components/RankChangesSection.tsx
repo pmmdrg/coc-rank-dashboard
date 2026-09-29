@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import {
   ChevronDown,
   Search,
@@ -9,6 +9,7 @@ export interface RankChangesSectionProps {
   snapshot: RankChangesSnapshot | null
   myPlayerId?: string
   myPlayerName?: string
+  isSyncing?: boolean
 }
 
 type FilterType = 'all' | 'rose' | 'fell'
@@ -19,6 +20,7 @@ export function RankChangesSection({
   snapshot,
   myPlayerId = '',
   myPlayerName = '',
+  isSyncing = false,
 }: RankChangesSectionProps) {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(() => {
     try {
@@ -29,6 +31,10 @@ export function RankChangesSection({
   })
   const [filter, setFilter] = useState<FilterType>('all')
   const [searchQuery, setSearchQuery] = useState('')
+
+  const animatedWrapperRef = useRef<HTMLDivElement>(null)
+  const innerContentRef = useRef<HTMLDivElement>(null)
+  const lastHeightRef = useRef<number | null>(null)
 
   function handleToggleCollapse() {
     setIsCollapsed((prev) => {
@@ -93,13 +99,55 @@ export function RankChangesSection({
     return list
   }, [activeChanges, roseChanges, fellChanges, filter, searchQuery])
 
+  // Animation co giãn chiều cao (Height FLIP transition) mượt mà khi nạp dữ liệu mới hoặc đổi bộ lọc
+  useLayoutEffect(() => {
+    if (isCollapsed) return
+    const wrapper = animatedWrapperRef.current
+    const inner = innerContentRef.current
+    if (!wrapper || !inner) return
+
+    const targetHeight = inner.offsetHeight
+
+    if (lastHeightRef.current !== null && lastHeightRef.current > 0) {
+      const startHeight = lastHeightRef.current
+      if (Math.abs(startHeight - targetHeight) > 4) {
+        wrapper.style.height = `${startHeight}px`
+        wrapper.style.overflow = 'hidden'
+        wrapper.style.transition = 'none'
+
+        // Kích hoạt browser reflow
+        void wrapper.offsetHeight
+
+        wrapper.style.transition = 'height 380ms cubic-bezier(0.22, 1, 0.36, 1)'
+        wrapper.style.height = `${targetHeight}px`
+
+        const timer = setTimeout(() => {
+          if (wrapper) {
+            wrapper.style.height = ''
+            wrapper.style.overflow = ''
+            wrapper.style.transition = ''
+          }
+        }, 400)
+
+        lastHeightRef.current = targetHeight
+        return () => clearTimeout(timer)
+      }
+    }
+
+    lastHeightRef.current = targetHeight
+  }, [snapshot, filter, searchQuery, isCollapsed, filteredChanges.length])
+
   if (!snapshot) return null
 
   const hasActiveChanges = activeChanges.length > 0
   const isFirstSync = !snapshot.previousUpdatedAt
 
   return (
-    <section className="glass-panel rounded-xl shadow-xs transition-all overflow-hidden border border-slate-200/80 dark:border-slate-800/80">
+    <section
+      className={`glass-panel animate-rank-section-enter rounded-xl shadow-xs transition-opacity duration-300 overflow-hidden border border-slate-200/80 dark:border-slate-800/80 ${
+        isSyncing ? 'opacity-70 pointer-events-none' : 'opacity-100'
+      }`}
+    >
       {/* HEADER SECTION */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/60 p-4 sm:p-5 dark:border-slate-800/60">
         <div>
@@ -159,23 +207,25 @@ export function RankChangesSection({
         </div>
       </div>
 
-      {/* BODY KHI MỞ RỘNG (VỚI ANIMATION XỔ XUỐNG / KÉO LÊN) */}
+      {/* BODY KHI MỞ RỘNG (VỚI ANIMATION XỔ XUỐNG / KÉO LÊN & CHUYỂN CHIỀU CAO FLIP) */}
       <div className={`collapsible-grid ${!isCollapsed ? 'is-expanded' : ''}`}>
         <div className="collapsible-inner">
-          <div className="p-4 sm:p-5 space-y-4">
-          {/* 1. THẺ NỔI BẬT THỨ HẠNG CỦA TÀI KHOẢN "BẠN" */}
-          {cleanMyTag && (
-            <div>
-              {myChange ? (
-                <div
-                  className={`rounded-xl border p-3.5 shadow-2xs transition-all ${
-                    myChange.rankDiff > 0
-                      ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-900 dark:border-emerald-500/30 dark:bg-emerald-950/40 dark:text-emerald-200'
-                      : myChange.rankDiff < 0
-                        ? 'border-rose-500/40 bg-rose-500/10 text-rose-900 dark:border-rose-500/30 dark:bg-rose-950/40 dark:text-rose-200'
-                        : 'border-sky-500/40 bg-sky-500/10 text-sky-900 dark:border-sky-500/30 dark:bg-sky-950/40 dark:text-sky-200'
-                  }`}
-                >
+          <div ref={animatedWrapperRef} className="overflow-hidden">
+            <div ref={innerContentRef} className="p-4 sm:p-5 space-y-4">
+              {/* 1. THẺ NỔI BẬT THỨ HẠNG CỦA TÀI KHOẢN "BẠN" */}
+              {cleanMyTag && (
+                <div>
+                  {myChange ? (
+                    <div
+                      key={`my-change-${snapshot.updatedAt || 'init'}`}
+                      className={`animate-change-card rounded-xl border p-3.5 shadow-2xs transition-all ${
+                        myChange.rankDiff > 0
+                          ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-900 dark:border-emerald-500/30 dark:bg-emerald-950/40 dark:text-emerald-200'
+                          : myChange.rankDiff < 0
+                            ? 'border-rose-500/40 bg-rose-500/10 text-rose-900 dark:border-rose-500/30 dark:bg-rose-950/40 dark:text-rose-200'
+                            : 'border-sky-500/40 bg-sky-500/10 text-sky-900 dark:border-sky-500/30 dark:bg-sky-950/40 dark:text-sky-200'
+                      }`}
+                    >
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                     <div>
                       <div className="text-sm font-extrabold flex items-center gap-2 flex-wrap">
@@ -237,7 +287,10 @@ export function RankChangesSection({
                   </div>
                 </div>
               ) : (
-                <div className="rounded-xl border border-slate-200/80 bg-slate-50/70 p-3 text-xs text-slate-600 dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-400 flex items-center justify-between gap-2">
+                <div
+                  key={`my-change-stable-${snapshot.updatedAt || 'init'}`}
+                  className="animate-change-card rounded-xl border border-slate-200/80 bg-slate-50/70 p-3 text-xs text-slate-600 dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-400 flex items-center justify-between gap-2"
+                >
                   <div className="flex items-center gap-2">
                     <span className="rounded-md bg-sky-500/20 px-1.5 py-0.5 text-[10px] font-bold text-sky-700 dark:text-sky-300">
                       BẠN
@@ -253,7 +306,10 @@ export function RankChangesSection({
 
           {/* 2. KHI KHÔNG CÓ THAY ĐỔI CÚP NÀO TRONG BẢNG ĐẤU */}
           {!hasActiveChanges ? (
-            <div className="rounded-xl border border-slate-200/70 bg-white/30 py-6 text-center px-4 dark:border-slate-800 dark:bg-slate-900/30">
+            <div
+              key={`empty-${snapshot.updatedAt || 'init'}`}
+              className="animate-change-card rounded-xl border border-slate-200/70 bg-white/30 py-6 text-center px-4 dark:border-slate-800 dark:bg-slate-900/30"
+            >
               <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">
                 {isFirstSync ? 'Đã ghi nhận dữ liệu bảng đấu ban đầu' : 'Không có người chơi nào thay đổi điểm cúp hoặc lượt đấu'}
               </h3>
@@ -324,7 +380,7 @@ export function RankChangesSection({
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5">
-                  {filteredChanges.map((item) => {
+                  {filteredChanges.map((item, index) => {
                     const isRose = item.rankDiff > 0
                     const isUser =
                       item.isMe ||
@@ -333,8 +389,11 @@ export function RankChangesSection({
 
                     return (
                       <div
-                        key={item.id}
-                        className={`flex flex-col justify-between rounded-xl border p-2.5 shadow-2xs transition-all hover:scale-[1.01] ${
+                        key={`${item.id}-${snapshot.updatedAt || 'init'}`}
+                        style={{
+                          animationDelay: `${Math.min(index * 35, 300)}ms`,
+                        }}
+                        className={`animate-change-card flex flex-col justify-between rounded-xl border p-2.5 shadow-2xs transition-all hover:scale-[1.01] ${
                           isUser
                             ? 'border-sky-400/60 bg-sky-50/70 dark:border-sky-500/40 dark:bg-sky-950/30 ring-1 ring-sky-400/40'
                             : isRose
@@ -420,9 +479,10 @@ export function RankChangesSection({
               )}
             </>
           )}
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
-)
+    </section>
+  )
 }
