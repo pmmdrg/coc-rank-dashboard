@@ -3,7 +3,6 @@ import {
   TrendingUp,
   TrendingDown,
   ChevronDown,
-  ChevronUp,
   ArrowUpDown,
   Search,
   CheckCircle2,
@@ -164,14 +163,17 @@ export function RankChangesSection({
             aria-expanded={!isCollapsed}
           >
             <span>{isCollapsed ? 'Mở rộng' : 'Thu gọn'}</span>
-            {isCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+            <ChevronDown
+              className={`h-4 w-4 transition-transform duration-300 ${!isCollapsed ? 'rotate-180' : ''}`}
+            />
           </button>
         </div>
       </div>
 
-      {/* BODY KHI MỞ RỘNG */}
-      {!isCollapsed && (
-        <div className="p-4 sm:p-5 space-y-4">
+      {/* BODY KHI MỞ RỘNG (VỚI ANIMATION XỔ XUỐNG / KÉO LÊN) */}
+      <div className={`collapsible-grid ${!isCollapsed ? 'is-expanded' : ''}`}>
+        <div className="collapsible-inner">
+          <div className="p-4 sm:p-5 space-y-4">
           {/* 1. THẺ NỔI BẬT THỨ HẠNG CỦA TÀI KHOẢN "BẠN" */}
           {cleanMyTag && (
             <div>
@@ -382,7 +384,8 @@ export function RankChangesSection({
             </>
           )}
         </div>
-      )}
-    </section>
-  )
+      </div>
+    </div>
+  </section>
+)
 }

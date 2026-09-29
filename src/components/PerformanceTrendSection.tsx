@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { ChevronDown } from 'lucide-react'
 import type { LeagueHistoryItem } from '../types'
 import { parseSeasonDateRange } from '../lib/cocApi'
 import { RANKED_TIERS_METADATA } from '../data/rankedTierMetadata'
@@ -226,17 +227,36 @@ export function PerformanceTrendSection({
     return paddingTop + ((stars - minStars) / starsSpan) * plotHeight
   }
 
-  // Tạo đường dẫn path SVG
-  const makeLinePath = (getY: (d: ProcessedSeasonPoint) => number) => {
-    return chronologicalHistory
-      .map((d, i) => `${i === 0 ? 'M' : 'L'} ${getX(i).toFixed(1)} ${getY(d).toFixed(1)}`)
-      .join(' ')
+  // Tạo đường dẫn cong mềm mại (Smooth Spline Curve)
+  const makeSmoothPath = (getY: (d: ProcessedSeasonPoint) => number, tension: number = 0.18) => {
+    if (chronologicalHistory.length === 0) return ''
+    const points = chronologicalHistory.map((d, i) => ({ x: getX(i), y: getY(d) }))
+    if (points.length === 1) return `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`
+    if (points.length === 2) {
+      return `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)} L ${points[1].x.toFixed(1)} ${points[1].y.toFixed(1)}`
+    }
+
+    let path = `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`
+    for (let i = 0; i < points.length - 1; i++) {
+      const p0 = points[i === 0 ? 0 : i - 1]
+      const p1 = points[i]
+      const p2 = points[i + 1]
+      const p3 = points[i + 2 >= points.length ? points.length - 1 : i + 2]
+
+      const cp1x = p1.x + (p2.x - p0.x) * tension
+      const cp1y = p1.y + (p2.y - p0.y) * tension
+      const cp2x = p2.x - (p3.x - p1.x) * tension
+      const cp2y = p2.y - (p3.y - p1.y) * tension
+
+      path += ` C ${cp1x.toFixed(1)} ${cp1y.toFixed(1)}, ${cp2x.toFixed(1)} ${cp2y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`
+    }
+    return path
   }
 
-  const cupsPath = makeLinePath((d) => getCupsY(d.trophies))
-  const rankPath = makeLinePath((d) => getRankY(d))
-  const ratePath = makeLinePath((d) => getRateY(d.attackWinRate))
-  const starsPath = makeLinePath((d) => getStarsY(d.defenseStars))
+  const cupsPath = makeSmoothPath((d) => getCupsY(d.trophies))
+  const rankPath = makeSmoothPath((d) => getRankY(d))
+  const ratePath = makeSmoothPath((d) => getRateY(d.attackWinRate))
+  const starsPath = makeSmoothPath((d) => getStarsY(d.defenseStars))
 
   return (
     <section className="glass-panel rounded-xl shadow-sm transition-all">
@@ -274,20 +294,26 @@ export function PerformanceTrendSection({
           <button
             type="button"
             onClick={() => setIsCollapsed((prev) => !prev)}
-            className="rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-100 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800"
+            className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-100 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 cursor-pointer shadow-2xs"
+            aria-expanded={!isCollapsed}
           >
-            {isCollapsed ? 'Mở rộng' : 'Thu gọn'}
+            <span>{isCollapsed ? 'Mở rộng' : 'Thu gọn'}</span>
+            <ChevronDown
+              className={`h-3.5 w-3.5 transition-transform duration-300 ${!isCollapsed ? 'rotate-180' : ''}`}
+            />
           </button>
         </div>
       </div>
 
-      {!isCollapsed && overallStats && (
-        <div className="p-4 sm:p-5 space-y-5">
-          {/* 4 THẺ THỐNG KÊ TỔNG HỢP PHONG ĐỘ */}
-          <TrendRecordCards
-            overallStats={overallStats}
-            historyCount={chronologicalHistory.length}
-          />
+      {overallStats && (
+        <div className={`collapsible-grid ${!isCollapsed ? 'is-expanded' : ''}`}>
+          <div className="collapsible-inner">
+            <div className="p-4 sm:p-5 space-y-5">
+              {/* 4 THẺ THỐNG KÊ TỔNG HỢP PHONG ĐỘ */}
+              <TrendRecordCards
+                overallStats={overallStats}
+                historyCount={chronologicalHistory.length}
+              />
 
           {/* KHU VỰC BIỂU ĐỒ SVG TƯƠNG TÁC */}
           <div className="rounded-xl border border-slate-200/70 bg-white/40 p-4 dark:border-slate-700/70 dark:bg-slate-900/40">
@@ -594,7 +620,7 @@ export function PerformanceTrendSection({
               {/* Tooltip khi hover điểm mốc (Không có icon/emoji) */}
               {hoveredIndex !== null && (
                 <div
-                  className="pointer-events-none absolute z-20 rounded-lg border border-slate-700/30 bg-slate-900/90 p-3 text-xs text-white shadow-xl backdrop-blur -translate-x-1/2 dark:border-slate-600 dark:bg-slate-950/95 transition-all"
+                  className="pointer-events-none absolute z-20 rounded-lg border border-slate-700/30 bg-slate-900/90 p-3 text-xs text-white shadow-xl backdrop-blur -translate-x-1/2 dark:border-slate-600 dark:bg-slate-950/95 animate-tooltip-pop transition-[left,top] duration-200 ease-out"
                   style={{
                     left: `${(getX(hoveredIndex) / chartWidth) * 100}%`,
                     top: '8px',
@@ -638,9 +664,17 @@ export function PerformanceTrendSection({
           </div>
 
           {/* BẢNG CHI TIẾT LỊCH SỬ TỪNG MÙA GIẢI */}
-          {showTable && <TrendHistoryTable chronologicalHistory={chronologicalHistory} />}
+          <div className={`collapsible-grid ${showTable ? 'is-expanded' : ''}`}>
+            <div className="collapsible-inner">
+              <div className="pt-1">
+                <TrendHistoryTable chronologicalHistory={chronologicalHistory} />
+              </div>
+            </div>
+          </div>
         </div>
-      )}
-    </section>
+      </div>
+    </div>
+  )}
+</section>
   )
 }
