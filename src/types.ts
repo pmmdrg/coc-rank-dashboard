@@ -53,6 +53,12 @@ export interface RankChangeItem {
   oldCups: number
   newCups: number
   cupsDiff: number
+  oldAttacks?: number
+  newAttacks?: number
+  attacksDiff?: number
+  oldDefenses?: number
+  newDefenses?: number
+  defensesDiff?: number
   isMe: boolean
 }
 

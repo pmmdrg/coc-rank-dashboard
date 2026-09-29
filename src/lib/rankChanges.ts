@@ -41,21 +41,41 @@ export function calculateRankChangesSnapshot(
     const rawTag = (p.playerTag || p.id).toUpperCase().replace(/^#/, '')
     const oldP = existingMap.get(rawTag)
 
-    if (oldP && oldP.rank > 0 && oldP.rank !== p.rank) {
+    if (oldP && oldP.rank > 0) {
       const isMe = Boolean(cleanPlayerTag && rawTag === cleanPlayerTag)
+      const rankDiff = oldP.rank - p.rank // dương: tăng bậc, âm: hạ bậc
+      const cupsDiff = p.currentCups - oldP.currentCups
+      const oldAttacks = oldP.attacks ?? 0
+      const newAttacks = p.attacks ?? 0
+      const attacksDiff = newAttacks - oldAttacks
+      const oldDefenses = oldP.defenses ?? 0
+      const newDefenses = p.defenses ?? 0
+      const defensesDiff = newDefenses - oldDefenses
 
-      changes.push({
-        id: p.id,
-        name: p.name,
-        playerTag: p.playerTag,
-        oldRank: oldP.rank,
-        newRank: p.rank,
-        rankDiff: oldP.rank - p.rank, // dương: tăng bậc, âm: hạ bậc
-        oldCups: oldP.currentCups,
-        newCups: p.currentCups,
-        cupsDiff: p.currentCups - oldP.currentCups,
-        isMe,
-      })
+      const hasRankChange = rankDiff !== 0
+      const hasBattleChange = cupsDiff !== 0 || attacksDiff !== 0 || defensesDiff !== 0
+
+      // Ghi nhận biến động nếu thứ hạng thay đổi, hoặc đối với bản thân nếu có thay đổi cúp / lượt đánh / lượt thủ
+      if (hasRankChange || (isMe && hasBattleChange)) {
+        changes.push({
+          id: p.id,
+          name: p.name,
+          playerTag: p.playerTag,
+          oldRank: oldP.rank,
+          newRank: p.rank,
+          rankDiff,
+          oldCups: oldP.currentCups,
+          newCups: p.currentCups,
+          cupsDiff,
+          oldAttacks,
+          newAttacks,
+          attacksDiff,
+          oldDefenses,
+          newDefenses,
+          defensesDiff,
+          isMe,
+        })
+      }
     }
   }
 
