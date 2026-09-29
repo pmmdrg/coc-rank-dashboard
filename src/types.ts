@@ -105,18 +105,4 @@ export type StorageDocument = {
   season: Season
   seasons: Season[]
   activeSeasonIndex: number
-  driveFileId?: string
 }
-
-export type StorageAdapter = {
-  open: () => Promise<StorageDocument>
-  save: (document: StorageDocument) => Promise<StorageDocument>
-  saveAs: (document: StorageDocument, format: StorageFormat) => Promise<StorageDocument>
-  hasActiveFile: () => boolean
-  canWriteBack: boolean
-  label: string
-}
-
-export type StorageSource = 'local' | 'google-drive'
-
-export type AutoSaveStatus = 'saved' | 'saving' | 'draft' | 'error'

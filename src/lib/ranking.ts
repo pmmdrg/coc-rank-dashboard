@@ -39,13 +39,6 @@ export const attackStatusColors: Record<AttackStatusCategory, string> = {
   notStarted: '#64748b',
 }
 
-export function getCupsPerRemainingDefense(
-  _defenses: number,
-  _defenseDestruction?: number,
-): number {
-  return 40
-}
-
 export function calculateMaxPossibleCups(
   currentCups: number,
   attacks: number,
@@ -276,23 +269,6 @@ export function getRankingStats(season: Season): RankingStats {
       : 0,
     ratingCounts,
     attackStatusCounts,
-  }
-}
-
-export function createPlayer(maxAttacks: number = 24, _maxDefenses: number = 24): Player {
-  return {
-    id: crypto.randomUUID(),
-    name: 'Người chơi mới',
-    rank: 0,
-    attacks: 0,
-    defenses: 0,
-    attackDestruction: 0,
-    defenseDestruction: 0,
-    currentCups: 0,
-    maxPossibleCups: maxAttacks * 40,
-    rating: 'alarm',
-    attackCups: 0,
-    defenseCups: 0,
   }
 }
 

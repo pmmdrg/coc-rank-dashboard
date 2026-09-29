@@ -12,10 +12,21 @@ import {
 } from './lib/ranking'
 import { seasonsToCsv } from './lib/csv'
 import { fetchRankedSeasonData } from './lib/cocApi'
+import { calculateRankChangesSnapshot } from './lib/rankChanges'
+import {
+  clearPlayerData,
+  loadDraftDocument,
+  loadRankChangesSnapshot,
+  loadSavedLeagueHistory,
+  loadSavedPlayerTag,
+  saveDraftDocument,
+  saveLeagueHistory,
+  savePlayerTag,
+  saveRankChangesSnapshot,
+} from './lib/storage'
 import type {
   LeagueHistoryItem,
   Player,
-  RankChangeItem,
   RankChangesSnapshot,
   RatingCategory,
   Season,
@@ -23,7 +34,6 @@ import type {
 } from './types'
 
 import { ChartsSection } from './components/ChartsSection'
-import { CreateSeasonModal } from './components/CreateSeasonModal'
 import { PlayerTable } from './components/PlayerTable'
 import { SeasonHeader } from './components/SeasonHeader'
 import { SeasonMetaForm } from './components/SeasonMetaForm'
@@ -34,8 +44,6 @@ import { PlayerTagPromptBanner } from './components/PlayerTagPromptBanner'
 import { RankChangesSection } from './components/RankChangesSection'
 import { Footer } from './components/Footer'
 import { Analytics } from '@vercel/analytics/react'
-
-const DRAFT_STORAGE_KEY = 'coc_rank_autosave_draft'
 
 const emptySeason: Season = {
   league: '--',
@@ -74,80 +82,16 @@ function downloadFile(content: string, filename: string, mimeType: string) {
   URL.revokeObjectURL(url)
 }
 
-function loadInitialDocument(): StorageDocument {
-  try {
-    const rawDraft = localStorage.getItem(DRAFT_STORAGE_KEY)
-    const savedPlayerTag = localStorage.getItem('coc_player_tag')
-
-    if (rawDraft) {
-      const parsed = JSON.parse(rawDraft) as Partial<StorageDocument>
-      const hasOldPersonalData =
-        parsed.season?.myPlayerId === '#G9GRJCRPQ' ||
-        parsed.season?.players?.some((p) => p.id === '#G9GRJCRPQ')
-
-      if (!savedPlayerTag && hasOldPersonalData) {
-        localStorage.removeItem(DRAFT_STORAGE_KEY)
-      } else {
-        const seasons = Array.isArray(parsed.seasons) && parsed.seasons.length > 0
-          ? parsed.seasons.map(normalizeSeason)
-          : [parsed.season ? normalizeSeason(parsed.season) : emptySeason]
-
-        const activeIndex = typeof parsed.activeSeasonIndex === 'number' && parsed.activeSeasonIndex < seasons.length
-          ? parsed.activeSeasonIndex
-          : 0
-
-        const currentSeason = seasons[activeIndex] ?? emptySeason
-
-        return {
-          name: parsed.name || 'rank-season.json',
-          format: parsed.format || 'json',
-          season: currentSeason,
-          seasons: seasons.slice(0, 2),
-          activeSeasonIndex: activeIndex,
-        }
-      }
-    }
-  } catch {
-    // Ignore draft parse error
-  }
-
-  return {
-    name: 'rank-season.json',
-    format: 'json',
-    season: emptySeason,
-    seasons: [emptySeason],
-    activeSeasonIndex: 0,
-  }
-}
-
 function App() {
-  const [isCreateSeasonModalOpen, setIsCreateSeasonModalOpen] = useState(false)
   const [isSyncingApi, setIsSyncingApi] = useState(false)
-  const [playerTag, setPlayerTag] = useState<string>(() => {
-    return localStorage.getItem('coc_player_tag') || ''
-  })
-  const [leagueHistory, setLeagueHistory] = useState<LeagueHistoryItem[]>(() => {
-    const saved = localStorage.getItem('coc_league_history')
-    if (saved) {
-      try {
-        return JSON.parse(saved)
-      } catch {
-        return []
-      }
-    }
-    return []
-  })
-  const [rankChangesSnapshot, setRankChangesSnapshot] = useState<RankChangesSnapshot | null>(() => {
-    try {
-      const saved = localStorage.getItem('coc_rank_changes_snapshot')
-      return saved ? JSON.parse(saved) : null
-    } catch {
-      return null
-    }
-  })
-  const [document, setDocument] = useState<StorageDocument>(loadInitialDocument)
+  const [playerTag, setPlayerTag] = useState<string>(() => loadSavedPlayerTag())
+  const [leagueHistory, setLeagueHistory] = useState<LeagueHistoryItem[]>(() => loadSavedLeagueHistory())
+  const [rankChangesSnapshot, setRankChangesSnapshot] = useState<RankChangesSnapshot | null>(() =>
+    loadRankChangesSnapshot(),
+  )
+  const [document, setDocument] = useState<StorageDocument>(() => loadDraftDocument(emptySeason))
   const [status, setStatus] = useState(() => {
-    const savedTag = localStorage.getItem('coc_player_tag')
+    const savedTag = loadSavedPlayerTag()
     return savedTag
       ? 'Đang tải dữ liệu...'
       : 'Vui lòng nhập Player Tag ở góc trên bên phải để tải dữ liệu bảng đấu.'
@@ -173,21 +117,17 @@ function App() {
     }
 
     const timer = setTimeout(() => {
-      try {
-        const nextSeasons = document.seasons.map((s, idx) =>
-          idx === document.activeSeasonIndex ? rankedSeason : normalizeSeason(s),
-        )
+      const nextSeasons = document.seasons.map((s, idx) =>
+        idx === document.activeSeasonIndex ? rankedSeason : normalizeSeason(s),
+      )
 
-        const draftDoc: StorageDocument = {
-          ...document,
-          season: rankedSeason,
-          seasons: nextSeasons,
-        }
-
-        localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draftDoc))
-      } catch (err) {
-        console.error('Lỗi tự động lưu bản nháp:', err)
+      const draftDoc: StorageDocument = {
+        ...document,
+        season: rankedSeason,
+        seasons: nextSeasons,
       }
+
+      saveDraftDocument(draftDoc)
     }, 800)
 
     return () => clearTimeout(timer)
@@ -266,55 +206,6 @@ function App() {
       }))
       setStatus(`Đang xem dữ liệu của: ${targetSeason.seasonName}`)
     }
-  }
-
-  function handleCreateSeason(data: {
-    seasonName: string
-    startsAt: string
-    endsAt: string
-    maxAttacks: number
-    maxDefenses: number
-    promotionCount: number
-    demotionCount: number
-    copyPlayersFromCurrent?: boolean
-  }) {
-    const resetPlayers: Player[] = data.copyPlayersFromCurrent
-      ? rankedSeason.players.map((p) => ({
-          ...p,
-          attacks: 0,
-          attackDestruction: 0,
-          defenses: 0,
-          defenseDestruction: 0,
-          currentCups: 0,
-          maxPossibleCups: (data.maxAttacks + data.maxDefenses) * 40,
-          rating: 'alarm' as const,
-        }))
-      : []
-
-    const newSeason = normalizeSeason({
-      league: rankedSeason.league,
-      seasonName: data.seasonName,
-      startsAt: data.startsAt,
-      endsAt: data.endsAt,
-      maxAttacks: data.maxAttacks,
-      maxDefenses: data.maxDefenses,
-      promotionCount: data.promotionCount,
-      demotionCount: data.demotionCount,
-      myPlayerId: season.myPlayerId || resetPlayers[0]?.id || '',
-      players: resetPlayers,
-    })
-
-    const nextSeasons = [...document.seasons, newSeason]
-    const nextIndex = nextSeasons.length - 1
-
-    setDocument((current) => ({
-      ...current,
-      seasons: nextSeasons,
-      activeSeasonIndex: nextIndex,
-      season: newSeason,
-    }))
-
-    setStatus(`Đã tạo thành công mùa giải mới: ${data.seasonName}`)
   }
 
   function handleExport(format: 'json' | 'csv') {
@@ -419,7 +310,7 @@ function App() {
     const clean = tag.replace(/^#/, '').trim().toUpperCase()
     setPlayerTag(clean)
     if (clean) {
-      localStorage.setItem('coc_player_tag', clean)
+      savePlayerTag(clean)
       const formatted = `#${clean}`
       if (rankedSeason.myPlayerId !== formatted && rankedSeason.myPlayerId !== clean) {
         updateCurrentSeason({
@@ -428,9 +319,7 @@ function App() {
         })
       }
     } else {
-      localStorage.removeItem('coc_player_tag')
-      localStorage.removeItem('coc_league_history')
-      localStorage.removeItem('coc_rank_changes_snapshot')
+      clearPlayerData()
       setLeagueHistory([])
       setRankChangesSnapshot(null)
     }
@@ -449,85 +338,32 @@ function App() {
     try {
       if (cleanTag !== playerTag) {
         setPlayerTag(cleanTag)
-        localStorage.setItem('coc_player_tag', cleanTag)
+        savePlayerTag(cleanTag)
       }
       const previousPlayers = rankedSeason.players
-      const hasPreviousSnapshot = previousPlayers.length > 0 && previousPlayers.some((p) => p.rank > 0)
       const existingMap = new Map(previousPlayers.map((p) => [(p.playerTag || p.id).toUpperCase(), p]))
       const result = await fetchRankedSeasonData(cleanTag, existingMap)
+
       if (result.leagueHistory) {
         setLeagueHistory(result.leagueHistory)
-        localStorage.setItem('coc_league_history', JSON.stringify(result.leagueHistory))
+        saveLeagueHistory(result.leagueHistory)
       }
+
       const syncedSeasons = [
         normalizeSeason(result.currentSeason),
         ...(result.previousSeason ? [normalizeSeason(result.previousSeason)] : []),
       ]
 
-      // Tính toán danh sách thay đổi thứ hạng cho mục thông báo
+      // Tính toán và lưu trữ snapshot biến động thứ hạng qua rankChanges module
       const currentNormalized = syncedSeasons[0]
-      if (hasPreviousSnapshot) {
-        const changes: RankChangeItem[] = []
-        for (const p of currentNormalized.players) {
-          const oldP = existingMap.get((p.playerTag || p.id).toUpperCase())
-          if (oldP && oldP.rank > 0 && oldP.rank !== p.rank) {
-            const isMe = Boolean(
-              cleanTag && (
-                p.playerTag?.toUpperCase().replace(/^#/, '') === cleanTag ||
-                p.id.toUpperCase().replace(/^#/, '') === cleanTag
-              )
-            )
-            changes.push({
-              id: p.id,
-              name: p.name,
-              playerTag: p.playerTag,
-              oldRank: oldP.rank,
-              newRank: p.rank,
-              rankDiff: oldP.rank - p.rank, // dương: tăng bậc, âm: hạ bậc
-              oldCups: oldP.currentCups,
-              newCups: p.currentCups,
-              cupsDiff: p.currentCups - oldP.currentCups,
-              isMe,
-            })
-          }
-        }
-
-        // Sắp xếp: "Bạn" lên đầu, sau đó theo độ biến động lớn nhất
-        changes.sort((a, b) => {
-          if (a.isMe && !b.isMe) return -1
-          if (!a.isMe && b.isMe) return 1
-          return Math.abs(b.rankDiff) - Math.abs(a.rankDiff)
-        })
-
-        const newSnapshot: RankChangesSnapshot = {
-          seasonId: currentNormalized.leagueSeasonId,
-          groupTag: currentNormalized.leagueGroupTag,
-          updatedAt: result.currentSeason.lastSyncedAt || new Date().toLocaleTimeString('vi-VN'),
-          previousUpdatedAt: rankedSeason.lastSyncedAt || undefined,
-          changes,
-        }
-        setRankChangesSnapshot(newSnapshot)
-        try {
-          localStorage.setItem('coc_rank_changes_snapshot', JSON.stringify(newSnapshot))
-        } catch {
-          // ignore
-        }
-      } else {
-        // Lần đầu tiên đồng bộ bảng đấu này
-        const initialSnapshot: RankChangesSnapshot = {
-          seasonId: currentNormalized.leagueSeasonId,
-          groupTag: currentNormalized.leagueGroupTag,
-          updatedAt: result.currentSeason.lastSyncedAt || new Date().toLocaleTimeString('vi-VN'),
-          previousUpdatedAt: undefined,
-          changes: [],
-        }
-        setRankChangesSnapshot(initialSnapshot)
-        try {
-          localStorage.setItem('coc_rank_changes_snapshot', JSON.stringify(initialSnapshot))
-        } catch {
-          // ignore
-        }
-      }
+      const newSnapshot = calculateRankChangesSnapshot(
+        currentNormalized,
+        previousPlayers,
+        cleanTag,
+        rankedSeason.lastSyncedAt,
+      )
+      setRankChangesSnapshot(newSnapshot)
+      saveRankChangesSnapshot(newSnapshot)
 
       setDocument((current) => ({
         ...current,
@@ -546,7 +382,7 @@ function App() {
 
   // Tự động gọi Supercell API khi truy cập trang web hoặc refresh (nếu đã có playerTag)
   useEffect(() => {
-    const savedTag = localStorage.getItem('coc_player_tag') || playerTag
+    const savedTag = loadSavedPlayerTag() || playerTag
     if (savedTag) {
       handleSyncCocApi(savedTag)
     }
@@ -647,13 +483,6 @@ function App() {
 
       {/* Footer & chính sách */}
       <Footer />
-
-      {/* Modal tạo mùa giải mới */}
-      <CreateSeasonModal
-        isOpen={isCreateSeasonModalOpen}
-        onClose={() => setIsCreateSeasonModalOpen(false)}
-        onCreateSeason={handleCreateSeason}
-      />
 
       {/* Vercel Web Analytics */}
       <Analytics />

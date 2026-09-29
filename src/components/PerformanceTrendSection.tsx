@@ -2,29 +2,14 @@ import { useMemo, useState } from 'react'
 import type { LeagueHistoryItem } from '../types'
 import { parseSeasonDateRange } from '../lib/cocApi'
 import { RANKED_TIERS_METADATA } from '../data/rankedTierMetadata'
+import { TrendRecordCards } from './trend/TrendRecordCards'
+import { TrendHistoryTable } from './trend/TrendHistoryTable'
+import type { ProcessedSeasonPoint } from './trend/types'
 
 export interface PerformanceTrendSectionProps {
   leagueHistory?: LeagueHistoryItem[]
   myPlayerName?: string
   playerTag?: string
-}
-
-interface ProcessedSeasonPoint {
-  seasonId: number
-  displayPeriod: string
-  tierName: string
-  tierNumber: number
-  placement: number
-  trophies: number
-  attackWins: number
-  attackLosses: number
-  totalAttacks: number
-  attackWinRate: number
-  defenseWins: number
-  defenseLosses: number
-  totalDefenses: number
-  defenseStars: number
-  maxBattles: number
 }
 
 export function PerformanceTrendSection({
@@ -299,102 +284,10 @@ export function PerformanceTrendSection({
       {!isCollapsed && overallStats && (
         <div className="p-4 sm:p-5 space-y-5">
           {/* 4 THẺ THỐNG KÊ TỔNG HỢP PHONG ĐỘ */}
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {/* Thẻ 1: Thứ hạng */}
-            <div className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white/60 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60">
-              <div>
-                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                  Hạng mùa gần nhất
-                </span>
-                <div className="mt-2 flex items-baseline gap-1.5">
-                  <span className="text-xl font-extrabold text-slate-900 dark:text-slate-100">
-                    #{overallStats.latest.placement}
-                  </span>
-                  <span className="text-[11px] font-medium text-slate-400">/ 100</span>
-                </div>
-                <div
-                  className="mt-1 text-[11px] font-semibold text-slate-700 dark:text-slate-300 truncate"
-                  title={`Giải đấu: ${overallStats.latest.tierName}`}
-                >
-                  {overallStats.latest.tierName}
-                </div>
-              </div>
-              <div
-                className="mt-2 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium truncate"
-                title={`Kỷ lục: #${overallStats.bestRankSeason.placement} (${overallStats.bestRankSeason.tierName})`}
-              >
-                Kỷ lục: #{overallStats.bestRankSeason.placement} ({overallStats.bestRankSeason.tierName})
-              </div>
-            </div>
-
-            {/* Thẻ 2: Cúp mùa giải */}
-            <div className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white/60 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60">
-              <div>
-                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                  Cúp mùa gần nhất
-                </span>
-                <div className="mt-2 flex items-baseline gap-1.5">
-                  <span className="text-xl font-extrabold text-amber-600 dark:text-amber-400">
-                    {overallStats.latest.trophies}
-                  </span>
-                  <span className="text-[11px] font-medium text-slate-400">cúp</span>
-                </div>
-                <div
-                  className="mt-1 text-[11px] font-semibold text-slate-700 dark:text-slate-300 truncate"
-                  title={`Giải đấu: ${overallStats.latest.tierName}`}
-                >
-                  {overallStats.latest.tierName}
-                </div>
-              </div>
-              <div
-                className="mt-2 text-[11px] text-amber-600 dark:text-amber-400 font-medium truncate"
-                title={`Kỷ lục: ${overallStats.bestCupsSeason.trophies} cúp (${overallStats.bestCupsSeason.tierName})`}
-              >
-                Kỷ lục: {overallStats.bestCupsSeason.trophies} cúp ({overallStats.bestCupsSeason.tierName})
-              </div>
-            </div>
-
-            {/* Thẻ 3: Tỷ lệ thắng công */}
-            <div className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white/60 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60">
-              <div>
-                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                  Tỷ lệ thắng công
-                </span>
-                <div className="mt-2 flex items-baseline gap-1.5">
-                  <span className="text-xl font-extrabold text-rose-600 dark:text-rose-400">
-                    {overallStats.overallWinRate.toFixed(1)}%
-                  </span>
-                </div>
-                <div className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
-                  Thắng {overallStats.totalWins}/{overallStats.totalAtks} trận
-                </div>
-              </div>
-              <div className="mt-2 text-[11px] text-slate-400 dark:text-slate-500">
-                {chronologicalHistory.length} mùa gần nhất
-              </div>
-            </div>
-
-            {/* Thẻ 4: Cấp giải đấu */}
-            <div className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white/60 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60">
-              <div>
-                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                  Cấp bậc hiện tại
-                </span>
-                <div
-                  className="mt-2 truncate font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-base"
-                  title={overallStats.latest.tierName}
-                >
-                  {overallStats.latest.tierName}
-                </div>
-                <div className="mt-1 text-[11px] text-sky-600 dark:text-sky-400 font-medium">
-                  Tối đa {overallStats.latest.maxBattles} lượt/mùa
-                </div>
-              </div>
-              <div className="mt-2 text-[11px] text-slate-400 dark:text-slate-500">
-                Mùa {overallStats.latest.displayPeriod}
-              </div>
-            </div>
-          </div>
+          <TrendRecordCards
+            overallStats={overallStats}
+            historyCount={chronologicalHistory.length}
+          />
 
           {/* KHU VỰC BIỂU ĐỒ SVG TƯƠNG TÁC */}
           <div className="rounded-xl border border-slate-200/70 bg-white/40 p-4 dark:border-slate-700/70 dark:bg-slate-900/40">
@@ -745,94 +638,7 @@ export function PerformanceTrendSection({
           </div>
 
           {/* BẢNG CHI TIẾT LỊCH SỬ TỪNG MÙA GIẢI */}
-          {showTable && (
-            <div className="overflow-x-auto rounded-xl border border-slate-200/70 dark:border-slate-700/70">
-              <table className="w-full text-left text-xs">
-                <thead className="soft-table-head uppercase tracking-wider text-[11px]">
-                  <tr>
-                    <th className="px-3.5 py-2.5 font-bold">Khoảng thời gian</th>
-                    <th className="px-3 py-2.5 font-bold">Cấp giải đấu</th>
-                    <th className="px-3 py-2.5 font-bold">Thứ hạng</th>
-                    <th className="px-3 py-2.5 font-bold">Điểm Cúp</th>
-                    <th className="px-3 py-2.5 font-bold">Tấn công</th>
-                    <th className="px-3 py-2.5 font-bold">Phòng thủ</th>
-                    <th className="px-3 py-2.5 font-bold">Số trận tối đa</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200/50 dark:divide-slate-800/60">
-                  {/* Hiển thị mùa mới nhất lên trên cùng của bảng */}
-                  {[...chronologicalHistory].reverse().map((item, idx) => {
-                    const isLatest = idx === 0
-                    return (
-                      <tr
-                        key={item.seasonId}
-                        className={`hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors ${
-                          isLatest ? 'bg-sky-500/[0.04] dark:bg-sky-500/[0.08]' : ''
-                        }`}
-                      >
-                        {/* Thời gian */}
-                        <td className="px-3.5 py-3 align-middle whitespace-nowrap font-medium text-slate-800 dark:text-slate-200">
-                          <div className="flex items-center gap-1.5">
-                            <span>{item.displayPeriod}</span>
-                            {isLatest && (
-                              <span className="rounded bg-sky-500/20 px-1 py-0.2 text-[9px] font-bold text-sky-700 dark:text-sky-300">
-                                Mới nhất
-                              </span>
-                            )}
-                          </div>
-                        </td>
-
-                        {/* Cấp giải đấu */}
-                        <td className="px-3 py-3 align-middle whitespace-nowrap font-semibold text-slate-700 dark:text-slate-300">
-                          {item.tierName}
-                        </td>
-
-                        {/* Thứ hạng */}
-                        <td className="px-3 py-3 align-middle whitespace-nowrap font-mono font-bold text-slate-900 dark:text-slate-100">
-                          <span
-                            className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs ${
-                              item.placement <= 10
-                                ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30'
-                                : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
-                            }`}
-                          >
-                            #{item.placement}
-                          </span>
-                        </td>
-
-                        {/* Điểm Cúp */}
-                        <td className="px-3 py-3 align-middle whitespace-nowrap font-mono font-bold text-amber-600 dark:text-amber-400">
-                          {item.trophies} cúp
-                        </td>
-
-                        {/* Tấn công */}
-                        <td className="px-3 py-3 align-middle whitespace-nowrap">
-                          <span className="font-semibold text-slate-800 dark:text-slate-200">
-                            {item.attackWins}W - {item.attackLosses}L
-                          </span>{' '}
-                          <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                            ({item.attackWinRate}%)
-                          </span>
-                        </td>
-
-                        {/* Phòng thủ */}
-                        <td className="px-3 py-3 align-middle whitespace-nowrap">
-                          <span className="font-medium text-slate-700 dark:text-slate-300">
-                            Mất {item.defenseStars} sao
-                          </span>
-                        </td>
-
-                        {/* Giới hạn trận */}
-                        <td className="px-3 py-3 align-middle whitespace-nowrap font-mono text-slate-500 dark:text-slate-400">
-                          {item.maxBattles} lượt/mùa
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-            </div>
-          )}
+          {showTable && <TrendHistoryTable chronologicalHistory={chronologicalHistory} />}
         </div>
       )}
     </section>

@@ -6,7 +6,6 @@ import { getRankedTierMaxAttacks, type RankedTierDefinition } from '../data/rank
 export interface SyncResult {
   currentSeason: Season
   previousSeason?: Season
-  season: Season // Giữ tương thích ngược với code cũ
   playerName: string
   playerTag: string
   groupTag: string
@@ -278,7 +277,6 @@ export async function fetchRankedSeasonData(
   }
 
   return {
-    season: currentSeason,
     currentSeason,
     previousSeason,
     playerName: playerData.name || '',
@@ -287,24 +285,6 @@ export async function fetchRankedSeasonData(
     seasonId,
     membersCount: currentPlayers.length,
     leagueHistory,
-  }
-}
-
-/**
- * Lấy lịch sử tất cả các mùa giải Ranked của người chơi qua endpoint /players/{tag}/leaguehistory
- */
-export async function fetchPlayerLeagueHistory(playerTag: string): Promise<LeagueHistoryItem[]> {
-  const cleanTag = playerTag.trim().toUpperCase()
-  if (!cleanTag) return []
-  const formattedTag = cleanTag.startsWith('#') ? cleanTag : `#${cleanTag}`
-  try {
-    const res = await fetch(`/api/coc?path=${encodeURIComponent(`/players/${formattedTag}/leaguehistory`)}`)
-    if (!res.ok) return []
-    const data = await res.json()
-    return Array.isArray(data?.items) ? data.items : []
-  } catch (err) {
-    console.warn('Không thể tải lịch sử giải đấu (leaguehistory):', err)
-    return []
   }
 }
 

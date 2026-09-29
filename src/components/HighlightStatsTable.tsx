@@ -724,5 +724,3 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
     </section>
   )
 }
-
-export const SummaryTables = HighlightStatsTable
