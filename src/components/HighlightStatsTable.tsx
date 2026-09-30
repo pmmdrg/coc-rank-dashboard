@@ -358,40 +358,38 @@ export function HighlightStatsTable({
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Bộ lọc nhanh: Tất cả / Tốt nhất / Thấp nhất */}
-            <div className="flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-100/70 p-0.5 text-xs font-semibold dark:border-slate-700 dark:bg-slate-800/70">
+            {/* Bộ lọc nhanh: Tất cả / Tốt nhất / Thấp nhất - Apple Segmented Control */}
+            <div className="apple-segmented-container">
               <button
                 type="button"
                 onClick={() => handleFilterChange('all')}
-                className={`rounded-md px-2.5 py-1 transition-all ${
-                  filterMode === 'all'
-                    ? 'bg-white text-slate-900 shadow-2xs dark:bg-slate-700 dark:text-white'
-                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
-                }`}
+                className={`apple-segmented-item ${filterMode === 'all' ? 'is-active' : ''}`}
               >
-                {interpolate(dict.highlights.filterAll, { count: 4 })}
+                <span>{interpolate(dict.highlights.filterAll, { count: 4 })}</span>
               </button>
               <button
                 type="button"
                 onClick={() => handleFilterChange('best')}
-                className={`rounded-md px-2.5 py-1 transition-all ${
+                className={`apple-segmented-item ${
                   filterMode === 'best'
-                    ? 'bg-emerald-600 text-white shadow-2xs dark:bg-emerald-500'
-                    : 'text-slate-600 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400'
+                    ? 'is-active text-emerald-700 dark:text-emerald-300'
+                    : 'hover:text-emerald-600 dark:hover:text-emerald-400'
                 }`}
               >
-                {interpolate(dict.highlights.filterBest, { count: 2 })}
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                <span>{interpolate(dict.highlights.filterBest, { count: 2 })}</span>
               </button>
               <button
                 type="button"
                 onClick={() => handleFilterChange('worst')}
-                className={`rounded-md px-2.5 py-1 transition-all ${
+                className={`apple-segmented-item ${
                   filterMode === 'worst'
-                    ? 'bg-rose-600 text-white shadow-2xs dark:bg-rose-500'
-                    : 'text-slate-600 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400'
+                    ? 'is-active text-rose-700 dark:text-rose-300'
+                    : 'hover:text-rose-600 dark:hover:text-rose-400'
                 }`}
               >
-                {interpolate(dict.highlights.filterWorst, { count: 2 })}
+                <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
+                <span>{interpolate(dict.highlights.filterWorst, { count: 2 })}</span>
               </button>
             </div>
 

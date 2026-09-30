@@ -16,7 +16,7 @@ interface ChartsSectionProps {
 
 function SkeletonPieChart() {
   return (
-    <div className="glass-panel flex h-full flex-col rounded-xl p-4 sm:p-5 shadow-sm">
+    <div className="glass-panel flex h-full flex-col rounded-2xl p-4 sm:p-5 shadow-sm">
       <div className="flex items-center justify-between gap-2 shrink-0">
         <div className="h-4 w-40 rounded-md skeleton-shimmer" />
         <div className="h-3 w-16 rounded-md skeleton-shimmer" />
@@ -79,7 +79,7 @@ function PercentagePieChart({
     new Intl.NumberFormat(language === 'vi' ? 'vi-VN' : 'en-US').format(val)
 
   return (
-    <div className="glass-panel flex h-full flex-col rounded-xl p-4 sm:p-5 shadow-sm">
+    <div className="glass-panel flex h-full flex-col rounded-2xl p-4 sm:p-5 shadow-sm hover:border-slate-300 dark:hover:border-slate-700/80 transition-all duration-300">
       <div className="flex items-center justify-between gap-2 shrink-0">
         <h3 className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-200 truncate" title={title}>
           {title}

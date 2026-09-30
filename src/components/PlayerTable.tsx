@@ -581,9 +581,9 @@ export function PlayerTable({
         </div>
       </div>
 
-      {/* 2. Thanh Tìm kiếm & Bộ lọc nhanh (Quick Filter Bar) */}
-      <div className="flex flex-col gap-3 border-b border-slate-200/60 p-4 sm:flex-row sm:items-center sm:justify-between dark:border-slate-700/60 bg-slate-50/50 dark:bg-slate-800/25">
-        {/* Ô Tìm kiếm người chơi / Clan */}
+      {/* 2. Thanh Tìm kiếm & Bộ lọc nhanh (Apple Segmented Filter Bar) */}
+      <div className="flex flex-col gap-3 border-b border-slate-200/60 p-4 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800/60 bg-slate-50/60 dark:bg-slate-900/40">
+        {/* Ô Tìm kiếm người chơi / Clan (Apple Spotlight Style) */}
         <div className="relative w-full sm:w-72">
           <MagnifyingGlass weight="bold" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
           <input
@@ -591,13 +591,13 @@ export function PlayerTable({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={dict.table.searchPlaceholder}
-            className="w-full h-8 rounded-lg border border-slate-300/80 bg-white pl-8.5 pr-7 text-xs text-slate-900 placeholder:text-slate-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+            className="w-full h-8.5 rounded-xl border border-slate-300/70 bg-white/90 pl-9 pr-7 text-xs text-slate-900 placeholder:text-slate-400 shadow-2xs backdrop-blur-md transition-all focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/20 dark:border-white/10 dark:bg-slate-900/80 dark:text-slate-100 dark:placeholder:text-slate-500"
           />
           {searchQuery && (
             <button
               type="button"
               onClick={() => setSearchQuery('')}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+              className="apple-btn absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
               title={dict.table.clearSearchTooltip}
             >
               <X weight="bold" className="h-3.5 w-3.5" />
@@ -605,89 +605,90 @@ export function PlayerTable({
           )}
         </div>
 
-        {/* Các Tab lọc nhanh */}
-        <div className="flex flex-wrap items-center gap-1.5 overflow-x-auto pb-0.5 sm:pb-0">
-          <button
-            type="button"
-            onClick={() => setFilterTab('all')}
-            className={`inline-flex h-7.5 items-center rounded-full px-3.5 text-xs font-bold transition-all cursor-pointer select-none active:scale-95 ${
-              filterTab === 'all'
-                ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-950 shadow-md shadow-slate-900/20 dark:shadow-white/10'
-                : 'bg-white/80 text-slate-600 hover:bg-slate-100 dark:bg-slate-800/80 dark:text-slate-300 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700/80'
-            }`}
-          >
-            {interpolate(dict.table.filterAll, { count: rankedPlayers.length })}
-          </button>
-
-          {promotionCount > 0 && (
+        {/* Các Tab lọc nhanh - Apple Segmented Control */}
+        <div className="flex flex-wrap items-center gap-2 overflow-x-auto pb-0.5 sm:pb-0">
+          <div className="apple-segmented-container">
             <button
               type="button"
-              onClick={() => setFilterTab(filterTab === 'promotion' ? 'all' : 'promotion')}
-              className={`inline-flex h-7.5 items-center rounded-full px-3.5 text-xs font-bold transition-all cursor-pointer select-none active:scale-95 ${
-                filterTab === 'promotion'
-                  ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-600/30'
-                  : 'bg-emerald-500/10 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/20'
-              }`}
+              onClick={() => setFilterTab('all')}
+              className={`apple-segmented-item ${filterTab === 'all' ? 'is-active' : ''}`}
             >
-              {interpolate(dict.table.filterPromotion, { count: Math.min(promotionCount, rankedPlayers.length) })}
+              <span>{interpolate(dict.table.filterAll, { count: rankedPlayers.length })}</span>
             </button>
-          )}
 
-          {demotionCount > 0 && (
-            <button
-              type="button"
-              onClick={() => setFilterTab(filterTab === 'demotion' ? 'all' : 'demotion')}
-              className={`inline-flex h-7.5 items-center rounded-full px-3.5 text-xs font-bold transition-all cursor-pointer select-none active:scale-95 ${
-                filterTab === 'demotion'
-                  ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-md shadow-rose-600/30'
-                  : 'bg-rose-500/10 text-rose-700 dark:bg-rose-500/15 dark:text-rose-300 border border-rose-500/30 hover:bg-rose-500/20'
-              }`}
-            >
-              {interpolate(dict.table.filterDemotion, { count: Math.min(demotionCount, rankedPlayers.length) })}
-            </button>
-          )}
+            {promotionCount > 0 && (
+              <button
+                type="button"
+                onClick={() => setFilterTab(filterTab === 'promotion' ? 'all' : 'promotion')}
+                className={`apple-segmented-item ${
+                  filterTab === 'promotion'
+                    ? 'is-active text-emerald-700 dark:text-emerald-300'
+                    : 'hover:text-emerald-600 dark:hover:text-emerald-400'
+                }`}
+              >
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                <span>{interpolate(dict.table.filterPromotion, { count: Math.min(promotionCount, rankedPlayers.length) })}</span>
+              </button>
+            )}
 
-          {matchupPlayerIds.size > 0 && (
-            <button
-              type="button"
-              onClick={() => setFilterTab(filterTab === 'matchup' ? 'all' : 'matchup')}
-              className={`inline-flex h-7.5 items-center rounded-full px-3.5 text-xs font-bold transition-all cursor-pointer select-none active:scale-95 ${
-                filterTab === 'matchup'
-                  ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md shadow-indigo-600/30'
-                  : 'bg-indigo-500/10 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500/20'
-              }`}
-            >
-              {interpolate(dict.table.filterMatchup, { count: matchupPlayerIds.size })}
-            </button>
-          )}
+            {demotionCount > 0 && (
+              <button
+                type="button"
+                onClick={() => setFilterTab(filterTab === 'demotion' ? 'all' : 'demotion')}
+                className={`apple-segmented-item ${
+                  filterTab === 'demotion'
+                    ? 'is-active text-rose-700 dark:text-rose-300'
+                    : 'hover:text-rose-600 dark:hover:text-rose-400'
+                }`}
+              >
+                <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
+                <span>{interpolate(dict.table.filterDemotion, { count: Math.min(demotionCount, rankedPlayers.length) })}</span>
+              </button>
+            )}
 
-          {canPassPlayerIds.size > 0 && (
-            <button
-              type="button"
-              onClick={() => setFilterTab(filterTab === 'canPass' ? 'all' : 'canPass')}
-              className={`inline-flex h-7 items-center rounded-full px-3 text-xs font-medium transition-all cursor-pointer ${
-                filterTab === 'canPass'
-                  ? 'bg-amber-600 text-white shadow-xs'
-                  : 'bg-amber-500/10 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300 border border-amber-500/30 hover:bg-amber-500/20'
-              }`}
-            >
-              {interpolate(dict.table.filterCanPass, { count: canPassPlayerIds.size })}
-            </button>
-          )}
+            {matchupPlayerIds.size > 0 && (
+              <button
+                type="button"
+                onClick={() => setFilterTab(filterTab === 'matchup' ? 'all' : 'matchup')}
+                className={`apple-segmented-item ${
+                  filterTab === 'matchup'
+                    ? 'is-active text-indigo-700 dark:text-indigo-300'
+                    : 'hover:text-indigo-600 dark:hover:text-indigo-400'
+                }`}
+              >
+                <span>{interpolate(dict.table.filterMatchup, { count: matchupPlayerIds.size })}</span>
+              </button>
+            )}
 
-          {warnedPlayerIds.size > 0 && (
-            <button
-              type="button"
-              onClick={() => setFilterTab(filterTab === 'warned' ? 'all' : 'warned')}
-              className={`inline-flex h-7 items-center rounded-full px-3 text-xs font-medium transition-all cursor-pointer ${
-                filterTab === 'warned'
-                  ? 'bg-amber-600 text-white shadow-xs'
-                  : 'bg-amber-500/10 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300 border border-amber-500/30 hover:bg-amber-500/20'
-              }`}
-            >
-              {interpolate(dict.table.filterWarned, { count: warnedPlayerIds.size })}
-            </button>
-          )}
+            {canPassPlayerIds.size > 0 && (
+              <button
+                type="button"
+                onClick={() => setFilterTab(filterTab === 'canPass' ? 'all' : 'canPass')}
+                className={`apple-segmented-item ${
+                  filterTab === 'canPass'
+                    ? 'is-active text-amber-700 dark:text-amber-300'
+                    : 'hover:text-amber-600 dark:hover:text-amber-400'
+                }`}
+              >
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                <span>{interpolate(dict.table.filterCanPass, { count: canPassPlayerIds.size })}</span>
+              </button>
+            )}
+
+            {warnedPlayerIds.size > 0 && (
+              <button
+                type="button"
+                onClick={() => setFilterTab(filterTab === 'warned' ? 'all' : 'warned')}
+                className={`apple-segmented-item ${
+                  filterTab === 'warned'
+                    ? 'is-active text-amber-700 dark:text-amber-300'
+                    : 'hover:text-amber-600 dark:hover:text-amber-400'
+                }`}
+              >
+                <span>{interpolate(dict.table.filterWarned, { count: warnedPlayerIds.size })}</span>
+              </button>
+            )}
+          </div>
 
           {isFiltered && (
             <button
@@ -696,7 +697,7 @@ export function PlayerTable({
                 setFilterTab('all')
                 setSearchQuery('')
               }}
-              className="text-xs text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 underline ml-1 cursor-pointer"
+              className="apple-btn text-xs text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 underline ml-1 cursor-pointer"
             >
               {dict.table.clearFilter}
             </button>
@@ -963,17 +964,18 @@ export function PlayerTable({
         </span>
       </div>
 
-      {/* 5. Floating Zone Jumper - Điều hướng nhanh Gaming Capsule */}
+      {/* 5. Floating Zone Jumper - Apple Dynamic Island Capsule */}
       {showJumper && (
         <div className="fixed bottom-6 right-6 z-40 animate-fade-in">
-          <div className="flex items-center gap-1.5 p-1 rounded-full border border-slate-700/60 bg-slate-900/90 dark:bg-slate-950/95 shadow-2xl backdrop-blur-xl ring-1 ring-white/10">
+          <div className="dynamic-island-capsule flex items-center gap-1.5 p-1.5 shadow-2xl">
             {stats.myPlayer && (
               <button
                 type="button"
                 onClick={jumpToMyPlayer}
-                className="inline-flex h-7 items-center rounded-full bg-sky-500/25 px-3 text-xs font-black text-sky-300 hover:bg-sky-500/40 shadow-xs shadow-sky-500/30 transition-all cursor-pointer select-none active:scale-90"
+                className="apple-btn inline-flex h-7.5 items-center rounded-full bg-sky-500/25 px-3 text-xs font-black text-sky-300 hover:bg-sky-500/40 shadow-xs shadow-sky-500/30 transition-all cursor-pointer select-none"
                 title={dict.table.jumpMyTooltip}
               >
+                <span className="h-1.5 w-1.5 rounded-full bg-sky-400 mr-1.5 animate-pulse" />
                 {interpolate(dict.table.jumpMe, { rank: stats.myPlayer.rank })}
               </button>
             )}
@@ -981,7 +983,7 @@ export function PlayerTable({
               <button
                 type="button"
                 onClick={jumpToPromotion}
-                className="inline-flex h-7 items-center rounded-full bg-emerald-500/20 px-2.5 text-xs font-bold text-emerald-300 hover:bg-emerald-500/35 transition-all cursor-pointer select-none active:scale-90"
+                className="apple-btn inline-flex h-7.5 items-center rounded-full bg-emerald-500/20 px-2.5 text-xs font-bold text-emerald-300 hover:bg-emerald-500/35 transition-all cursor-pointer select-none"
                 title={interpolate(dict.table.jumpPromotionTooltip, { count: promotionCount })}
               >
                 {dict.table.jumpPromotion}
@@ -991,7 +993,7 @@ export function PlayerTable({
               <button
                 type="button"
                 onClick={jumpToDemotion}
-                className="inline-flex h-7 items-center rounded-full bg-rose-500/20 px-2.5 text-xs font-bold text-rose-300 hover:bg-rose-500/35 transition-all cursor-pointer select-none active:scale-90"
+                className="apple-btn inline-flex h-7.5 items-center rounded-full bg-rose-500/20 px-2.5 text-xs font-bold text-rose-300 hover:bg-rose-500/35 transition-all cursor-pointer select-none"
                 title={interpolate(dict.table.jumpDemotionTooltip, { rank: rankedPlayers.length - demotionCount + 1 })}
               >
                 {dict.table.jumpDemotion}
@@ -1000,7 +1002,7 @@ export function PlayerTable({
             <button
               type="button"
               onClick={jumpToTop}
-              className="inline-flex h-7 items-center rounded-full bg-slate-800 px-2.5 text-xs font-semibold text-slate-300 hover:bg-slate-700 hover:text-white transition-all cursor-pointer select-none active:scale-90"
+              className="apple-btn inline-flex h-7.5 items-center rounded-full bg-slate-800/80 px-2.5 text-xs font-semibold text-slate-300 hover:bg-slate-700 hover:text-white transition-all cursor-pointer select-none"
               title={dict.table.jumpTopTooltip}
             >
               {dict.table.jumpTop}

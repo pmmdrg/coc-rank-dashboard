@@ -86,7 +86,7 @@ export function SeasonMetaForm({
   }))
 
   return (
-    <div className="glass-panel rounded-xl p-4 sm:p-5 shadow-sm">
+    <div className="glass-panel rounded-2xl p-5 shadow-xs">
       <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
@@ -102,7 +102,7 @@ export function SeasonMetaForm({
 
       <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
         {/* Cột 1: Giải đấu (Phóng to Icon và Text) */}
-        <div className="flex flex-col justify-between rounded-xl border border-slate-200/60 bg-white/40 p-4 backdrop-blur dark:border-slate-800 dark:bg-slate-900/40 shadow-xs">
+        <div className="flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white/60 p-4.5 backdrop-blur-md dark:border-white/10 dark:bg-slate-900/50 shadow-2xs">
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <div className="flex items-center gap-1.5">
               <span className="text-xs font-medium text-slate-500 dark:text-slate-400 shrink-0">
@@ -137,7 +137,7 @@ export function SeasonMetaForm({
         </div>
 
         {/* Cột 2: Thời gian mùa giải & Vạch thăng/xuống hạng */}
-        <div className="flex flex-col justify-between rounded-xl border border-slate-200/60 bg-white/40 p-4 backdrop-blur dark:border-slate-800 dark:bg-slate-900/40 shadow-xs">
+        <div className="flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white/60 p-4.5 backdrop-blur-md dark:border-white/10 dark:bg-slate-900/50 shadow-2xs">
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400 shrink-0">
               {dict.seasonMeta.seasonDuration}
@@ -155,7 +155,7 @@ export function SeasonMetaForm({
                     min="0"
                     value={season.promotionCount ?? 2}
                     onChange={(e) => onUpdateSeasonMeta('promotionCount', Math.max(0, parseInt(e.target.value, 10) || 0))}
-                    className="h-5.5 w-8 rounded-sm border border-emerald-500/40 bg-emerald-500/15 text-center text-xs font-bold text-emerald-700 dark:text-emerald-300"
+                    className="h-6 w-9 rounded-md border border-emerald-500/40 bg-emerald-500/15 text-center text-xs font-bold text-emerald-700 dark:text-emerald-300"
                   />
                 </label>
                 <label className="flex items-center gap-1 font-semibold text-rose-600 dark:text-rose-400" title="Số người xuống hạng ở top cuối">
@@ -165,7 +165,7 @@ export function SeasonMetaForm({
                     min="0"
                     value={season.demotionCount ?? 1}
                     onChange={(e) => onUpdateSeasonMeta('demotionCount', Math.max(0, parseInt(e.target.value, 10) || 0))}
-                    className="h-5.5 w-8 rounded-sm border border-rose-500/40 bg-rose-500/15 text-center text-xs font-bold text-rose-700 dark:text-rose-300"
+                    className="h-6 w-9 rounded-md border border-rose-500/40 bg-rose-500/15 text-center text-xs font-bold text-rose-700 dark:text-rose-300"
                   />
                 </label>
               </div>
@@ -183,7 +183,7 @@ export function SeasonMetaForm({
         </div>
 
         {/* Cột 3: Select box chỉ gồm đúng 2 giá trị: Mùa giải hiện tại và Mùa giải ngay trước đó */}
-        <div className="flex flex-col justify-between rounded-xl border border-slate-200/60 bg-white/40 p-4 backdrop-blur dark:border-slate-800 dark:bg-slate-900/40 shadow-xs">
+        <div className="flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white/60 p-4.5 backdrop-blur-md dark:border-white/10 dark:bg-slate-900/50 shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
               {dict.seasonMeta.selectSeason}
@@ -193,7 +193,7 @@ export function SeasonMetaForm({
             <select
               value={activeSeasonIndex}
               onChange={(e) => onSelectSeasonIndex(Number(e.target.value))}
-              className="soft-field h-10 w-full rounded-lg px-3 pr-8 text-sm font-bold text-slate-800 dark:text-slate-100 truncate cursor-pointer transition-all hover:border-sky-500/50 focus:border-sky-500"
+              className="soft-field h-10 w-full rounded-xl px-3.5 pr-8 text-sm font-bold text-slate-800 dark:text-slate-100 truncate cursor-pointer transition-all hover:border-sky-500/50 focus:border-sky-500"
             >
               {seasonOptions.map((opt) => (
                 <option

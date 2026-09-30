@@ -39,13 +39,13 @@ export function TrendRecordCards({ overallStats, historyCount }: TrendRecordCard
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
       {/* Thẻ 1: Thứ hạng */}
-      <div className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white/60 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60">
+      <div className="glass-panel group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/80 p-4 shadow-2xs transition-all hover:shadow-xs dark:border-white/10">
         <div>
-          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
             {dict.performanceTrend.latestRank}
           </span>
           <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-xl font-extrabold text-slate-900 dark:text-slate-100">
+            <span className="font-mono text-2xl font-black text-slate-900 dark:text-slate-100">
               #{overallStats.latest.placement}
             </span>
             <span className="text-[11px] font-medium text-slate-400">{dict.performanceTrend.outOfHundred}</span>
@@ -58,7 +58,7 @@ export function TrendRecordCards({ overallStats, historyCount }: TrendRecordCard
           </div>
         </div>
         <div
-          className="mt-2 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium truncate"
+          className="mt-2.5 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium truncate"
           title={recordRankText}
         >
           {recordRankText}
@@ -66,13 +66,13 @@ export function TrendRecordCards({ overallStats, historyCount }: TrendRecordCard
       </div>
 
       {/* Thẻ 2: Cúp mùa giải */}
-      <div className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white/60 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60">
+      <div className="glass-panel group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/80 p-4 shadow-2xs transition-all hover:shadow-xs dark:border-white/10">
         <div>
-          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
             {dict.performanceTrend.latestCups}
           </span>
           <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-xl font-extrabold text-amber-600 dark:text-amber-400">
+            <span className="font-mono text-2xl font-black text-amber-600 dark:text-amber-400">
               {overallStats.latest.trophies}
             </span>
             <span className="text-[11px] font-medium text-slate-400">{dict.common.trophies}</span>
@@ -85,7 +85,7 @@ export function TrendRecordCards({ overallStats, historyCount }: TrendRecordCard
           </div>
         </div>
         <div
-          className="mt-2 text-[11px] text-amber-600 dark:text-amber-400 font-medium truncate"
+          className="mt-2.5 text-[11px] text-amber-600 dark:text-amber-400 font-medium truncate"
           title={recordCupsText}
         >
           {recordCupsText}
@@ -93,13 +93,13 @@ export function TrendRecordCards({ overallStats, historyCount }: TrendRecordCard
       </div>
 
       {/* Thẻ 3: Tỷ lệ thắng công */}
-      <div className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white/60 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60">
+      <div className="glass-panel group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/80 p-4 shadow-2xs transition-all hover:shadow-xs dark:border-white/10">
         <div>
-          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
             {dict.performanceTrend.attackWinRate}
           </span>
           <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-xl font-extrabold text-rose-600 dark:text-rose-400">
+            <span className="font-mono text-2xl font-black text-rose-600 dark:text-rose-400">
               {overallStats.overallWinRate.toFixed(1)}%
             </span>
           </div>
@@ -107,15 +107,15 @@ export function TrendRecordCards({ overallStats, historyCount }: TrendRecordCard
             {wonMatchesText}
           </div>
         </div>
-        <div className="mt-2 text-[11px] text-slate-400 dark:text-slate-500">
+        <div className="mt-2.5 text-[11px] text-slate-400 dark:text-slate-500 font-medium">
           {seasonsCountText}
         </div>
       </div>
 
       {/* Thẻ 4: Cấp giải đấu */}
-      <div className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white/60 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60">
+      <div className="glass-panel group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/80 p-4 shadow-2xs transition-all hover:shadow-xs dark:border-white/10">
         <div>
-          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
             {dict.performanceTrend.currentTier}
           </span>
           <div
@@ -124,11 +124,11 @@ export function TrendRecordCards({ overallStats, historyCount }: TrendRecordCard
           >
             {overallStats.latest.tierName}
           </div>
-          <div className="mt-1 text-[11px] text-sky-600 dark:text-sky-400 font-medium">
+          <div className="mt-1 text-[11px] text-sky-600 dark:text-sky-400 font-semibold">
             {maxBattlesText}
           </div>
         </div>
-        <div className="mt-2 text-[11px] text-slate-400 dark:text-slate-500">
+        <div className="mt-2.5 text-[11px] text-slate-400 dark:text-slate-500 font-medium">
           {seasonPeriodText}
         </div>
       </div>

@@ -13,20 +13,20 @@
 :root {
   overflow-anchor: none;
   --app-bg:
-    radial-gradient(circle at 15% 0%, rgba(14, 165, 233, 0.14), transparent 35rem),
-    radial-gradient(circle at 85% 12%, rgba(245, 158, 11, 0.12), transparent 40rem),
-    radial-gradient(circle at 50% 60%, rgba(99, 102, 241, 0.06), transparent 35rem),
-    linear-gradient(180deg, #f8fafc 0%, #f1f5f9 60%, #e8eef5 100%);
-  --panel-bg: rgba(255, 255, 255, 0.78);
-  --panel-border: rgba(148, 163, 184, 0.35);
-  --header-bg: rgba(255, 255, 255, 0.85);
-  --field-bg: rgba(255, 255, 255, 0.85);
-  --field-border: rgba(148, 163, 184, 0.45);
+    radial-gradient(circle at 12% 0%, rgba(14, 165, 233, 0.12), transparent 36rem),
+    radial-gradient(circle at 88% 8%, rgba(245, 158, 11, 0.10), transparent 38rem),
+    radial-gradient(circle at 50% 55%, rgba(99, 102, 241, 0.05), transparent 40rem),
+    linear-gradient(180deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+  --panel-bg: rgba(255, 255, 255, 0.82);
+  --panel-border: rgba(203, 213, 225, 0.6);
+  --header-bg: rgba(255, 255, 255, 0.88);
+  --field-bg: rgba(255, 255, 255, 0.9);
+  --field-border: rgba(203, 213, 225, 0.8);
   --field-text: #0f172a;
-  --soft-table-head: rgba(254, 243, 199, 0.75);
+  --soft-table-head: rgba(254, 243, 199, 0.85);
   --table-head-text: #78350f;
-  --row-mine: rgba(14, 165, 233, 0.14);
-  --row-mine-hover: rgba(14, 165, 233, 0.22);
+  --row-mine: rgba(14, 165, 233, 0.12);
+  --row-mine-hover: rgba(14, 165, 233, 0.20);
   --text-main: #0f172a;
   --text-muted: #64748b;
   color: #172026;
@@ -66,42 +66,46 @@ select:focus-visible {
   min-height: 100vh;
 }
 
+/* Apple Pro Vibrancy & Frosted Glass với Specular Inset Highlight */
 .glass-panel {
   border: 1px solid var(--panel-border);
   background: var(--panel-bg);
-  backdrop-filter: blur(20px) saturate(1.2);
-  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
   box-shadow:
-    0 18px 48px rgba(15, 23, 42, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    0 20px 48px -12px rgba(15, 23, 42, 0.08),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 .glass-header {
   border-bottom: 1px solid var(--panel-border);
   background: var(--header-bg);
-  backdrop-filter: blur(20px) saturate(1.2);
-  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  box-shadow:
+    0 8px 24px -6px rgba(15, 23, 42, 0.04),
+    inset 0 -1px 0 0 rgba(255, 255, 255, 0.4);
 }
 
 .soft-field {
   border: 1px solid var(--field-border);
   background: var(--field-bg);
   color: var(--field-text);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease;
 }
 
 .soft-field:focus {
   border-color: #38bdf8;
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25), inset 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .soft-table-head {
   background: var(--soft-table-head);
   color: var(--table-head-text);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 .row-mine {
@@ -122,19 +126,88 @@ select:focus-visible {
   background: rgba(148, 163, 184, 0.08) !important;
 }
 
-/* Dark theme variables: Áp dụng theo hệ thống nếu chưa có class .light */
+/* Apple Fluid Haptic Micro-Interactions */
+.apple-btn {
+  transition: transform 0.18s cubic-bezier(0.32, 0.72, 0, 1), background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.apple-btn:active {
+  transform: scale(0.96);
+}
+
+/* Apple Segmented Pill Control: Thanh gạt lọc con nhộng thanh lịch */
+.apple-segmented-container {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px;
+  border-radius: 14px;
+  background: rgba(148, 163, 184, 0.18);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.apple-segmented-item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 10px;
+  color: #64748b;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  user-select: none;
+  border: none;
+  background: transparent;
+}
+
+.apple-segmented-item:hover {
+  color: #0f172a;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.apple-segmented-item.is-active {
+  color: #0f172a;
+  font-weight: 600;
+  background: #ffffff;
+  box-shadow: 0 2px 8px -1px rgba(15, 23, 42, 0.14), 0 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.apple-segmented-item:active {
+  transform: scale(0.96);
+}
+
+/* Apple Dynamic Island Capsule Floating Menu */
+.dynamic-island-capsule {
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 24px 56px -12px rgba(0, 0, 0, 0.7),
+    0 0 1px 1px rgba(255, 255, 255, 0.1),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.24);
+  border-radius: 9999px;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+}
+
+/* Dark theme variables: Midnight Obsidian Tone */
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
     --app-bg:
-      radial-gradient(circle at 15% 0%, rgba(56, 189, 248, 0.18), transparent 40rem),
-      radial-gradient(circle at 85% 14%, rgba(245, 158, 11, 0.12), transparent 42rem),
-      radial-gradient(circle at 50% 75%, rgba(99, 102, 241, 0.10), transparent 45rem),
-      linear-gradient(180deg, #070a13 0%, #0c1322 50%, #060911 100%);
-    --panel-bg: rgba(15, 23, 42, 0.72);
-    --panel-border: rgba(255, 255, 255, 0.10);
-    --header-bg: rgba(11, 17, 32, 0.88);
-    --field-bg: rgba(30, 41, 59, 0.75);
-    --field-border: rgba(148, 163, 184, 0.25);
+      radial-gradient(circle at 12% 0%, rgba(56, 189, 248, 0.16), transparent 42rem),
+      radial-gradient(circle at 88% 10%, rgba(245, 158, 11, 0.12), transparent 44rem),
+      radial-gradient(circle at 50% 70%, rgba(99, 102, 241, 0.08), transparent 48rem),
+      linear-gradient(180deg, #060913 0%, #0a101f 50%, #05070e 100%);
+    --panel-bg: rgba(15, 23, 42, 0.76);
+    --panel-border: rgba(255, 255, 255, 0.08);
+    --header-bg: rgba(10, 16, 31, 0.88);
+    --field-bg: rgba(30, 41, 59, 0.72);
+    --field-border: rgba(255, 255, 255, 0.12);
     --field-text: #f1f5f9;
     --soft-table-head: rgba(245, 158, 11, 0.16);
     --table-head-text: #fde68a;
@@ -143,29 +216,50 @@ select:focus-visible {
     --text-main: #f8fafc;
     --text-muted: #94a3b8;
     color: #e2e8f0;
-    background: #070a13;
+    background: #060913;
     color-scheme: dark;
   }
 
   :root:not(.light) .glass-panel {
     box-shadow:
-      0 24px 64px rgba(0, 0, 0, 0.55),
-      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      0 24px 64px -16px rgba(0, 0, 0, 0.7),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.15);
+  }
+
+  :root:not(.light) .apple-segmented-container {
+    background: rgba(15, 23, 42, 0.65);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+  }
+
+  :root:not(.light) .apple-segmented-item {
+    color: #94a3b8;
+  }
+
+  :root:not(.light) .apple-segmented-item:hover {
+    color: #f8fafc;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  :root:not(.light) .apple-segmented-item.is-active {
+    color: #ffffff;
+    background: rgba(51, 65, 85, 0.95);
+    box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.18);
   }
 }
 
 /* Explicit class .dark override */
 html.dark {
   --app-bg:
-    radial-gradient(circle at 15% 0%, rgba(56, 189, 248, 0.18), transparent 40rem),
-    radial-gradient(circle at 85% 14%, rgba(245, 158, 11, 0.12), transparent 42rem),
-    radial-gradient(circle at 50% 75%, rgba(99, 102, 241, 0.10), transparent 45rem),
-    linear-gradient(180deg, #070a13 0%, #0c1322 50%, #060911 100%);
-  --panel-bg: rgba(15, 23, 42, 0.72);
-  --panel-border: rgba(255, 255, 255, 0.10);
-  --header-bg: rgba(11, 17, 32, 0.88);
-  --field-bg: rgba(30, 41, 59, 0.75);
-  --field-border: rgba(148, 163, 184, 0.25);
+    radial-gradient(circle at 12% 0%, rgba(56, 189, 248, 0.16), transparent 42rem),
+    radial-gradient(circle at 88% 10%, rgba(245, 158, 11, 0.12), transparent 44rem),
+    radial-gradient(circle at 50% 70%, rgba(99, 102, 241, 0.08), transparent 48rem),
+    linear-gradient(180deg, #060913 0%, #0a101f 50%, #05070e 100%);
+  --panel-bg: rgba(15, 23, 42, 0.76);
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --header-bg: rgba(10, 16, 31, 0.88);
+  --field-bg: rgba(30, 41, 59, 0.72);
+  --field-border: rgba(255, 255, 255, 0.12);
   --field-text: #f1f5f9;
   --soft-table-head: rgba(245, 158, 11, 0.16);
   --table-head-text: #fde68a;
@@ -178,14 +272,35 @@ html.dark {
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   color: #e2e8f0;
-  background: #070a13;
+  background: #060913;
   color-scheme: dark;
 }
 
 html.dark .glass-panel {
   box-shadow:
-    0 24px 64px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    0 24px 64px -16px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.15);
+}
+
+html.dark .apple-segmented-container {
+  background: rgba(15, 23, 42, 0.65);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+html.dark .apple-segmented-item {
+  color: #94a3b8;
+}
+
+html.dark .apple-segmented-item:hover {
+  color: #f8fafc;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+html.dark .apple-segmented-item.is-active {
+  color: #ffffff;
+  background: rgba(51, 65, 85, 0.95);
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
 @keyframes modal-backdrop-in {
@@ -549,16 +664,22 @@ select {
 
 .hero-stat-card {
   position: relative;
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.22s ease;
+  border-radius: 20px;
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+  overflow: hidden;
 }
 
 .hero-stat-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(255, 255, 255, 0.15);
+  box-shadow: 0 16px 36px -8px rgba(15, 23, 42, 0.12), inset 0 1px 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.hero-stat-card:active {
+  transform: translateY(-1px) scale(0.99);
 }
 
 html.dark .hero-stat-card:hover {
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6), 0 0 24px -5px rgba(56, 189, 248, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  box-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.65), 0 0 24px -6px rgba(56, 189, 248, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
 /* Skeleton Shimmer Wave Effect - Tinh tế, không chói mắt, chuẩn phong cách glassmorphism */

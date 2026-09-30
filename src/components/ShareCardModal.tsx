@@ -283,7 +283,7 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-slate-100 transition-colors cursor-pointer"
+            className="apple-btn rounded-xl p-2 text-slate-400 hover:bg-slate-800/80 hover:text-slate-100 transition-colors cursor-pointer"
             title={dict.shareModal.closeBtn}
           >
             <X weight="bold" className="h-5 w-5" />
@@ -297,7 +297,7 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
             <img
               src={previewUrl}
               alt={dict.shareModal.modalTitle}
-              className="w-full max-h-[60vh] object-contain rounded-xl border border-slate-800 shadow-lg"
+              className="w-full max-h-[60vh] object-contain rounded-xl border border-slate-800/80 shadow-2xl"
             />
           ) : (
             <div className="h-64 flex items-center justify-center text-sm text-slate-400">
@@ -307,7 +307,7 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
         </div>
 
         {/* Modal Footer: Action Buttons */}
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-800 px-6 py-4 bg-slate-900/90">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-800/80 px-6 py-4 bg-slate-900/90 backdrop-blur-md">
           <span className="text-xs text-slate-400">
             {dict.shareModal.modalDimensions}
           </span>
@@ -315,7 +315,7 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
             <button
               type="button"
               onClick={handleCopyImage}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-200 hover:bg-slate-700 active:scale-95 transition-all cursor-pointer"
+              className="apple-btn inline-flex items-center gap-1.5 rounded-xl border border-slate-700/80 bg-slate-800/90 px-4 py-2 text-xs font-semibold text-slate-200 hover:bg-slate-700 hover:text-white shadow-sm cursor-pointer"
               title={dict.shareModal.copyBtn}
             >
               {isCopied ? (
@@ -334,7 +334,7 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
             <button
               type="button"
               onClick={handleDownload}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-sky-600 px-4 py-2 text-xs font-semibold text-white hover:bg-sky-500 active:scale-95 transition-all cursor-pointer shadow-sm shadow-sky-600/30"
+              className="apple-btn inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-sky-600/30 hover:from-sky-400 hover:to-blue-500 cursor-pointer"
               title={dict.shareModal.downloadBtn}
             >
               <DownloadSimple weight="bold" className="h-4 w-4" />

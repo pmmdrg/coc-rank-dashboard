@@ -97,12 +97,12 @@ export function SeasonHeader({
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          {/* Ô nhập Player Tag */}
+          {/* Ô nhập Player Tag - Apple Spotlight style */}
           <div
-            className={`group relative inline-flex h-9.5 items-center rounded-lg border p-0.5 shadow-sm backdrop-blur transition-all ${
+            className={`group relative inline-flex h-9.5 items-center rounded-xl border p-0.5 shadow-2xs backdrop-blur-md transition-all ${
               !playerTag
                 ? 'border-emerald-500 bg-emerald-500/20 ring-2 ring-emerald-500/70 shadow-md shadow-emerald-500/25 animate-pulse dark:border-emerald-400 dark:ring-emerald-400/80'
-                : 'border-slate-300/80 bg-white/70 dark:border-slate-700/80 dark:bg-slate-900/60'
+                : 'border-slate-300/70 bg-white/70 dark:border-white/10 dark:bg-slate-900/60 focus-within:border-sky-500 dark:focus-within:border-sky-400 focus-within:ring-2 focus-within:ring-sky-500/20'
             }`}
           >
             <span className="pointer-events-none absolute left-2.5 font-mono text-xs font-black text-slate-400 transition-colors group-focus-within:text-emerald-500 dark:text-slate-500 dark:group-focus-within:text-emerald-400">
@@ -124,7 +124,7 @@ export function SeasonHeader({
               }}
               placeholder={dict.header.tagPlaceholder}
               title={dict.header.syncApi}
-              className="h-7.5 w-28 sm:w-32 rounded-md bg-white pl-5 pr-7 font-mono text-xs font-black tracking-wider text-slate-950 placeholder:text-slate-400 placeholder:font-normal caret-slate-950 transition-all focus:outline-none dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:caret-white"
+              className="h-7.5 w-28 sm:w-32 rounded-lg bg-white/90 pl-5 pr-7 font-mono text-xs font-black tracking-wider text-slate-950 placeholder:text-slate-400 placeholder:font-normal caret-slate-950 transition-all focus:outline-none dark:bg-slate-900/90 dark:text-white dark:placeholder:text-slate-500 dark:caret-white"
             />
             {isSyncingApi && (
               <span className="pointer-events-none absolute right-2 text-emerald-600 dark:text-emerald-400" title={dict.header.syncing}>
@@ -133,12 +133,12 @@ export function SeasonHeader({
             )}
           </div>
 
-          {/* Nút Chia sẻ thẻ thành tích (Hero Action) */}
+          {/* Nút Chia sẻ thẻ thành tích (Apple Hero Pill Action) */}
           {onOpenShareCard && (
             <button
               type="button"
               onClick={onOpenShareCard}
-              className="inline-flex h-9.5 items-center gap-1.5 rounded-lg bg-gradient-to-r from-indigo-600 via-sky-600 to-cyan-500 px-3.5 text-xs font-bold text-white shadow-md shadow-sky-500/25 hover:shadow-sky-500/40 hover:brightness-110 active:scale-95 transition-all cursor-pointer select-none"
+              className="apple-btn inline-flex h-9.5 items-center gap-1.5 rounded-xl bg-gradient-to-r from-indigo-600 via-sky-600 to-cyan-500 px-3.5 text-xs font-bold text-white shadow-xs shadow-sky-500/25 hover:shadow-md hover:shadow-sky-500/35 hover:brightness-105 transition-all cursor-pointer select-none"
               title={dict.header.shareCard}
             >
               <Sparkle weight="fill" className="h-3.5 w-3.5" />
@@ -146,21 +146,21 @@ export function SeasonHeader({
             </button>
           )}
 
-          {/* Các nút Xuất file */}
-          <div className="inline-flex h-9.5 items-center rounded-lg border border-slate-300/80 dark:border-slate-700/80 bg-white/60 dark:bg-slate-900/60 p-0.5 shadow-2xs backdrop-blur">
+          {/* Các nút Xuất file (Apple Segmented Style) */}
+          <div className="inline-flex h-9.5 items-center rounded-xl border border-slate-300/70 dark:border-white/10 bg-white/70 dark:bg-slate-800/60 p-0.5 shadow-2xs backdrop-blur-md">
             <button
               type="button"
               onClick={() => onExport('json')}
-              className="h-8 rounded-md px-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 transition-all cursor-pointer"
+              className="apple-btn h-8 rounded-lg px-2.5 text-xs font-semibold text-slate-700 hover:bg-white hover:shadow-xs dark:text-slate-200 dark:hover:bg-slate-700/80 transition-all cursor-pointer"
               title={dict.header.exportJson}
             >
               JSON
             </button>
-            <span className="h-4 w-px bg-slate-300 dark:bg-slate-700" />
+            <span className="h-3.5 w-px bg-slate-300/80 dark:bg-white/10" />
             <button
               type="button"
               onClick={() => onExport('csv')}
-              className="h-8 rounded-md px-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 transition-all cursor-pointer"
+              className="apple-btn h-8 rounded-lg px-2.5 text-xs font-semibold text-slate-700 hover:bg-white hover:shadow-xs dark:text-slate-200 dark:hover:bg-slate-700/80 transition-all cursor-pointer"
               title={dict.header.exportCsv}
             >
               CSV

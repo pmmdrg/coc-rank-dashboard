@@ -366,51 +366,49 @@ export function RankChangesSection({
             <>
               {/* 3. THANH ĐIỀU HƯỚNG TABS & TÌM KIẾM */}
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5">
-                <div className="inline-flex rounded-lg border border-slate-200/80 bg-slate-100/70 p-1 dark:border-slate-800 dark:bg-slate-800/60 shadow-2xs">
+                <div className="apple-segmented-container">
                   <button
                     type="button"
                     onClick={() => setFilter('all')}
-                    className={`rounded-md px-3 py-1 text-xs font-bold transition-all cursor-pointer ${
-                      filter === 'all'
-                        ? 'bg-white text-slate-900 shadow-2xs dark:bg-slate-900 dark:text-slate-100'
-                        : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
-                    }`}
+                    className={`apple-segmented-item ${filter === 'all' ? 'is-active' : ''}`}
                   >
-                    {interpolate(dict.rankChanges.filterAll, { count: activeChanges.length })}
+                    <span>{interpolate(dict.rankChanges.filterAll, { count: activeChanges.length })}</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setFilter('rose')}
-                    className={`rounded-md px-3 py-1 text-xs font-bold transition-all cursor-pointer ${
+                    className={`apple-segmented-item ${
                       filter === 'rose'
-                        ? 'bg-emerald-500 text-white shadow-2xs'
-                        : 'text-slate-600 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400'
+                        ? 'is-active text-emerald-700 dark:text-emerald-300'
+                        : 'hover:text-emerald-600 dark:hover:text-emerald-400'
                     }`}
                   >
-                    {interpolate(dict.rankChanges.filterRose, { count: roseChanges.length })}
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                    <span>{interpolate(dict.rankChanges.filterRose, { count: roseChanges.length })}</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setFilter('fell')}
-                    className={`rounded-md px-3 py-1 text-xs font-bold transition-all cursor-pointer ${
+                    className={`apple-segmented-item ${
                       filter === 'fell'
-                        ? 'bg-rose-500 text-white shadow-2xs'
-                        : 'text-slate-600 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400'
+                        ? 'is-active text-rose-700 dark:text-rose-300'
+                        : 'hover:text-rose-600 dark:hover:text-rose-400'
                     }`}
                   >
-                    {interpolate(dict.rankChanges.filterFell, { count: fellChanges.length })}
+                    <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
+                    <span>{interpolate(dict.rankChanges.filterFell, { count: fellChanges.length })}</span>
                   </button>
                 </div>
 
                 {activeChanges.length > 5 && (
                   <div className="relative w-full sm:w-56">
-                    <MagnifyingGlass weight="bold" className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+                    <MagnifyingGlass weight="bold" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
                     <input
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder={dict.rankChanges.searchPlaceholder}
-                      className="w-full rounded-lg border border-slate-200 bg-white/70 pl-8 pr-3 py-1 text-xs text-slate-800 placeholder-slate-400 focus:border-amber-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-200"
+                      className="w-full h-8.5 rounded-xl border border-slate-300/70 bg-white/90 pl-8.5 pr-3 text-xs text-slate-900 placeholder:text-slate-400 shadow-2xs backdrop-blur-md transition-all focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/20 dark:border-white/10 dark:bg-slate-900/80 dark:text-slate-100 dark:placeholder:text-slate-500"
                     />
                   </div>
                 )}
