@@ -2,6 +2,7 @@ import type { Season } from '../types'
 import { formatLeagueName } from '../lib/ranking'
 import { getLeagueIconUrl } from '../lib/leagueIcons'
 import { parseSeasonDateRange } from '../lib/cocApi'
+import { useI18n } from '../i18n/LanguageContext'
 
 interface SeasonMetaFormProps {
   season: Season
@@ -13,16 +14,18 @@ interface SeasonMetaFormProps {
 }
 
 function SeasonMetaSkeleton() {
+  const { dict } = useI18n()
+
   return (
     <div className="glass-panel rounded-xl p-4 sm:p-5 shadow-sm">
       <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-            Thông tin mùa giải
+            {dict.seasonMeta.title}
           </h2>
           <span className="inline-flex h-5 items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 px-2 text-[10px] font-bold text-sky-700 dark:bg-sky-950/60 dark:text-sky-300">
             <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 animate-ping" />
-            Đang tải dữ liệu...
+            {dict.common.loading}
           </span>
         </div>
       </div>
@@ -64,6 +67,8 @@ export function SeasonMetaForm({
   onUpdateSeasonMeta,
   isSyncingApi = false,
 }: SeasonMetaFormProps) {
+  const { dict } = useI18n()
+
   if (isSyncingApi) {
     return <SeasonMetaSkeleton />
   }
@@ -77,7 +82,7 @@ export function SeasonMetaForm({
   const effectiveSeasons = validSeasons.length > 0 ? validSeasons : seasons
   const seasonOptions = (effectiveSeasons.length > 0 ? effectiveSeasons.slice(0, 2) : [{}]).map((_, idx) => ({
     index: idx,
-    label: idx === 0 ? 'Mùa giải hiện tại' : 'Mùa giải trước',
+    label: idx === 0 ? dict.seasonMeta.currentSeason : dict.seasonMeta.previousSeason,
   }))
 
   return (
@@ -85,11 +90,11 @@ export function SeasonMetaForm({
       <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-            Thông tin mùa giải
+            {dict.seasonMeta.title}
           </h2>
           {season.lastSyncedAt && (
             <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:bg-emerald-400/10 dark:text-emerald-400">
-              API: {season.lastSyncedAt}
+              {dict.seasonMeta.apiPrefix} {season.lastSyncedAt}
             </span>
           )}
         </div>
@@ -101,7 +106,7 @@ export function SeasonMetaForm({
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <div className="flex items-center gap-1.5">
               <span className="text-xs font-medium text-slate-500 dark:text-slate-400 shrink-0">
-                Giải đấu
+                {dict.seasonMeta.league}
               </span>
               {season.leagueGroupTag && (
                 <span className="rounded-md bg-amber-500/10 px-1.5 py-0.2 text-[10px] font-bold text-amber-600 dark:bg-amber-400/10 dark:text-amber-400">
@@ -135,16 +140,16 @@ export function SeasonMetaForm({
         <div className="flex flex-col justify-between rounded-xl border border-slate-200/60 bg-white/40 p-4 backdrop-blur dark:border-slate-800 dark:bg-slate-900/40 shadow-xs">
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400 shrink-0">
-              Thời gian mùa giải
+              {dict.seasonMeta.seasonDuration}
             </span>
             {season.players.length === 0 ? (
               <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500">
-                Thăng: -- • Xuống: --
+                {dict.seasonMeta.promote} -- • {dict.seasonMeta.demote} --
               </span>
             ) : onUpdateSeasonMeta ? (
               <div className="flex items-center gap-2 text-[11px] shrink-0">
                 <label className="flex items-center gap-1 font-semibold text-emerald-600 dark:text-emerald-400" title="Số người thăng hạng ở top đầu">
-                  <span>Thăng:</span>
+                  <span>{dict.seasonMeta.promote}</span>
                   <input
                     type="number"
                     min="0"
@@ -154,7 +159,7 @@ export function SeasonMetaForm({
                   />
                 </label>
                 <label className="flex items-center gap-1 font-semibold text-rose-600 dark:text-rose-400" title="Số người xuống hạng ở top cuối">
-                  <span>Xuống:</span>
+                  <span>{dict.seasonMeta.demote}</span>
                   <input
                     type="number"
                     min="0"
@@ -166,7 +171,7 @@ export function SeasonMetaForm({
               </div>
             ) : (
               <span className="rounded-md bg-emerald-500/10 px-2 py-0.5 text-[11px] font-semibold text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400">
-                Thăng: {season.promotionCount ?? 2} • Xuống: {season.demotionCount ?? 1}
+                {dict.seasonMeta.promote} {season.promotionCount ?? 2} • {dict.seasonMeta.demote} {season.demotionCount ?? 1}
               </span>
             )}
           </div>
@@ -181,7 +186,7 @@ export function SeasonMetaForm({
         <div className="flex flex-col justify-between rounded-xl border border-slate-200/60 bg-white/40 p-4 backdrop-blur dark:border-slate-800 dark:bg-slate-900/40 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-              Chọn mùa giải muốn xem
+              {dict.seasonMeta.selectSeason}
             </span>
           </div>
           <div className="mt-2.5 flex items-center">

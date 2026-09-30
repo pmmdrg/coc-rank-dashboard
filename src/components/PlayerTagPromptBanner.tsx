@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { CircleNotch } from '@phosphor-icons/react'
+import { useI18n } from '../i18n/LanguageContext'
 
 interface PlayerTagPromptBannerProps {
   playerTag: string
@@ -12,6 +13,7 @@ export function PlayerTagPromptBanner({
   isSyncingApi,
   onSync,
 }: PlayerTagPromptBannerProps) {
+  const { dict } = useI18n()
   const [inputVal, setInputVal] = useState(playerTag)
 
   function handleSubmit(e: React.FormEvent) {
@@ -32,17 +34,17 @@ export function PlayerTagPromptBanner({
         <div className="space-y-1.5 max-w-2xl">
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-extrabold text-emerald-700 dark:bg-emerald-400/20 dark:text-emerald-300 ring-1 ring-emerald-500/40">
-              BƯỚC ĐẦU TIÊN
+              {dict.banner.badge}
             </span>
             <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-              Chưa liên kết tài khoản
+              {dict.banner.status}
             </span>
           </div>
           <h2 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-slate-50">
-            Nhập Player Tag để xem bảng đấu của bạn
+            {dict.banner.title}
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
-            Hệ thống sẽ kết nối trực tiếp với Supercell API để tự động tải bảng đấu Ranked, thứ hạng các người chơi trong bảng và tính toán tỷ lệ thăng/xuống hạng theo thời gian thực.
+            {dict.banner.description}
           </p>
         </div>
 
@@ -56,7 +58,7 @@ export function PlayerTagPromptBanner({
               type="text"
               value={inputVal.replace(/^#/, '')}
               onChange={(e) => setInputVal(e.target.value.toUpperCase().trim())}
-              placeholder="Ví dụ: ABC123"
+              placeholder={dict.banner.inputPlaceholder}
               className="h-12 w-full sm:w-56 rounded-xl border-2 border-emerald-500/70 bg-white pl-8 pr-3 text-sm font-mono font-black tracking-wider text-slate-950 placeholder:text-slate-400 placeholder:font-normal caret-slate-950 shadow-inner transition-all focus:border-emerald-600 focus:bg-white focus:text-slate-950 focus:outline-none focus:ring-4 focus:ring-emerald-500/25 dark:border-emerald-500/60 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:caret-white dark:focus:bg-slate-900 dark:focus:text-white"
             />
           </div>
@@ -64,15 +66,15 @@ export function PlayerTagPromptBanner({
           <button
             type="submit"
             disabled={!inputVal.trim() || isSyncingApi}
-            className="inline-flex h-12 items-center justify-center rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-sky-600 px-6 text-sm font-black text-white shadow-lg shadow-emerald-600/30 transition-all hover:scale-[1.02] hover:shadow-emerald-600/40 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 dark:from-emerald-500 dark:via-teal-500 dark:to-sky-500"
+            className="inline-flex h-12 items-center justify-center rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-sky-600 px-6 text-sm font-black text-white shadow-lg shadow-emerald-600/30 transition-all hover:scale-[1.02] hover:shadow-emerald-600/40 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 dark:from-emerald-500 dark:via-teal-500 dark:to-sky-500 cursor-pointer"
           >
             {isSyncingApi ? (
               <span className="inline-flex items-center gap-2">
                 <CircleNotch weight="bold" className="h-4 w-4 animate-spin" />
-                <span>Đang tải...</span>
+                <span>{dict.banner.loadingBtn}</span>
               </span>
             ) : (
-              <span>Xem bảng đấu</span>
+              <span>{dict.banner.submitBtn}</span>
             )}
           </button>
         </form>

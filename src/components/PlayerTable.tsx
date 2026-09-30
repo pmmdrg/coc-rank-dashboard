@@ -3,6 +3,7 @@ import { Warning, MagnifyingGlass, X } from '@phosphor-icons/react'
 import type { Player, RankingStats, Season } from '../types'
 import { PlayerRow } from './PlayerRow'
 import { validatePlayer } from '../lib/validation'
+import { useI18n } from '../i18n/LanguageContext'
 
 export type FilterTab = 'all' | 'promotion' | 'demotion' | 'matchup' | 'canPass' | 'warned'
 
@@ -128,6 +129,7 @@ export function PlayerTable({
   onClearTargetFocus,
   isSyncingApi = false,
 }: PlayerTableProps) {
+  const { dict, interpolate } = useI18n()
   const [highlightedPlayerId, setHighlightedPlayerId] = useState<string | null>(null)
   const [rankJumpInfo, setRankJumpInfo] = useState<{
     playerId: string
@@ -542,7 +544,7 @@ export function PlayerTable({
                 ★
               </span>
               <h2 className="bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-lg font-black tracking-tight text-transparent">
-                Bảng Xếp Hạng Người Chơi
+                {dict.table.title}
               </h2>
             </div>
 
@@ -550,31 +552,31 @@ export function PlayerTable({
             {isSyncingApi ? (
               <span
                 className="inline-flex h-6 items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 px-2.5 text-[11px] font-bold leading-none text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 shadow-2xs"
-                title="Đang đồng bộ dữ liệu mới nhất từ Supercell API"
+                title={dict.table.syncingApi}
               >
                 <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 animate-ping" />
-                <span>Đang đồng bộ API...</span>
+                <span>{dict.table.syncingApi}</span>
               </span>
             ) : (
               <span
                 className="hidden h-6 items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 text-[11px] font-bold leading-none text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 sm:inline-flex shadow-2xs"
-                title="Dữ liệu thứ hạng, cúp và lượt đánh được tính toán tự động từ Supercell API"
+                title={dict.table.realtime}
               >
                 <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500 animate-pulse" />
-                <span>Thời gian thực</span>
+                <span>{dict.table.realtime}</span>
               </span>
             )}
 
             {isFiltered && (
               <span className="inline-flex h-6 items-center rounded-full bg-sky-500/10 px-2.5 text-[11px] font-bold leading-none text-sky-700 dark:bg-sky-400/15 dark:text-sky-300 border border-sky-500/30 shadow-2xs">
-                Hiển thị {effectivePlayers.length} / {rankedPlayers.length} người chơi
+                {interpolate(dict.table.showingCount, { shown: effectivePlayers.length, total: rankedPlayers.length })}
               </span>
             )}
           </div>
           <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
             {season.players.length === 0
-              ? 'Dữ liệu người chơi sẽ được tự động tải từ Supercell API hoặc từ file dữ liệu.'
-              : 'Dữ liệu Tên, Lượt đánh, Lượt thủ, Cúp được đồng bộ trực tiếp từ Supercell API và tự động xếp hạng chuẩn giải đấu.'}
+              ? dict.table.tableSubtitleNoPlayers
+              : dict.table.tableSubtitleWithPlayers}
           </p>
         </div>
       </div>
@@ -588,7 +590,7 @@ export function PlayerTable({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Tìm tên người chơi hoặc Clan..."
+            placeholder={dict.table.searchPlaceholder}
             className="w-full h-8 rounded-lg border border-slate-300/80 bg-white pl-8.5 pr-7 text-xs text-slate-900 placeholder:text-slate-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
           />
           {searchQuery && (
@@ -596,7 +598,7 @@ export function PlayerTable({
               type="button"
               onClick={() => setSearchQuery('')}
               className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
-              title="Xóa tìm kiếm"
+              title={dict.table.clearSearchTooltip}
             >
               <X weight="bold" className="h-3.5 w-3.5" />
             </button>
@@ -614,7 +616,7 @@ export function PlayerTable({
                 : 'bg-white/80 text-slate-600 hover:bg-slate-100 dark:bg-slate-800/80 dark:text-slate-300 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700/80'
             }`}
           >
-            Tất cả ({rankedPlayers.length})
+            {interpolate(dict.table.filterAll, { count: rankedPlayers.length })}
           </button>
 
           {promotionCount > 0 && (
@@ -627,7 +629,7 @@ export function PlayerTable({
                   : 'bg-emerald-500/10 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/20'
               }`}
             >
-              Top thăng hạng ({Math.min(promotionCount, rankedPlayers.length)})
+              {interpolate(dict.table.filterPromotion, { count: Math.min(promotionCount, rankedPlayers.length) })}
             </button>
           )}
 
@@ -641,7 +643,7 @@ export function PlayerTable({
                   : 'bg-rose-500/10 text-rose-700 dark:bg-rose-500/15 dark:text-rose-300 border border-rose-500/30 hover:bg-rose-500/20'
               }`}
             >
-              Nguy hiểm ({Math.min(demotionCount, rankedPlayers.length)})
+              {interpolate(dict.table.filterDemotion, { count: Math.min(demotionCount, rankedPlayers.length) })}
             </button>
           )}
 
@@ -655,7 +657,7 @@ export function PlayerTable({
                   : 'bg-indigo-500/10 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500/20'
               }`}
             >
-              Đối thủ đã đấu ({matchupPlayerIds.size})
+              {interpolate(dict.table.filterMatchup, { count: matchupPlayerIds.size })}
             </button>
           )}
 
@@ -669,7 +671,7 @@ export function PlayerTable({
                   : 'bg-amber-500/10 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300 border border-amber-500/30 hover:bg-amber-500/20'
               }`}
             >
-              Có thể vượt tôi ({canPassPlayerIds.size})
+              {interpolate(dict.table.filterCanPass, { count: canPassPlayerIds.size })}
             </button>
           )}
 
@@ -683,7 +685,7 @@ export function PlayerTable({
                   : 'bg-amber-500/10 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300 border border-amber-500/30 hover:bg-amber-500/20'
               }`}
             >
-              Cần rà soát ({warnedPlayerIds.size})
+              {interpolate(dict.table.filterWarned, { count: warnedPlayerIds.size })}
             </button>
           )}
 
@@ -696,7 +698,7 @@ export function PlayerTable({
               }}
               className="text-xs text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 underline ml-1 cursor-pointer"
             >
-              Xóa lọc
+              {dict.table.clearFilter}
             </button>
           )}
         </div>
@@ -726,43 +728,43 @@ export function PlayerTable({
                     className="px-2.5 py-2.5 whitespace-nowrap bg-inherit"
                     style={colWidths[0] ? { width: `${colWidths[0]}px`, minWidth: `${colWidths[0]}px`, maxWidth: `${colWidths[0]}px` } : { width: '136px', minWidth: '136px', maxWidth: '136px' }}
                   >
-                    Rank
+                    {dict.table.colRank}
                   </th>
                   <th
                     className="px-2 py-2.5 bg-inherit"
                     style={colWidths[1] ? { width: `${colWidths[1]}px`, minWidth: `${colWidths[1]}px`, maxWidth: `${colWidths[1]}px` } : { width: '224px', minWidth: '170px', maxWidth: '240px' }}
                   >
-                    Tên người chơi
+                    {dict.table.colName}
                   </th>
                   <th
                     className="px-2 py-2.5 whitespace-nowrap bg-inherit"
                     style={colWidths[2] ? { width: `${colWidths[2]}px`, minWidth: `${colWidths[2]}px`, maxWidth: `${colWidths[2]}px` } : { width: '96px', minWidth: '88px' }}
                   >
-                    Lượt đánh
+                    {dict.table.colAttacks}
                   </th>
                   <th
                     className="px-2 py-2.5 whitespace-nowrap bg-inherit"
                     style={colWidths[3] ? { width: `${colWidths[3]}px`, minWidth: `${colWidths[3]}px`, maxWidth: `${colWidths[3]}px` } : { width: '96px', minWidth: '88px' }}
                   >
-                    Lượt thủ
+                    {dict.table.colDefenses}
                   </th>
                   <th
                     className="px-2 py-2.5 whitespace-nowrap bg-inherit"
                     style={colWidths[4] ? { width: `${colWidths[4]}px`, minWidth: `${colWidths[4]}px`, maxWidth: `${colWidths[4]}px` } : { width: '96px', minWidth: '88px' }}
                   >
-                    Cup hiện tại
+                    {dict.table.colCurrentCups}
                   </th>
                   <th
                     className="px-2 py-2.5 whitespace-nowrap bg-inherit"
                     style={colWidths[5] ? { width: `${colWidths[5]}px`, minWidth: `${colWidths[5]}px`, maxWidth: `${colWidths[5]}px` } : { width: '144px', minWidth: '120px' }}
                   >
-                    Cup tối đa
+                    {dict.table.colMaxCups}
                   </th>
                   <th
                     className="px-2 py-2.5 whitespace-nowrap text-center bg-inherit"
                     style={colWidths[6] ? { width: `${colWidths[6]}px`, minWidth: `${colWidths[6]}px`, maxWidth: `${colWidths[6]}px` } : { width: '96px', minWidth: '92px' }}
                   >
-                    Đánh giá
+                    {dict.table.colRating}
                   </th>
                 </tr>
               </thead>
@@ -780,13 +782,13 @@ export function PlayerTable({
         <table ref={tableRef} className="relative w-full min-w-[1080px] border-separate border-spacing-0 text-left text-sm">
           <thead ref={theadRef} className="bg-amber-50/95 dark:bg-slate-900/95 border-b border-amber-200/60 dark:border-slate-800 text-xs uppercase tracking-wider text-amber-900 dark:text-slate-200 shadow-2xs">
             <tr>
-              <th className="w-[136px] min-w-[136px] max-w-[136px] px-2.5 py-2.5 whitespace-nowrap bg-inherit">Rank</th>
-              <th className="w-56 min-w-[170px] max-w-[240px] px-2 py-2.5 bg-inherit">Tên người chơi</th>
-              <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap bg-inherit">Lượt đánh</th>
-              <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap bg-inherit">Lượt thủ</th>
-              <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap bg-inherit">Cup hiện tại</th>
-              <th className="w-36 min-w-[120px] px-2 py-2.5 whitespace-nowrap bg-inherit">Cup tối đa</th>
-              <th className="w-24 min-w-[92px] px-2 py-2.5 whitespace-nowrap text-center bg-inherit">Đánh giá</th>
+              <th className="w-[136px] min-w-[136px] max-w-[136px] px-2.5 py-2.5 whitespace-nowrap bg-inherit">{dict.table.colRank}</th>
+              <th className="w-56 min-w-[170px] max-w-[240px] px-2 py-2.5 bg-inherit">{dict.table.colName}</th>
+              <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap bg-inherit">{dict.table.colAttacks}</th>
+              <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap bg-inherit">{dict.table.colDefenses}</th>
+              <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap bg-inherit">{dict.table.colCurrentCups}</th>
+              <th className="w-36 min-w-[120px] px-2 py-2.5 whitespace-nowrap bg-inherit">{dict.table.colMaxCups}</th>
+              <th className="w-24 min-w-[92px] px-2 py-2.5 whitespace-nowrap text-center bg-inherit">{dict.table.colRating}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200/50 dark:divide-slate-800/60">
@@ -826,10 +828,10 @@ export function PlayerTable({
                   {isFiltered ? (
                     <div className="flex flex-col items-center justify-center gap-1.5">
                       <span className="text-base font-semibold text-slate-700 dark:text-slate-200">
-                        Không tìm thấy người chơi nào khớp với điều kiện lọc!
+                        {dict.table.noResultsTitle}
                       </span>
                       <p className="text-xs text-slate-500 dark:text-slate-400">
-                        {searchQuery ? `Từ khóa tìm kiếm: "${searchQuery}"` : 'Bộ lọc hiện tại không có kết quả.'}
+                        {searchQuery ? interpolate(dict.table.noResultsKeyword, { keyword: searchQuery }) : dict.table.noResultsEmpty}
                       </p>
                       <button
                         type="button"
@@ -839,11 +841,11 @@ export function PlayerTable({
                         }}
                         className="mt-2 inline-flex h-8 items-center rounded-lg bg-sky-600 px-3.5 text-xs font-semibold text-white hover:bg-sky-500 cursor-pointer shadow-xs transition-all"
                       >
-                        Quay lại xem toàn bộ danh sách
+                        {dict.table.backToAll}
                       </button>
                     </div>
                   ) : (
-                    'Chưa có dữ liệu'
+                    dict.common.noData
                   )}
                 </td>
               </tr>
@@ -890,10 +892,10 @@ export function PlayerTable({
                           <div className="flex items-center justify-between px-5 py-2 text-xs font-black text-emerald-800 dark:text-emerald-300">
                             <span className="flex items-center gap-2 tracking-wider uppercase">
                               <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-white text-[10px] font-black shadow-xs">▲</span>
-                              <span>Vạch Thăng Hạng • Top {promotionCount} Dẫn Đầu</span>
+                              <span>{interpolate(dict.table.laserPromotionTitle, { count: promotionCount })}</span>
                             </span>
                             <span className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">
-                              Thăng hạng lên giải đấu cấp cao hơn
+                              {dict.table.laserPromotionSub}
                             </span>
                           </div>
                         </td>
@@ -907,10 +909,10 @@ export function PlayerTable({
                           <div className="flex items-center justify-between px-5 py-2 text-xs font-black text-rose-800 dark:text-rose-300">
                             <span className="flex items-center gap-2 tracking-wider uppercase">
                               <span className="flex h-5 w-5 items-center justify-center rounded-full bg-rose-500 text-white text-[10px] font-black shadow-xs">▼</span>
-                              <span>Vạch Xuống Hạng • {demotionCount} Người Cuối Bảng</span>
+                              <span>{interpolate(dict.table.laserDemotionTitle, { count: demotionCount })}</span>
                             </span>
                             <span className="text-[11px] font-semibold text-rose-700 dark:text-rose-400">
-                              Nguy cơ rớt xuống giải đấu cấp thấp hơn
+                              {dict.table.laserDemotionSub}
                             </span>
                           </div>
                         </td>
@@ -926,38 +928,38 @@ export function PlayerTable({
 
       {/* 4. Chú thích biểu tượng & trạng thái */}
       <div className="flex flex-wrap items-center gap-4 border-t border-slate-200/80 px-5 py-3 text-xs text-slate-500 dark:border-slate-800/80 dark:text-slate-400">
-        <span className="font-bold text-slate-700 dark:text-slate-200">Chú thích:</span>
+        <span className="font-bold text-slate-700 dark:text-slate-200">{dict.table.legendTitle}</span>
         <span className="inline-flex items-center gap-1.5 font-medium">
           <span className="h-3 w-3 rounded-xs border-l-[3px] border-l-sky-500 bg-sky-400/20" />
-          Tài khoản của bạn
+          {dict.table.legendMine}
         </span>
         <span className="inline-flex items-center gap-1.5 font-medium">
           <Warning weight="fill" className="h-3.5 w-3.5 text-amber-500" />
-          Cúp tối đa có thể vượt bạn
+          {dict.table.legendCanPass}
         </span>
         {promotionCount > 0 && (
           <span className="inline-flex items-center gap-1.5 font-bold text-emerald-600 dark:text-emerald-400">
             <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-xs shadow-emerald-500/50" />
-            Thăng hạng (Top {promotionCount})
+            {interpolate(dict.table.legendPromotion, { count: promotionCount })}
           </span>
         )}
         {demotionCount > 0 && (
           <span className="inline-flex items-center gap-1.5 font-bold text-rose-600 dark:text-rose-400">
             <span className="h-2 w-2 rounded-full bg-rose-500 shadow-xs shadow-rose-500/50" />
-            Xuống hạng ({demotionCount} người cuối)
+            {interpolate(dict.table.legendDemotion, { count: demotionCount })}
           </span>
         )}
         <span className="inline-flex items-center gap-1.5 font-semibold text-emerald-700 dark:text-emerald-300">
           <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 border border-emerald-500/30">
-            Đã đánh
+            {dict.table.attackedByMe}
           </span>
-          Bạn đã tấn công
+          {dict.table.legendYouAttacked}
         </span>
         <span className="inline-flex items-center gap-1.5 font-semibold text-amber-700 dark:text-amber-300">
           <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 border border-amber-500/30">
-            Đã đánh tôi
+            {dict.table.attackedMe}
           </span>
-          Đối thủ đã tấn công bạn
+          {dict.table.legendOpponentAttacked}
         </span>
       </div>
 
@@ -970,9 +972,9 @@ export function PlayerTable({
                 type="button"
                 onClick={jumpToMyPlayer}
                 className="inline-flex h-7 items-center rounded-full bg-sky-500/25 px-3 text-xs font-black text-sky-300 hover:bg-sky-500/40 shadow-xs shadow-sky-500/30 transition-all cursor-pointer select-none active:scale-90"
-                title="Nhảy đến vị trí tài khoản của tôi"
+                title={dict.table.jumpMyTooltip}
               >
-                Tôi (#{stats.myPlayer.rank})
+                {interpolate(dict.table.jumpMe, { rank: stats.myPlayer.rank })}
               </button>
             )}
             {promotionCount > 0 && (
@@ -980,9 +982,9 @@ export function PlayerTable({
                 type="button"
                 onClick={jumpToPromotion}
                 className="inline-flex h-7 items-center rounded-full bg-emerald-500/20 px-2.5 text-xs font-bold text-emerald-300 hover:bg-emerald-500/35 transition-all cursor-pointer select-none active:scale-90"
-                title={`Nhảy đến vạch thăng hạng (#${promotionCount})`}
+                title={interpolate(dict.table.jumpPromotionTooltip, { count: promotionCount })}
               >
-                Thăng hạng
+                {dict.table.jumpPromotion}
               </button>
             )}
             {demotionCount > 0 && (
@@ -990,18 +992,18 @@ export function PlayerTable({
                 type="button"
                 onClick={jumpToDemotion}
                 className="inline-flex h-7 items-center rounded-full bg-rose-500/20 px-2.5 text-xs font-bold text-rose-300 hover:bg-rose-500/35 transition-all cursor-pointer select-none active:scale-90"
-                title={`Nhảy đến vạch xuống hạng (#${rankedPlayers.length - demotionCount + 1})`}
+                title={interpolate(dict.table.jumpDemotionTooltip, { rank: rankedPlayers.length - demotionCount + 1 })}
               >
-                Xuống hạng
+                {dict.table.jumpDemotion}
               </button>
             )}
             <button
               type="button"
               onClick={jumpToTop}
               className="inline-flex h-7 items-center rounded-full bg-slate-800 px-2.5 text-xs font-semibold text-slate-300 hover:bg-slate-700 hover:text-white transition-all cursor-pointer select-none active:scale-90"
-              title="Cuộn lên đầu bảng"
+              title={dict.table.jumpTopTooltip}
             >
-              Lên đầu
+              {dict.table.jumpTop}
             </button>
           </div>
         </div>

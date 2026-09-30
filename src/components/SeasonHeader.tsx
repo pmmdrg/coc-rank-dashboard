@@ -3,6 +3,8 @@ import { CircleNotch, Sparkle, Copy, Check } from '@phosphor-icons/react'
 import { formatLeagueName } from '../lib/ranking'
 import { getLeagueIconUrl } from '../lib/leagueIcons'
 import { ThemeToggle } from './ThemeToggle'
+import { LanguageSwitcher } from './LanguageSwitcher'
+import { useI18n } from '../i18n/LanguageContext'
 
 interface SeasonHeaderProps {
   league: string
@@ -27,6 +29,7 @@ export function SeasonHeader({
   onExport,
   onOpenShareCard,
 }: SeasonHeaderProps) {
+  const { dict } = useI18n()
   const [isTagCopied, setIsTagCopied] = useState(false)
   const displayLeague = formatLeagueName(league)
 
@@ -48,13 +51,13 @@ export function SeasonHeader({
             </h1>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-sky-400/40 bg-sky-500/10 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-sky-700 dark:border-sky-400/30 dark:bg-sky-500/15 dark:text-sky-300 shadow-2xs">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              Tournament Tracker
+              {dict.header.badge}
             </span>
           </div>
 
           <p className="mt-1 flex flex-wrap items-center gap-2 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
             <span className="font-bold text-slate-800 dark:text-slate-100">
-              {myPlayerName && myPlayerName !== '--' ? myPlayerName : '--'}
+              {myPlayerName && myPlayerName !== '--' ? myPlayerName : dict.header.noAccount}
             </span>
 
             {playerTag ? (
@@ -62,7 +65,7 @@ export function SeasonHeader({
                 type="button"
                 onClick={handleCopyMyTag}
                 className="group inline-flex items-center gap-1.5 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 font-mono text-xs font-bold text-emerald-700 hover:bg-emerald-500/20 active:scale-95 transition-all dark:border-emerald-400/30 dark:bg-emerald-400/10 dark:text-emerald-300 dark:hover:bg-emerald-400/20 cursor-pointer shadow-2xs"
-                title="Nhấp để sao chép Player Tag"
+                title={dict.header.copyTagTooltip}
               >
                 <span>{playerTag.startsWith('#') ? playerTag : `#${playerTag}`}</span>
                 {isTagCopied ? (
@@ -87,7 +90,7 @@ export function SeasonHeader({
                   <span>{displayLeague}</span>
                 </>
               ) : (
-                <span>Giải đấu: --</span>
+                <span>{dict.seasonMeta.league}: --</span>
               )}
             </span>
           </p>
@@ -119,12 +122,12 @@ export function SeasonHeader({
                   onSyncCocApi(playerTag)
                 }
               }}
-              placeholder="Tag: ABC123"
-              title="Nhập Player Tag của bạn (nhấn Enter để tải dữ liệu)"
+              placeholder={dict.header.tagPlaceholder}
+              title={dict.header.syncApi}
               className="h-7.5 w-28 sm:w-32 rounded-md bg-white pl-5 pr-7 font-mono text-xs font-black tracking-wider text-slate-950 placeholder:text-slate-400 placeholder:font-normal caret-slate-950 transition-all focus:outline-none dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:caret-white"
             />
             {isSyncingApi && (
-              <span className="pointer-events-none absolute right-2 text-emerald-600 dark:text-emerald-400" title="Đang tải dữ liệu từ Supercell API...">
+              <span className="pointer-events-none absolute right-2 text-emerald-600 dark:text-emerald-400" title={dict.header.syncing}>
                 <CircleNotch weight="bold" className="h-3.5 w-3.5 animate-spin" />
               </span>
             )}
@@ -136,10 +139,10 @@ export function SeasonHeader({
               type="button"
               onClick={onOpenShareCard}
               className="inline-flex h-9.5 items-center gap-1.5 rounded-lg bg-gradient-to-r from-indigo-600 via-sky-600 to-cyan-500 px-3.5 text-xs font-bold text-white shadow-md shadow-sky-500/25 hover:shadow-sky-500/40 hover:brightness-110 active:scale-95 transition-all cursor-pointer select-none"
-              title="Xuất thẻ ảnh thành tích chuẩn 1200x675 để chia sẻ"
+              title={dict.header.shareCard}
             >
               <Sparkle weight="fill" className="h-3.5 w-3.5" />
-              <span>Chia sẻ thẻ</span>
+              <span>{dict.header.shareCard}</span>
             </button>
           )}
 
@@ -149,7 +152,7 @@ export function SeasonHeader({
               type="button"
               onClick={() => onExport('json')}
               className="h-8 rounded-md px-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 transition-all cursor-pointer"
-              title="Xuất sang file JSON"
+              title={dict.header.exportJson}
             >
               JSON
             </button>
@@ -158,13 +161,14 @@ export function SeasonHeader({
               type="button"
               onClick={() => onExport('csv')}
               className="h-8 rounded-md px-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 transition-all cursor-pointer"
-              title="Xuất sang file CSV"
+              title={dict.header.exportCsv}
             >
               CSV
             </button>
           </div>
 
-          {/* Nút đổi theme */}
+          {/* Nút Đa Ngôn Ngữ & Nút đổi theme */}
+          <LanguageSwitcher />
           <ThemeToggle />
         </div>
       </div>

@@ -6,6 +6,7 @@ import { RANKED_TIERS_METADATA } from '../data/rankedTierMetadata'
 import { TrendRecordCards } from './trend/TrendRecordCards'
 import { TrendHistoryTable } from './trend/TrendHistoryTable'
 import type { ProcessedSeasonPoint } from './trend/types'
+import { useI18n } from '../i18n/LanguageContext'
 
 export interface PerformanceTrendSectionProps {
   leagueHistory?: LeagueHistoryItem[]
@@ -15,6 +16,8 @@ export interface PerformanceTrendSectionProps {
 }
 
 function TrendSectionSkeleton() {
+  const { dict } = useI18n()
+
   return (
     <section className="glass-panel rounded-xl shadow-sm transition-all overflow-hidden">
       {/* Header */}
@@ -22,15 +25,15 @@ function TrendSectionSkeleton() {
         <div>
           <div className="flex items-center gap-2">
             <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
-              Theo dõi phong độ qua các mùa giải
+              {dict.performanceTrend.title}
             </h2>
             <span className="inline-flex h-5 items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 px-2 text-[10px] font-bold text-sky-700 dark:bg-sky-950/60 dark:text-sky-300">
               <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 animate-ping" />
-              Đang tải...
+              {dict.common.loading}
             </span>
           </div>
           <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-            Lịch sử thứ hạng, cúp, và tỷ lệ chiến đấu lấy trực tiếp từ Supercell API
+            {dict.performanceTrend.subtitle}
           </p>
         </div>
       </div>
@@ -77,6 +80,7 @@ export function PerformanceTrendSection({
   playerTag = '',
   isSyncingApi = false,
 }: PerformanceTrendSectionProps) {
+  const { dict, interpolate } = useI18n()
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [activeMetric, setActiveMetric] = useState<'cups_rank' | 'battles_stars'>('cups_rank')
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
@@ -199,21 +203,21 @@ export function PerformanceTrendSection({
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/60 p-4 sm:p-5 dark:border-slate-700/60">
           <div>
             <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
-              Theo dõi phong độ qua các mùa giải
+              {dict.performanceTrend.title}
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Lịch sử thứ hạng, cúp, và tỷ lệ chiến đấu lấy trực tiếp từ Supercell API
+              {dict.performanceTrend.subtitle}
             </p>
           </div>
         </div>
         <div className="py-10 text-center px-4">
           <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-            Chưa có dữ liệu lịch sử mùa giải
+            {dict.performanceTrend.emptyTitle}
           </p>
           <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">
             {playerTag
-              ? 'Người chơi chưa có dữ liệu lưu trữ trên endpoint League History của Supercell hoặc vừa tạo bảng mới.'
-              : 'Vui lòng nhập Player Tag và bấm "Tải dữ liệu từ Supercell API" để xem toàn bộ phong độ qua các mùa.'}
+              ? dict.performanceTrend.emptyDescWithTag
+              : dict.performanceTrend.emptyDescNoTag}
           </p>
         </div>
       </section>
@@ -340,14 +344,14 @@ export function PerformanceTrendSection({
         <div>
           <div className="flex items-center gap-2">
             <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
-              Theo dõi phong độ qua các mùa giải
+              {dict.performanceTrend.title}
             </h2>
             <span className="rounded-full bg-sky-500/15 px-2 py-0.5 text-[10px] font-bold text-sky-700 dark:text-sky-300">
-              {chronologicalHistory.length} mùa gần nhất
+              {interpolate(dict.performanceTrend.seasonsCount, { count: chronologicalHistory.length })}
             </span>
           </div>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            Đồng bộ dữ liệu lịch sử chính thức từ endpoint Supercell API ({myPlayerName || playerTag || 'Bạn'})
+            {interpolate(dict.performanceTrend.officialDataNotice, { name: myPlayerName || playerTag || dict.common.you })}
           </p>
         </div>
 
@@ -362,7 +366,7 @@ export function PerformanceTrendSection({
                 : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400'
             }`}
           >
-            {showTable ? 'Ẩn bảng chi tiết' : 'Xem bảng chi tiết'}
+            {showTable ? dict.performanceTrend.hideHistoryTable : dict.performanceTrend.showHistoryTable}
           </button>
 
           {/* Nút thu gọn / mở rộng section */}
@@ -372,7 +376,7 @@ export function PerformanceTrendSection({
             className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-100 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 cursor-pointer shadow-2xs"
             aria-expanded={!isCollapsed}
           >
-            <span>{isCollapsed ? 'Mở rộng' : 'Thu gọn'}</span>
+            <span>{isCollapsed ? dict.performanceTrend.expand : dict.performanceTrend.collapse}</span>
             <CaretDown
               weight="bold"
               className={`h-3.5 w-3.5 transition-transform duration-300 ${!isCollapsed ? 'rotate-180' : ''}`}
@@ -397,7 +401,7 @@ export function PerformanceTrendSection({
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-slate-200/60 dark:border-slate-700/60">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                  Chỉ số biểu đồ:
+                  {dict.performanceTrend.chartMetric}
                 </span>
                 <div className="inline-flex rounded-lg border border-slate-200 bg-slate-100/70 p-0.5 text-xs font-semibold dark:border-slate-700 dark:bg-slate-800/70">
                   <button
@@ -409,7 +413,7 @@ export function PerformanceTrendSection({
                         : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
                     }`}
                   >
-                    Cúp & Thứ hạng
+                    {dict.performanceTrend.metricCupsRank}
                   </button>
                   <button
                     type="button"
@@ -420,7 +424,7 @@ export function PerformanceTrendSection({
                         : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
                     }`}
                   >
-                    Thắng công & Sao thủ bị mất
+                    {dict.performanceTrend.metricBattlesStars}
                   </button>
                 </div>
               </div>
@@ -431,22 +435,22 @@ export function PerformanceTrendSection({
                   <>
                     <span className="inline-flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
                       <span className="h-2 w-2 rounded-full bg-amber-500" />
-                      Điểm Cúp ({minCups} - {maxCups})
+                      {interpolate(dict.performanceTrend.cupsLegend, { min: minCups, max: maxCups })}
                     </span>
                     <span className="inline-flex items-center gap-1.5 text-sky-600 dark:text-sky-400">
                       <span className="h-2 w-2 rounded-full bg-sky-500" />
-                      Thứ hạng theo tầng (100 hạng/giải)
+                      {dict.performanceTrend.rankTierLegend}
                     </span>
                   </>
                 ) : (
                   <>
                     <span className="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
                       <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                      Tỷ lệ thắng công (%)
+                      {dict.performanceTrend.attackWinRateLegend}
                     </span>
                     <span className="inline-flex items-center gap-1.5 text-rose-600 dark:text-rose-400">
                       <span className="h-2 w-2 rounded-full bg-rose-500" />
-                      Số sao phòng thủ bị cướp
+                      {dict.performanceTrend.defenseStarsLegend}
                     </span>
                   </>
                 )}
@@ -722,27 +726,27 @@ export function PerformanceTrendSection({
                     </div>
                     <div className="mt-2 space-y-1 text-[11px]">
                       <div className="flex items-center justify-between gap-4">
-                        <span className="text-amber-400 font-medium">Điểm cúp:</span>
+                        <span className="text-amber-400 font-medium">{dict.highlights.currentCups}:</span>
                         <span className="font-mono font-bold">
-                          {chronologicalHistory[hoveredIndex].trophies} cúp
+                          {chronologicalHistory[hoveredIndex].trophies} {dict.common.trophies}
                         </span>
                       </div>
                       <div className="flex items-center justify-between gap-4">
-                        <span className="text-sky-400 font-medium">Thứ hạng:</span>
+                        <span className="text-sky-400 font-medium">{dict.common.rank}:</span>
                         <span className="font-mono font-bold">
-                          #{chronologicalHistory[hoveredIndex].placement} / 100
+                          #{chronologicalHistory[hoveredIndex].placement} {dict.performanceTrend.outOfHundred}
                         </span>
                       </div>
                       <div className="flex items-center justify-between gap-4">
-                        <span className="text-emerald-400 font-medium">Tấn công:</span>
+                        <span className="text-emerald-400 font-medium">{dict.common.attacks}:</span>
                         <span className="font-mono font-bold">
                           {chronologicalHistory[hoveredIndex].attackWins}W - {chronologicalHistory[hoveredIndex].attackLosses}L ({chronologicalHistory[hoveredIndex].attackWinRate}%)
                         </span>
                       </div>
                       <div className="flex items-center justify-between gap-4">
-                        <span className="text-rose-400 font-medium">Phòng thủ:</span>
+                        <span className="text-rose-400 font-medium">{dict.common.defenses}:</span>
                         <span className="font-mono font-bold">
-                          Bị trừ {chronologicalHistory[hoveredIndex].defenseStars} sao
+                          {interpolate(dict.performanceTrend.lostStars, { stars: chronologicalHistory[hoveredIndex].defenseStars })}
                         </span>
                       </div>
                     </div>

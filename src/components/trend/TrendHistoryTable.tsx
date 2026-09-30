@@ -1,22 +1,25 @@
 import type { ProcessedSeasonPoint } from './types'
+import { useI18n } from '../../i18n/LanguageContext'
 
 interface TrendHistoryTableProps {
   chronologicalHistory: ProcessedSeasonPoint[]
 }
 
 export function TrendHistoryTable({ chronologicalHistory }: TrendHistoryTableProps) {
+  const { dict, interpolate } = useI18n()
+
   return (
     <div className="overflow-x-auto rounded-xl border border-slate-200/70 dark:border-slate-700/70">
       <table className="w-full text-left text-xs">
         <thead className="soft-table-head uppercase tracking-wider text-[11px]">
           <tr>
-            <th className="px-3.5 py-2.5 font-bold">Khoảng thời gian</th>
-            <th className="px-3 py-2.5 font-bold">Cấp giải đấu</th>
-            <th className="px-3 py-2.5 font-bold">Thứ hạng</th>
-            <th className="px-3 py-2.5 font-bold">Điểm Cúp</th>
-            <th className="px-3 py-2.5 font-bold">Tấn công</th>
-            <th className="px-3 py-2.5 font-bold">Phòng thủ</th>
-            <th className="px-3 py-2.5 font-bold">Số trận tối đa</th>
+            <th className="px-3.5 py-2.5 font-bold">{dict.performanceTrend.tableColPeriod}</th>
+            <th className="px-3 py-2.5 font-bold">{dict.performanceTrend.tableColTier}</th>
+            <th className="px-3 py-2.5 font-bold">{dict.performanceTrend.tableColRank}</th>
+            <th className="px-3 py-2.5 font-bold">{dict.performanceTrend.tableColCups}</th>
+            <th className="px-3 py-2.5 font-bold">{dict.performanceTrend.tableColAttack}</th>
+            <th className="px-3 py-2.5 font-bold">{dict.performanceTrend.tableColDefense}</th>
+            <th className="px-3 py-2.5 font-bold">{dict.performanceTrend.tableColMaxBattles}</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-200/50 dark:divide-slate-800/60">
@@ -36,7 +39,7 @@ export function TrendHistoryTable({ chronologicalHistory }: TrendHistoryTablePro
                     <span>{item.displayPeriod}</span>
                     {isLatest && (
                       <span className="rounded bg-sky-500/20 px-1 py-0.2 text-[9px] font-bold text-sky-700 dark:text-sky-300">
-                        Mới nhất
+                        {dict.performanceTrend.latestBadge}
                       </span>
                     )}
                   </div>
@@ -62,7 +65,7 @@ export function TrendHistoryTable({ chronologicalHistory }: TrendHistoryTablePro
 
                 {/* Điểm Cúp */}
                 <td className="px-3 py-3 align-middle whitespace-nowrap font-mono font-bold text-amber-600 dark:text-amber-400">
-                  {item.trophies} cúp
+                  {item.trophies} {dict.common.trophies}
                 </td>
 
                 {/* Tấn công */}
@@ -78,13 +81,13 @@ export function TrendHistoryTable({ chronologicalHistory }: TrendHistoryTablePro
                 {/* Phòng thủ */}
                 <td className="px-3 py-3 align-middle whitespace-nowrap">
                   <span className="font-medium text-slate-700 dark:text-slate-300">
-                    Mất {item.defenseStars} sao
+                    {interpolate(dict.performanceTrend.lostStars, { stars: item.defenseStars })}
                   </span>
                 </td>
 
                 {/* Giới hạn trận */}
                 <td className="px-3 py-3 align-middle whitespace-nowrap font-mono text-slate-500 dark:text-slate-400">
-                  {item.maxBattles} lượt/mùa
+                  {item.maxBattles} {dict.performanceTrend.battlesPerSeasonUnit}
                 </td>
               </tr>
             )

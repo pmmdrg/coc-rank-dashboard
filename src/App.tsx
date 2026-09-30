@@ -1,13 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   attackStatusColors,
-  attackStatusLabels,
   calculateMaxPossibleCups,
   calculatePlayerRating,
   getRankingStats,
   normalizeSeason,
   ratingColors,
-  ratingLabels,
   saveLeagueRules,
 } from './lib/ranking'
 import { seasonsToCsv } from './lib/csv'
@@ -33,6 +31,7 @@ import type {
   StorageDocument,
 } from './types'
 
+import { useI18n } from './i18n/LanguageContext'
 import { ChartsSection } from './components/ChartsSection'
 import { PlayerTable } from './components/PlayerTable'
 import { SeasonHeader } from './components/SeasonHeader'
@@ -84,6 +83,7 @@ function downloadFile(content: string, filename: string, mimeType: string) {
 }
 
 function App() {
+  const { dict, interpolate } = useI18n()
   const [isSyncingApi, setIsSyncingApi] = useState(false)
   const [isShareCardOpen, setIsShareCardOpen] = useState(false)
   const [playerTag, setPlayerTag] = useState<string>(() => loadSavedPlayerTag())
@@ -92,19 +92,14 @@ function App() {
     loadRankChangesSnapshot(),
   )
   const [document, setDocument] = useState<StorageDocument>(() => loadDraftDocument(emptySeason))
-  const [status, setStatus] = useState(() => {
-    const savedTag = loadSavedPlayerTag()
-    return savedTag
-      ? 'Đang tải dữ liệu...'
-      : 'Vui lòng nhập Player Tag ở góc trên bên phải để tải dữ liệu bảng đấu.'
-  })
+  const [status, setStatus] = useState<string | null>(null)
   const [error, setError] = useState('')
   const [targetFocusPlayerId, setTargetFocusPlayerId] = useState<string | null>(null)
 
   const season = document.season
   const rankedSeason = useMemo(() => normalizeSeason(season), [season])
   const stats = useMemo(() => getRankingStats(rankedSeason), [rankedSeason])
-  const myPlayerName = stats.myPlayer?.name || (playerTag ? 'Tài khoản của tôi' : '--')
+  const myPlayerName = stats.myPlayer?.name || (playerTag ? dict.common.me : '--')
 
   const isInitialMount = useRef(true)
 
@@ -151,12 +146,12 @@ function App() {
 
   const comparisonChartData = [
     {
-      label: `Có thể vượt ${myPlayerName}`,
+      label: interpolate(dict.charts.canPassMe, { name: myPlayerName }),
       value: stats.playersWhoCanPassMe,
       color: comparisonColors.canPass,
     },
     {
-      label: `Chắc chắn dưới ${myPlayerName}`,
+      label: interpolate(dict.charts.belowMe, { name: myPlayerName }),
       value: stats.playersDefinitelyBelowMe,
       color: comparisonColors.below,
     },
@@ -164,24 +159,31 @@ function App() {
 
   const attackStatusChartData = [
     {
-      label: attackStatusLabels.finished,
+      label: dict.charts.statusFinished,
       value: stats.attackStatusCounts.finished,
       color: attackStatusColors.finished,
     },
     {
-      label: attackStatusLabels.inProgress,
+      label: dict.charts.statusInProgress,
       value: stats.attackStatusCounts.inProgress,
       color: attackStatusColors.inProgress,
     },
     {
-      label: attackStatusLabels.notStarted,
+      label: dict.charts.statusNotStarted,
       value: stats.attackStatusCounts.notStarted,
       color: attackStatusColors.notStarted,
     },
   ]
 
+  const ratingLabelMap: Record<RatingCategory, string> = {
+    dominant: dict.charts.ratingDominant,
+    superior: dict.charts.ratingSuperior,
+    potential: dict.charts.ratingPotential,
+    alarm: dict.charts.ratingAlarm,
+  }
+
   const ratingChartData = ratingOptions.map((rating) => ({
-    label: ratingLabels[rating],
+    label: ratingLabelMap[rating],
     value: stats.ratingCounts[rating],
     color: ratingColors[rating],
   }))
@@ -207,7 +209,7 @@ function App() {
         activeSeasonIndex: index,
         season: targetSeason,
       }))
-      setStatus(`Đang xem dữ liệu của: ${targetSeason.seasonName}`)
+      setStatus(interpolate(dict.statusBanner.viewingSeason, { name: targetSeason.seasonName }))
     }
   }
 
@@ -231,11 +233,11 @@ function App() {
         activeSeasonIndex: document.activeSeasonIndex,
       }
       downloadFile(JSON.stringify(exportDoc, null, 2), fileName, 'application/json;charset=utf-8;')
-      setStatus(`Đã xuất file ${fileName} thành công.`)
+      setStatus(interpolate(dict.statusBanner.exportSuccess, { fileName }))
     } else {
       const csvData = seasonsToCsv(allSeasons)
       downloadFile(csvData, fileName, 'text/csv;charset=utf-8;')
-      setStatus(`Đã xuất file ${fileName} thành công.`)
+      setStatus(interpolate(dict.statusBanner.exportSuccess, { fileName }))
     }
   }
 
@@ -332,7 +334,7 @@ function App() {
     const rawTag = targetTag || playerTag || stats.myPlayer?.playerTag || stats.myPlayer?.id || ''
     const cleanTag = rawTag.replace(/^#/, '').trim()
     if (!cleanTag) {
-      setStatus('Vui lòng nhập Player Tag ở góc trên bên phải để tải dữ liệu bảng đấu.')
+      setStatus(dict.statusBanner.promptEnterTag)
       return
     }
 
@@ -374,7 +376,7 @@ function App() {
         activeSeasonIndex: 0,
         season: syncedSeasons[0],
       }))
-      setStatus(`Đã cập nhật dữ liệu mới nhất từ Supercell API lúc ${result.currentSeason.lastSyncedAt}!`)
+      setStatus(interpolate(dict.statusBanner.syncSuccess, { time: result.currentSeason.lastSyncedAt || '' }))
     } catch (err) {
       console.warn('Tải dữ liệu Supercell API thất bại:', err)
       setError(err instanceof Error ? err.message : 'Không thể tải dữ liệu từ Supercell API.')
@@ -423,7 +425,7 @@ function App() {
           />
         ) : (
           <div className="glass-panel animate-fade-in rounded-xl px-4 py-3 text-sm text-slate-600 dark:text-slate-300 flex items-center justify-between">
-            <span>{status}</span>
+            <span>{status || (playerTag ? dict.common.loading : dict.statusBanner.promptEnterTag)}</span>
           </div>
         )}
 

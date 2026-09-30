@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react'
 import { Warning, Crown, Trophy, Check, Copy } from '@phosphor-icons/react'
 import type { Player, RatingCategory } from '../types'
-import { ratingLabels } from '../lib/ranking'
 import { validatePlayer } from '../lib/validation'
+import { useI18n } from '../i18n/LanguageContext'
 
 interface PlayerRowProps {
   player: Player
@@ -36,7 +36,15 @@ export function PlayerRow({
   rankJump = null,
   setRowRef,
 }: PlayerRowProps) {
+  const { dict, interpolate, language } = useI18n()
   const [isTagCopied, setIsTagCopied] = useState(false)
+
+  const ratingLabelsMap: Record<RatingCategory, string> = {
+    dominant: dict.charts.ratingDominant,
+    superior: dict.charts.ratingSuperior,
+    potential: dict.charts.ratingPotential,
+    alarm: dict.charts.ratingAlarm,
+  }
 
   function handleCopyTag(e: React.MouseEvent) {
     e.stopPropagation()
@@ -76,7 +84,7 @@ export function PlayerRow({
   const attackedTooltip = useMemo(() => {
     if (!player.attackedByMe || player.attackedByMe.length === 0) return ''
     return player.attackedByMe
-      .map((log) => `• ${log.stars} sao, ${log.destructionPercentage}% phá hủy`)
+      .map((log) => `• ${log.stars}★, ${log.destructionPercentage}%`)
       .join('\n')
   }, [player.attackedByMe])
 
@@ -91,11 +99,14 @@ export function PlayerRow({
   const defendedTooltip = useMemo(() => {
     if (!player.defendedAgainstMe || player.defendedAgainstMe.length === 0) return ''
     return player.defendedAgainstMe
-      .map((log) => `• ${log.stars} sao, ${log.destructionPercentage}% phá hủy`)
+      .map((log) => `• ${log.stars}★, ${log.destructionPercentage}%`)
       .join('\n')
   }, [player.defendedAgainstMe])
 
   const rankDiff = rankJump ? rankJump.fromRank - rankJump.toRank : 0
+
+  const formatNumber = (val: number) =>
+    val.toLocaleString(language === 'vi' ? 'vi-VN' : 'en-US')
 
   return (
     <tr
@@ -113,7 +124,7 @@ export function PlayerRow({
           {player.rank === 1 ? (
             <div
               className="inline-flex h-7 w-8 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-amber-300 via-yellow-400 to-amber-500 font-mono text-xs font-black text-amber-950 shadow-md shadow-amber-500/35"
-              title="Quán quân #1 Giải đấu"
+              title={dict.table.podiumGold}
             >
               <Crown weight="fill" className="mr-0.5 h-3.5 w-3.5 fill-amber-950 text-amber-950 drop-shadow-xs" />
               <span>1</span>
@@ -121,14 +132,14 @@ export function PlayerRow({
           ) : player.rank === 2 ? (
             <div
               className="inline-flex h-7 w-8 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-slate-100 via-slate-200 to-slate-400 font-mono text-xs font-black text-slate-900 shadow-sm"
-              title="Á quân #2 Giải đấu"
+              title={dict.table.podiumSilver}
             >
               <span>2</span>
             </div>
           ) : player.rank === 3 ? (
             <div
               className="inline-flex h-7 w-8 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-amber-600 via-orange-600 to-amber-700 font-mono text-xs font-black text-white shadow-sm"
-              title="Quý quân #3 Giải đấu"
+              title={dict.table.podiumBronze}
             >
               <span>3</span>
             </div>
@@ -146,7 +157,7 @@ export function PlayerRow({
                   ? 'bg-emerald-500/15 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300'
                   : 'bg-rose-500/15 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300'
               }`}
-              title={`Biến động: ${rankDiff > 0 ? `Tăng +${rankDiff}` : `Giảm ${rankDiff}`} bậc`}
+              title={`#${rankJump?.fromRank} ➔ #${rankJump?.toRank}`}
             >
               {rankDiff > 0 ? `▲${rankDiff}` : `▼${Math.abs(rankDiff)}`}
             </span>
@@ -156,16 +167,16 @@ export function PlayerRow({
           {isPromotionZone ? (
             <span
               className="inline-flex shrink-0 items-center rounded-sm bg-emerald-500/15 border border-emerald-500/30 px-1 py-0.5 text-[9px] font-black uppercase tracking-tight text-emerald-700 dark:text-emerald-300 select-none shadow-2xs"
-              title="Vị trí thăng hạng giải đấu"
+              title={dict.table.badgePromotionTooltip}
             >
-              Thăng
+              {dict.table.badgePromotion}
             </span>
           ) : isDemotionZone ? (
             <span
               className="inline-flex shrink-0 items-center rounded-sm bg-rose-500/15 border border-rose-500/30 px-1 py-0.5 text-[9px] font-black uppercase tracking-tight text-rose-700 dark:text-rose-300 select-none shadow-2xs"
-              title="Vị trí nguy hiểm xuống hạng"
+              title={dict.table.badgeDemotionTooltip}
             >
-              Xuống
+              {dict.table.badgeDemotion}
             </span>
           ) : null}
         </div>
@@ -188,7 +199,7 @@ export function PlayerRow({
               </span>
               {isMyPlayer && (
                 <span className="shrink-0 rounded-full bg-gradient-to-r from-sky-500 to-blue-600 px-2 py-0.2 text-[9px] font-black text-white shadow-xs shadow-sky-500/30 uppercase tracking-wider">
-                  TÔI
+                  {dict.common.me}
                 </span>
               )}
             </div>
@@ -196,9 +207,9 @@ export function PlayerRow({
             <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">
               <span
                 className="truncate cursor-default font-normal"
-                title={`Clan: ${player.clanName || 'Không clan'}`}
+                title={`Clan: ${player.clanName || dict.table.noClan}`}
               >
-                {player.clanName || 'Không clan'}
+                {player.clanName || dict.table.noClan}
               </span>
 
               {player.playerTag && (
@@ -208,7 +219,7 @@ export function PlayerRow({
                     type="button"
                     onClick={handleCopyTag}
                     className="group/tag inline-flex items-center gap-1 shrink-0 font-mono text-[10px] text-slate-400 hover:text-emerald-600 dark:text-slate-500 dark:hover:text-emerald-400 cursor-pointer select-none transition-colors"
-                    title="Nhấp để sao chép Player Tag"
+                    title={dict.header.copyTagTooltip}
                   >
                     <span>{player.playerTag}</span>
                     {isTagCopied ? (
@@ -229,7 +240,7 @@ export function PlayerRow({
                     className="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold bg-emerald-500/15 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-300 border border-emerald-500/30 whitespace-nowrap shadow-2xs"
                     title={attackedTooltip}
                   >
-                    Đã đánh{attackSummaryText}
+                    {dict.table.attackedByMe}{attackSummaryText}
                   </span>
                 )}
                 {hasDefendedAgainstMe && (
@@ -237,7 +248,7 @@ export function PlayerRow({
                     className="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold bg-amber-500/15 text-amber-800 dark:bg-amber-500/20 dark:text-amber-300 border border-amber-500/30 whitespace-nowrap shadow-2xs"
                     title={defendedTooltip}
                   >
-                    Đã đánh tôi{defenseSummaryText}
+                    {dict.table.attackedMe}{defenseSummaryText}
                   </span>
                 )}
               </div>
@@ -247,7 +258,7 @@ export function PlayerRow({
           {warnings.length > 0 && (
             <span
               className="shrink-0 flex items-center text-amber-500 hover:text-amber-600 dark:text-amber-400 cursor-default"
-              title={`Cảnh báo dữ liệu (${warnings.length}):\n${warnings.map((w) => '• ' + w.message).join('\n')}`}
+              title={`${warnings.map((w) => '• ' + w.message).join('\n')}`}
             >
               <Warning weight="duotone" className="h-4 w-4 drop-shadow-xs" />
             </span>
@@ -265,7 +276,7 @@ export function PlayerRow({
             {player.attackWinCount !== undefined && (
               <span
                 className="mt-0.5 text-[9px] font-bold text-emerald-600 dark:text-emerald-400 leading-none"
-                title={`Thắng: ${player.attackWinCount} • Thua: ${player.attackLoseCount ?? 0}`}
+                title={`${player.attackWinCount}W${player.attackLoseCount ? `-${player.attackLoseCount}L` : ''}`}
               >
                 {player.attackWinCount}W{player.attackLoseCount ? `-${player.attackLoseCount}L` : ''}
               </span>
@@ -282,7 +293,9 @@ export function PlayerRow({
                   : 'font-medium text-slate-500 dark:text-slate-400'
               }`}
             >
-              {remainingAttacks === 0 ? 'Đủ lượt' : `còn ${remainingAttacks}`}
+              {remainingAttacks === 0
+                ? dict.table.completedAttacks
+                : interpolate(dict.table.remainingAttacks, { count: remainingAttacks })}
             </span>
           </div>
         </div>
@@ -298,7 +311,7 @@ export function PlayerRow({
             {player.defenseLoseCount !== undefined && (
               <span
                 className="mt-0.5 text-[9px] font-bold text-slate-500 dark:text-slate-400 leading-none"
-                title={`Thủ thành công: ${player.defenseWinCount ?? 0} • Bị phá: ${player.defenseLoseCount}`}
+                title={`${player.defenseWinCount ? `${player.defenseWinCount}W-` : ''}${player.defenseLoseCount}L`}
               >
                 {player.defenseWinCount ? `${player.defenseWinCount}W-` : ''}{player.defenseLoseCount}L
               </span>
@@ -315,7 +328,9 @@ export function PlayerRow({
                   : 'font-medium text-slate-500 dark:text-slate-400'
               }`}
             >
-              {remainingDefenses === 0 ? 'Đủ lượt' : `còn ${remainingDefenses}`}
+              {remainingDefenses === 0
+                ? dict.table.completedAttacks
+                : interpolate(dict.table.remainingAttacks, { count: remainingDefenses })}
             </span>
           </div>
         </div>
@@ -326,7 +341,7 @@ export function PlayerRow({
         <div className="flex items-center gap-1.5">
           <Trophy weight="duotone" className="h-3.5 w-3.5 text-amber-500 shrink-0 drop-shadow-xs" />
           <span className="font-mono text-sm font-black text-amber-600 dark:text-amber-400">
-            {player.currentCups.toLocaleString('vi-VN')}
+            {formatNumber(player.currentCups)}
           </span>
         </div>
       </td>
@@ -335,7 +350,12 @@ export function PlayerRow({
       <td className="w-36 min-w-[120px] px-2 py-2.5 align-middle">
         <div
           className="flex items-center gap-1.5 font-mono text-sm font-bold cursor-default"
-          title={`Công thức: ${player.currentCups} cúp + ${remainingAttacks} trận công × 40 + ${remainingDefenses} trận thủ × 40 = ${player.maxPossibleCups.toLocaleString('vi-VN')} cúp tối đa`}
+          title={interpolate(dict.table.maxCupsFormulaTooltip, {
+            current: formatNumber(player.currentCups),
+            attacks: remainingAttacks,
+            defenses: remainingDefenses,
+            max: formatNumber(player.maxPossibleCups),
+          })}
         >
           <span
             className={
@@ -344,13 +364,15 @@ export function PlayerRow({
                 : 'text-slate-600 dark:text-slate-300'
             }
           >
-            {player.maxPossibleCups.toLocaleString('vi-VN')}
+            {formatNumber(player.maxPossibleCups)}
           </span>
 
           {canPassMe && (
             <span
               className="inline-flex items-center text-amber-500 hover:text-amber-600 dark:text-amber-400"
-              title={`Có thể vượt bạn: Người này có thể đạt tối đa ${player.maxPossibleCups.toLocaleString('vi-VN')} cúp!`}
+              title={interpolate(dict.table.canPassTooltip, {
+                cups: formatNumber(player.maxPossibleCups),
+              })}
             >
               <Warning weight="fill" className="h-4 w-4 drop-shadow-xs text-amber-500" />
             </span>
@@ -362,17 +384,9 @@ export function PlayerRow({
       <td className="px-2 py-2.5 align-middle text-center">
         <div
           className={`inline-flex h-7.5 w-full items-center justify-center rounded-full border px-2.5 text-xs font-extrabold select-none transition-all ${ratingTagColors[player.rating]}`}
-          title={`Đánh giá: ${ratingLabels[player.rating]} (${
-            player.rating === 'dominant'
-              ? '≥ 1.200 cúp'
-              : player.rating === 'superior'
-                ? '≥ 1.000 cúp'
-                : player.rating === 'potential'
-                  ? '≥ 800 cúp'
-                  : '< 800 cúp'
-          })`}
+          title={`${dict.common.rating}: ${ratingLabelsMap[player.rating]}`}
         >
-          {ratingLabels[player.rating]}
+          {ratingLabelsMap[player.rating]}
         </div>
       </td>
     </tr>

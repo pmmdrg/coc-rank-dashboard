@@ -1,4 +1,8 @@
+import { useI18n } from '../i18n/LanguageContext'
+
 export function Footer() {
+  const { dict } = useI18n()
+
   return (
     <footer className="mt-12 border-t border-slate-200/80 bg-white/40 backdrop-blur-md dark:border-slate-800/80 dark:bg-slate-950/40">
       <div className="mx-auto max-w-[1320px] px-4 pt-8 pb-20 sm:px-6 sm:pb-24 lg:px-8">
@@ -17,10 +21,10 @@ export function Footer() {
               </span>
             </div>
             <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
-              Dự án cộng đồng người chơi được phát triển bởi <span className="font-semibold text-slate-900 dark:text-slate-100">Man Pham (Manax)</span>.
+              {dict.footer.author} <span className="font-semibold text-slate-900 dark:text-slate-100">Man Pham (Manax)</span>.
             </p>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Hệ thống theo dõi cúp, quản lý mùa giải và bảng xếp hạng cá nhân hóa cho Clash of Clans.
+              {dict.footer.subtitle}
             </p>
           </div>
 
@@ -39,11 +43,11 @@ export function Footer() {
               href="mailto:pmmdrg2605@gmail.com"
               className="inline-flex items-center rounded-lg border border-slate-200 bg-white/70 px-3 py-2 font-medium text-slate-700 shadow-xs transition hover:border-slate-300 hover:bg-white hover:text-slate-900 dark:border-slate-800 dark:bg-slate-900/70 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-900 dark:hover:text-white"
             >
-              <span>Liên hệ đóng góp</span>
+              <span>{dict.footer.contactFeedback}</span>
             </a>
 
             <div className="hidden sm:inline-flex items-center rounded-lg border border-slate-200/60 bg-slate-100/60 px-3 py-2 text-slate-600 dark:border-slate-800/60 dark:bg-slate-900/50 dark:text-slate-400">
-              <span>Người phát triển: <strong>Manax</strong></span>
+              <span>{dict.footer.developer}: <strong>Manax</strong></span>
             </div>
           </div>
         </div>
@@ -51,10 +55,10 @@ export function Footer() {
         {/* Divider & Disclaimer */}
         <div className="mt-6 flex flex-col gap-3 border-t border-slate-200/60 pt-4 text-[11px] text-slate-400 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800/60 dark:text-slate-500">
           <p>
-            Thiết kế & phát triển bởi <span className="font-medium text-slate-600 dark:text-slate-400">Man Pham</span>
+            {dict.footer.designAndDev} <span className="font-medium text-slate-600 dark:text-slate-400">Man Pham</span>
           </p>
           <p className="max-w-2xl text-center sm:text-right leading-relaxed">
-            Đây là tư liệu không chính thức và không được bảo trợ bởi Supercell. Để biết thêm thông tin chi tiết, vui lòng xem Chính sách Nội dung tạo bởi Người hâm mộ của Supercell tại:{' '}
+            {dict.footer.fanPolicyNotice}{' '}
             <a
               href="https://supercell.com/en/fan-content-policy/vi/"
               target="_blank"

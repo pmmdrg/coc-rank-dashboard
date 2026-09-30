@@ -1,3 +1,5 @@
+import { useI18n } from '../i18n/LanguageContext'
+
 interface ChartDataItem {
   label: string
   value: number
@@ -10,10 +12,6 @@ interface ChartsSectionProps {
   ratingData: ChartDataItem[]
   myPlayerName: string
   isSyncingApi?: boolean
-}
-
-function numberFormatter(value: number) {
-  return new Intl.NumberFormat('vi-VN').format(value)
 }
 
 function SkeletonPieChart() {
@@ -72,9 +70,13 @@ function PercentagePieChart({
   values: ChartDataItem[]
   showPercentage?: boolean
 }) {
+  const { dict, interpolate, language } = useI18n()
   const slices = getPieSlices(values)
   const total = values.reduce((sum, item) => sum + item.value, 0)
   const hasData = total > 0
+
+  const formatNumber = (val: number) =>
+    new Intl.NumberFormat(language === 'vi' ? 'vi-VN' : 'en-US').format(val)
 
   return (
     <div className="glass-panel flex h-full flex-col rounded-xl p-4 sm:p-5 shadow-sm">
@@ -83,13 +85,13 @@ function PercentagePieChart({
           {title}
         </h3>
         <span className="text-xs text-slate-400 dark:text-slate-500 shrink-0 font-medium">
-          Tổng: {hasData ? numberFormatter(total) : '--'}
+          {hasData ? interpolate(dict.charts.total, { total: formatNumber(total) }) : '--'}
         </span>
       </div>
 
       {!hasData ? (
         <div className="my-auto flex flex-col items-center justify-center py-10 text-center text-sm font-medium text-slate-400 dark:text-slate-500">
-          Chưa có dữ liệu
+          {dict.common.noData}
         </div>
       ) : (
         <div className="my-auto flex flex-col sm:flex-row items-center gap-3.5 sm:gap-4 pt-3 sm:pt-4">
@@ -124,7 +126,7 @@ function PercentagePieChart({
             </svg>
             {/* Tâm Donut */}
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
-              <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500">Tỷ lệ</span>
+              <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500">{dict.charts.ratioCenter}</span>
               <span className="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-100">
                 100%
               </span>
@@ -146,7 +148,7 @@ function PercentagePieChart({
                     <span className="truncate font-medium" title={item.label}>{item.label}</span>
                   </span>
                   <span className="font-bold text-slate-900 dark:text-slate-50 shrink-0 whitespace-nowrap pl-1">
-                    {numberFormatter(item.value)}
+                    {formatNumber(item.value)}
                     {showPercentage && (
                       <span className="ml-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
                         ({percent}%)
@@ -170,10 +172,12 @@ export function ChartsSection({
   myPlayerName,
   isSyncingApi = false,
 }: ChartsSectionProps) {
+  const { dict, interpolate } = useI18n()
+
   const comparisonTitle =
     myPlayerName && myPlayerName !== '--'
-      ? `Tỷ lệ đối thủ so với ${myPlayerName}`
-      : 'Tỷ lệ đối thủ so với tôi'
+      ? interpolate(dict.charts.opponentRatioWithMe, { name: myPlayerName })
+      : dict.charts.opponentRatioMe
 
   if (isSyncingApi) {
     return (
@@ -194,12 +198,12 @@ export function ChartsSection({
         values={comparisonData}
       />
       <PercentagePieChart
-        title="Tỷ lệ hoàn thành lượt đánh"
+        title={dict.charts.attackCompletion}
         values={attackStatusData}
       />
       <div className="md:col-span-2 lg:col-span-1">
         <PercentagePieChart
-          title="Tỷ lệ đánh giá kỹ năng"
+          title={dict.charts.skillRating}
           values={ratingData}
         />
       </div>

@@ -1,5 +1,6 @@
 import { Trophy, Sword, Users, ShieldWarning } from '@phosphor-icons/react'
 import type { RankingStats, Season } from '../types'
+import { useI18n } from '../i18n/LanguageContext'
 
 interface StatCardsGridProps {
   stats: RankingStats
@@ -22,6 +23,7 @@ function formatDate(value: string) {
 }
 
 export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = false }: StatCardsGridProps) {
+  const { dict, interpolate } = useI18n()
   const hasPlayers = season.players.length > 0
   const hasMyPlayer = Boolean(stats.myPlayer)
 
@@ -52,12 +54,12 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
 
   const cards = [
     {
-      label: 'Thứ hạng của tôi',
+      label: dict.statCards.myRank,
       value: hasMyPlayer ? `#${stats.myPlayer!.rank}` : '--',
       detail: hasMyPlayer
-        ? `${stats.myPlayer!.name} • ${numberFormatter(stats.myPlayer!.currentCups)} cup`
-        : 'Chưa có dữ liệu',
-      badge: myRankPercentage ? `Top ${myRankPercentage}%` : null,
+        ? `${stats.myPlayer!.name} • ${numberFormatter(stats.myPlayer!.currentCups)} ${dict.common.trophies}`
+        : dict.common.noData,
+      badge: myRankPercentage ? interpolate(dict.statCards.topPercentage, { percent: myRankPercentage }) : null,
       badgeColor: 'bg-sky-500/10 text-sky-700 dark:bg-sky-400/15 dark:text-sky-300 border-sky-500/30',
       accentGradient: 'from-sky-400 via-blue-500 to-indigo-500',
       valueColor: 'text-sky-600 dark:text-sky-400',
@@ -65,15 +67,15 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
       iconColor: 'text-sky-500',
     },
     {
-      label: 'Đối thủ có thể vượt tôi',
+      label: dict.statCards.opponentsCanPass,
       value: hasMyPlayer ? stats.playersWhoCanPassMe : '--',
       detail: hasMyPlayer
-        ? `Trần cup của ${myPlayerName}: ${numberFormatter(stats.myPlayer!.maxPossibleCups)}`
-        : 'Chưa có dữ liệu',
+        ? interpolate(dict.statCards.ceilingText, { name: myPlayerName, cups: numberFormatter(stats.myPlayer!.maxPossibleCups) })
+        : dict.common.noData,
       badge: hasMyPlayer
         ? stats.playersWhoCanPassMe === 0
-          ? 'An toàn'
-          : `${stats.playersWhoCanPassMe} nguy cơ`
+          ? dict.statCards.safe
+          : interpolate(dict.statCards.threats, { count: stats.playersWhoCanPassMe })
         : null,
       badgeColor:
         hasMyPlayer && stats.playersWhoCanPassMe === 0
@@ -91,13 +93,13 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
       iconColor: stats.playersWhoCanPassMe === 0 ? 'text-emerald-500' : 'text-amber-500',
     },
     {
-      label: 'Tổng người chơi',
+      label: dict.statCards.totalPlayers,
       value: hasPlayers ? season.players.length : '--',
       detail:
         hasPlayers && (season.startsAt || season.endsAt)
           ? `${formatDate(season.startsAt)} - ${formatDate(season.endsAt)}`
-          : 'Chưa có dữ liệu',
-      badge: hasPlayers ? 'Đang tranh tài' : null,
+          : dict.common.noData,
+      badge: hasPlayers ? dict.statCards.competing : null,
       badgeColor: 'bg-emerald-500/10 text-emerald-700 dark:bg-emerald-400/15 dark:text-emerald-300 border-emerald-500/30',
       accentGradient: 'from-emerald-400 via-teal-500 to-indigo-500',
       valueColor: 'text-slate-800 dark:text-slate-100',
@@ -105,12 +107,17 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
       iconColor: 'text-emerald-500',
     },
     {
-      label: 'Rank thấp nhất có thể',
+      label: dict.statCards.estFinish,
       value: hasMyPlayer && stats.lowestPossibleRank ? `#${stats.lowestPossibleRank}` : '--',
       detail: hasMyPlayer
-        ? 'Nếu các đối thủ đạt mốc trần cup tối đa'
-        : 'Chưa có dữ liệu',
-      badge: hasMyPlayer ? 'Kịch bản xấu nhất' : null,
+        ? (stats.myPlayer!.attacks >= (season.maxAttacks ?? 24) && stats.myPlayer!.defenses >= (season.maxDefenses ?? 24)
+            ? dict.statCards.finished
+            : interpolate(dict.statCards.remainingBattles, {
+                attacks: Math.max(0, (season.maxAttacks ?? 24) - stats.myPlayer!.attacks),
+                defenses: Math.max(0, (season.maxDefenses ?? 24) - stats.myPlayer!.defenses),
+              }))
+        : dict.common.noData,
+      badge: hasMyPlayer ? dict.statCards.myStats : null,
       badgeColor: 'bg-rose-500/10 text-rose-700 dark:bg-rose-400/15 dark:text-rose-300 border-rose-500/30',
       accentGradient: 'from-rose-500 via-pink-500 to-purple-600',
       valueColor: 'text-rose-600 dark:text-rose-400',

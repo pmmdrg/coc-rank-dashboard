@@ -3,6 +3,7 @@ import { X, DownloadSimple, Copy, Check } from '@phosphor-icons/react'
 import type { Player, RankingStats, Season } from '../types'
 import { formatLeagueName } from '../lib/ranking'
 import { getLeagueIconUrl } from '../lib/leagueIcons'
+import { useI18n } from '../i18n/LanguageContext'
 
 interface ShareCardModalProps {
   isOpen: boolean
@@ -12,6 +13,7 @@ interface ShareCardModalProps {
 }
 
 export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModalProps) {
+  const { dict, interpolate, language } = useI18n()
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const [isCopied, setIsCopied] = useState(false)
   const [previewUrl, setPreviewUrl] = useState<string>('')
@@ -66,11 +68,11 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
     // 2. Header: Logo & Tên giải đấu
     ctx.fillStyle = '#94a3b8'
     ctx.font = '600 16px Roboto, sans-serif'
-    ctx.fillText('CLASH OF CLANS • BẢNG XẾP HẠNG RANKED', 60, 75)
+    ctx.fillText(dict.shareModal.cardHeader, 60, 75)
 
     ctx.fillStyle = '#ffffff'
     ctx.font = '700 28px Roboto, sans-serif'
-    ctx.fillText(displayLeague !== '--' ? displayLeague : 'Bảng đấu Ranked', 60, 115)
+    ctx.fillText(displayLeague !== '--' ? displayLeague : dict.shareModal.cardDefaultLeague, 60, 115)
 
     if (season.seasonName) {
       ctx.fillStyle = '#64748b'
@@ -85,14 +87,14 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
     roundRect(ctx, 60, 175, 1080, 130, 16, true, true)
 
     // Tên người chơi
-    const playerName = myPlayer?.name || 'Tài khoản của bạn'
+    const playerName = myPlayer?.name || dict.shareModal.cardYourAccount
     ctx.fillStyle = '#ffffff'
     ctx.font = '900 38px Roboto, sans-serif'
     ctx.fillText(playerName, 90, 235)
 
     // Tag & Clan
     const playerTagText = myPlayer?.playerTag || season.myPlayerId || ''
-    const clanText = myPlayer?.clanName ? `Clan: ${myPlayer.clanName}` : 'Không Clan'
+    const clanText = myPlayer?.clanName ? `Clan: ${myPlayer.clanName}` : dict.shareModal.cardNoClan
     ctx.fillStyle = '#38bdf8'
     ctx.font = '700 18px "Roboto Mono", monospace'
     ctx.fillText(playerTagText, 90, 275)
@@ -104,10 +106,10 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
     // Huy hiệu Rating góc phải
     if (myPlayer) {
       const ratingColors: Record<string, { bg: string; text: string; label: string }> = {
-        dominant: { bg: 'rgba(168, 85, 247, 0.25)', text: '#c084fc', label: 'THỐNG TRỊ' },
-        superior: { bg: 'rgba(16, 185, 129, 0.25)', text: '#34d399', label: 'VƯỢT TRỘI' },
-        potential: { bg: 'rgba(14, 165, 233, 0.25)', text: '#38bdf8', label: 'TIỀM NĂNG' },
-        alarm: { bg: 'rgba(244, 63, 94, 0.25)', text: '#fb7185', label: 'CẦN NỖ LỰC' },
+        dominant: { bg: 'rgba(168, 85, 247, 0.25)', text: '#c084fc', label: dict.shareModal.cardRatingDominant },
+        superior: { bg: 'rgba(16, 185, 129, 0.25)', text: '#34d399', label: dict.shareModal.cardRatingSuperior },
+        potential: { bg: 'rgba(14, 165, 233, 0.25)', text: '#38bdf8', label: dict.shareModal.cardRatingPotential },
+        alarm: { bg: 'rgba(244, 63, 94, 0.25)', text: '#fb7185', label: dict.shareModal.cardRatingAlarm },
       }
       const rInfo = ratingColors[myPlayer.rating] || ratingColors.potential
       ctx.fillStyle = rInfo.bg
@@ -129,31 +131,39 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
     const startY = 335
     const gap = 24
 
+    const localeCode = language === 'vi' ? 'vi-VN' : 'en-US'
     const statItems = [
       {
-        label: 'THỨ HẠNG HIỆN TẠI',
+        label: dict.shareModal.cardRank,
         value: myPlayer ? `#${myPlayer.rank}` : '--',
-        sub: `Trên tổng số ${season.players.length} người chơi`,
+        sub: interpolate(dict.shareModal.cardRankSub, { total: season.players.length }),
         color: '#38bdf8',
       },
       {
-        label: 'CÚP HIỆN TẠI',
-        value: myPlayer ? new Intl.NumberFormat('vi-VN').format(myPlayer.currentCups) : '--',
-        sub: 'Điểm số giải đấu hiện tại',
+        label: dict.shareModal.cardCurrentCups,
+        value: myPlayer ? new Intl.NumberFormat(localeCode).format(myPlayer.currentCups) : '--',
+        sub: dict.shareModal.cardCurrentCupsSub,
         color: '#fbbf24',
       },
       {
-        label: 'HIỆU SUẤT CÔNG / THỦ',
-        value: myPlayer ? `${myPlayer.attacks} công • ${myPlayer.defenses} thủ` : '--',
+        label: dict.shareModal.cardPerformanceTitle,
+        value: myPlayer
+          ? `${myPlayer.attacks} ${language === 'vi' ? 'công' : 'atk'} • ${myPlayer.defenses} ${language === 'vi' ? 'thủ' : 'def'}`
+          : '--',
         sub: myPlayer?.attackWinCount !== undefined
-          ? `Thắng ${myPlayer.attackWinCount} trận công (${Math.round(((myPlayer.attackWinCount || 0) / Math.max(1, myPlayer.attacks)) * 100)}%)`
-          : 'Thống kê lượt đấu',
+          ? interpolate(dict.shareModal.cardPerformanceSub, {
+              wins: myPlayer.attackWinCount,
+              percent: Math.round(((myPlayer.attackWinCount || 0) / Math.max(1, myPlayer.attacks)) * 100),
+            })
+          : dict.shareModal.cardPerformanceSubDefault,
         color: '#34d399',
       },
       {
-        label: 'TRẦN CÚP TỐI ĐA',
-        value: myPlayer ? new Intl.NumberFormat('vi-VN').format(myPlayer.maxPossibleCups) : '--',
-        sub: stats.playersWhoCanPassMe === 0 ? 'Chắc chắn giữ vị trí số 1' : `${stats.playersWhoCanPassMe} đối thủ có thể vượt`,
+        label: dict.shareModal.cardCeilingTitle,
+        value: myPlayer ? new Intl.NumberFormat(localeCode).format(myPlayer.maxPossibleCups) : '--',
+        sub: stats.playersWhoCanPassMe === 0
+          ? dict.shareModal.cardCeilingGuaranteed
+          : interpolate(dict.shareModal.cardCeilingThreats, { count: stats.playersWhoCanPassMe }),
         color: '#818cf8',
       },
     ]
@@ -190,13 +200,21 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
 
     ctx.fillStyle = '#38bdf8'
     ctx.font = '700 15px Roboto, sans-serif'
-    ctx.fillText(`Năng lực điểm số hiện tại: Cao hơn ${betterPercent}% đối thủ trong bảng đấu (${betterCount}/${otherCount} người chơi)`, 85, 548)
+    ctx.fillText(
+      interpolate(dict.shareModal.cardComparisonBanner, {
+        percent: betterPercent,
+        better: betterCount,
+        total: otherCount,
+      }),
+      85,
+      548
+    )
 
     // Watermark dưới cùng
-    const nowStr = new Date().toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    const nowStr = new Date().toLocaleDateString(localeCode, { day: '2-digit', month: '2-digit', year: 'numeric' })
     ctx.fillStyle = '#475569'
     ctx.font = '500 13px Roboto, sans-serif'
-    ctx.fillText(`Tạo lúc ${nowStr} • CoC Rank Dashboard (Fan Tool)`, 60, 615)
+    ctx.fillText(interpolate(dict.shareModal.cardWatermark, { date: nowStr }), 60, 615)
 
     ctx.textAlign = 'right'
     ctx.fillText('coc-rank-dashboard • github.com/pmmdrg', 1140, 615)
@@ -222,7 +240,7 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
     } else {
       setPreviewUrl(canvas.toDataURL('image/png'))
     }
-  }, [isOpen, season, stats, myPlayer, displayLeague])
+  }, [isOpen, season, stats, myPlayer, displayLeague, dict, interpolate, language])
 
   function handleDownload() {
     const canvas = canvasRef.current
@@ -259,14 +277,14 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
         {/* Modal Header */}
         <div className="flex items-center justify-between border-b border-slate-800 px-6 py-4">
           <div>
-            <h3 className="text-base font-bold text-slate-100">Thẻ Thành tích Mùa giải</h3>
-            <p className="text-xs text-slate-400">Hình ảnh tổng kết thành tích được tối ưu để gửi vào Clan Zalo / Discord</p>
+            <h3 className="text-base font-bold text-slate-100">{dict.shareModal.modalTitle}</h3>
+            <p className="text-xs text-slate-400">{dict.shareModal.modalSubtitle}</p>
           </div>
           <button
             type="button"
             onClick={onClose}
             className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-slate-100 transition-colors cursor-pointer"
-            title="Đóng"
+            title={dict.shareModal.closeBtn}
           >
             <X weight="bold" className="h-5 w-5" />
           </button>
@@ -278,12 +296,12 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
           {previewUrl ? (
             <img
               src={previewUrl}
-              alt="Thẻ thành tích"
+              alt={dict.shareModal.modalTitle}
               className="w-full max-h-[60vh] object-contain rounded-xl border border-slate-800 shadow-lg"
             />
           ) : (
             <div className="h-64 flex items-center justify-center text-sm text-slate-400">
-              Đang tạo thẻ ảnh...
+              {dict.shareModal.modalGenerating}
             </div>
           )}
         </div>
@@ -291,24 +309,24 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
         {/* Modal Footer: Action Buttons */}
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-800 px-6 py-4 bg-slate-900/90">
           <span className="text-xs text-slate-400">
-            Kích thước chuẩn 1200 x 675 px (Độ nét cao)
+            {dict.shareModal.modalDimensions}
           </span>
           <div className="flex items-center gap-2.5">
             <button
               type="button"
               onClick={handleCopyImage}
               className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-200 hover:bg-slate-700 active:scale-95 transition-all cursor-pointer"
-              title="Sao chép ảnh trực tiếp để dán (Ctrl+V) vào Zalo / Discord"
+              title={dict.shareModal.copyBtn}
             >
               {isCopied ? (
                 <>
                   <Check weight="bold" className="h-4 w-4 text-emerald-400" />
-                  <span className="text-emerald-300">Đã chép vào bộ nhớ!</span>
+                  <span className="text-emerald-300">{dict.shareModal.copiedToast}</span>
                 </>
               ) : (
                 <>
                   <Copy weight="duotone" className="h-4 w-4" />
-                  <span>Sao chép ảnh</span>
+                  <span>{dict.shareModal.copyBtn}</span>
                 </>
               )}
             </button>
@@ -317,10 +335,10 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
               type="button"
               onClick={handleDownload}
               className="inline-flex items-center gap-1.5 rounded-lg bg-sky-600 px-4 py-2 text-xs font-semibold text-white hover:bg-sky-500 active:scale-95 transition-all cursor-pointer shadow-sm shadow-sky-600/30"
-              title="Tải ảnh PNG về thiết bị"
+              title={dict.shareModal.downloadBtn}
             >
               <DownloadSimple weight="bold" className="h-4 w-4" />
-              <span>Tải ảnh PNG</span>
+              <span>{dict.shareModal.downloadBtn}</span>
             </button>
           </div>
         </div>

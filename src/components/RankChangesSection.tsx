@@ -1,6 +1,7 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { CaretDown, MagnifyingGlass } from '@phosphor-icons/react'
 import type { RankChangesSnapshot, RankChangeItem } from '../types'
+import { useI18n } from '../i18n/LanguageContext'
 
 export interface RankChangesSectionProps {
   snapshot: RankChangesSnapshot | null
@@ -14,17 +15,19 @@ type FilterType = 'all' | 'rose' | 'fell'
 const EMPTY_CHANGES: RankChangeItem[] = []
 
 function RankChangesSkeleton() {
+  const { dict } = useI18n()
+
   return (
     <section className="glass-panel rounded-xl shadow-xs overflow-hidden border border-slate-200/80 dark:border-slate-800/80">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/60 p-4 sm:p-5 dark:border-slate-800/60">
         <div>
           <div className="flex items-center gap-2 flex-wrap">
             <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
-              Biến động thứ hạng gần nhất
+              {dict.rankChanges.title}
             </h2>
             <span className="inline-flex h-5 items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 px-2 text-[10px] font-bold text-sky-700 dark:bg-sky-950/60 dark:text-sky-300">
               <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 animate-ping" />
-              Đang phân tích thay đổi...
+              {dict.rankChanges.analyzing}
             </span>
           </div>
           <div className="mt-1.5 h-3 w-64 rounded-md skeleton-shimmer" />
@@ -56,6 +59,7 @@ export function RankChangesSection({
   myPlayerName = '',
   isSyncing = false,
 }: RankChangesSectionProps) {
+  const { dict, interpolate } = useI18n()
   const [isCollapsed, setIsCollapsed] = useState<boolean>(() => {
     try {
       return localStorage.getItem('coc_rank_changes_collapsed') === 'true'
@@ -191,26 +195,26 @@ export function RankChangesSection({
         <div>
           <div className="flex items-center gap-2 flex-wrap">
             <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
-              Biến động thứ hạng gần nhất
+              {dict.rankChanges.title}
             </h2>
             {hasActiveChanges ? (
               <span className="rounded-full bg-amber-500/15 px-2.5 py-0.5 text-xs font-extrabold text-amber-700 dark:bg-amber-400/15 dark:text-amber-300">
-                {activeChanges.length} thay đổi
+                {interpolate(dict.rankChanges.changesCount, { count: activeChanges.length })}
               </span>
             ) : isFirstSync ? (
               <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-400">
-                Khởi tạo bảng
+                {dict.rankChanges.firstSync}
               </span>
             ) : (
               <span className="rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 dark:bg-emerald-400/15 dark:text-emerald-300">
-                Không đổi
+                {dict.rankChanges.noChange}
               </span>
             )}
           </div>
           <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
             {snapshot.previousUpdatedAt
-              ? `So với lần đồng bộ lúc ${snapshot.previousUpdatedAt} • Cập nhật lúc ${snapshot.updatedAt}`
-              : `Đồng bộ lần đầu lúc ${snapshot.updatedAt}`}
+              ? interpolate(dict.rankChanges.comparedWith, { prev: snapshot.previousUpdatedAt, curr: snapshot.updatedAt })
+              : interpolate(dict.rankChanges.firstSyncNotice, { time: snapshot.updatedAt })}
           </p>
         </div>
 
@@ -220,12 +224,12 @@ export function RankChangesSection({
             <div className="hidden sm:flex items-center gap-2 text-xs font-bold mr-1">
               {roseChanges.length > 0 && (
                 <span className="rounded-md bg-emerald-500/10 px-2.5 py-1 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300">
-                  {roseChanges.length} tăng
+                  {interpolate(dict.rankChanges.roseCount, { count: roseChanges.length })}
                 </span>
               )}
               {fellChanges.length > 0 && (
                 <span className="rounded-md bg-rose-500/10 px-2.5 py-1 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300">
-                  {fellChanges.length} hạ
+                  {interpolate(dict.rankChanges.fellCount, { count: fellChanges.length })}
                 </span>
               )}
             </div>
@@ -237,7 +241,7 @@ export function RankChangesSection({
             className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white/70 px-3 py-1.5 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-300 dark:hover:bg-slate-800 cursor-pointer shadow-2xs"
             aria-expanded={!isCollapsed}
           >
-            <span>{isCollapsed ? 'Mở rộng' : 'Thu gọn'}</span>
+            <span>{isCollapsed ? dict.performanceTrend.expand : dict.performanceTrend.collapse}</span>
             <CaretDown
               weight="bold"
               className={`h-4 w-4 transition-transform duration-300 ${!isCollapsed ? 'rotate-180' : ''}`}
@@ -270,10 +274,10 @@ export function RankChangesSection({
                       <div className="text-sm font-extrabold flex items-center gap-2 flex-wrap">
                         <span>
                           {myChange.rankDiff > 0
-                            ? `Bạn đã tăng ${myChange.rankDiff} bậc!`
+                            ? interpolate(dict.rankChanges.youClimbed, { diff: myChange.rankDiff })
                             : myChange.rankDiff < 0
-                              ? `Bạn đã hạ ${Math.abs(myChange.rankDiff)} bậc.`
-                              : 'Thứ hạng của bạn giữ nguyên!'}
+                              ? interpolate(dict.rankChanges.youFell, { diff: Math.abs(myChange.rankDiff) })
+                              : dict.rankChanges.yourRankKept}
                         </span>
                         <span className="font-mono text-xs font-bold px-2 py-0.5 rounded-full bg-white/70 dark:bg-slate-900/60 shadow-2xs">
                           {myChange.oldRank !== myChange.newRank
@@ -283,25 +287,25 @@ export function RankChangesSection({
                       </div>
                       <p className="text-xs opacity-90 mt-0.5">
                         {myChange.rankDiff > 0
-                          ? `Xin chúc mừng ${myPlayerName || 'bạn'}! Thứ hạng đã được cải thiện từ #${myChange.oldRank} lên #${myChange.newRank}.`
+                          ? interpolate(dict.rankChanges.congratsRankImproved, { name: myPlayerName || dict.common.you, oldRank: myChange.oldRank, newRank: myChange.newRank })
                           : myChange.rankDiff < 0
-                            ? `Thứ hạng của ${myPlayerName || 'bạn'} đã chuyển từ #${myChange.oldRank} xuống #${myChange.newRank}.`
-                            : `Thứ hạng của ${myPlayerName || 'bạn'} tiếp tục duy trì ổn định ở vị trí #${myChange.newRank}.`}
+                            ? interpolate(dict.rankChanges.rankDecreased, { name: myPlayerName || dict.common.you, oldRank: myChange.oldRank, newRank: myChange.newRank })
+                            : interpolate(dict.rankChanges.rankMaintained, { name: myPlayerName || dict.common.you, rank: myChange.newRank })}
                       </p>
                     </div>
 
                     <div className="flex items-center gap-2 flex-wrap self-end sm:self-center">
                       {myChange.cupsDiff !== 0 && (
                         <div className="font-mono text-xs font-bold px-2.5 py-1 rounded-lg bg-white/80 dark:bg-slate-900/70 shadow-2xs text-amber-600 dark:text-amber-400">
-                          {myChange.cupsDiff > 0 ? `+${myChange.cupsDiff}` : myChange.cupsDiff} cúp
+                          {interpolate(dict.rankChanges.cupsDiff, { diff: myChange.cupsDiff > 0 ? `+${myChange.cupsDiff}` : myChange.cupsDiff })}
                         </div>
                       )}
                       {(myChange.attacksDiff !== undefined && myChange.attacksDiff !== 0) && (
                         <div
                           className="font-mono text-xs font-bold px-2.5 py-1 rounded-lg bg-white/80 dark:bg-slate-900/70 shadow-2xs text-emerald-600 dark:text-emerald-400"
-                          title={`Số lượt đánh: ${myChange.oldAttacks ?? 0} ➔ ${myChange.newAttacks ?? 0}`}
+                          title={`${dict.common.attacks}: ${myChange.oldAttacks ?? 0} ➔ ${myChange.newAttacks ?? 0}`}
                         >
-                          {(myChange.attacksDiff ?? 0) > 0 ? `+${myChange.attacksDiff}` : myChange.attacksDiff} đánh
+                          {interpolate(dict.rankChanges.attacksDiff, { diff: (myChange.attacksDiff ?? 0) > 0 ? `+${myChange.attacksDiff}` : (myChange.attacksDiff ?? 0) })}
                           {myChange.oldAttacks !== undefined && myChange.newAttacks !== undefined && (
                             <span className="font-normal text-[11px] opacity-80 ml-1">
                               ({myChange.oldAttacks}➔{myChange.newAttacks})
@@ -312,9 +316,9 @@ export function RankChangesSection({
                       {(myChange.defensesDiff !== undefined && myChange.defensesDiff !== 0) && (
                         <div
                           className="font-mono text-xs font-bold px-2.5 py-1 rounded-lg bg-white/80 dark:bg-slate-900/70 shadow-2xs text-sky-600 dark:text-sky-400"
-                          title={`Số lượt thủ: ${myChange.oldDefenses ?? 0} ➔ ${myChange.newDefenses ?? 0}`}
+                          title={`${dict.common.defenses}: ${myChange.oldDefenses ?? 0} ➔ ${myChange.newDefenses ?? 0}`}
                         >
-                          {(myChange.defensesDiff ?? 0) > 0 ? `+${myChange.defensesDiff}` : myChange.defensesDiff} thủ
+                          {interpolate(dict.rankChanges.defensesDiff, { diff: (myChange.defensesDiff ?? 0) > 0 ? `+${myChange.defensesDiff}` : (myChange.defensesDiff ?? 0) })}
                           {myChange.oldDefenses !== undefined && myChange.newDefenses !== undefined && (
                             <span className="font-normal text-[11px] opacity-80 ml-1">
                               ({myChange.oldDefenses}➔{myChange.newDefenses})
@@ -332,10 +336,10 @@ export function RankChangesSection({
                 >
                   <div className="flex items-center gap-2">
                     <span className="rounded-md bg-sky-500/20 px-1.5 py-0.5 text-[10px] font-bold text-sky-700 dark:text-sky-300">
-                      BẠN
+                      {dict.common.you}
                     </span>
                     <span>
-                      Thứ hạng của <strong>{myPlayerName || 'bạn'}</strong> giữ nguyên ổn định so với lần lấy dữ liệu trước.
+                      {interpolate(dict.rankChanges.userRankStableNotice, { name: myPlayerName || dict.common.you })}
                     </span>
                   </div>
                 </div>
@@ -350,12 +354,12 @@ export function RankChangesSection({
               className="animate-change-card rounded-xl border border-slate-200/70 bg-white/30 py-6 text-center px-4 dark:border-slate-800 dark:bg-slate-900/30"
             >
               <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">
-                {isFirstSync ? 'Đã ghi nhận dữ liệu bảng đấu ban đầu' : 'Không có người chơi nào thay đổi điểm cúp hoặc lượt đấu'}
+                {isFirstSync ? dict.rankChanges.initialTableRecorded : dict.rankChanges.noPlayerChangedCups}
               </h3>
               <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">
                 {isFirstSync
-                  ? 'Đây là lần lấy dữ liệu đầu tiên của bảng đấu này. Mọi biến động tăng / hạ bậc sẽ được ghi nhận và thông báo ở các lần cập nhật tiếp theo.'
-                  : `Không có biến động thứ hạng do thi đấu (thay đổi cúp hoặc lượt đánh/thủ) so với thời điểm đồng bộ lúc ${snapshot.previousUpdatedAt || snapshot.updatedAt}.`}
+                  ? dict.rankChanges.initialSyncNotice
+                  : interpolate(dict.rankChanges.noCompetitionChanges, { time: snapshot.previousUpdatedAt || snapshot.updatedAt })}
               </p>
             </div>
           ) : (
@@ -372,7 +376,7 @@ export function RankChangesSection({
                         : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
                     }`}
                   >
-                    Tất cả ({activeChanges.length})
+                    {interpolate(dict.rankChanges.filterAll, { count: activeChanges.length })}
                   </button>
                   <button
                     type="button"
@@ -383,7 +387,7 @@ export function RankChangesSection({
                         : 'text-slate-600 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400'
                     }`}
                   >
-                    Tăng ({roseChanges.length})
+                    {interpolate(dict.rankChanges.filterRose, { count: roseChanges.length })}
                   </button>
                   <button
                     type="button"
@@ -394,7 +398,7 @@ export function RankChangesSection({
                         : 'text-slate-600 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400'
                     }`}
                   >
-                    Hạ ({fellChanges.length})
+                    {interpolate(dict.rankChanges.filterFell, { count: fellChanges.length })}
                   </button>
                 </div>
 
@@ -405,7 +409,7 @@ export function RankChangesSection({
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Tìm tên người chơi..."
+                      placeholder={dict.rankChanges.searchPlaceholder}
                       className="w-full rounded-lg border border-slate-200 bg-white/70 pl-8 pr-3 py-1 text-xs text-slate-800 placeholder-slate-400 focus:border-amber-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-200"
                     />
                   </div>
@@ -415,7 +419,7 @@ export function RankChangesSection({
               {/* 4. DANH SÁCH CÁC NGƯỜI CHƠI THAY ĐỔI THỨ HẠNG */}
               {filteredChanges.length === 0 ? (
                 <div className="py-6 text-center text-xs text-slate-500 dark:text-slate-400">
-                  Không tìm thấy người chơi nào phù hợp với bộ lọc.
+                  {dict.rankChanges.noMatches}
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5">
@@ -447,7 +451,7 @@ export function RankChangesSection({
                             </span>
                             {isUser && (
                               <span className="rounded bg-sky-500/20 px-1 py-0.2 text-[9px] font-extrabold text-sky-700 dark:text-sky-300 shrink-0">
-                                BẠN
+                                {dict.common.you}
                               </span>
                             )}
                           </div>
@@ -475,7 +479,7 @@ export function RankChangesSection({
                           </div>
 
                           <div className="font-mono font-bold text-[11px] text-amber-600 dark:text-amber-400">
-                            {item.cupsDiff > 0 ? `+${item.cupsDiff}` : item.cupsDiff} cúp
+                            {interpolate(dict.rankChanges.cupsDiff, { diff: item.cupsDiff > 0 ? `+${item.cupsDiff}` : item.cupsDiff })}
                           </div>
                         </div>
 
@@ -489,11 +493,11 @@ export function RankChangesSection({
                             }`}
                             title={
                               item.oldAttacks !== undefined && item.newAttacks !== undefined
-                                ? `Lượt đánh: ${item.oldAttacks} ➔ ${item.newAttacks} (${(item.attacksDiff ?? 0) > 0 ? `+${item.attacksDiff}` : item.attacksDiff})`
+                                ? `${dict.common.attacks}: ${item.oldAttacks} ➔ ${item.newAttacks} (${(item.attacksDiff ?? 0) > 0 ? `+${item.attacksDiff}` : item.attacksDiff})`
                                 : undefined
                             }
                           >
-                            {(item.attacksDiff ?? 0) > 0 ? `+${item.attacksDiff}` : (item.attacksDiff ?? 0)} đánh
+                            {interpolate(dict.rankChanges.attacksDiff, { diff: (item.attacksDiff ?? 0) > 0 ? `+${item.attacksDiff}` : (item.attacksDiff ?? 0) })}
                           </span>
 
                           <span
@@ -504,11 +508,11 @@ export function RankChangesSection({
                             }`}
                             title={
                               item.oldDefenses !== undefined && item.newDefenses !== undefined
-                                ? `Lượt thủ: ${item.oldDefenses} ➔ ${item.newDefenses} (${(item.defensesDiff ?? 0) > 0 ? `+${item.defensesDiff}` : item.defensesDiff})`
+                                ? `${dict.common.defenses}: ${item.oldDefenses} ➔ ${item.newDefenses} (${(item.defensesDiff ?? 0) > 0 ? `+${item.defensesDiff}` : item.defensesDiff})`
                                 : undefined
                             }
                           >
-                            {(item.defensesDiff ?? 0) > 0 ? `+${item.defensesDiff}` : (item.defensesDiff ?? 0)} thủ
+                            {interpolate(dict.rankChanges.defensesDiff, { diff: (item.defensesDiff ?? 0) > 0 ? `+${item.defensesDiff}` : (item.defensesDiff ?? 0) })}
                           </span>
                         </div>
                       </div>

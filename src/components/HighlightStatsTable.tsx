@@ -1,5 +1,6 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { Player } from '../types'
+import { useI18n } from '../i18n/LanguageContext'
 
 export interface HighlightStatsTableProps {
   players: Player[]
@@ -9,6 +10,8 @@ export interface HighlightStatsTableProps {
 }
 
 function HighlightStatsSkeleton() {
+  const { dict } = useI18n()
+
   return (
     <section>
       <div className="glass-panel rounded-xl p-5 shadow-sm space-y-4">
@@ -16,11 +19,11 @@ function HighlightStatsSkeleton() {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
             <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-200">
-              Thống kê nổi bật & kỷ lục mùa giải
+              {dict.highlights.title}
             </h3>
             <span className="inline-flex h-5 items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 px-2 text-[10px] font-bold text-sky-700 dark:bg-sky-950/60 dark:text-sky-300">
               <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 animate-ping" />
-              Đang phân tích...
+              {dict.highlights.analyzing}
             </span>
           </div>
 
@@ -64,13 +67,13 @@ function HighlightStatsSkeleton() {
             <thead className="soft-table-head text-xs uppercase tracking-wider">
               <tr>
                 <th className="w-64 min-w-[200px] px-4 py-2.5 text-left font-semibold">
-                  Hạng mục thống kê
+                  {dict.highlights.category}
                 </th>
                 <th className="w-44 min-w-[150px] px-4 py-2.5 text-center font-semibold">
-                  Kỷ lục / Chỉ số
+                  {dict.highlights.recordMetric}
                 </th>
                 <th className="px-4 py-2.5 text-left font-semibold">
-                  Người chơi nắm giữ
+                  {dict.highlights.recordHolder}
                 </th>
               </tr>
             </thead>
@@ -111,11 +114,13 @@ function PlayerBadge({
   variant?: 'default' | 'danger'
   onClick?: () => void
 }) {
+  const { dict } = useI18n()
+
   return (
     <button
       type="button"
       onClick={onClick}
-      title={`Nhấp để chuyển đến vị trí #${player.rank} của ${player.name} trên Bảng xếp hạng`}
+      title={`#${player.rank} - ${player.name}`}
       className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-semibold shadow-2xs transition-all cursor-pointer select-none hover:scale-[1.03] active:scale-[0.98] ${
         isMe
           ? 'border-sky-500/50 bg-sky-500/15 text-sky-800 dark:text-sky-200 ring-1 ring-sky-500/30 hover:bg-sky-500/25'
@@ -130,7 +135,7 @@ function PlayerBadge({
       <span className="font-semibold underline-offset-2 hover:underline">{player.name}</span>
       {isMe && (
         <span className="rounded bg-sky-500/25 px-1 py-0.2 text-[9px] font-extrabold tracking-wide text-sky-700 dark:text-sky-300">
-          BẠN
+          {dict.common.you}
         </span>
       )}
       {extraInfo && (
@@ -148,11 +153,15 @@ export function HighlightStatsTable({
   onSelectPlayer,
   isSyncingApi = false,
 }: HighlightStatsTableProps) {
+  const { dict, interpolate, language } = useI18n()
   const [filterMode, setFilterMode] = useState<FilterMode>('all')
 
   const animatedWrapperRef = useRef<HTMLDivElement>(null)
   const innerContentRef = useRef<HTMLDivElement>(null)
   const prevHeightRef = useRef<number | null>(null)
+
+  const formatNumber = (val: number) =>
+    new Intl.NumberFormat(language === 'vi' ? 'vi-VN' : 'en-US').format(val)
 
   // Lọc chỉ những người chơi đã tham gia đánh hoặc thủ (loại bỏ người chưa đánh và chưa thủ)
   const activePlayers = useMemo(() => {
@@ -326,11 +335,11 @@ export function HighlightStatsTable({
         <div className="glass-panel rounded-xl p-5 shadow-sm space-y-4">
           <div className="flex items-center gap-2">
             <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-200">
-              Thống kê nổi bật & kỷ lục mùa giải
+              {dict.highlights.title}
             </h3>
           </div>
           <div className="py-8 text-center text-sm font-medium text-slate-400 dark:text-slate-500">
-            Chưa có người chơi nào thực hiện lượt đánh hoặc thủ trong mùa này
+            {dict.highlights.noActivePlayers}
           </div>
         </div>
       </section>
@@ -344,7 +353,7 @@ export function HighlightStatsTable({
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
             <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-200">
-              Thống kê nổi bật & kỷ lục mùa giải
+              {dict.highlights.title}
             </h3>
           </div>
 
@@ -360,7 +369,7 @@ export function HighlightStatsTable({
                     : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
                 }`}
               >
-                Tất cả (4)
+                {interpolate(dict.highlights.filterAll, { count: 4 })}
               </button>
               <button
                 type="button"
@@ -371,7 +380,7 @@ export function HighlightStatsTable({
                     : 'text-slate-600 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400'
                 }`}
               >
-                Tốt nhất (2)
+                {interpolate(dict.highlights.filterBest, { count: 2 })}
               </button>
               <button
                 type="button"
@@ -382,12 +391,12 @@ export function HighlightStatsTable({
                     : 'text-slate-600 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400'
                 }`}
               >
-                Thấp nhất (2)
+                {interpolate(dict.highlights.filterWorst, { count: 2 })}
               </button>
             </div>
 
             <span className="hidden text-xs text-slate-500 sm:inline dark:text-slate-400">
-              Tổng cộng: <strong className="text-slate-800 dark:text-slate-200">{activePlayers.length}</strong> người chơi đã thi đấu
+              {interpolate(dict.highlights.allPlayersActive, { count: activePlayers.length })}
             </span>
           </div>
         </div>
@@ -397,10 +406,10 @@ export function HighlightStatsTable({
           <div className="rounded-xl border border-sky-500/20 bg-sky-500/5 p-4 dark:border-sky-500/30 dark:bg-sky-950/20">
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-3.5">
               <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-100">
-                Vị thế năng lực của bạn ({myPlayer.name}) so với các đối thủ trong bảng
+                {interpolate(dict.highlights.myStandingTitle, { name: myPlayer.name })}
               </h4>
               <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                Đo lường trên {myComparisonStats.totalOpponents} đối thủ
+                {interpolate(dict.highlights.measuredAcross, { count: myComparisonStats.totalOpponents })}
               </span>
             </div>
 
@@ -410,10 +419,10 @@ export function HighlightStatsTable({
                 <div>
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                      Cúp hiện tại
+                      {dict.highlights.currentCups}
                     </span>
                     <span className="rounded-md border border-amber-500/30 bg-amber-500/15 px-2 py-0.5 text-xs font-bold text-amber-700 dark:text-amber-300">
-                      {new Intl.NumberFormat('vi-VN').format(myComparisonStats.myCurrentCups)} cúp
+                      {formatNumber(myComparisonStats.myCurrentCups)} {dict.common.trophies}
                     </span>
                   </div>
 
@@ -421,12 +430,12 @@ export function HighlightStatsTable({
                     <div className="flex items-baseline gap-1">
                       <span className="text-xl font-black text-amber-600 dark:text-amber-400">
                         {myComparisonStats.currentCupsTiedCount === myComparisonStats.totalOpponents
-                          ? 'Đồng hạng cúp'
-                          : `Tốt hơn ${myComparisonStats.currentCupsPercentBetter.toFixed(1)}%`}
+                          ? dict.highlights.tiedTrophies
+                          : interpolate(dict.highlights.betterThan, { percent: myComparisonStats.currentCupsPercentBetter.toFixed(1) })}
                       </span>
                       {myComparisonStats.currentCupsTiedCount !== myComparisonStats.totalOpponents && (
                         <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                          đối thủ
+                          {dict.highlights.opponents}
                         </span>
                       )}
                     </div>
@@ -448,9 +457,9 @@ export function HighlightStatsTable({
                   </div>
                   <p className="mt-1.5 text-[11px] text-slate-500 dark:text-slate-400">
                     {myComparisonStats.currentCupsTiedCount === myComparisonStats.totalOpponents
-                      ? `Cùng số cúp với tất cả ${myComparisonStats.totalOpponents} người chơi`
-                      : `Cúp hiện tại cao hơn ${myComparisonStats.currentCupsBetterCount}/${myComparisonStats.totalOpponents} người chơi${
-                          myComparisonStats.currentCupsTiedCount > 0 ? ` (bằng ${myComparisonStats.currentCupsTiedCount} người)` : ''
+                      ? interpolate(dict.highlights.tiedWithAll, { count: myComparisonStats.totalOpponents })
+                      : `${interpolate(dict.highlights.higherThanCount, { better: myComparisonStats.currentCupsBetterCount, total: myComparisonStats.totalOpponents })}${
+                          myComparisonStats.currentCupsTiedCount > 0 ? interpolate(dict.highlights.tiedCountNotice, { tied: myComparisonStats.currentCupsTiedCount }) : ''
                         }`}
                   </p>
                 </div>
@@ -461,10 +470,10 @@ export function HighlightStatsTable({
                 <div>
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                      Cúp tối đa có thể đạt
+                      {dict.highlights.maxCups}
                     </span>
                     <span className="rounded-md border border-indigo-500/30 bg-indigo-500/15 px-2 py-0.5 text-xs font-bold text-indigo-700 dark:text-indigo-300">
-                      {new Intl.NumberFormat('vi-VN').format(myComparisonStats.myMaxCups)} cúp
+                      {formatNumber(myComparisonStats.myMaxCups)} {dict.common.trophies}
                     </span>
                   </div>
 
@@ -472,12 +481,12 @@ export function HighlightStatsTable({
                     <div className="flex items-baseline gap-1">
                       <span className="text-xl font-black text-indigo-600 dark:text-indigo-400">
                         {myComparisonStats.cupsTiedCount === myComparisonStats.totalOpponents
-                          ? 'Đồng hạng trần cúp'
-                          : `Tốt hơn ${myComparisonStats.cupsPercentBetter.toFixed(1)}%`}
+                          ? dict.highlights.tiedMaxTrophies
+                          : interpolate(dict.highlights.betterThan, { percent: myComparisonStats.cupsPercentBetter.toFixed(1) })}
                       </span>
                       {myComparisonStats.cupsTiedCount !== myComparisonStats.totalOpponents && (
                         <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                          đối thủ
+                          {dict.highlights.opponents}
                         </span>
                       )}
                     </div>
@@ -499,9 +508,9 @@ export function HighlightStatsTable({
                   </div>
                   <p className="mt-1.5 text-[11px] text-slate-500 dark:text-slate-400">
                     {myComparisonStats.cupsTiedCount === myComparisonStats.totalOpponents
-                      ? `Cùng mức trần cúp lý thuyết với tất cả ${myComparisonStats.totalOpponents} người chơi`
-                      : `Trần cúp cao hơn ${myComparisonStats.cupsBetterCount}/${myComparisonStats.totalOpponents} người chơi${
-                          myComparisonStats.cupsTiedCount > 0 ? ` (bằng ${myComparisonStats.cupsTiedCount} người)` : ''
+                      ? interpolate(dict.highlights.maxCupsFormulaNotice, { count: myComparisonStats.totalOpponents })
+                      : `${interpolate(dict.highlights.higherMaxCupsCount, { better: myComparisonStats.cupsBetterCount, total: myComparisonStats.totalOpponents })}${
+                          myComparisonStats.cupsTiedCount > 0 ? interpolate(dict.highlights.tiedCountNotice, { tied: myComparisonStats.cupsTiedCount }) : ''
                         }`}
                   </p>
                 </div>
@@ -510,9 +519,7 @@ export function HighlightStatsTable({
           </div>
         ) : (
           <div className="rounded-xl border border-dashed border-slate-300/80 bg-slate-50/50 p-3.5 text-xs text-slate-500 dark:border-slate-700/80 dark:bg-slate-800/30 dark:text-slate-400">
-            <span>
-              Tài khoản của bạn được đánh dấu với nhãn <strong>"Tôi"</strong> trong bảng danh sách để theo dõi tỷ lệ năng lực vượt trội hơn bao nhiêu % người chơi trong bảng.
-            </span>
+            <span>{dict.highlights.myStandingTooltip}</span>
           </div>
         )}
 
@@ -523,13 +530,13 @@ export function HighlightStatsTable({
               <thead className="soft-table-head text-xs uppercase tracking-wider">
                 <tr>
                   <th className="w-64 min-w-[200px] px-4 py-2.5 text-left font-semibold">
-                    Hạng mục thống kê
+                    {dict.highlights.category}
                   </th>
                   <th className="w-44 min-w-[150px] px-4 py-2.5 text-center font-semibold">
-                    Kỷ lục / Chỉ số
+                    {dict.highlights.recordMetric}
                   </th>
                   <th className="px-4 py-2.5 text-left font-semibold">
-                    Người chơi nắm giữ
+                    {dict.highlights.recordHolder}
                   </th>
                 </tr>
               </thead>
@@ -543,7 +550,7 @@ export function HighlightStatsTable({
                           colSpan={3}
                           className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-300"
                         >
-                          Hạng mục thành tích tốt nhất
+                          {dict.highlights.bestSection}
                         </td>
                       </tr>
                     )}
@@ -553,21 +560,21 @@ export function HighlightStatsTable({
                       <td className="px-4 py-3 align-middle">
                         <div className="flex flex-col">
                           <span className="font-semibold text-slate-800 dark:text-slate-100">
-                            Cúp hiện tại cao nhất
+                            {dict.highlights.categoryHighestCups}
                           </span>
                           <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                            Dẫn đầu điểm số hiện tại của bảng đấu
+                            {dict.highlights.leadCurrentScore}
                           </span>
                         </div>
                       </td>
                       <td className="px-4 py-3 text-center align-middle">
                         {topCurrentCups !== null ? (
                           <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/15 px-3 py-1 text-sm font-bold text-amber-700 dark:text-amber-300 shadow-2xs">
-                            {new Intl.NumberFormat('vi-VN').format(topCurrentCups.cups)} cúp
+                            {formatNumber(topCurrentCups.cups)} {dict.common.trophies}
                           </span>
                         ) : (
                           <span className="text-xs italic text-slate-400 dark:text-slate-500">
-                            Chưa có dữ liệu
+                            {dict.common.noData}
                           </span>
                         )}
                       </td>
@@ -579,14 +586,14 @@ export function HighlightStatsTable({
                                 key={player.id}
                                 player={player}
                                 isMe={player.id === myPlayerId}
-                                extraInfo={`${player.attacks} công • ${player.defenses} thủ`}
+                                extraInfo={`${player.attacks} ${dict.common.attacks.toLowerCase()} • ${player.defenses} ${dict.common.defenses.toLowerCase()}`}
                                 onClick={() => onSelectPlayer?.(player.id || player.playerTag || '')}
                               />
                             ))}
                           </div>
                         ) : (
                           <span className="text-xs text-slate-400 dark:text-slate-500">
-                            Chưa có dữ liệu
+                            {dict.common.noData}
                           </span>
                         )}
                       </td>
@@ -597,21 +604,21 @@ export function HighlightStatsTable({
                       <td className="px-4 py-3 align-middle">
                         <div className="flex flex-col">
                           <span className="font-semibold text-slate-800 dark:text-slate-100">
-                            Cúp tối đa cao nhất
+                            {dict.highlights.categoryHighestMaxCups}
                           </span>
                           <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                            Trần cúp lý thuyết cao nhất bảng đấu
+                            {dict.highlights.highestCeiling}
                           </span>
                         </div>
                       </td>
                       <td className="px-4 py-3 text-center align-middle">
                         {topMaxCups !== null ? (
                           <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/15 px-3 py-1 text-sm font-bold text-indigo-700 dark:text-indigo-300 shadow-2xs">
-                            {new Intl.NumberFormat('vi-VN').format(topMaxCups.maxCups)} cúp
+                            {formatNumber(topMaxCups.maxCups)} {dict.common.trophies}
                           </span>
                         ) : (
                           <span className="text-xs italic text-slate-400 dark:text-slate-500">
-                            Chưa có dữ liệu
+                            {dict.common.noData}
                           </span>
                         )}
                       </td>
@@ -620,7 +627,7 @@ export function HighlightStatsTable({
                           allPlayersShareMaxCups ? (
                             <div className="flex flex-col gap-1.5 py-0.5">
                               <span className="text-xs font-medium text-slate-600 dark:text-slate-300">
-                                Tất cả <strong className="text-indigo-600 dark:text-indigo-400">{players.length}</strong> người chơi đều đang cùng mức trần cao nhất
+                                {interpolate(dict.highlights.allPlayersTiedMax, { count: players.length })}
                               </span>
                               <div className="flex max-h-28 flex-wrap items-center gap-1.5 overflow-y-auto pr-1">
                                 {topMaxCups.players.map((player) => (
@@ -647,7 +654,7 @@ export function HighlightStatsTable({
                           )
                         ) : (
                           <span className="text-xs text-slate-400 dark:text-slate-500">
-                            Chưa có dữ liệu người chơi
+                            {dict.common.noData}
                           </span>
                         )}
                       </td>
@@ -664,7 +671,7 @@ export function HighlightStatsTable({
                           colSpan={3}
                           className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-rose-700 dark:text-rose-300"
                         >
-                          Hạng mục thành tích thấp nhất / Cần nỗ lực
+                          {dict.highlights.worstSection}
                         </td>
                       </tr>
                     )}
@@ -674,21 +681,21 @@ export function HighlightStatsTable({
                       <td className="px-4 py-3 align-middle">
                         <div className="flex flex-col">
                           <span className="font-semibold text-slate-800 dark:text-slate-100">
-                            Cúp hiện tại thấp nhất
+                            {dict.highlights.categoryLowestCups}
                           </span>
                           <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                            Điểm số cúp thấp nhất bảng đấu hiện tại
+                            {dict.highlights.lowestCurrentScore}
                           </span>
                         </div>
                       </td>
                       <td className="px-4 py-3 text-center align-middle">
                         {worstCurrentCups !== null ? (
                           <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-500/30 bg-rose-500/15 px-3 py-1 text-sm font-bold text-rose-700 dark:text-rose-300 shadow-2xs">
-                            {new Intl.NumberFormat('vi-VN').format(worstCurrentCups.cups)} cúp
+                            {formatNumber(worstCurrentCups.cups)} {dict.common.trophies}
                           </span>
                         ) : (
                           <span className="text-xs italic text-slate-400 dark:text-slate-500">
-                            Chưa có dữ liệu
+                            {dict.common.noData}
                           </span>
                         )}
                       </td>
@@ -701,14 +708,14 @@ export function HighlightStatsTable({
                                 player={player}
                                 isMe={player.id === myPlayerId}
                                 variant="danger"
-                                extraInfo={`${player.attacks} công • ${player.defenses} thủ`}
+                                extraInfo={`${player.attacks} ${dict.common.attacks.toLowerCase()} • ${player.defenses} ${dict.common.defenses.toLowerCase()}`}
                                 onClick={() => onSelectPlayer?.(player.id || player.playerTag || '')}
                               />
                             ))}
                           </div>
                         ) : (
                           <span className="text-xs text-slate-400 dark:text-slate-500">
-                            Chưa có dữ liệu
+                            {dict.common.noData}
                           </span>
                         )}
                       </td>
@@ -719,21 +726,21 @@ export function HighlightStatsTable({
                       <td className="px-4 py-3 align-middle">
                         <div className="flex flex-col">
                           <span className="font-semibold text-slate-800 dark:text-slate-100">
-                            Cúp tối đa thấp nhất
+                            {dict.highlights.categoryLowestMaxCups}
                           </span>
                           <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                            Trần cúp lý thuyết thấp nhất mùa giải
+                            {dict.highlights.lowestCeiling}
                           </span>
                         </div>
                       </td>
                       <td className="px-4 py-3 text-center align-middle">
                         {worstMaxCups !== null ? (
                           <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-400/30 bg-slate-500/15 px-3 py-1 text-sm font-bold text-slate-700 dark:text-slate-300 shadow-2xs">
-                            {new Intl.NumberFormat('vi-VN').format(worstMaxCups.maxCups)} cúp
+                            {formatNumber(worstMaxCups.maxCups)} {dict.common.trophies}
                           </span>
                         ) : (
                           <span className="text-xs italic text-slate-400 dark:text-slate-500">
-                            Chưa có dữ liệu
+                            {dict.common.noData}
                           </span>
                         )}
                       </td>
@@ -742,7 +749,7 @@ export function HighlightStatsTable({
                           allPlayersShareMinCups ? (
                             <div className="flex flex-col gap-1.5 py-0.5">
                               <span className="text-xs font-medium text-slate-600 dark:text-slate-300">
-                                Tất cả <strong className="text-slate-600 dark:text-slate-400">{players.length}</strong> người chơi đều đang cùng mức trần thấp nhất
+                                {interpolate(dict.highlights.allPlayersTiedMin, { count: players.length })}
                               </span>
                               <div className="flex max-h-28 flex-wrap items-center gap-1.5 overflow-y-auto pr-1">
                                 {worstMaxCups.players.map((player) => (
@@ -771,7 +778,7 @@ export function HighlightStatsTable({
                           )
                         ) : (
                           <span className="text-xs text-slate-400 dark:text-slate-500">
-                            Chưa có dữ liệu người chơi
+                            {dict.common.noData}
                           </span>
                         )}
                       </td>
