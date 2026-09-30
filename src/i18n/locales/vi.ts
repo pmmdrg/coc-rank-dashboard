@@ -295,7 +295,7 @@ export const vi: TranslationDictionary = {
     cardRatingDominant: 'THỐNG TRỊ',
     cardRatingSuperior: 'VƯỢT TRỘI',
     cardRatingPotential: 'TIỀM NĂNG',
-    cardRatingAlarm: 'CẦN NỖ LỰC',
+    cardRatingAlarm: 'BÁO ĐỘNG',
     cardRankSub: 'Trên tổng số {total} người chơi',
     cardCurrentCupsSub: 'Điểm số giải đấu hiện tại',
     cardPerformanceTitle: 'HIỆU SUẤT CÔNG / THỦ',
