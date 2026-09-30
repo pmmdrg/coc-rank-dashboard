@@ -805,25 +805,25 @@ html.dark .skeleton-shimmer::after {
 }
 
 .aurora-blob-pos-1 {
-  top: -15%;
-  left: -12%;
+  top: -10%;
+  left: -10%;
   width: 62vw;
-  height: 65vh;
+  height: 62vh;
   min-width: 520px;
   min-height: 480px;
 }
 
 .aurora-blob-pos-2 {
-  top: -10%;
-  right: -15%;
+  top: -6%;
+  right: -12%;
   width: 60vw;
-  height: 62vh;
+  height: 60vh;
   min-width: 500px;
   min-height: 460px;
 }
 
 .aurora-blob-pos-3 {
-  top: 32%;
+  top: 25%;
   left: 8%;
   width: 68vw;
   height: 64vh;
@@ -832,11 +832,11 @@ html.dark .skeleton-shimmer::after {
 }
 
 .aurora-blob-pos-4 {
-  top: 62%;
-  right: 0%;
-  width: 65vw;
-  height: 70vh;
-  min-width: 540px;
+  top: 48%;
+  right: -4%;
+  width: 68vw;
+  height: 68vh;
+  min-width: 550px;
   min-height: 520px;
 }
 
