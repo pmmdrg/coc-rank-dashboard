@@ -43,6 +43,7 @@ import { PerformanceTrendSection } from './components/PerformanceTrendSection'
 import { PlayerTagPromptBanner } from './components/PlayerTagPromptBanner'
 import { RankChangesSection } from './components/RankChangesSection'
 import { Footer } from './components/Footer'
+import { ShareCardModal } from './components/ShareCardModal'
 import { Analytics } from '@vercel/analytics/react'
 
 const emptySeason: Season = {
@@ -84,6 +85,7 @@ function downloadFile(content: string, filename: string, mimeType: string) {
 
 function App() {
   const [isSyncingApi, setIsSyncingApi] = useState(false)
+  const [isShareCardOpen, setIsShareCardOpen] = useState(false)
   const [playerTag, setPlayerTag] = useState<string>(() => loadSavedPlayerTag())
   const [leagueHistory, setLeagueHistory] = useState<LeagueHistoryItem[]>(() => loadSavedLeagueHistory())
   const [rankChangesSnapshot, setRankChangesSnapshot] = useState<RankChangesSnapshot | null>(() =>
@@ -402,6 +404,7 @@ function App() {
         isSyncingApi={isSyncingApi}
         onSyncCocApi={handleSyncCocApi}
         onExport={handleExport}
+        onOpenShareCard={() => setIsShareCardOpen(true)}
       />
 
       <main className="mx-auto w-full max-w-[1320px] flex-1 px-4 py-6 sm:px-6 lg:px-8 space-y-6">
@@ -430,6 +433,7 @@ function App() {
           stats={stats}
           season={rankedSeason}
           myPlayerName={myPlayerName}
+          isSyncingApi={isSyncingApi}
         />
 
         {/* Theo dõi phong độ qua các mùa giải & Kỷ lục cá nhân */}
@@ -483,11 +487,20 @@ function App() {
           onUpdatePlayerField={handleUpdatePlayerField}
           targetFocusPlayerId={targetFocusPlayerId}
           onClearTargetFocus={() => setTargetFocusPlayerId(null)}
+          isSyncingApi={isSyncingApi}
         />
       </main>
 
       {/* Footer & chính sách */}
       <Footer />
+
+      {/* Modal Chia sẻ thẻ thành tích dạng ảnh Canvas */}
+      <ShareCardModal
+        isOpen={isShareCardOpen}
+        onClose={() => setIsShareCardOpen(false)}
+        season={rankedSeason}
+        stats={stats}
+      />
 
       {/* Vercel Web Analytics */}
       <Analytics />

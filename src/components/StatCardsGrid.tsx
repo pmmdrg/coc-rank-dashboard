@@ -4,6 +4,7 @@ interface StatCardsGridProps {
   stats: RankingStats
   season: Season
   myPlayerName: string
+  isSyncingApi?: boolean
 }
 
 function numberFormatter(value: number) {
@@ -19,9 +20,26 @@ function formatDate(value: string) {
   }
 }
 
-export function StatCardsGrid({ stats, season, myPlayerName }: StatCardsGridProps) {
+export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = false }: StatCardsGridProps) {
   const hasPlayers = season.players.length > 0
   const hasMyPlayer = Boolean(stats.myPlayer)
+
+  if (isSyncingApi) {
+    return (
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {[1, 2, 3, 4].map((i) => (
+          <div
+            key={i}
+            className="glass-panel relative overflow-hidden rounded-xl p-5 shadow-sm animate-pulse"
+          >
+            <div className="h-3 w-28 rounded bg-slate-200 dark:bg-slate-700/80" />
+            <div className="mt-3 h-8 w-20 rounded bg-slate-300/80 dark:bg-slate-600/80" />
+            <div className="mt-3 h-3 w-36 rounded bg-slate-200/80 dark:bg-slate-700/60" />
+          </div>
+        ))}
+      </div>
+    )
+  }
 
   const cards = [
     {

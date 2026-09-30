@@ -1,8 +1,10 @@
 import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { AlertTriangle } from 'lucide-react'
+import { AlertTriangle, Search, X } from 'lucide-react'
 import type { Player, RankingStats, Season } from '../types'
 import { PlayerRow } from './PlayerRow'
 import { validatePlayer } from '../lib/validation'
+
+export type FilterTab = 'all' | 'promotion' | 'demotion' | 'matchup' | 'canPass' | 'warned'
 
 interface PlayerTableProps {
   season: Season
@@ -11,6 +13,7 @@ interface PlayerTableProps {
   onUpdatePlayerField?: (playerId: string, field: keyof Player, value: string | number) => void
   targetFocusPlayerId?: string | null
   onClearTargetFocus?: () => void
+  isSyncingApi?: boolean
 }
 
 function getElementDocumentTop(element: HTMLElement): number {
@@ -123,6 +126,7 @@ export function PlayerTable({
   stats,
   targetFocusPlayerId,
   onClearTargetFocus,
+  isSyncingApi = false,
 }: PlayerTableProps) {
   const [highlightedPlayerId, setHighlightedPlayerId] = useState<string | null>(null)
   const [rankJumpInfo, setRankJumpInfo] = useState<{
@@ -130,6 +134,11 @@ export function PlayerTable({
     fromRank: number
     toRank: number
   } | null>(null)
+
+  const [searchQuery, setSearchQuery] = useState('')
+  const [filterTab, setFilterTab] = useState<FilterTab>('all')
+  const [showJumper, setShowJumper] = useState(false)
+  const tableSectionRef = useRef<HTMLElement | null>(null)
 
   const rowRefs = useRef(new Map<string, HTMLTableRowElement>())
   const previousRowTops = useRef(new Map<string, number>())
@@ -178,11 +187,6 @@ export function PlayerTable({
     previousRanksRef.current = nextMap
   }, [rankedPlayers])
 
-  const displayedPlayers = rankedPlayers
-
-  const [filterWarnedOnly, setFilterWarnedOnly] = useState(false)
-  const [filterMatchupOnly, setFilterMatchupOnly] = useState(false)
-
   const warnedPlayerIds = useMemo(() => {
     const ids = new Set<string>()
     for (const p of rankedPlayers) {
@@ -206,6 +210,25 @@ export function PlayerTable({
     return ids
   }, [rankedPlayers])
 
+  const canPassPlayerIds = useMemo(() => {
+    const ids = new Set<string>()
+    if (!stats.myPlayer) return ids
+    const targetMyTag = (season.myPlayerId || '').trim().toUpperCase().replace(/^#/, '')
+
+    for (const p of rankedPlayers) {
+      const pId = (p.id || '').toUpperCase().replace(/^#/, '')
+      const pTag = (p.playerTag || '').toUpperCase().replace(/^#/, '')
+      const isMyPlayer = Boolean(targetMyTag && (pId === targetMyTag || pTag === targetMyTag))
+      if (!isMyPlayer && p.maxPossibleCups > stats.myPlayer.maxPossibleCups) {
+        ids.add(p.id)
+      }
+    }
+    return ids
+  }, [rankedPlayers, stats.myPlayer, season.myPlayerId])
+
+  const promotionCount = season.promotionCount !== undefined ? season.promotionCount : 2
+  const demotionCount = season.demotionCount !== undefined ? season.demotionCount : 1
+
   // Xử lý khi có yêu cầu chuyển hướng & focus vào một người chơi từ bên ngoài (ví dụ: bấm vào thẻ trong Hạng mục thống kê)
   useEffect(() => {
     if (!targetFocusPlayerId) return
@@ -219,14 +242,9 @@ export function PlayerTable({
 
     if (!targetPlayer) return
 
-    // Thực hiện trong micro-task / timeout ngắn để đảm bảo không chặn render ban đầu và DOM đã sẵn sàng
     const scrollTimer = setTimeout(() => {
-      if (filterWarnedOnly && !warnedPlayerIds.has(targetPlayer.id)) {
-        setFilterWarnedOnly(false)
-      }
-      if (filterMatchupOnly && !matchupPlayerIds.has(targetPlayer.id)) {
-        setFilterMatchupOnly(false)
-      }
+      setFilterTab('all')
+      setSearchQuery('')
       setHighlightedPlayerId(targetPlayer.id)
 
       const rowEl = rowRefs.current.get(targetPlayer.id)
@@ -244,30 +262,123 @@ export function PlayerTable({
     return () => {
       clearTimeout(scrollTimer)
     }
-  }, [targetFocusPlayerId, rankedPlayers, filterWarnedOnly, filterMatchupOnly, warnedPlayerIds, matchupPlayerIds, onClearTargetFocus])
+  }, [targetFocusPlayerId, rankedPlayers, onClearTargetFocus])
+
+  // Lắng nghe cuộn trang để hiển thị thanh điều hướng nhanh Floating Zone Jumper
+  useEffect(() => {
+    const handleScroll = () => {
+      const el = tableSectionRef.current
+      if (!el) return
+      const rect = el.getBoundingClientRect()
+      // Hiển thị thanh jumper khi đã cuộn qua khỏi đầu bảng và còn trong bảng
+      const inView = rect.top < 0 && rect.bottom > 280
+      setShowJumper(inView)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const effectivePlayers = useMemo(() => {
-    let list = displayedPlayers
-    if (filterWarnedOnly) {
+    let list = rankedPlayers
+
+    // 1. Lọc theo tab
+    if (filterTab === 'promotion') {
+      list = list.filter((p) => promotionCount > 0 && p.rank <= promotionCount)
+    } else if (filterTab === 'demotion') {
+      list = list.filter((p) => demotionCount > 0 && p.rank > rankedPlayers.length - demotionCount)
+    } else if (filterTab === 'matchup') {
+      list = list.filter((p) => matchupPlayerIds.has(p.id))
+    } else if (filterTab === 'canPass') {
+      list = list.filter((p) => canPassPlayerIds.has(p.id))
+    } else if (filterTab === 'warned') {
       list = list.filter((p) => warnedPlayerIds.has(p.id))
     }
-    if (filterMatchupOnly) {
-      list = list.filter((p) => matchupPlayerIds.has(p.id))
+
+    // 2. Lọc theo từ khóa tìm kiếm (Tên, Clan, Player Tag)
+    const q = searchQuery.trim().toLowerCase()
+    if (q) {
+      list = list.filter((p) => {
+        const nameMatch = (p.name || '').toLowerCase().includes(q)
+        const clanMatch = (p.clanName || '').toLowerCase().includes(q)
+        const tagMatch = (p.playerTag || p.id || '').toLowerCase().includes(q)
+        return nameMatch || clanMatch || tagMatch
+      })
     }
+
     return list
-  }, [displayedPlayers, filterWarnedOnly, filterMatchupOnly, warnedPlayerIds, matchupPlayerIds])
+  }, [
+    rankedPlayers,
+    filterTab,
+    searchQuery,
+    promotionCount,
+    demotionCount,
+    matchupPlayerIds,
+    canPassPlayerIds,
+    warnedPlayerIds,
+  ])
 
-  const promotionCount = season.promotionCount !== undefined ? season.promotionCount : 2
-  const demotionCount = season.demotionCount !== undefined ? season.demotionCount : 1
   const totalPlayers = effectivePlayers.length
+  const isFiltered = filterTab !== 'all' || searchQuery.trim().length > 0
 
-  const isFiltered = filterWarnedOnly || filterMatchupOnly
   const showPromotionLine = !isFiltered && promotionCount > 0 && promotionCount < totalPlayers
   const showDemotionLine =
     !isFiltered &&
     demotionCount > 0 &&
     demotionCount < totalPlayers &&
     totalPlayers - demotionCount >= promotionCount
+
+  function jumpToMyPlayer() {
+    if (!stats.myPlayer) return
+    if (isFiltered) {
+      setFilterTab('all')
+      setSearchQuery('')
+    }
+    setTimeout(() => {
+      const el = rowRefs.current.get(stats.myPlayer!.id)
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        setHighlightedPlayerId(stats.myPlayer!.id)
+        setTimeout(() => setHighlightedPlayerId(null), 3000)
+      }
+    }, 50)
+  }
+
+  function jumpToPromotion() {
+    if (isFiltered) {
+      setFilterTab('all')
+      setSearchQuery('')
+    }
+    setTimeout(() => {
+      const targetRank = Math.min(promotionCount, rankedPlayers.length)
+      const targetPlayer = rankedPlayers.find((p) => p.rank === targetRank)
+      if (targetPlayer) {
+        const el = rowRefs.current.get(targetPlayer.id)
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+    }, 50)
+  }
+
+  function jumpToDemotion() {
+    if (isFiltered) {
+      setFilterTab('all')
+      setSearchQuery('')
+    }
+    setTimeout(() => {
+      const targetRank = Math.max(1, rankedPlayers.length - demotionCount + 1)
+      const targetPlayer = rankedPlayers.find((p) => p.rank === targetRank)
+      if (targetPlayer) {
+        const el = rowRefs.current.get(targetPlayer.id)
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+    }, 50)
+  }
+
+  function jumpToTop() {
+    if (tableSectionRef.current) {
+      tableSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
 
   useLayoutEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -351,7 +462,7 @@ export function PlayerTable({
     }
 
     previousRowTops.current = nextTops
-  }, [displayedPlayers])
+  }, [effectivePlayers])
 
   function setPlayerRowRef(playerId: string, element: HTMLTableRowElement | null) {
     if (element) {
@@ -362,7 +473,8 @@ export function PlayerTable({
   }
 
   return (
-    <section className="glass-panel rounded-xl shadow-sm">
+    <section ref={tableSectionRef} className="glass-panel relative rounded-xl shadow-sm">
+      {/* 1. Header tiêu đề & trạng thái */}
       <div className="flex flex-col gap-3 border-b border-slate-200/60 p-5 sm:flex-row sm:items-center sm:justify-between dark:border-slate-700/60">
         <div>
           <div className="flex flex-wrap items-center gap-2.5">
@@ -376,42 +488,10 @@ export function PlayerTable({
               <span>Tự động cập nhật theo thời gian thực</span>
             </span>
 
-            {/* Nút lọc người chơi có cảnh báo dữ liệu nếu phát hiện */}
-            {warnedPlayerIds.size > 0 && (
-              <button
-                type="button"
-                onClick={() => setFilterWarnedOnly((prev) => !prev)}
-                className={`inline-flex h-6 items-center gap-1.5 rounded-full border px-2.5 text-[11px] font-medium leading-none transition-all cursor-pointer ${
-                  filterWarnedOnly
-                    ? 'border-amber-500 bg-amber-500 text-white shadow-xs dark:bg-amber-600'
-                    : 'border-amber-400/60 bg-amber-500/10 text-amber-800 hover:bg-amber-500/20 dark:border-amber-500/40 dark:bg-amber-950/40 dark:text-amber-300'
-                }`}
-                title="Nhấp để chỉ xem các người chơi có dữ liệu bất thường cần rà soát"
-              >
-                <span className={`inline-block h-1.5 w-1.5 shrink-0 rounded-full ${filterWarnedOnly ? 'bg-white' : 'bg-amber-500'}`} />
-                <span className="text-[11px] font-medium leading-none">
-                  {warnedPlayerIds.size} người chơi cần rà soát {filterWarnedOnly ? '(Đang lọc)' : ''}
-                </span>
-              </button>
-            )}
-
-            {/* Nút lọc đối thủ đã đối đầu (đã đánh hoặc đã đánh tôi) */}
-            {matchupPlayerIds.size > 0 && (
-              <button
-                type="button"
-                onClick={() => setFilterMatchupOnly((prev) => !prev)}
-                className={`inline-flex h-6 items-center gap-1.5 rounded-full border px-2.5 text-[11px] font-medium leading-none transition-all cursor-pointer ${
-                  filterMatchupOnly
-                    ? 'border-indigo-500 bg-indigo-500 text-white shadow-xs dark:bg-indigo-600'
-                    : 'border-indigo-400/60 bg-indigo-500/10 text-indigo-800 hover:bg-indigo-500/20 dark:border-indigo-500/40 dark:bg-indigo-950/40 dark:text-indigo-300'
-                }`}
-                title="Nhấp để chỉ xem các đối thủ trong bảng đấu đã có nhật ký đối đầu (bạn đã đánh hoặc đối thủ đã đánh bạn)"
-              >
-                <span className={`inline-block h-1.5 w-1.5 shrink-0 rounded-full ${filterMatchupOnly ? 'bg-white' : 'bg-indigo-500'}`} />
-                <span className="text-[11px] font-medium leading-none">
-                  {matchupPlayerIds.size} đối thủ đã đối đầu {filterMatchupOnly ? '(Đang lọc)' : ''}
-                </span>
-              </button>
+            {isFiltered && (
+              <span className="inline-flex h-6 items-center rounded-full bg-sky-500/10 px-2.5 text-[11px] font-medium leading-none text-sky-700 dark:bg-sky-400/10 dark:text-sky-300 border border-sky-500/20">
+                Hiển thị {effectivePlayers.length} / {rankedPlayers.length} người chơi
+              </span>
             )}
           </div>
           <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
@@ -422,37 +502,178 @@ export function PlayerTable({
         </div>
       </div>
 
+      {/* 2. Thanh Tìm kiếm & Bộ lọc nhanh (Quick Filter Bar) */}
+      <div className="flex flex-col gap-3 border-b border-slate-200/60 p-4 sm:flex-row sm:items-center sm:justify-between dark:border-slate-700/60 bg-slate-50/50 dark:bg-slate-800/25">
+        {/* Ô Tìm kiếm người chơi / Clan */}
+        <div className="relative w-full sm:w-72">
+          <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Tìm tên người chơi hoặc Clan..."
+            className="w-full h-8 rounded-lg border border-slate-300/80 bg-white pl-8.5 pr-7 text-xs text-slate-900 placeholder:text-slate-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+              title="Xóa tìm kiếm"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </div>
+
+        {/* Các Tab lọc nhanh */}
+        <div className="flex flex-wrap items-center gap-1.5 overflow-x-auto pb-0.5 sm:pb-0">
+          <button
+            type="button"
+            onClick={() => setFilterTab('all')}
+            className={`inline-flex h-7 items-center rounded-full px-3 text-xs font-medium transition-all cursor-pointer ${
+              filterTab === 'all'
+                ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-xs'
+                : 'bg-white/80 text-slate-600 hover:bg-slate-100 dark:bg-slate-800/80 dark:text-slate-300 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700/80'
+            }`}
+          >
+            Tất cả ({rankedPlayers.length})
+          </button>
+
+          {promotionCount > 0 && (
+            <button
+              type="button"
+              onClick={() => setFilterTab(filterTab === 'promotion' ? 'all' : 'promotion')}
+              className={`inline-flex h-7 items-center rounded-full px-3 text-xs font-medium transition-all cursor-pointer ${
+                filterTab === 'promotion'
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'bg-emerald-500/10 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/20'
+              }`}
+            >
+              Top thăng hạng ({Math.min(promotionCount, rankedPlayers.length)})
+            </button>
+          )}
+
+          {demotionCount > 0 && (
+            <button
+              type="button"
+              onClick={() => setFilterTab(filterTab === 'demotion' ? 'all' : 'demotion')}
+              className={`inline-flex h-7 items-center rounded-full px-3 text-xs font-medium transition-all cursor-pointer ${
+                filterTab === 'demotion'
+                  ? 'bg-rose-600 text-white shadow-xs'
+                  : 'bg-rose-500/10 text-rose-700 dark:bg-rose-500/15 dark:text-rose-300 border border-rose-500/30 hover:bg-rose-500/20'
+              }`}
+            >
+              Nguy hiểm ({Math.min(demotionCount, rankedPlayers.length)})
+            </button>
+          )}
+
+          {matchupPlayerIds.size > 0 && (
+            <button
+              type="button"
+              onClick={() => setFilterTab(filterTab === 'matchup' ? 'all' : 'matchup')}
+              className={`inline-flex h-7 items-center rounded-full px-3 text-xs font-medium transition-all cursor-pointer ${
+                filterTab === 'matchup'
+                  ? 'bg-indigo-600 text-white shadow-xs'
+                  : 'bg-indigo-500/10 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500/20'
+              }`}
+            >
+              Đối thủ đã đấu ({matchupPlayerIds.size})
+            </button>
+          )}
+
+          {canPassPlayerIds.size > 0 && (
+            <button
+              type="button"
+              onClick={() => setFilterTab(filterTab === 'canPass' ? 'all' : 'canPass')}
+              className={`inline-flex h-7 items-center rounded-full px-3 text-xs font-medium transition-all cursor-pointer ${
+                filterTab === 'canPass'
+                  ? 'bg-amber-600 text-white shadow-xs'
+                  : 'bg-amber-500/10 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300 border border-amber-500/30 hover:bg-amber-500/20'
+              }`}
+            >
+              Có thể vượt tôi ({canPassPlayerIds.size})
+            </button>
+          )}
+
+          {warnedPlayerIds.size > 0 && (
+            <button
+              type="button"
+              onClick={() => setFilterTab(filterTab === 'warned' ? 'all' : 'warned')}
+              className={`inline-flex h-7 items-center rounded-full px-3 text-xs font-medium transition-all cursor-pointer ${
+                filterTab === 'warned'
+                  ? 'bg-amber-600 text-white shadow-xs'
+                  : 'bg-amber-500/10 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300 border border-amber-500/30 hover:bg-amber-500/20'
+              }`}
+            >
+              Cần rà soát ({warnedPlayerIds.size})
+            </button>
+          )}
+
+          {isFiltered && (
+            <button
+              type="button"
+              onClick={() => {
+                setFilterTab('all')
+                setSearchQuery('')
+              }}
+              className="text-xs text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 underline ml-1 cursor-pointer"
+            >
+              Xóa lọc
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* 3. Bảng dữ liệu người chơi với Sticky Header */}
       <div className="overflow-x-auto">
         <table className="relative w-full min-w-[1080px] border-separate border-spacing-0 text-left text-sm">
-          <thead className="soft-table-head text-xs uppercase tracking-wider">
+          <thead className="sticky top-[68px] z-20 backdrop-blur-md bg-amber-50/95 dark:bg-slate-900/95 border-b border-amber-200/60 dark:border-slate-800 text-xs uppercase tracking-wider text-amber-900 dark:text-slate-200 shadow-2xs">
             <tr>
-              <th className="w-[136px] min-w-[136px] max-w-[136px] px-2.5 py-2.5 whitespace-nowrap">Rank</th>
-              <th className="w-56 min-w-[170px] max-w-[240px] px-2 py-2.5">Tên người chơi</th>
-              <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap">Lượt đánh</th>
-              <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap">Lượt thủ</th>
-              <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap">Cup hiện tại</th>
-              <th className="w-36 min-w-[120px] px-2 py-2.5 whitespace-nowrap">Cup tối đa</th>
-              <th className="w-24 min-w-[92px] px-2 py-2.5 whitespace-nowrap text-center">Đánh giá</th>
+              <th className="w-[136px] min-w-[136px] max-w-[136px] px-2.5 py-2.5 whitespace-nowrap bg-inherit">Rank</th>
+              <th className="w-56 min-w-[170px] max-w-[240px] px-2 py-2.5 bg-inherit">Tên người chơi</th>
+              <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap bg-inherit">Lượt đánh</th>
+              <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap bg-inherit">Lượt thủ</th>
+              <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap bg-inherit">Cup hiện tại</th>
+              <th className="w-36 min-w-[120px] px-2 py-2.5 whitespace-nowrap bg-inherit">Cup tối đa</th>
+              <th className="w-24 min-w-[92px] px-2 py-2.5 whitespace-nowrap text-center bg-inherit">Đánh giá</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200/50 dark:divide-slate-800/60">
-            {effectivePlayers.length === 0 ? (
+            {isSyncingApi && rankedPlayers.length === 0 ? (
+              // Skeleton loading rows khi đang tải dữ liệu
+              [1, 2, 3, 4, 5, 6].map((i) => (
+                <tr key={`skeleton-${i}`} className="animate-pulse border-b border-slate-200/40 dark:border-slate-800/40">
+                  <td className="px-2.5 py-3"><div className="h-7 w-12 rounded bg-slate-200 dark:bg-slate-700/80" /></td>
+                  <td className="px-2 py-3">
+                    <div className="h-4 w-32 rounded bg-slate-300/80 dark:bg-slate-600/80" />
+                    <div className="h-3 w-20 rounded bg-slate-200 dark:bg-slate-700/60 mt-1.5" />
+                  </td>
+                  <td className="px-2 py-3"><div className="h-6 w-14 rounded bg-slate-200 dark:bg-slate-700/70" /></td>
+                  <td className="px-2 py-3"><div className="h-6 w-14 rounded bg-slate-200 dark:bg-slate-700/70" /></td>
+                  <td className="px-2 py-3"><div className="h-6 w-16 rounded bg-slate-200 dark:bg-slate-700/70" /></td>
+                  <td className="px-2 py-3"><div className="h-6 w-16 rounded bg-slate-200 dark:bg-slate-700/70" /></td>
+                  <td className="px-2 py-3 text-center"><div className="h-6 w-20 mx-auto rounded-full bg-slate-200 dark:bg-slate-700/70" /></td>
+                </tr>
+              ))
+            ) : effectivePlayers.length === 0 ? (
               <tr>
                 <td colSpan={7} className="py-12 text-center text-sm font-medium text-slate-400 dark:text-slate-500">
-                  {filterWarnedOnly || filterMatchupOnly ? (
+                  {isFiltered ? (
                     <div className="flex flex-col items-center justify-center gap-1.5">
                       <span className="text-base font-semibold text-slate-700 dark:text-slate-200">
-                        {filterWarnedOnly
-                          ? 'Không có người chơi nào có dữ liệu bất thường!'
-                          : 'Chưa có đối thủ nào trong bảng đấu đối đầu với bạn.'}
+                        Không tìm thấy người chơi nào khớp với điều kiện lọc!
                       </span>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        {searchQuery ? `Từ khóa tìm kiếm: "${searchQuery}"` : 'Bộ lọc hiện tại không có kết quả.'}
+                      </p>
                       <button
                         type="button"
                         onClick={() => {
-                          setFilterWarnedOnly(false)
-                          setFilterMatchupOnly(false)
+                          setFilterTab('all')
+                          setSearchQuery('')
                         }}
-                        className="mt-1 text-xs text-blue-600 hover:underline dark:text-sky-400 cursor-pointer"
+                        className="mt-2 inline-flex h-8 items-center rounded-lg bg-sky-600 px-3.5 text-xs font-semibold text-white hover:bg-sky-500 cursor-pointer shadow-xs transition-all"
                       >
                         Quay lại xem toàn bộ danh sách
                       </button>
@@ -533,7 +754,7 @@ export function PlayerTable({
         </table>
       </div>
 
-      {/* Chú thích biểu tượng & trạng thái */}
+      {/* 4. Chú thích biểu tượng & trạng thái */}
       <div className="flex flex-wrap items-center gap-4 border-t border-slate-200/60 px-5 py-3 text-xs text-slate-500 dark:border-slate-700/60 dark:text-slate-400">
         <span className="font-semibold text-slate-600 dark:text-slate-300">Chú thích:</span>
         <span className="inline-flex items-center gap-1.5">
@@ -569,6 +790,52 @@ export function PlayerTable({
           Đối thủ đã tấn công bạn
         </span>
       </div>
+
+      {/* 5. Floating Zone Jumper - Điều hướng nhanh khi cuộn bảng */}
+      {showJumper && (
+        <div className="fixed bottom-6 right-6 z-40 animate-fade-in">
+          <div className="flex items-center gap-1.5 p-1.5 rounded-full glass-panel shadow-2xl border border-slate-300/80 dark:border-slate-700/80 backdrop-blur-md">
+            {stats.myPlayer && (
+              <button
+                type="button"
+                onClick={jumpToMyPlayer}
+                className="inline-flex h-7 items-center rounded-full bg-sky-500/20 px-3 text-xs font-bold text-sky-800 dark:text-sky-200 hover:bg-sky-500/30 transition-all cursor-pointer"
+                title="Nhảy đến vị trí tài khoản của tôi"
+              >
+                Tôi (#{stats.myPlayer.rank})
+              </button>
+            )}
+            {promotionCount > 0 && (
+              <button
+                type="button"
+                onClick={jumpToPromotion}
+                className="inline-flex h-7 items-center rounded-full bg-emerald-500/15 px-2.5 text-xs font-semibold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/25 transition-all cursor-pointer"
+                title={`Nhảy đến vạch thăng hạng (#${promotionCount})`}
+              >
+                Thăng hạng
+              </button>
+            )}
+            {demotionCount > 0 && (
+              <button
+                type="button"
+                onClick={jumpToDemotion}
+                className="inline-flex h-7 items-center rounded-full bg-rose-500/15 px-2.5 text-xs font-semibold text-rose-700 dark:text-rose-300 hover:bg-rose-500/25 transition-all cursor-pointer"
+                title={`Nhảy đến vạch xuống hạng (#${rankedPlayers.length - demotionCount + 1})`}
+              >
+                Xuống hạng
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={jumpToTop}
+              className="inline-flex h-7 items-center rounded-full bg-slate-200/80 dark:bg-slate-800 px-2.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-300/80 dark:hover:bg-slate-700 transition-all cursor-pointer"
+              title="Cuộn lên đầu bảng"
+            >
+              Lên đầu
+            </button>
+          </div>
+        </div>
+      )}
     </section>
   )
 }

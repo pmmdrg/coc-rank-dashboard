@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { AlertTriangle } from 'lucide-react'
 import type { Player, RatingCategory } from '../types'
 import { ratingLabels } from '../lib/ranking'
@@ -36,6 +36,16 @@ export function PlayerRow({
   rankJump = null,
   setRowRef,
 }: PlayerRowProps) {
+  const [isTagCopied, setIsTagCopied] = useState(false)
+
+  function handleCopyTag(e: React.MouseEvent) {
+    e.stopPropagation()
+    if (!player.playerTag) return
+    navigator.clipboard.writeText(player.playerTag)
+    setIsTagCopied(true)
+    setTimeout(() => setIsTagCopied(false), 1500)
+  }
+
   const rowClass = isMyPlayer
     ? 'row-mine'
     : 'row-neutral'
@@ -196,12 +206,31 @@ export function PlayerRow({
                 </span>
               )}
             </div>
-            <span
-              className="text-xs text-slate-500 dark:text-slate-400 truncate cursor-default font-normal"
-              title={`Clan: ${player.clanName || 'Không clan'}`}
-            >
-              {player.clanName || 'Không clan'}
-            </span>
+            <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 truncate">
+              <span
+                className="truncate cursor-default font-normal"
+                title={`Clan: ${player.clanName || 'Không clan'}`}
+              >
+                {player.clanName || 'Không clan'}
+              </span>
+              {player.playerTag && (
+                <>
+                  <span className="text-slate-300 dark:text-slate-600 select-none shrink-0">•</span>
+                  <button
+                    type="button"
+                    onClick={handleCopyTag}
+                    className="inline-flex items-center shrink-0 font-mono text-[10px] text-slate-400 hover:text-emerald-600 dark:text-slate-500 dark:hover:text-emerald-400 cursor-pointer select-none transition-colors"
+                    title="Nhấp để sao chép Player Tag"
+                  >
+                    {isTagCopied ? (
+                      <span className="text-emerald-600 dark:text-emerald-400 font-sans font-bold">Đã chép!</span>
+                    ) : (
+                      player.playerTag
+                    )}
+                  </button>
+                </>
+              )}
+            </div>
 
             {/* Badges đối đầu từ Battle Log */}
             {(hasAttackedByMe || hasDefendedAgainstMe) && (

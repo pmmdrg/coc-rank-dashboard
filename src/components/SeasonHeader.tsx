@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Loader2 } from 'lucide-react'
 import { formatLeagueName } from '../lib/ranking'
 import { getLeagueIconUrl } from '../lib/leagueIcons'
@@ -12,6 +13,7 @@ interface SeasonHeaderProps {
   isSyncingApi?: boolean
   onSyncCocApi?: (tag?: string) => void
   onExport: (format: 'json' | 'csv') => void
+  onOpenShareCard?: () => void
 }
 
 export function SeasonHeader({
@@ -23,8 +25,18 @@ export function SeasonHeader({
   isSyncingApi = false,
   onSyncCocApi,
   onExport,
+  onOpenShareCard,
 }: SeasonHeaderProps) {
+  const [isTagCopied, setIsTagCopied] = useState(false)
   const displayLeague = formatLeagueName(league)
+
+  function handleCopyMyTag() {
+    if (!playerTag) return
+    const formatted = playerTag.startsWith('#') ? playerTag : `#${playerTag}`
+    navigator.clipboard.writeText(formatted)
+    setIsTagCopied(true)
+    setTimeout(() => setIsTagCopied(false), 1500)
+  }
 
   return (
     <header className="glass-header sticky top-0 z-40">
@@ -43,9 +55,15 @@ export function SeasonHeader({
               {myPlayerName && myPlayerName !== '--' ? myPlayerName : '--'}
             </span>
             {playerTag ? (
-              <span className="text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400">
-                ({playerTag.startsWith('#') ? playerTag : `#${playerTag}`})
-              </span>
+              <button
+                type="button"
+                onClick={handleCopyMyTag}
+                className="inline-flex items-center gap-1 rounded bg-emerald-500/10 px-1.5 py-0.5 text-xs font-mono font-semibold text-emerald-600 hover:bg-emerald-500/20 dark:bg-emerald-400/10 dark:text-emerald-400 dark:hover:bg-emerald-400/20 transition-all cursor-pointer"
+                title="Nhấp để sao chép Player Tag"
+              >
+                <span>{playerTag.startsWith('#') ? playerTag : `#${playerTag}`}</span>
+                {isTagCopied && <span className="text-[10px] text-emerald-700 dark:text-emerald-300 font-sans font-bold">(Đã chép)</span>}
+              </button>
             ) : null}
             <span>•</span>
             <span className="inline-flex items-center gap-1.5 font-semibold text-slate-700 dark:text-slate-200">
@@ -103,11 +121,23 @@ export function SeasonHeader({
             )}
           </div>
 
+          {/* Nút Chia sẻ thẻ thành tích */}
+          {onOpenShareCard && (
+            <button
+              type="button"
+              onClick={onOpenShareCard}
+              className="inline-flex h-10 items-center rounded-md border border-sky-400/60 bg-sky-500/10 px-3 text-sm font-medium text-sky-700 shadow-sm backdrop-blur hover:bg-sky-500/20 dark:border-sky-500/40 dark:bg-sky-950/40 dark:text-sky-300 dark:hover:bg-sky-900/40 transition-all cursor-pointer"
+              title="Xuất thẻ ảnh thành tích để chia sẻ"
+            >
+              Chia sẻ thẻ
+            </button>
+          )}
+
           {/* Các nút Xuất file */}
           <button
             type="button"
             onClick={() => onExport('json')}
-            className="inline-flex h-10 items-center rounded-md border border-slate-300/60 bg-white/60 px-3 text-sm font-medium text-slate-700 shadow-sm backdrop-blur hover:bg-white dark:border-slate-700/60 dark:bg-slate-900/60 dark:text-slate-200 dark:hover:bg-slate-800"
+            className="inline-flex h-10 items-center rounded-md border border-slate-300/60 bg-white/60 px-3 text-sm font-medium text-slate-700 shadow-sm backdrop-blur hover:bg-white dark:border-slate-700/60 dark:bg-slate-900/60 dark:text-slate-200 dark:hover:bg-slate-800 cursor-pointer"
             title="Xuất sang file JSON"
           >
             JSON
@@ -116,7 +146,7 @@ export function SeasonHeader({
           <button
             type="button"
             onClick={() => onExport('csv')}
-            className="inline-flex h-10 items-center rounded-md border border-slate-300/60 bg-white/60 px-3 text-sm font-medium text-slate-700 shadow-sm backdrop-blur hover:bg-white dark:border-slate-700/60 dark:bg-slate-900/60 dark:text-slate-200 dark:hover:bg-slate-800"
+            className="inline-flex h-10 items-center rounded-md border border-slate-300/60 bg-white/60 px-3 text-sm font-medium text-slate-700 shadow-sm backdrop-blur hover:bg-white dark:border-slate-700/60 dark:bg-slate-900/60 dark:text-slate-200 dark:hover:bg-slate-800 cursor-pointer"
             title="Xuất sang file CSV"
           >
             CSV
