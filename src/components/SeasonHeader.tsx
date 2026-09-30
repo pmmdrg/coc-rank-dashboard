@@ -46,7 +46,7 @@ export function SeasonHeader({
       <div className="mx-auto flex max-w-[1320px] flex-col gap-4 px-4 py-3.5 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="bg-gradient-to-r from-slate-900 via-sky-800 to-indigo-950 text-2xl font-black tracking-tight sm:text-3xl dark:from-white dark:via-sky-200 dark:to-indigo-300 bg-clip-text text-transparent">
+            <h1 className="aurora-text text-2xl font-black tracking-tight sm:text-3xl select-none">
               CoC Rank Dashboard
             </h1>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-sky-400/40 bg-sky-500/10 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-sky-700 dark:border-sky-400/30 dark:bg-sky-500/15 dark:text-sky-300 shadow-2xs">

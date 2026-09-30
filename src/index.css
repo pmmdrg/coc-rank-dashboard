@@ -12,11 +12,7 @@
 
 :root {
   overflow-anchor: none;
-  --app-bg:
-    radial-gradient(circle at 12% 0%, rgba(14, 165, 233, 0.12), transparent 36rem),
-    radial-gradient(circle at 88% 8%, rgba(245, 158, 11, 0.10), transparent 38rem),
-    radial-gradient(circle at 50% 55%, rgba(99, 102, 241, 0.05), transparent 40rem),
-    linear-gradient(180deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+  --app-bg: #f8fafc;
   --panel-bg: rgba(255, 255, 255, 0.82);
   --panel-border: rgba(203, 213, 225, 0.6);
   --header-bg: rgba(255, 255, 255, 0.88);
@@ -62,8 +58,9 @@ select:focus-visible {
 }
 
 .app-surface {
-  background: var(--app-bg);
+  background: transparent;
   min-height: 100vh;
+  position: relative;
 }
 
 /* Apple Pro Vibrancy & Frosted Glass với Specular Inset Highlight */
@@ -223,11 +220,7 @@ select:focus-visible {
 /* Dark theme variables: Midnight Obsidian Tone */
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
-    --app-bg:
-      radial-gradient(circle at 12% 0%, rgba(56, 189, 248, 0.16), transparent 42rem),
-      radial-gradient(circle at 88% 10%, rgba(245, 158, 11, 0.12), transparent 44rem),
-      radial-gradient(circle at 50% 70%, rgba(99, 102, 241, 0.08), transparent 48rem),
-      linear-gradient(180deg, #060913 0%, #0a101f 50%, #05070e 100%);
+    --app-bg: #060913;
     --panel-bg: rgba(15, 23, 42, 0.76);
     --panel-border: rgba(255, 255, 255, 0.08);
     --header-bg: rgba(10, 16, 31, 0.88);
@@ -283,11 +276,7 @@ select:focus-visible {
 
 /* Explicit class .dark override */
 html.dark {
-  --app-bg:
-    radial-gradient(circle at 12% 0%, rgba(56, 189, 248, 0.16), transparent 42rem),
-    radial-gradient(circle at 88% 10%, rgba(245, 158, 11, 0.12), transparent 44rem),
-    radial-gradient(circle at 50% 70%, rgba(99, 102, 241, 0.08), transparent 48rem),
-    linear-gradient(180deg, #060913 0%, #0a101f 50%, #05070e 100%);
+  --app-bg: #060913;
   --panel-bg: rgba(15, 23, 42, 0.76);
   --panel-border: rgba(255, 255, 255, 0.08);
   --header-bg: rgba(10, 16, 31, 0.88);
@@ -796,5 +785,219 @@ html.dark .skeleton-shimmer::after {
     rgba(255, 255, 255, 0) 100%
   );
 }
+
+/* ==========================================================================
+   AURORA BOREALIS AMBIENT BACKGROUND & DYNAMIC TEXT SHIMMER
+   Hiệu ứng cực quang Bắc Cực chuyển màu liên tục theo cuộn chuột
+   ========================================================================== */
+
+.aurora-ambient-canvas {
+  filter: hue-rotate(var(--aurora-hue, 0deg));
+  transition: filter 220ms ease-out;
+  contain: strict;
+  will-change: filter;
+}
+
+.aurora-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(85px);
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  pointer-events: none;
+}
+
+/* Màn cực quang 1: Emerald & Mint Green Aurora Wave (Phía trên bên trái) */
+.aurora-blob-1 {
+  top: -12%;
+  left: -10%;
+  width: 60vw;
+  height: 62vh;
+  min-width: 520px;
+  min-height: 480px;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.45) 0%, rgba(6, 182, 212, 0.30) 45%, transparent 72%);
+  animation: aurora-drift-1 16s ease-in-out infinite alternate;
+  transform: translateY(calc(var(--aurora-shift-y, 0px) * -0.15));
+}
+
+/* Màn cực quang 2: Violet, Magenta & Indigo Ribbon (Phía trên bên phải vắt chéo) */
+.aurora-blob-2 {
+  top: -8%;
+  right: -12%;
+  width: 58vw;
+  height: 60vh;
+  min-width: 500px;
+  min-height: 460px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.40) 0%, rgba(217, 70, 239, 0.28) 48%, transparent 72%);
+  animation: aurora-drift-2 19s ease-in-out infinite alternate;
+  transform: translateY(calc(var(--aurora-shift-y, 0px) * -0.22));
+}
+
+/* Màn cực quang 3: Cyan, Sky Blue & Amber Sunburst Ribbon (Trung tâm và lệch trái) */
+.aurora-blob-3 {
+  top: 35%;
+  left: 10%;
+  width: 68vw;
+  height: 62vh;
+  min-width: 560px;
+  min-height: 480px;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.38) 0%, rgba(99, 102, 241, 0.26) 42%, rgba(245, 158, 11, 0.20) 70%, transparent 85%);
+  animation: aurora-drift-3 22s ease-in-out infinite alternate;
+  transform: translateY(calc(var(--aurora-shift-y, 0px) * -0.28));
+}
+
+/* Màn cực quang 4: Deep Cosmic Teal & Rose Wave (Tầng dưới phục vụ cuộn xuống bảng) */
+.aurora-blob-4 {
+  top: 65%;
+  right: 2%;
+  width: 62vw;
+  height: 68vh;
+  min-width: 520px;
+  min-height: 500px;
+  background: radial-gradient(circle, rgba(20, 184, 166, 0.35) 0%, rgba(168, 85, 247, 0.28) 50%, rgba(244, 63, 94, 0.16) 72%, transparent 85%);
+  animation: aurora-drift-4 18s ease-in-out infinite alternate;
+  transform: translateY(calc(var(--aurora-shift-y, 0px) * -0.35));
+}
+
+/* Lớp vignette tinh tế */
+.aurora-overlay-vignette {
+  background: radial-gradient(circle at 50% 50%, transparent 60%, rgba(0, 0, 0, 0.05) 100%);
+}
+
+html.dark .aurora-overlay-vignette,
+:root:not(.light) .aurora-overlay-vignette {
+  background: radial-gradient(circle at 50% 50%, transparent 50%, rgba(6, 9, 19, 0.45) 100%);
+}
+
+/* Chế độ Dark Theme: Tăng độ phát quang và hòa trộn màu màn đêm Arctic */
+html.dark .aurora-blob,
+:root:not(.light) .aurora-blob {
+  mix-blend-mode: screen;
+}
+
+html.dark .aurora-blob-1,
+:root:not(.light) .aurora-blob-1 {
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.52) 0%, rgba(6, 182, 212, 0.35) 45%, transparent 75%);
+}
+
+html.dark .aurora-blob-2,
+:root:not(.light) .aurora-blob-2 {
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.48) 0%, rgba(217, 70, 239, 0.32) 48%, transparent 75%);
+}
+
+html.dark .aurora-blob-3,
+:root:not(.light) .aurora-blob-3 {
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.45) 0%, rgba(99, 102, 241, 0.32) 42%, rgba(245, 158, 11, 0.24) 68%, transparent 85%);
+}
+
+html.dark .aurora-blob-4,
+:root:not(.light) .aurora-blob-4 {
+  background: radial-gradient(circle, rgba(20, 184, 166, 0.42) 0%, rgba(168, 85, 247, 0.35) 50%, rgba(244, 63, 94, 0.20) 72%, transparent 85%);
+}
+
+/* Chế độ Light Theme: Tinh tế, tươi mát ngọc bích, độ tương phản cao */
+:root:not(.dark) .aurora-blob-1 {
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.24) 0%, rgba(6, 182, 212, 0.16) 45%, transparent 70%);
+}
+
+:root:not(.dark) .aurora-blob-2 {
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.22) 0%, rgba(217, 70, 239, 0.14) 48%, transparent 70%);
+}
+
+:root:not(.dark) .aurora-blob-3 {
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.20) 0%, rgba(99, 102, 241, 0.14) 42%, rgba(245, 158, 11, 0.10) 65%, transparent 80%);
+}
+
+:root:not(.dark) .aurora-blob-4 {
+  background: radial-gradient(circle, rgba(20, 184, 166, 0.20) 0%, rgba(168, 85, 247, 0.14) 50%, transparent 72%);
+}
+
+/* Animation trôi dạt uốn lượn tự nhiên của dải cực quang */
+@keyframes aurora-drift-1 {
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  50% { transform: translate(6vw, 4vh) scale(1.1) rotate(8deg); }
+  100% { transform: translate(-4vw, 8vh) scale(0.95) rotate(-6deg); }
+}
+
+@keyframes aurora-drift-2 {
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  50% { transform: translate(-8vw, 6vh) scale(1.12) rotate(-10deg); }
+  100% { transform: translate(5vw, -4vh) scale(0.92) rotate(7deg); }
+}
+
+@keyframes aurora-drift-3 {
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  50% { transform: translate(7vw, -6vh) scale(1.08) rotate(12deg); }
+  100% { transform: translate(-6vw, 5vh) scale(0.96) rotate(-8deg); }
+}
+
+@keyframes aurora-drift-4 {
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  50% { transform: translate(-5vw, 7vh) scale(1.1) rotate(-6deg); }
+  100% { transform: translate(8vw, -5vh) scale(0.94) rotate(9deg); }
+}
+
+/* Chữ tiêu đề "CoC Rank Dashboard" dạng dải màu cực quang chuyển động sống động */
+.aurora-text {
+  background-size: 260% 260%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: aurora-text-flow 9s ease-in-out infinite;
+  filter: hue-rotate(calc(var(--aurora-scroll-hue, 0deg) * 0.45));
+  transition: filter 160ms ease-out;
+  display: inline-block;
+}
+
+html.dark .aurora-text,
+:root:not(.light) .aurora-text {
+  background-image: linear-gradient(
+    120deg,
+    #34d399 0%,
+    #22d3ee 20%,
+    #818cf8 40%,
+    #c084fc 60%,
+    #f472b6 80%,
+    #fbbf24 92%,
+    #34d399 100%
+  );
+  text-shadow: 0 0 28px rgba(34, 211, 238, 0.25);
+}
+
+:root:not(.dark) .aurora-text {
+  background-image: linear-gradient(
+    120deg,
+    #059669 0%,
+    #0284c7 20%,
+    #4f46e5 40%,
+    #7c3aed 60%,
+    #db2777 80%,
+    #d97706 92%,
+    #059669 100%
+  );
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+}
+
+@keyframes aurora-text-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora-blob {
+    animation: none !important;
+  }
+  .aurora-text {
+    animation: none !important;
+  }
+}
+
 
 

@@ -43,6 +43,7 @@ import { PlayerTagPromptBanner } from './components/PlayerTagPromptBanner'
 import { RankChangesSection } from './components/RankChangesSection'
 import { Footer } from './components/Footer'
 import { ShareCardModal } from './components/ShareCardModal'
+import { AuroraBackground } from './components/AuroraBackground'
 import { Analytics } from '@vercel/analytics/react'
 
 const emptySeason: Season = {
@@ -395,7 +396,10 @@ function App() {
   }, [])
 
   return (
-    <div className="app-surface flex min-h-screen flex-col">
+    <div className="app-surface relative flex min-h-screen flex-col overflow-x-hidden">
+      {/* Nền hiệu ứng Cực quang (Aurora Borealis) chuyển màu liên tục theo nhịp cuộn chuột */}
+      <AuroraBackground />
+
       {/* Header điều khiển: Player Tag, Xuất JSON/CSV, Theme */}
       <SeasonHeader
         league={rankedSeason.league}
@@ -409,7 +413,7 @@ function App() {
         onOpenShareCard={() => setIsShareCardOpen(true)}
       />
 
-      <main className="mx-auto w-full max-w-[1320px] flex-1 px-4 py-6 sm:px-6 lg:px-8 space-y-6">
+      <main className="relative z-10 mx-auto w-full max-w-[1320px] flex-1 px-4 py-6 sm:px-6 lg:px-8 space-y-6">
         {/* Thông báo lỗi */}
         {error && (
           <div className="animate-fade-in rounded-xl border border-rose-300/60 bg-rose-50/80 px-4 py-3 text-sm text-rose-700 backdrop-blur dark:border-rose-500/30 dark:bg-rose-950/40 dark:text-rose-200">

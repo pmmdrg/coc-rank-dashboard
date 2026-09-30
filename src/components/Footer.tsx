@@ -10,7 +10,7 @@ export function Footer() {
           {/* Brand & Project Info */}
           <div className="space-y-1.5">
             <div className="flex items-center gap-2">
-              <span className="font-bold tracking-tight text-slate-900 dark:text-slate-100">
+              <span className="aurora-text font-bold tracking-tight">
                 CoC Rank Dashboard
               </span>
               <span className="rounded-full bg-slate-500/10 px-2 py-0.5 text-[11px] font-semibold text-slate-600 dark:bg-slate-400/10 dark:text-slate-400">
