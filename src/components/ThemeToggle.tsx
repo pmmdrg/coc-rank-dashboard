@@ -6,6 +6,8 @@ type Theme = 'light' | 'dark'
 export function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window !== 'undefined') {
+      if (document.documentElement.classList.contains('dark')) return 'dark'
+      if (document.documentElement.classList.contains('light')) return 'light'
       const stored = localStorage.getItem('coc_rank_theme') as Theme | null
       if (stored === 'light' || stored === 'dark') return stored
       return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
