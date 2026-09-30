@@ -4,6 +4,7 @@ import type { Player, RankingStats, Season } from '../types'
 import { PlayerRow } from './PlayerRow'
 import { validatePlayer } from '../lib/validation'
 import { useI18n } from '../i18n/LanguageContext'
+import { SegmentedControl, type SegmentedControlOption } from './SegmentedControl'
 
 export type FilterTab = 'all' | 'promotion' | 'demotion' | 'matchup' | 'canPass' | 'warned'
 
@@ -382,6 +383,99 @@ export function PlayerTable({
   const totalPlayers = effectivePlayers.length
   const isFiltered = filterTab !== 'all' || searchQuery.trim().length > 0
 
+  const handleFilterTabChange = (val: FilterTab) => {
+    if (filterTab === val && val !== 'all') {
+      setFilterTab('all')
+    } else {
+      setFilterTab(val)
+    }
+  }
+
+  const filterOptions = useMemo<SegmentedControlOption<FilterTab>[]>(() => {
+    const opts: SegmentedControlOption<FilterTab>[] = [
+      {
+        value: 'all',
+        label: <span>{interpolate(dict.table.filterAll, { count: rankedPlayers.length })}</span>,
+      },
+    ]
+
+    if (promotionCount > 0) {
+      opts.push({
+        value: 'promotion',
+        label: (
+          <>
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            <span>{interpolate(dict.table.filterPromotion, { count: Math.min(promotionCount, rankedPlayers.length) })}</span>
+          </>
+        ),
+        activeColorClass: 'text-emerald-700 dark:text-emerald-300',
+        hoverColorClass: 'hover:text-emerald-600 dark:hover:text-emerald-400',
+      })
+    }
+
+    if (demotionCount > 0) {
+      opts.push({
+        value: 'demotion',
+        label: (
+          <>
+            <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
+            <span>{interpolate(dict.table.filterDemotion, { count: Math.min(demotionCount, rankedPlayers.length) })}</span>
+          </>
+        ),
+        activeColorClass: 'text-rose-700 dark:text-rose-300',
+        hoverColorClass: 'hover:text-rose-600 dark:hover:text-rose-400',
+      })
+    }
+
+    if (matchupPlayerIds.size > 0) {
+      opts.push({
+        value: 'matchup',
+        label: <span>{interpolate(dict.table.filterMatchup, { count: matchupPlayerIds.size })}</span>,
+        activeColorClass: 'text-indigo-700 dark:text-indigo-300',
+        hoverColorClass: 'hover:text-indigo-600 dark:hover:text-indigo-400',
+      })
+    }
+
+    if (canPassPlayerIds.size > 0) {
+      opts.push({
+        value: 'canPass',
+        label: (
+          <>
+            <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+            <span>{interpolate(dict.table.filterCanPass, { count: canPassPlayerIds.size })}</span>
+          </>
+        ),
+        activeColorClass: 'text-amber-700 dark:text-amber-300',
+        hoverColorClass: 'hover:text-amber-600 dark:hover:text-amber-400',
+      })
+    }
+
+    if (warnedPlayerIds.size > 0) {
+      opts.push({
+        value: 'warned',
+        label: (
+          <>
+            <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+            <span>{interpolate(dict.table.filterWarned, { count: warnedPlayerIds.size })}</span>
+          </>
+        ),
+        activeColorClass: 'text-amber-700 dark:text-amber-300',
+        hoverColorClass: 'hover:text-amber-600 dark:hover:text-amber-400',
+      })
+    }
+
+    return opts
+  }, [
+    rankedPlayers.length,
+    promotionCount,
+    demotionCount,
+    matchupPlayerIds.size,
+    canPassPlayerIds.size,
+    warnedPlayerIds.size,
+    dict.table,
+    interpolate,
+  ])
+
   const showPromotionLine = !isFiltered && promotionCount > 0 && promotionCount < totalPlayers
   const showDemotionLine =
     !isFiltered &&
@@ -607,88 +701,12 @@ export function PlayerTable({
 
         {/* Các Tab lọc nhanh - Apple Segmented Control */}
         <div className="flex flex-wrap items-center gap-2 overflow-x-auto pb-0.5 sm:pb-0">
-          <div className="apple-segmented-container">
-            <button
-              type="button"
-              onClick={() => setFilterTab('all')}
-              className={`apple-segmented-item ${filterTab === 'all' ? 'is-active' : ''}`}
-            >
-              <span>{interpolate(dict.table.filterAll, { count: rankedPlayers.length })}</span>
-            </button>
-
-            {promotionCount > 0 && (
-              <button
-                type="button"
-                onClick={() => setFilterTab(filterTab === 'promotion' ? 'all' : 'promotion')}
-                className={`apple-segmented-item ${
-                  filterTab === 'promotion'
-                    ? 'is-active text-emerald-700 dark:text-emerald-300'
-                    : 'hover:text-emerald-600 dark:hover:text-emerald-400'
-                }`}
-              >
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                <span>{interpolate(dict.table.filterPromotion, { count: Math.min(promotionCount, rankedPlayers.length) })}</span>
-              </button>
-            )}
-
-            {demotionCount > 0 && (
-              <button
-                type="button"
-                onClick={() => setFilterTab(filterTab === 'demotion' ? 'all' : 'demotion')}
-                className={`apple-segmented-item ${
-                  filterTab === 'demotion'
-                    ? 'is-active text-rose-700 dark:text-rose-300'
-                    : 'hover:text-rose-600 dark:hover:text-rose-400'
-                }`}
-              >
-                <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
-                <span>{interpolate(dict.table.filterDemotion, { count: Math.min(demotionCount, rankedPlayers.length) })}</span>
-              </button>
-            )}
-
-            {matchupPlayerIds.size > 0 && (
-              <button
-                type="button"
-                onClick={() => setFilterTab(filterTab === 'matchup' ? 'all' : 'matchup')}
-                className={`apple-segmented-item ${
-                  filterTab === 'matchup'
-                    ? 'is-active text-indigo-700 dark:text-indigo-300'
-                    : 'hover:text-indigo-600 dark:hover:text-indigo-400'
-                }`}
-              >
-                <span>{interpolate(dict.table.filterMatchup, { count: matchupPlayerIds.size })}</span>
-              </button>
-            )}
-
-            {canPassPlayerIds.size > 0 && (
-              <button
-                type="button"
-                onClick={() => setFilterTab(filterTab === 'canPass' ? 'all' : 'canPass')}
-                className={`apple-segmented-item ${
-                  filterTab === 'canPass'
-                    ? 'is-active text-amber-700 dark:text-amber-300'
-                    : 'hover:text-amber-600 dark:hover:text-amber-400'
-                }`}
-              >
-                <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-                <span>{interpolate(dict.table.filterCanPass, { count: canPassPlayerIds.size })}</span>
-              </button>
-            )}
-
-            {warnedPlayerIds.size > 0 && (
-              <button
-                type="button"
-                onClick={() => setFilterTab(filterTab === 'warned' ? 'all' : 'warned')}
-                className={`apple-segmented-item ${
-                  filterTab === 'warned'
-                    ? 'is-active text-amber-700 dark:text-amber-300'
-                    : 'hover:text-amber-600 dark:hover:text-amber-400'
-                }`}
-              >
-                <span>{interpolate(dict.table.filterWarned, { count: warnedPlayerIds.size })}</span>
-              </button>
-            )}
-          </div>
+          <SegmentedControl<FilterTab>
+            options={filterOptions}
+            value={filterTab}
+            onChange={handleFilterTabChange}
+            ariaLabel={dict.table.title}
+          />
 
           {isFiltered && (
             <button

@@ -2,6 +2,7 @@ import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { CaretDown, MagnifyingGlass } from '@phosphor-icons/react'
 import type { RankChangesSnapshot, RankChangeItem } from '../types'
 import { useI18n } from '../i18n/LanguageContext'
+import { SegmentedControl, type SegmentedControlOption } from './SegmentedControl'
 
 export interface RankChangesSectionProps {
   snapshot: RankChangesSnapshot | null
@@ -136,6 +137,35 @@ export function RankChangesSection({
 
     return list
   }, [activeChanges, roseChanges, fellChanges, filter, searchQuery])
+
+  const filterOptions = useMemo<SegmentedControlOption<FilterType>[]>(() => [
+    {
+      value: 'all',
+      label: <span>{interpolate(dict.rankChanges.filterAll, { count: activeChanges.length })}</span>,
+    },
+    {
+      value: 'rose',
+      label: (
+        <>
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          <span>{interpolate(dict.rankChanges.filterRose, { count: roseChanges.length })}</span>
+        </>
+      ),
+      activeColorClass: 'text-emerald-700 dark:text-emerald-300',
+      hoverColorClass: 'hover:text-emerald-600 dark:hover:text-emerald-400',
+    },
+    {
+      value: 'fell',
+      label: (
+        <>
+          <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
+          <span>{interpolate(dict.rankChanges.filterFell, { count: fellChanges.length })}</span>
+        </>
+      ),
+      activeColorClass: 'text-rose-700 dark:text-rose-300',
+      hoverColorClass: 'hover:text-rose-600 dark:hover:text-rose-400',
+    },
+  ], [activeChanges.length, roseChanges.length, fellChanges.length, dict.rankChanges, interpolate])
 
   // Animation co giãn chiều cao (Height FLIP transition) mượt mà khi nạp dữ liệu mới hoặc đổi bộ lọc
   useLayoutEffect(() => {
@@ -366,39 +396,12 @@ export function RankChangesSection({
             <>
               {/* 3. THANH ĐIỀU HƯỚNG TABS & TÌM KIẾM */}
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5">
-                <div className="apple-segmented-container">
-                  <button
-                    type="button"
-                    onClick={() => setFilter('all')}
-                    className={`apple-segmented-item ${filter === 'all' ? 'is-active' : ''}`}
-                  >
-                    <span>{interpolate(dict.rankChanges.filterAll, { count: activeChanges.length })}</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setFilter('rose')}
-                    className={`apple-segmented-item ${
-                      filter === 'rose'
-                        ? 'is-active text-emerald-700 dark:text-emerald-300'
-                        : 'hover:text-emerald-600 dark:hover:text-emerald-400'
-                    }`}
-                  >
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                    <span>{interpolate(dict.rankChanges.filterRose, { count: roseChanges.length })}</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setFilter('fell')}
-                    className={`apple-segmented-item ${
-                      filter === 'fell'
-                        ? 'is-active text-rose-700 dark:text-rose-300'
-                        : 'hover:text-rose-600 dark:hover:text-rose-400'
-                    }`}
-                  >
-                    <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
-                    <span>{interpolate(dict.rankChanges.filterFell, { count: fellChanges.length })}</span>
-                  </button>
-                </div>
+                <SegmentedControl<FilterType>
+                  options={filterOptions}
+                  value={filter}
+                  onChange={setFilter}
+                  ariaLabel={dict.rankChanges.title}
+                />
 
                 {activeChanges.length > 5 && (
                   <div className="relative w-full sm:w-56">

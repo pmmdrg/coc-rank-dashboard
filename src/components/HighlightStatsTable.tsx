@@ -1,6 +1,7 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { Player } from '../types'
 import { useI18n } from '../i18n/LanguageContext'
+import { SegmentedControl, type SegmentedControlOption } from './SegmentedControl'
 
 export interface HighlightStatsTableProps {
   players: Player[]
@@ -235,6 +236,35 @@ export function HighlightStatsTable({
     setFilterMode(mode)
   }
 
+  const filterOptions = useMemo<SegmentedControlOption<FilterMode>[]>(() => [
+    {
+      value: 'all',
+      label: <span>{interpolate(dict.highlights.filterAll, { count: 4 })}</span>,
+    },
+    {
+      value: 'best',
+      label: (
+        <>
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          <span>{interpolate(dict.highlights.filterBest, { count: 2 })}</span>
+        </>
+      ),
+      activeColorClass: 'text-emerald-700 dark:text-emerald-300',
+      hoverColorClass: 'hover:text-emerald-600 dark:hover:text-emerald-400',
+    },
+    {
+      value: 'worst',
+      label: (
+        <>
+          <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
+          <span>{interpolate(dict.highlights.filterWorst, { count: 2 })}</span>
+        </>
+      ),
+      activeColorClass: 'text-rose-700 dark:text-rose-300',
+      hoverColorClass: 'hover:text-rose-600 dark:hover:text-rose-400',
+    },
+  ], [dict.highlights, interpolate])
+
   // Animation co giãn chiều cao (Height FLIP transition) mượt mà, triệt tiêu giật layout
   useLayoutEffect(() => {
     const wrapper = animatedWrapperRef.current
@@ -358,40 +388,12 @@ export function HighlightStatsTable({
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Bộ lọc nhanh: Tất cả / Tốt nhất / Thấp nhất - Apple Segmented Control */}
-            <div className="apple-segmented-container">
-              <button
-                type="button"
-                onClick={() => handleFilterChange('all')}
-                className={`apple-segmented-item ${filterMode === 'all' ? 'is-active' : ''}`}
-              >
-                <span>{interpolate(dict.highlights.filterAll, { count: 4 })}</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleFilterChange('best')}
-                className={`apple-segmented-item ${
-                  filterMode === 'best'
-                    ? 'is-active text-emerald-700 dark:text-emerald-300'
-                    : 'hover:text-emerald-600 dark:hover:text-emerald-400'
-                }`}
-              >
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                <span>{interpolate(dict.highlights.filterBest, { count: 2 })}</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleFilterChange('worst')}
-                className={`apple-segmented-item ${
-                  filterMode === 'worst'
-                    ? 'is-active text-rose-700 dark:text-rose-300'
-                    : 'hover:text-rose-600 dark:hover:text-rose-400'
-                }`}
-              >
-                <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
-                <span>{interpolate(dict.highlights.filterWorst, { count: 2 })}</span>
-              </button>
-            </div>
+            <SegmentedControl<FilterMode>
+              options={filterOptions}
+              value={filterMode}
+              onChange={handleFilterChange}
+              ariaLabel={dict.highlights.title}
+            />
 
             <span className="hidden text-xs text-slate-500 sm:inline dark:text-slate-400">
               {interpolate(dict.highlights.allPlayersActive, { count: activePlayers.length })}
