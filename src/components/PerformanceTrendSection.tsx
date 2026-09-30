@@ -7,6 +7,7 @@ import { TrendRecordCards } from './trend/TrendRecordCards'
 import { TrendHistoryTable } from './trend/TrendHistoryTable'
 import type { ProcessedSeasonPoint } from './trend/types'
 import { useI18n } from '../i18n/LanguageContext'
+import { SegmentedControl, type SegmentedControlOption } from './SegmentedControl'
 
 export interface PerformanceTrendSectionProps {
   leagueHistory?: LeagueHistoryItem[]
@@ -85,6 +86,17 @@ export function PerformanceTrendSection({
   const [activeMetric, setActiveMetric] = useState<'cups_rank' | 'battles_stars'>('cups_rank')
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const [showTable, setShowTable] = useState(true)
+
+  const metricOptions = useMemo<SegmentedControlOption<'cups_rank' | 'battles_stars'>[]>(() => [
+    {
+      value: 'cups_rank',
+      label: <span>{dict.performanceTrend.metricCupsRank}</span>,
+    },
+    {
+      value: 'battles_stars',
+      label: <span>{dict.performanceTrend.metricBattlesStars}</span>,
+    },
+  ], [dict.performanceTrend])
 
   // Xử lý và chuẩn hóa dữ liệu lịch sử các mùa giải từ Supercell endpoint /players/{tag}/leaguehistory
   // Giới hạn tối đa 10 mùa giải gần nhất theo yêu cầu
@@ -331,11 +343,62 @@ export function PerformanceTrendSection({
     const total = chronologicalHistory.length
     const isOnRight = hoveredIndex < Math.ceil(total / 2)
     const pointX = getX(hoveredIndex)
-    const offset = 14
+    const offset = 16
     const targetX = isOnRight ? pointX + offset : pointX - offset
     const leftPercent = (targetX / chartWidth) * 100
     return { isOnRight, leftPercent }
   })()
+
+  // Xử lý hover mượt mà liên tục toàn bộ biểu đồ (chuẩn Chart.js continuous hover zone không điểm mù)
+  const handleChartMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
+    if (chronologicalHistory.length === 0) return
+    const rect = e.currentTarget.getBoundingClientRect()
+    if (rect.width <= 0) return
+
+    const mouseX = e.clientX - rect.left
+    const svgX = (mouseX / rect.width) * chartWidth
+
+    let closestIndex = 0
+    let minDistance = Infinity
+
+    for (let i = 0; i < chronologicalHistory.length; i++) {
+      const pointX = getX(i)
+      const dist = Math.abs(svgX - pointX)
+      if (dist < minDistance) {
+        minDistance = dist
+        closestIndex = i
+      }
+    }
+
+    setHoveredIndex(closestIndex)
+  }
+
+  const handleChartMouseLeave = () => {
+    setHoveredIndex(null)
+  }
+
+  const handleChartTouchMove = (e: React.TouchEvent<SVGSVGElement>) => {
+    if (chronologicalHistory.length === 0 || !e.touches[0]) return
+    const rect = e.currentTarget.getBoundingClientRect()
+    if (rect.width <= 0) return
+
+    const touchX = e.touches[0].clientX - rect.left
+    const svgX = (touchX / rect.width) * chartWidth
+
+    let closestIndex = 0
+    let minDistance = Infinity
+
+    for (let i = 0; i < chronologicalHistory.length; i++) {
+      const pointX = getX(i)
+      const dist = Math.abs(svgX - pointX)
+      if (dist < minDistance) {
+        minDistance = dist
+        closestIndex = i
+      }
+    }
+
+    setHoveredIndex(closestIndex)
+  }
 
   return (
     <section className="glass-panel rounded-xl shadow-sm transition-all">
@@ -403,30 +466,12 @@ export function PerformanceTrendSection({
                 <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                   {dict.performanceTrend.chartMetric}
                 </span>
-                <div className="inline-flex rounded-lg border border-slate-200 bg-slate-100/70 p-0.5 text-xs font-semibold dark:border-slate-700 dark:bg-slate-800/70">
-                  <button
-                    type="button"
-                    onClick={() => setActiveMetric('cups_rank')}
-                    className={`rounded-md px-2.5 py-1 transition-all ${
-                      activeMetric === 'cups_rank'
-                        ? 'bg-white text-slate-900 shadow-2xs dark:bg-slate-700 dark:text-white'
-                        : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
-                    }`}
-                  >
-                    {dict.performanceTrend.metricCupsRank}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActiveMetric('battles_stars')}
-                    className={`rounded-md px-2.5 py-1 transition-all ${
-                      activeMetric === 'battles_stars'
-                        ? 'bg-white text-slate-900 shadow-2xs dark:bg-slate-700 dark:text-white'
-                        : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
-                    }`}
-                  >
-                    {dict.performanceTrend.metricBattlesStars}
-                  </button>
-                </div>
+                <SegmentedControl<'cups_rank' | 'battles_stars'>
+                  options={metricOptions}
+                  value={activeMetric}
+                  onChange={setActiveMetric}
+                  ariaLabel={dict.performanceTrend.chartMetric}
+                />
               </div>
 
               {/* Chú giải màu sắc */}
@@ -463,7 +508,20 @@ export function PerformanceTrendSection({
                 <svg
                   viewBox={`0 0 ${chartWidth} ${chartHeight}`}
                   className="w-full select-none overflow-visible"
+                  onMouseMove={handleChartMouseMove}
+                  onMouseLeave={handleChartMouseLeave}
+                  onTouchMove={handleChartTouchMove}
+                  onTouchEnd={handleChartMouseLeave}
                 >
+                {/* Lớp bắt sự kiện tương tác toàn diện không điểm mù (Continuous interactive hover zone) */}
+                <rect
+                  x={0}
+                  y={0}
+                  width={chartWidth}
+                  height={chartHeight}
+                  fill="transparent"
+                  className="cursor-crosshair"
+                />
                 {/* Lưới đường ngang mờ */}
                 {[0, 0.25, 0.5, 0.75, 1].map((ratio) => {
                   const y = paddingTop + plotHeight * ratio
@@ -678,74 +736,56 @@ export function PerformanceTrendSection({
                   )
                 })}
 
-                {/* Lớp bắt sự kiện hover vô hình */}
-                {chronologicalHistory.map((_, i) => {
-                  const x = getX(i)
-                  const colWidth = plotWidth / Math.max(1, chronologicalHistory.length)
-                  return (
-                    <rect
-                      key={i}
-                      x={x - colWidth / 2}
-                      y={0}
-                      width={colWidth}
-                      height={chartHeight}
-                      fill="transparent"
-                      className="cursor-pointer"
-                      onMouseEnter={() => setHoveredIndex(i)}
-                      onMouseLeave={() => setHoveredIndex(null)}
-                    />
-                  )
-                })}
               </svg>
 
-              {/* Tooltip khi hover điểm mốc (Không có icon/emoji, định vị thông minh chống tràn) */}
+              {/* Tooltip khi hover điểm mốc (Kích thước đồng nhất 260px, trượt mượt mà theo từng điểm mốc) */}
               {tooltipPos && hoveredIndex !== null && (
                 <div
-                  className="pointer-events-none absolute z-20 transition-[left,top] duration-200 ease-out"
+                  className="pointer-events-none absolute z-20 w-[260px] min-w-[260px] max-w-[260px] transition-[left,top,transform] duration-200 ease-out"
                   style={{
                     left: `${tooltipPos.leftPercent}%`,
                     top: '12px',
                     transform: tooltipPos.isOnRight ? 'translateX(0)' : 'translateX(-100%)',
                   }}
                 >
-                  <div className="relative animate-tooltip-pop rounded-lg border border-slate-700/40 bg-slate-900/90 p-3 text-xs text-white shadow-xl backdrop-blur dark:border-slate-600/50 dark:bg-slate-950/95 max-w-[260px] sm:max-w-xs">
+                  <div className="relative w-full rounded-xl border border-slate-700/50 bg-slate-900/95 p-3.5 text-xs text-white shadow-2xl backdrop-blur-md dark:border-slate-600/60 dark:bg-slate-950/95">
                     {/* Mũi tên định hướng (pointer arrow) */}
                     <div
-                      className={`absolute top-4 h-2.5 w-2.5 rotate-45 border-slate-700/50 bg-slate-900/90 dark:border-slate-600 dark:bg-slate-950/95 ${
+                      className={`absolute top-4 h-2.5 w-2.5 rotate-45 border-slate-700/60 bg-slate-900/95 dark:border-slate-600 dark:bg-slate-950/95 transition-all duration-200 ${
                         tooltipPos.isOnRight
                           ? '-left-[5px] border-b border-l'
                           : '-right-[5px] border-t border-r'
                       }`}
                       aria-hidden="true"
                     />
-                    <div className="font-bold text-sky-300">
+                    <div className="font-bold text-sky-300 truncate">
                       {chronologicalHistory[hoveredIndex].displayPeriod}
                     </div>
-                    <div className="mt-0.5 text-[11px] text-slate-300">
+                    <div className="mt-0.5 text-[11px] text-slate-300 truncate">
                       {chronologicalHistory[hoveredIndex].tierName}
                     </div>
-                    <div className="mt-2 space-y-1 text-[11px]">
-                      <div className="flex items-center justify-between gap-4">
-                        <span className="text-amber-400 font-medium">{dict.highlights.currentCups}:</span>
-                        <span className="font-mono font-bold">
+                    <div className="mt-2.5 space-y-1.5 text-[11px]">
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-amber-400 font-medium shrink-0">{dict.highlights.currentCups}:</span>
+                        <span className="font-mono font-bold whitespace-nowrap">
                           {chronologicalHistory[hoveredIndex].trophies} {dict.common.trophies}
                         </span>
                       </div>
-                      <div className="flex items-center justify-between gap-4">
-                        <span className="text-sky-400 font-medium">{dict.common.rank}:</span>
-                        <span className="font-mono font-bold">
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-sky-400 font-medium shrink-0">{dict.common.rank}:</span>
+                        <span className="font-mono font-bold whitespace-nowrap">
                           #{chronologicalHistory[hoveredIndex].placement} {dict.performanceTrend.outOfHundred}
                         </span>
                       </div>
-                      <div className="flex items-center justify-between gap-4">
-                        <span className="text-emerald-400 font-medium">{dict.common.attacks}:</span>
-                        <span className="font-mono font-bold">
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-emerald-400 font-medium shrink-0">{dict.common.attacks}:</span>
+                        <span className="font-mono font-bold whitespace-nowrap">
                           {chronologicalHistory[hoveredIndex].attackWins}W - {chronologicalHistory[hoveredIndex].attackLosses}L ({chronologicalHistory[hoveredIndex].attackWinRate}%)
                         </span>
                       </div>
-                      <div className="flex items-center justify-between gap-4">
-                        <span className="text-rose-400 font-medium">{dict.common.defenses}:</span>
-                        <span className="font-mono font-bold">
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-rose-400 font-medium shrink-0">{dict.common.defenses}:</span>
+                        <span className="font-mono font-bold whitespace-nowrap">
                           {interpolate(dict.performanceTrend.lostStars, { stars: chronologicalHistory[hoveredIndex].defenseStars })}
                         </span>
                       </div>
