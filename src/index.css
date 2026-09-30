@@ -13,23 +13,24 @@
 :root {
   overflow-anchor: none;
   --app-bg:
-    radial-gradient(circle at 10% 0%, rgba(96, 165, 250, 0.2), transparent 32rem),
-    radial-gradient(circle at 88% 12%, rgba(16, 185, 129, 0.16), transparent 30rem),
-    linear-gradient(135deg, #f7fafc 0%, #eef3f7 100%);
-  --panel-bg: rgba(255, 255, 255, 0.65);
-  --panel-border: rgba(148, 163, 184, 0.3);
-  --header-bg: rgba(255, 255, 255, 0.72);
-  --field-bg: rgba(255, 255, 255, 0.7);
+    radial-gradient(circle at 15% 0%, rgba(14, 165, 233, 0.14), transparent 35rem),
+    radial-gradient(circle at 85% 12%, rgba(245, 158, 11, 0.12), transparent 40rem),
+    radial-gradient(circle at 50% 60%, rgba(99, 102, 241, 0.06), transparent 35rem),
+    linear-gradient(180deg, #f8fafc 0%, #f1f5f9 60%, #e8eef5 100%);
+  --panel-bg: rgba(255, 255, 255, 0.78);
+  --panel-border: rgba(148, 163, 184, 0.35);
+  --header-bg: rgba(255, 255, 255, 0.85);
+  --field-bg: rgba(255, 255, 255, 0.85);
   --field-border: rgba(148, 163, 184, 0.45);
   --field-text: #0f172a;
-  --soft-table-head: rgba(254, 243, 199, 0.65);
+  --soft-table-head: rgba(254, 243, 199, 0.75);
   --table-head-text: #78350f;
-  --row-mine: rgba(14, 165, 233, 0.12);
-  --row-mine-hover: rgba(14, 165, 233, 0.20);
+  --row-mine: rgba(14, 165, 233, 0.14);
+  --row-mine-hover: rgba(14, 165, 233, 0.22);
   --text-main: #0f172a;
   --text-muted: #64748b;
   color: #172026;
-  background: #f5f7f8;
+  background: #f8fafc;
   font-family: var(--font-sans);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -126,46 +127,48 @@ html.dark,
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
     --app-bg:
-      radial-gradient(circle at 12% 0%, rgba(56, 189, 248, 0.15), transparent 36rem),
-      radial-gradient(circle at 90% 14%, rgba(16, 185, 129, 0.12), transparent 32rem),
-      linear-gradient(135deg, #090e17 0%, #0d1524 50%, #0a101d 100%);
-    --panel-bg: rgba(15, 23, 42, 0.65);
-    --panel-border: rgba(148, 163, 184, 0.16);
-    --header-bg: rgba(13, 21, 36, 0.78);
-    --field-bg: rgba(30, 41, 59, 0.65);
-    --field-border: rgba(148, 163, 184, 0.22);
+      radial-gradient(circle at 15% 0%, rgba(56, 189, 248, 0.18), transparent 40rem),
+      radial-gradient(circle at 85% 14%, rgba(245, 158, 11, 0.12), transparent 42rem),
+      radial-gradient(circle at 50% 75%, rgba(99, 102, 241, 0.10), transparent 45rem),
+      linear-gradient(180deg, #070a13 0%, #0c1322 50%, #060911 100%);
+    --panel-bg: rgba(15, 23, 42, 0.72);
+    --panel-border: rgba(255, 255, 255, 0.10);
+    --header-bg: rgba(11, 17, 32, 0.88);
+    --field-bg: rgba(30, 41, 59, 0.75);
+    --field-border: rgba(148, 163, 184, 0.25);
     --field-text: #f1f5f9;
-    --soft-table-head: rgba(245, 158, 11, 0.14);
+    --soft-table-head: rgba(245, 158, 11, 0.16);
     --table-head-text: #fde68a;
-    --row-mine: rgba(14, 165, 233, 0.16);
-    --row-mine-hover: rgba(14, 165, 233, 0.26);
+    --row-mine: rgba(14, 165, 233, 0.20);
+    --row-mine-hover: rgba(14, 165, 233, 0.30);
     --text-main: #f8fafc;
     --text-muted: #94a3b8;
     color: #e2e8f0;
-    background: #090e17;
+    background: #070a13;
     color-scheme: dark;
   }
 
   :root:not(.light) .glass-panel {
     box-shadow:
-      0 22px 60px rgba(0, 0, 0, 0.45),
-      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      0 24px 64px rgba(0, 0, 0, 0.55),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
   }
 }
 
 /* Explicit class .dark override */
 html.dark {
   --app-bg:
-    radial-gradient(circle at 12% 0%, rgba(56, 189, 248, 0.15), transparent 36rem),
-    radial-gradient(circle at 90% 14%, rgba(16, 185, 129, 0.12), transparent 32rem),
-    linear-gradient(135deg, #090e17 0%, #0d1524 50%, #0a101d 100%);
-  --panel-bg: rgba(15, 23, 42, 0.65);
-  --panel-border: rgba(148, 163, 184, 0.16);
-  --header-bg: rgba(13, 21, 36, 0.78);
-  --field-bg: rgba(30, 41, 59, 0.65);
-  --field-border: rgba(148, 163, 184, 0.22);
+    radial-gradient(circle at 15% 0%, rgba(56, 189, 248, 0.18), transparent 40rem),
+    radial-gradient(circle at 85% 14%, rgba(245, 158, 11, 0.12), transparent 42rem),
+    radial-gradient(circle at 50% 75%, rgba(99, 102, 241, 0.10), transparent 45rem),
+    linear-gradient(180deg, #070a13 0%, #0c1322 50%, #060911 100%);
+  --panel-bg: rgba(15, 23, 42, 0.72);
+  --panel-border: rgba(255, 255, 255, 0.10);
+  --header-bg: rgba(11, 17, 32, 0.88);
+  --field-bg: rgba(30, 41, 59, 0.75);
+  --field-border: rgba(148, 163, 184, 0.25);
   --field-text: #f1f5f9;
-  --soft-table-head: rgba(245, 158, 11, 0.14);
+  --soft-table-head: rgba(245, 158, 11, 0.16);
   --table-head-text: #fde68a;
   --row-mine: rgba(14, 165, 233, 0.22);
   --row-mine-hover: rgba(14, 165, 233, 0.32);
@@ -176,14 +179,14 @@ html.dark {
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   color: #e2e8f0;
-  background: #090e17;
+  background: #070a13;
   color-scheme: dark;
 }
 
 html.dark .glass-panel {
   box-shadow:
-    0 22px 60px rgba(0, 0, 0, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    0 24px 64px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 @keyframes modal-backdrop-in {
@@ -528,5 +531,34 @@ select {
 .animate-change-card {
   animation: change-card-enter 340ms cubic-bezier(0.22, 1, 0.36, 1) both;
   will-change: transform, opacity;
+}
+
+/* Hiệu ứng đồ họa cao cấp cho Gaming/Esports */
+.laser-line-emerald {
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.05) 0%, rgba(16, 185, 129, 0.2) 20%, rgba(16, 185, 129, 0.35) 50%, rgba(16, 185, 129, 0.2) 80%, rgba(16, 185, 129, 0.05) 100%);
+  border-top: 1px solid rgba(16, 185, 129, 0.6);
+  border-bottom: 1px solid rgba(16, 185, 129, 0.6);
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.2), inset 0 0 8px rgba(16, 185, 129, 0.1);
+}
+
+.laser-line-rose {
+  background: linear-gradient(90deg, rgba(244, 63, 94, 0.05) 0%, rgba(244, 63, 94, 0.2) 20%, rgba(244, 63, 94, 0.35) 50%, rgba(244, 63, 94, 0.2) 80%, rgba(244, 63, 94, 0.05) 100%);
+  border-top: 1px solid rgba(244, 63, 94, 0.6);
+  border-bottom: 1px solid rgba(244, 63, 94, 0.6);
+  box-shadow: 0 0 16px rgba(244, 63, 94, 0.2), inset 0 0 8px rgba(244, 63, 94, 0.1);
+}
+
+.hero-stat-card {
+  position: relative;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.22s ease;
+}
+
+.hero-stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+
+html.dark .hero-stat-card:hover {
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6), 0 0 24px -5px rgba(56, 189, 248, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 

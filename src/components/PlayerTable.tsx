@@ -534,29 +534,37 @@ export function PlayerTable({
   return (
     <section ref={tableSectionRef} className="glass-panel relative rounded-xl shadow-sm">
       {/* 1. Header tiêu đề & trạng thái */}
-      <div className="flex flex-col gap-3 border-b border-slate-200/60 p-5 sm:flex-row sm:items-center sm:justify-between dark:border-slate-700/60">
+      <div className="flex flex-col gap-3 border-b border-slate-200/80 p-5 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800/80">
         <div>
           <div className="flex flex-wrap items-center gap-2.5">
-            <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Danh sách Người chơi</h2>
+            <div className="flex items-center gap-2">
+              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500/15 text-amber-500 border border-amber-500/30 shadow-2xs">
+                ★
+              </span>
+              <h2 className="bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-lg font-black tracking-tight text-transparent">
+                Bảng Xếp Hạng Người Chơi
+              </h2>
+            </div>
+
             {/* Trạng thái cập nhật */}
             <span
-              className="hidden h-6 items-center gap-1.5 rounded-full border border-emerald-200/60 bg-emerald-50 px-2.5 text-[11px] font-medium leading-none text-emerald-800 dark:border-emerald-800/60 dark:bg-emerald-950/50 dark:text-emerald-300 sm:inline-flex"
+              className="hidden h-6 items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 text-[11px] font-bold leading-none text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 sm:inline-flex shadow-2xs"
               title="Dữ liệu thứ hạng, cúp và lượt đánh được tính toán tự động từ Supercell API"
             >
               <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Tự động cập nhật theo thời gian thực</span>
+              <span>Thời gian thực</span>
             </span>
 
             {isFiltered && (
-              <span className="inline-flex h-6 items-center rounded-full bg-sky-500/10 px-2.5 text-[11px] font-medium leading-none text-sky-700 dark:bg-sky-400/10 dark:text-sky-300 border border-sky-500/20">
+              <span className="inline-flex h-6 items-center rounded-full bg-sky-500/10 px-2.5 text-[11px] font-bold leading-none text-sky-700 dark:bg-sky-400/15 dark:text-sky-300 border border-sky-500/30 shadow-2xs">
                 Hiển thị {effectivePlayers.length} / {rankedPlayers.length} người chơi
               </span>
             )}
           </div>
-          <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
             {season.players.length === 0
               ? 'Dữ liệu người chơi sẽ được tự động tải từ Supercell API hoặc từ file dữ liệu.'
-              : 'Dữ liệu Tên, Lượt đánh, Lượt thủ, Cúp được đồng bộ trực tiếp từ Supercell API và tự động xếp hạng theo quy chuẩn giải đấu.'}
+              : 'Dữ liệu Tên, Lượt đánh, Lượt thủ, Cúp được đồng bộ trực tiếp từ Supercell API và tự động xếp hạng chuẩn giải đấu.'}
           </p>
         </div>
       </div>
@@ -590,9 +598,9 @@ export function PlayerTable({
           <button
             type="button"
             onClick={() => setFilterTab('all')}
-            className={`inline-flex h-7 items-center rounded-full px-3 text-xs font-medium transition-all cursor-pointer ${
+            className={`inline-flex h-7.5 items-center rounded-full px-3.5 text-xs font-bold transition-all cursor-pointer select-none active:scale-95 ${
               filterTab === 'all'
-                ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-xs'
+                ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-950 shadow-md shadow-slate-900/20 dark:shadow-white/10'
                 : 'bg-white/80 text-slate-600 hover:bg-slate-100 dark:bg-slate-800/80 dark:text-slate-300 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700/80'
             }`}
           >
@@ -603,9 +611,9 @@ export function PlayerTable({
             <button
               type="button"
               onClick={() => setFilterTab(filterTab === 'promotion' ? 'all' : 'promotion')}
-              className={`inline-flex h-7 items-center rounded-full px-3 text-xs font-medium transition-all cursor-pointer ${
+              className={`inline-flex h-7.5 items-center rounded-full px-3.5 text-xs font-bold transition-all cursor-pointer select-none active:scale-95 ${
                 filterTab === 'promotion'
-                  ? 'bg-emerald-600 text-white shadow-xs'
+                  ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-600/30'
                   : 'bg-emerald-500/10 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/20'
               }`}
             >
@@ -617,9 +625,9 @@ export function PlayerTable({
             <button
               type="button"
               onClick={() => setFilterTab(filterTab === 'demotion' ? 'all' : 'demotion')}
-              className={`inline-flex h-7 items-center rounded-full px-3 text-xs font-medium transition-all cursor-pointer ${
+              className={`inline-flex h-7.5 items-center rounded-full px-3.5 text-xs font-bold transition-all cursor-pointer select-none active:scale-95 ${
                 filterTab === 'demotion'
-                  ? 'bg-rose-600 text-white shadow-xs'
+                  ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-md shadow-rose-600/30'
                   : 'bg-rose-500/10 text-rose-700 dark:bg-rose-500/15 dark:text-rose-300 border border-rose-500/30 hover:bg-rose-500/20'
               }`}
             >
@@ -631,9 +639,9 @@ export function PlayerTable({
             <button
               type="button"
               onClick={() => setFilterTab(filterTab === 'matchup' ? 'all' : 'matchup')}
-              className={`inline-flex h-7 items-center rounded-full px-3 text-xs font-medium transition-all cursor-pointer ${
+              className={`inline-flex h-7.5 items-center rounded-full px-3.5 text-xs font-bold transition-all cursor-pointer select-none active:scale-95 ${
                 filterTab === 'matchup'
-                  ? 'bg-indigo-600 text-white shadow-xs'
+                  ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md shadow-indigo-600/30'
                   : 'bg-indigo-500/10 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500/20'
               }`}
             >
@@ -854,11 +862,14 @@ export function PlayerTable({
                     {/* Vạch Phân Cách Thăng Hạng */}
                     {isAfterPromotionLine && (
                       <tr key="divider-promotion" className="select-none animate-fade-in">
-                        <td colSpan={7} className="p-0 border-y-2 border-emerald-500 bg-emerald-500/20 dark:bg-emerald-950/70">
-                          <div className="flex items-center justify-between px-4 py-2 text-xs font-black text-emerald-800 dark:text-emerald-300">
-                            <span className="tracking-wide">VẠCH THĂNG HẠNG (Top {promotionCount} người chơi đứng đầu)</span>
-                            <span className="text-[11px] font-semibold text-emerald-700/90 dark:text-emerald-400">
-                              Các vị trí từ #1 đến #{promotionCount} sẽ được thăng hạng
+                        <td colSpan={7} className="p-0 laser-line-emerald">
+                          <div className="flex items-center justify-between px-5 py-2 text-xs font-black text-emerald-800 dark:text-emerald-300">
+                            <span className="flex items-center gap-2 tracking-wider uppercase">
+                              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-white text-[10px] font-black shadow-xs">▲</span>
+                              <span>Vạch Thăng Hạng • Top {promotionCount} Dẫn Đầu</span>
+                            </span>
+                            <span className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">
+                              Thăng hạng lên giải đấu cấp cao hơn
                             </span>
                           </div>
                         </td>
@@ -868,11 +879,14 @@ export function PlayerTable({
                     {/* Vạch Phân Cách Xuống Hạng */}
                     {isBeforeDemotionLine && (
                       <tr key="divider-demotion" className="select-none animate-fade-in">
-                        <td colSpan={7} className="p-0 border-y-2 border-rose-500 bg-rose-500/20 dark:bg-rose-950/70">
-                          <div className="flex items-center justify-between px-4 py-2 text-xs font-black text-rose-800 dark:text-rose-300">
-                            <span className="tracking-wide">VẠCH XUỐNG HẠNG ({demotionCount} người chơi cuối bảng)</span>
-                            <span className="text-[11px] font-semibold text-rose-700/90 dark:text-rose-400">
-                              Các vị trí từ #{totalPlayers - demotionCount + 1} đến #{totalPlayers} sẽ bị xuống hạng
+                        <td colSpan={7} className="p-0 laser-line-rose">
+                          <div className="flex items-center justify-between px-5 py-2 text-xs font-black text-rose-800 dark:text-rose-300">
+                            <span className="flex items-center gap-2 tracking-wider uppercase">
+                              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-rose-500 text-white text-[10px] font-black shadow-xs">▼</span>
+                              <span>Vạch Xuống Hạng • {demotionCount} Người Cuối Bảng</span>
+                            </span>
+                            <span className="text-[11px] font-semibold text-rose-700 dark:text-rose-400">
+                              Nguy cơ rớt xuống giải đấu cấp thấp hơn
                             </span>
                           </div>
                         </td>
@@ -887,51 +901,51 @@ export function PlayerTable({
       </div>
 
       {/* 4. Chú thích biểu tượng & trạng thái */}
-      <div className="flex flex-wrap items-center gap-4 border-t border-slate-200/60 px-5 py-3 text-xs text-slate-500 dark:border-slate-700/60 dark:text-slate-400">
-        <span className="font-semibold text-slate-600 dark:text-slate-300">Chú thích:</span>
-        <span className="inline-flex items-center gap-1.5">
-          <span className="h-3 w-3 rounded-xs border-l-4 border-l-sky-500 bg-sky-400/20" />
+      <div className="flex flex-wrap items-center gap-4 border-t border-slate-200/80 px-5 py-3 text-xs text-slate-500 dark:border-slate-800/80 dark:text-slate-400">
+        <span className="font-bold text-slate-700 dark:text-slate-200">Chú thích:</span>
+        <span className="inline-flex items-center gap-1.5 font-medium">
+          <span className="h-3 w-3 rounded-xs border-l-[3px] border-l-sky-500 bg-sky-400/20" />
           Tài khoản của bạn
         </span>
-        <span className="inline-flex items-center gap-1.5">
+        <span className="inline-flex items-center gap-1.5 font-medium">
           <AlertTriangle className="h-3.5 w-3.5 text-amber-500" />
           Cúp tối đa có thể vượt bạn
         </span>
         {promotionCount > 0 && (
-          <span className="inline-flex items-center gap-1.5 font-medium text-emerald-600 dark:text-emerald-400">
-            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+          <span className="inline-flex items-center gap-1.5 font-bold text-emerald-600 dark:text-emerald-400">
+            <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-xs shadow-emerald-500/50" />
             Thăng hạng (Top {promotionCount})
           </span>
         )}
         {demotionCount > 0 && (
-          <span className="inline-flex items-center gap-1.5 font-medium text-rose-600 dark:text-rose-400">
-            <span className="h-2 w-2 rounded-full bg-rose-500" />
+          <span className="inline-flex items-center gap-1.5 font-bold text-rose-600 dark:text-rose-400">
+            <span className="h-2 w-2 rounded-full bg-rose-500 shadow-xs shadow-rose-500/50" />
             Xuống hạng ({demotionCount} người cuối)
           </span>
         )}
-        <span className="inline-flex items-center gap-1.5 font-medium text-emerald-700 dark:text-emerald-300">
-          <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/15 border border-emerald-500/30">
+        <span className="inline-flex items-center gap-1.5 font-semibold text-emerald-700 dark:text-emerald-300">
+          <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 border border-emerald-500/30">
             Đã đánh
           </span>
           Bạn đã tấn công
         </span>
-        <span className="inline-flex items-center gap-1.5 font-medium text-amber-700 dark:text-amber-300">
-          <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-500/15 border border-amber-500/30">
+        <span className="inline-flex items-center gap-1.5 font-semibold text-amber-700 dark:text-amber-300">
+          <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 border border-amber-500/30">
             Đã đánh tôi
           </span>
           Đối thủ đã tấn công bạn
         </span>
       </div>
 
-      {/* 5. Floating Zone Jumper - Điều hướng nhanh khi cuộn bảng */}
+      {/* 5. Floating Zone Jumper - Điều hướng nhanh Gaming Capsule */}
       {showJumper && (
         <div className="fixed bottom-6 right-6 z-40 animate-fade-in">
-          <div className="flex items-center gap-1.5 p-1.5 rounded-full glass-panel shadow-2xl border border-slate-300/80 dark:border-slate-700/80 backdrop-blur-md">
+          <div className="flex items-center gap-1.5 p-1 rounded-full border border-slate-700/60 bg-slate-900/90 dark:bg-slate-950/95 shadow-2xl backdrop-blur-xl ring-1 ring-white/10">
             {stats.myPlayer && (
               <button
                 type="button"
                 onClick={jumpToMyPlayer}
-                className="inline-flex h-7 items-center rounded-full bg-sky-500/20 px-3 text-xs font-bold text-sky-800 dark:text-sky-200 hover:bg-sky-500/30 transition-all cursor-pointer"
+                className="inline-flex h-7 items-center rounded-full bg-sky-500/25 px-3 text-xs font-black text-sky-300 hover:bg-sky-500/40 shadow-xs shadow-sky-500/30 transition-all cursor-pointer select-none active:scale-90"
                 title="Nhảy đến vị trí tài khoản của tôi"
               >
                 Tôi (#{stats.myPlayer.rank})
@@ -941,7 +955,7 @@ export function PlayerTable({
               <button
                 type="button"
                 onClick={jumpToPromotion}
-                className="inline-flex h-7 items-center rounded-full bg-emerald-500/15 px-2.5 text-xs font-semibold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/25 transition-all cursor-pointer"
+                className="inline-flex h-7 items-center rounded-full bg-emerald-500/20 px-2.5 text-xs font-bold text-emerald-300 hover:bg-emerald-500/35 transition-all cursor-pointer select-none active:scale-90"
                 title={`Nhảy đến vạch thăng hạng (#${promotionCount})`}
               >
                 Thăng hạng
@@ -951,7 +965,7 @@ export function PlayerTable({
               <button
                 type="button"
                 onClick={jumpToDemotion}
-                className="inline-flex h-7 items-center rounded-full bg-rose-500/15 px-2.5 text-xs font-semibold text-rose-700 dark:text-rose-300 hover:bg-rose-500/25 transition-all cursor-pointer"
+                className="inline-flex h-7 items-center rounded-full bg-rose-500/20 px-2.5 text-xs font-bold text-rose-300 hover:bg-rose-500/35 transition-all cursor-pointer select-none active:scale-90"
                 title={`Nhảy đến vạch xuống hạng (#${rankedPlayers.length - demotionCount + 1})`}
               >
                 Xuống hạng
@@ -960,7 +974,7 @@ export function PlayerTable({
             <button
               type="button"
               onClick={jumpToTop}
-              className="inline-flex h-7 items-center rounded-full bg-slate-200/80 dark:bg-slate-800 px-2.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-300/80 dark:hover:bg-slate-700 transition-all cursor-pointer"
+              className="inline-flex h-7 items-center rounded-full bg-slate-800 px-2.5 text-xs font-semibold text-slate-300 hover:bg-slate-700 hover:text-white transition-all cursor-pointer select-none active:scale-90"
               title="Cuộn lên đầu bảng"
             >
               Lên đầu
