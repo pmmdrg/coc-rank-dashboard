@@ -9,6 +9,8 @@ interface PlayerTableProps {
   rankedPlayers: Player[]
   stats: RankingStats
   onUpdatePlayerField?: (playerId: string, field: keyof Player, value: string | number) => void
+  targetFocusPlayerId?: string | null
+  onClearTargetFocus?: () => void
 }
 
 function getElementDocumentTop(element: HTMLElement): number {
@@ -119,6 +121,8 @@ export function PlayerTable({
   season,
   rankedPlayers,
   stats,
+  targetFocusPlayerId,
+  onClearTargetFocus,
 }: PlayerTableProps) {
   const [highlightedPlayerId, setHighlightedPlayerId] = useState<string | null>(null)
   const [rankJumpInfo, setRankJumpInfo] = useState<{
@@ -177,6 +181,7 @@ export function PlayerTable({
   const displayedPlayers = rankedPlayers
 
   const [filterWarnedOnly, setFilterWarnedOnly] = useState(false)
+  const [filterMatchupOnly, setFilterMatchupOnly] = useState(false)
 
   const warnedPlayerIds = useMemo(() => {
     const ids = new Set<string>()
@@ -188,18 +193,78 @@ export function PlayerTable({
     return ids
   }, [rankedPlayers, season.maxAttacks, season.maxDefenses])
 
+  const matchupPlayerIds = useMemo(() => {
+    const ids = new Set<string>()
+    for (const p of rankedPlayers) {
+      if (
+        (p.attackedByMe && p.attackedByMe.length > 0) ||
+        (p.defendedAgainstMe && p.defendedAgainstMe.length > 0)
+      ) {
+        ids.add(p.id)
+      }
+    }
+    return ids
+  }, [rankedPlayers])
+
+  // Xử lý khi có yêu cầu chuyển hướng & focus vào một người chơi từ bên ngoài (ví dụ: bấm vào thẻ trong Hạng mục thống kê)
+  useEffect(() => {
+    if (!targetFocusPlayerId) return
+
+    const cleanTarget = targetFocusPlayerId.trim().toUpperCase().replace(/^#/, '')
+    const targetPlayer = rankedPlayers.find((p) => {
+      const pId = (p.id || '').toUpperCase().replace(/^#/, '')
+      const pTag = (p.playerTag || '').toUpperCase().replace(/^#/, '')
+      return pId === cleanTarget || pTag === cleanTarget
+    })
+
+    if (!targetPlayer) return
+
+    // Thực hiện trong micro-task / timeout ngắn để đảm bảo không chặn render ban đầu và DOM đã sẵn sàng
+    const scrollTimer = setTimeout(() => {
+      if (filterWarnedOnly && !warnedPlayerIds.has(targetPlayer.id)) {
+        setFilterWarnedOnly(false)
+      }
+      if (filterMatchupOnly && !matchupPlayerIds.has(targetPlayer.id)) {
+        setFilterMatchupOnly(false)
+      }
+      setHighlightedPlayerId(targetPlayer.id)
+
+      const rowEl = rowRefs.current.get(targetPlayer.id)
+      if (rowEl) {
+        rowEl.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+    }, 40)
+
+    if (highlightCleanupTimer.current) clearTimeout(highlightCleanupTimer.current)
+    highlightCleanupTimer.current = setTimeout(() => {
+      setHighlightedPlayerId(null)
+      onClearTargetFocus?.()
+    }, 4000)
+
+    return () => {
+      clearTimeout(scrollTimer)
+    }
+  }, [targetFocusPlayerId, rankedPlayers, filterWarnedOnly, filterMatchupOnly, warnedPlayerIds, matchupPlayerIds, onClearTargetFocus])
+
   const effectivePlayers = useMemo(() => {
-    if (!filterWarnedOnly) return displayedPlayers
-    return displayedPlayers.filter((p) => warnedPlayerIds.has(p.id))
-  }, [displayedPlayers, filterWarnedOnly, warnedPlayerIds])
+    let list = displayedPlayers
+    if (filterWarnedOnly) {
+      list = list.filter((p) => warnedPlayerIds.has(p.id))
+    }
+    if (filterMatchupOnly) {
+      list = list.filter((p) => matchupPlayerIds.has(p.id))
+    }
+    return list
+  }, [displayedPlayers, filterWarnedOnly, filterMatchupOnly, warnedPlayerIds, matchupPlayerIds])
 
   const promotionCount = season.promotionCount !== undefined ? season.promotionCount : 2
   const demotionCount = season.demotionCount !== undefined ? season.demotionCount : 1
   const totalPlayers = effectivePlayers.length
 
-  const showPromotionLine = !filterWarnedOnly && promotionCount > 0 && promotionCount < totalPlayers
+  const isFiltered = filterWarnedOnly || filterMatchupOnly
+  const showPromotionLine = !isFiltered && promotionCount > 0 && promotionCount < totalPlayers
   const showDemotionLine =
-    !filterWarnedOnly &&
+    !isFiltered &&
     demotionCount > 0 &&
     demotionCount < totalPlayers &&
     totalPlayers - demotionCount >= promotionCount
@@ -328,6 +393,24 @@ export function PlayerTable({
                 </span>
               </button>
             )}
+
+            {/* Nút lọc đối thủ đã đối đầu (đã đánh hoặc đã đánh tôi) */}
+            {matchupPlayerIds.size > 0 && (
+              <button
+                type="button"
+                onClick={() => setFilterMatchupOnly((prev) => !prev)}
+                className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-semibold transition-all cursor-pointer ${
+                  filterMatchupOnly
+                    ? 'border-indigo-500 bg-indigo-500 text-white shadow-xs dark:bg-indigo-600'
+                    : 'border-indigo-400/60 bg-indigo-500/10 text-indigo-800 hover:bg-indigo-500/20 dark:border-indigo-500/40 dark:bg-indigo-950/40 dark:text-indigo-300'
+                }`}
+                title="Nhấp để chỉ xem các đối thủ trong bảng đấu đã có nhật ký đối đầu (bạn đã đánh hoặc đối thủ đã đánh bạn)"
+              >
+                <span>
+                  {matchupPlayerIds.size} đối thủ đã đối đầu {filterMatchupOnly ? '(Đang lọc)' : ''}
+                </span>
+              </button>
+            )}
           </div>
           <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
             {season.players.length === 0
@@ -354,13 +437,20 @@ export function PlayerTable({
             {effectivePlayers.length === 0 ? (
               <tr>
                 <td colSpan={7} className="py-12 text-center text-sm font-medium text-slate-400 dark:text-slate-500">
-                  {filterWarnedOnly ? (
+                  {filterWarnedOnly || filterMatchupOnly ? (
                     <div className="flex flex-col items-center justify-center gap-1.5">
-                      <span className="text-base font-semibold text-slate-700 dark:text-slate-200">Không có người chơi nào có dữ liệu bất thường!</span>
+                      <span className="text-base font-semibold text-slate-700 dark:text-slate-200">
+                        {filterWarnedOnly
+                          ? 'Không có người chơi nào có dữ liệu bất thường!'
+                          : 'Chưa có đối thủ nào trong bảng đấu đối đầu với bạn.'}
+                      </span>
                       <button
                         type="button"
-                        onClick={() => setFilterWarnedOnly(false)}
-                        className="mt-1 text-xs text-blue-600 hover:underline dark:text-sky-400"
+                        onClick={() => {
+                          setFilterWarnedOnly(false)
+                          setFilterMatchupOnly(false)
+                        }}
+                        className="mt-1 text-xs text-blue-600 hover:underline dark:text-sky-400 cursor-pointer"
                       >
                         Quay lại xem toàn bộ danh sách
                       </button>
@@ -464,6 +554,18 @@ export function PlayerTable({
             Xuống hạng ({demotionCount} người cuối)
           </span>
         )}
+        <span className="inline-flex items-center gap-1.5 font-medium text-emerald-700 dark:text-emerald-300">
+          <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/15 border border-emerald-500/30">
+            Đã đánh
+          </span>
+          Bạn đã tấn công
+        </span>
+        <span className="inline-flex items-center gap-1.5 font-medium text-amber-700 dark:text-amber-300">
+          <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-500/15 border border-amber-500/30">
+            Đã đánh tôi
+          </span>
+          Đối thủ đã tấn công bạn
+        </span>
       </div>
     </section>
   )

@@ -97,6 +97,7 @@ function App() {
       : 'Vui lòng nhập Player Tag ở góc trên bên phải để tải dữ liệu bảng đấu.'
   })
   const [error, setError] = useState('')
+  const [targetFocusPlayerId, setTargetFocusPlayerId] = useState<string | null>(null)
 
   const season = document.season
   const rankedSeason = useMemo(() => normalizeSeason(season), [season])
@@ -460,6 +461,7 @@ function App() {
         <HighlightStatsTable
           players={rankedSeason.players}
           myPlayerId={rankedSeason.myPlayerId}
+          onSelectPlayer={setTargetFocusPlayerId}
         />
 
         {/* Thông báo biến động thứ hạng kể từ lần gần nhất lấy thứ hạng */}
@@ -479,6 +481,8 @@ function App() {
           rankedPlayers={rankedSeason.players}
           stats={stats}
           onUpdatePlayerField={handleUpdatePlayerField}
+          targetFocusPlayerId={targetFocusPlayerId}
+          onClearTargetFocus={() => setTargetFocusPlayerId(null)}
         />
       </main>
 

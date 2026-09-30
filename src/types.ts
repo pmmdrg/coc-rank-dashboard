@@ -18,6 +18,15 @@ export interface LeagueHistoryItem {
   maxBattles: number
 }
 
+export interface BattleLogEntry {
+  opponentPlayerTag: string
+  opponentName?: string
+  stars: number
+  destructionPercentage: number
+  trophies: number
+  creationTime?: string
+}
+
 export type Player = {
   id: string
   name: string
@@ -41,6 +50,9 @@ export type Player = {
   attackLoseCount?: number
   defenseWinCount?: number
   defenseLoseCount?: number
+  // Nhật ký đối đầu trực tiếp (Battle logs)
+  attackedByMe?: BattleLogEntry[]
+  defendedAgainstMe?: BattleLogEntry[]
 }
 
 export interface RankChangeItem {
@@ -86,6 +98,9 @@ export type Season = {
   leagueGroupTag?: string
   leagueSeasonId?: string | number
   lastSyncedAt?: string
+  // Nhật ký đối đầu trực tiếp mùa giải
+  attackLogs?: BattleLogEntry[]
+  defenseLogs?: BattleLogEntry[]
 }
 
 export type AttackStatusCategory = 'finished' | 'inProgress' | 'notStarted'

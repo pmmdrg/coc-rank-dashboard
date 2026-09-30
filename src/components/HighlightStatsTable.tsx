@@ -4,6 +4,7 @@ import type { Player } from '../types'
 export interface HighlightStatsTableProps {
   players: Player[]
   myPlayerId?: string
+  onSelectPlayer?: (playerId: string) => void
 }
 
 type FilterMode = 'all' | 'best' | 'worst'
@@ -13,26 +14,31 @@ function PlayerBadge({
   isMe,
   extraInfo,
   variant = 'default',
+  onClick,
 }: {
   player: Player
   isMe: boolean
   extraInfo?: string
   variant?: 'default' | 'danger'
+  onClick?: () => void
 }) {
   return (
-    <span
-      className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-semibold shadow-2xs transition-all ${
+    <button
+      type="button"
+      onClick={onClick}
+      title={`Nhấp để chuyển đến vị trí #${player.rank} của ${player.name} trên Bảng xếp hạng`}
+      className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-semibold shadow-2xs transition-all cursor-pointer select-none hover:scale-[1.03] active:scale-[0.98] ${
         isMe
-          ? 'border-sky-500/50 bg-sky-500/15 text-sky-800 dark:text-sky-200 ring-1 ring-sky-500/30'
+          ? 'border-sky-500/50 bg-sky-500/15 text-sky-800 dark:text-sky-200 ring-1 ring-sky-500/30 hover:bg-sky-500/25'
           : variant === 'danger'
-            ? 'border-rose-200/80 bg-rose-50/70 text-rose-800 dark:border-rose-900/60 dark:bg-rose-950/30 dark:text-rose-200'
-            : 'border-slate-200/80 bg-white/80 text-slate-800 dark:border-slate-700/80 dark:bg-slate-800/80 dark:text-slate-200'
+            ? 'border-rose-200/80 bg-rose-50/70 text-rose-800 dark:border-rose-900/60 dark:bg-rose-950/30 dark:text-rose-200 hover:bg-rose-100/80 dark:hover:bg-rose-900/40'
+            : 'border-slate-200/80 bg-white/80 text-slate-800 dark:border-slate-700/80 dark:bg-slate-800/80 dark:text-slate-200 hover:bg-slate-100/80 dark:hover:bg-slate-700/80'
       }`}
     >
       <span className="font-mono text-[11px] font-bold text-slate-400 dark:text-slate-500">
         #{player.rank}
       </span>
-      <span className="font-semibold">{player.name}</span>
+      <span className="font-semibold underline-offset-2 hover:underline">{player.name}</span>
       {isMe && (
         <span className="rounded bg-sky-500/25 px-1 py-0.2 text-[9px] font-extrabold tracking-wide text-sky-700 dark:text-sky-300">
           BẠN
@@ -43,11 +49,11 @@ function PlayerBadge({
           ({extraInfo})
         </span>
       )}
-    </span>
+    </button>
   )
 }
 
-export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTableProps) {
+export function HighlightStatsTable({ players, myPlayerId, onSelectPlayer }: HighlightStatsTableProps) {
   const [filterMode, setFilterMode] = useState<FilterMode>('all')
 
   const animatedWrapperRef = useRef<HTMLDivElement>(null)
@@ -476,6 +482,7 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
                                 player={player}
                                 isMe={player.id === myPlayerId}
                                 extraInfo={`${player.attacks} công • ${player.defenses} thủ`}
+                                onClick={() => onSelectPlayer?.(player.id || player.playerTag || '')}
                               />
                             ))}
                           </div>
@@ -523,6 +530,7 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
                                     key={player.id}
                                     player={player}
                                     isMe={player.id === myPlayerId}
+                                    onClick={() => onSelectPlayer?.(player.id || player.playerTag || '')}
                                   />
                                 ))}
                               </div>
@@ -534,6 +542,7 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
                                   key={player.id}
                                   player={player}
                                   isMe={player.id === myPlayerId}
+                                  onClick={() => onSelectPlayer?.(player.id || player.playerTag || '')}
                                 />
                               ))}
                             </div>
@@ -595,6 +604,7 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
                                 isMe={player.id === myPlayerId}
                                 variant="danger"
                                 extraInfo={`${player.attacks} công • ${player.defenses} thủ`}
+                                onClick={() => onSelectPlayer?.(player.id || player.playerTag || '')}
                               />
                             ))}
                           </div>
@@ -643,6 +653,7 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
                                     player={player}
                                     isMe={player.id === myPlayerId}
                                     variant="danger"
+                                    onClick={() => onSelectPlayer?.(player.id || player.playerTag || '')}
                                   />
                                 ))}
                               </div>
@@ -655,6 +666,7 @@ export function HighlightStatsTable({ players, myPlayerId }: HighlightStatsTable
                                   player={player}
                                   isMe={player.id === myPlayerId}
                                   variant="danger"
+                                  onClick={() => onSelectPlayer?.(player.id || player.playerTag || '')}
                                 />
                               ))}
                             </div>

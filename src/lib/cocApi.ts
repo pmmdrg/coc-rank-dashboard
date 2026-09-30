@@ -1,4 +1,4 @@
-import type { Season, Player, LeagueHistoryItem } from '../types'
+import type { Season, Player, LeagueHistoryItem, BattleLogEntry } from '../types'
 import { calculateMaxPossibleCups, calculatePlayerRating, getSavedLeagueRules } from './ranking'
 import { getLeagueIconUrl } from './leagueIcons'
 import { getRankedTierMaxAttacks, type RankedTierDefinition } from '../data/rankedTierMetadata'
@@ -46,19 +46,37 @@ export function detectMaxAttacksAndDefenses(
 }
 
 /**
- * Ánh xạ danh sách thành viên từ Supercell API sang danh sách Player của dashboard
+ * Ánh xạ danh sách thành viên từ Supercell API sang danh sách Player của dashboard,
+ * đồng thời đối chiếu attackLogs & defenseLogs để gắn thông tin đối đầu
  */
 function mapMembersToPlayers(
   members: Record<string, unknown>[],
   maxAttacks: number = 24,
   maxDefenses: number = 24,
   existingPlayersMap?: Map<string, Player>,
+  attackLogs: BattleLogEntry[] = [],
+  defenseLogs: BattleLogEntry[] = [],
 ): Player[] {
   const activeCups = members.map((m) => Number(m.leagueTrophies) || 0).filter((c) => c > 0)
   const avgCups = activeCups.length > 0 ? Math.round(activeCups.reduce((a, b) => a + b, 0) / activeCups.length) : 0
 
+  const attackMap = new Map<string, BattleLogEntry[]>()
+  for (const log of attackLogs) {
+    const key = (log.opponentPlayerTag || '').toUpperCase().replace(/^#/, '')
+    if (!attackMap.has(key)) attackMap.set(key, [])
+    attackMap.get(key)!.push(log)
+  }
+
+  const defenseMap = new Map<string, BattleLogEntry[]>()
+  for (const log of defenseLogs) {
+    const key = (log.opponentPlayerTag || '').toUpperCase().replace(/^#/, '')
+    if (!defenseMap.has(key)) defenseMap.set(key, [])
+    defenseMap.get(key)!.push(log)
+  }
+
   return members.map((m: Record<string, unknown>, index: number) => {
     const tag = (m.playerTag as string) || `#PLAYER_${index + 1}`
+    const cleanTagUpper = tag.toUpperCase().replace(/^#/, '')
 
     const atkWin = Number(m.attackWinCount) || 0
     const atkLose = Number(m.attackLoseCount) || 0
@@ -71,10 +89,22 @@ function mapMembersToPlayers(
     const defenses = defWin + defLose
     const currentCups = Number(m.leagueTrophies) || 0
 
-    // Giữ nguyên % công và % thủ đã có trong bảng, không lấy từ nguồn khác làm mất data
+    // Nhật ký đối đầu trực tiếp
+    const attackedByMe = attackMap.get(cleanTagUpper)
+    const defendedAgainstMe = defenseMap.get(cleanTagUpper)
+
+    // Giữ nguyên % công và % thủ đã có trong bảng, hoặc tính từ nhật ký đối đầu nếu có
     const existing = existingPlayersMap?.get(tag.toUpperCase()) || existingPlayersMap?.get(tag)
-    const attackDestruction = existing?.attackDestruction ?? 0
-    const defenseDestruction = existing?.defenseDestruction ?? 0
+    const attackDestruction = existing?.attackDestruction ?? (
+      attackedByMe && attackedByMe.length > 0
+        ? Math.round(attackedByMe.reduce((sum, a) => sum + (a.destructionPercentage || 0), 0) / attackedByMe.length)
+        : 0
+    )
+    const defenseDestruction = existing?.defenseDestruction ?? (
+      defendedAgainstMe && defendedAgainstMe.length > 0
+        ? Math.round(defendedAgainstMe.reduce((sum, d) => sum + (d.destructionPercentage || 0), 0) / defendedAgainstMe.length)
+        : 0
+    )
     const prevRank = existing && existing.rank > 0 ? existing.rank : undefined
 
     const maxPossibleCups = calculateMaxPossibleCups(
@@ -115,6 +145,8 @@ function mapMembersToPlayers(
       rating,
       attackCups,
       defenseCups,
+      attackedByMe,
+      defendedAgainstMe,
     }
   })
 }
@@ -185,6 +217,8 @@ export async function fetchRankedSeasonData(
   }
   const groupData = await groupRes.json()
   const currentMembers = Array.isArray(groupData.members) ? groupData.members : []
+  const currentAttackLogs: BattleLogEntry[] = Array.isArray(groupData.attackLogs) ? groupData.attackLogs : []
+  const currentDefenseLogs: BattleLogEntry[] = Array.isArray(groupData.defenseLogs) ? groupData.defenseLogs : []
   const currentPeriod = parseSeasonDateRange(seasonId)
   const currentLimits = detectMaxAttacksAndDefenses(currentMembers, leagueTier?.id || leagueName, currentPeriod)
   const currentPlayers = mapMembersToPlayers(
@@ -192,6 +226,8 @@ export async function fetchRankedSeasonData(
     currentLimits.maxAttacks,
     currentLimits.maxDefenses,
     existingPlayersMap,
+    currentAttackLogs,
+    currentDefenseLogs,
   )
 
   const savedCurrentRules =
@@ -216,6 +252,8 @@ export async function fetchRankedSeasonData(
     leagueGroupTag: groupTag,
     leagueSeasonId: seasonId,
     lastSyncedAt: syncedTime,
+    attackLogs: currentAttackLogs,
+    defenseLogs: currentDefenseLogs,
   }
 
   // 4. Lấy dữ liệu bảng đấu mùa ngay trước đó (nếu có)
@@ -230,6 +268,8 @@ export async function fetchRankedSeasonData(
       if (prevRes.ok) {
         const prevData = await prevRes.json()
         const prevMembers = Array.isArray(prevData.members) ? prevData.members : []
+        const prevAttackLogs: BattleLogEntry[] = Array.isArray(prevData.attackLogs) ? prevData.attackLogs : []
+        const prevDefenseLogs: BattleLogEntry[] = Array.isArray(prevData.defenseLogs) ? prevData.defenseLogs : []
         const prevPeriod = parseSeasonDateRange(prevSeasonId)
 
         // Tra cứu tier ID chính thức của mùa trước từ lịch sử giải đấu leagueHistory
@@ -242,6 +282,8 @@ export async function fetchRankedSeasonData(
           prevLimits.maxAttacks,
           prevLimits.maxDefenses,
           existingPlayersMap,
+          prevAttackLogs,
+          prevDefenseLogs,
         )
 
         const prevLeagueName =
@@ -269,6 +311,8 @@ export async function fetchRankedSeasonData(
           leagueGroupTag: prevGroupTag,
           leagueSeasonId: prevSeasonId,
           lastSyncedAt: syncedTime,
+          attackLogs: prevAttackLogs,
+          defenseLogs: prevDefenseLogs,
         }
       }
     } catch (err) {

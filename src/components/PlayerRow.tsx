@@ -56,6 +56,51 @@ export function PlayerRow({
         ? 'border-l-4 border-l-rose-500 bg-rose-500/[0.03] dark:bg-rose-500/[0.06]'
         : 'border-l-4 border-l-transparent'
 
+  const hasAttackedByMe = Boolean(player.attackedByMe && player.attackedByMe.length > 0)
+  const hasDefendedAgainstMe = Boolean(player.defendedAgainstMe && player.defendedAgainstMe.length > 0)
+
+  const attackSummaryText = useMemo(() => {
+    if (!player.attackedByMe || player.attackedByMe.length === 0) return ''
+    if (player.attackedByMe.length === 1) {
+      return ` (${player.attackedByMe[0].stars}★)`
+    }
+    return ` (${player.attackedByMe.length})`
+  }, [player.attackedByMe])
+
+  const attackedTooltip = useMemo(() => {
+    if (!player.attackedByMe || player.attackedByMe.length === 0) return ''
+    return [
+      `Bạn đã đánh người này (${player.attackedByMe.length} lượt):`,
+      ...player.attackedByMe.map(
+        (a, i) =>
+          `• Trận ${i + 1}: ${a.stars}★ (${a.destructionPercentage}%)${
+            a.trophies ? `, +${a.trophies} cúp` : ''
+          }`,
+      ),
+    ].join('\n')
+  }, [player.attackedByMe])
+
+  const defenseSummaryText = useMemo(() => {
+    if (!player.defendedAgainstMe || player.defendedAgainstMe.length === 0) return ''
+    if (player.defendedAgainstMe.length === 1) {
+      return ` (${player.defendedAgainstMe[0].stars}★)`
+    }
+    return ` (${player.defendedAgainstMe.length})`
+  }, [player.defendedAgainstMe])
+
+  const defendedTooltip = useMemo(() => {
+    if (!player.defendedAgainstMe || player.defendedAgainstMe.length === 0) return ''
+    return [
+      `Người này đã đánh bạn (${player.defendedAgainstMe.length} lượt):`,
+      ...player.defendedAgainstMe.map(
+        (d, i) =>
+          `• Trận ${i + 1}: Bị đánh ${d.stars}★ (${d.destructionPercentage}%)${
+            d.trophies ? `, ${d.trophies} cúp` : ''
+          }`,
+      ),
+    ].join('\n')
+  }, [player.defendedAgainstMe])
+
   return (
     <tr
       ref={setRowRef}
@@ -157,6 +202,28 @@ export function PlayerRow({
             >
               {player.clanName || 'Không clan'}
             </span>
+
+            {/* Badges đối đầu từ Battle Log */}
+            {(hasAttackedByMe || hasDefendedAgainstMe) && (
+              <div className="mt-1 flex flex-wrap items-center gap-1 select-none">
+                {hasAttackedByMe && (
+                  <span
+                    className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-semibold bg-emerald-500/15 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-300 border border-emerald-500/30 whitespace-nowrap"
+                    title={attackedTooltip}
+                  >
+                    Đã đánh{attackSummaryText}
+                  </span>
+                )}
+                {hasDefendedAgainstMe && (
+                  <span
+                    className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-semibold bg-amber-500/15 text-amber-800 dark:bg-amber-500/20 dark:text-amber-300 border border-amber-500/30 whitespace-nowrap"
+                    title={defendedTooltip}
+                  >
+                    Đã đánh tôi{defenseSummaryText}
+                  </span>
+                )}
+              </div>
+            )}
           </div>
           {warnings.length > 0 && (
             <span
