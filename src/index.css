@@ -788,75 +788,89 @@ html.dark .skeleton-shimmer::after {
 
 /* ==========================================================================
    AURORA BOREALIS AMBIENT BACKGROUND & DYNAMIC TEXT SHIMMER
-   Hiệu ứng cực quang Bắc Cực chuyển màu liên tục theo cuộn chuột
+   Hiệu ứng cực quang Bắc Cực chuyển màu êm dịu và chuyển động sống động
    ========================================================================== */
 
 .aurora-ambient-canvas {
   filter: hue-rotate(var(--aurora-hue, 0deg));
-  transition: filter 220ms ease-out;
   contain: strict;
   will-change: filter;
 }
 
-.aurora-blob {
+.aurora-blob-wrapper {
   position: absolute;
-  border-radius: 50%;
-  filter: blur(85px);
   will-change: transform;
+  pointer-events: none;
   transform: translate3d(0, 0, 0);
+}
+
+.aurora-blob-pos-1 {
+  top: -15%;
+  left: -12%;
+  width: 62vw;
+  height: 65vh;
+  min-width: 520px;
+  min-height: 480px;
+}
+
+.aurora-blob-pos-2 {
+  top: -10%;
+  right: -15%;
+  width: 60vw;
+  height: 62vh;
+  min-width: 500px;
+  min-height: 460px;
+}
+
+.aurora-blob-pos-3 {
+  top: 32%;
+  left: 8%;
+  width: 68vw;
+  height: 64vh;
+  min-width: 560px;
+  min-height: 480px;
+}
+
+.aurora-blob-pos-4 {
+  top: 62%;
+  right: 0%;
+  width: 65vw;
+  height: 70vh;
+  min-width: 540px;
+  min-height: 520px;
+}
+
+.aurora-blob-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+  filter: blur(72px);
+  will-change: transform, border-radius;
   pointer-events: none;
 }
 
-/* Màn cực quang 1: Emerald & Mint Green Aurora Wave (Phía trên bên trái) */
-.aurora-blob-1 {
-  top: -12%;
-  left: -10%;
-  width: 60vw;
-  height: 62vh;
-  min-width: 520px;
-  min-height: 480px;
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.45) 0%, rgba(6, 182, 212, 0.30) 45%, transparent 72%);
-  animation: aurora-drift-1 16s ease-in-out infinite alternate;
-  transform: translateY(calc(var(--aurora-shift-y, 0px) * -0.15));
+/* Inner 1: Emerald & Mint Cyan Wave */
+.aurora-blob-inner-1 {
+  background: radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.48) 0%, rgba(6, 182, 212, 0.32) 48%, transparent 75%);
+  animation: aurora-morph-1 12s ease-in-out infinite alternate;
 }
 
-/* Màn cực quang 2: Violet, Magenta & Indigo Ribbon (Phía trên bên phải vắt chéo) */
-.aurora-blob-2 {
-  top: -8%;
-  right: -12%;
-  width: 58vw;
-  height: 60vh;
-  min-width: 500px;
-  min-height: 460px;
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.40) 0%, rgba(217, 70, 239, 0.28) 48%, transparent 72%);
-  animation: aurora-drift-2 19s ease-in-out infinite alternate;
-  transform: translateY(calc(var(--aurora-shift-y, 0px) * -0.22));
+/* Inner 2: Violet, Magenta & Cosmic Indigo Ribbon */
+.aurora-blob-inner-2 {
+  background: radial-gradient(circle at 60% 40%, rgba(139, 92, 246, 0.44) 0%, rgba(217, 70, 239, 0.32) 48%, transparent 75%);
+  animation: aurora-morph-2 14s ease-in-out infinite alternate;
 }
 
-/* Màn cực quang 3: Cyan, Sky Blue & Amber Sunburst Ribbon (Trung tâm và lệch trái) */
-.aurora-blob-3 {
-  top: 35%;
-  left: 10%;
-  width: 68vw;
-  height: 62vh;
-  min-width: 560px;
-  min-height: 480px;
-  background: radial-gradient(circle, rgba(6, 182, 212, 0.38) 0%, rgba(99, 102, 241, 0.26) 42%, rgba(245, 158, 11, 0.20) 70%, transparent 85%);
-  animation: aurora-drift-3 22s ease-in-out infinite alternate;
-  transform: translateY(calc(var(--aurora-shift-y, 0px) * -0.28));
+/* Inner 3: Electric Cyan & Solar Amber Ribbon */
+.aurora-blob-inner-3 {
+  background: radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.42) 0%, rgba(99, 102, 241, 0.28) 42%, rgba(245, 158, 11, 0.22) 68%, transparent 85%);
+  animation: aurora-morph-3 15s ease-in-out infinite alternate;
 }
 
-/* Màn cực quang 4: Deep Cosmic Teal & Rose Wave (Tầng dưới phục vụ cuộn xuống bảng) */
-.aurora-blob-4 {
-  top: 65%;
-  right: 2%;
-  width: 62vw;
-  height: 68vh;
-  min-width: 520px;
-  min-height: 500px;
-  background: radial-gradient(circle, rgba(20, 184, 166, 0.35) 0%, rgba(168, 85, 247, 0.28) 50%, rgba(244, 63, 94, 0.16) 72%, transparent 85%);
-  animation: aurora-drift-4 18s ease-in-out infinite alternate;
-  transform: translateY(calc(var(--aurora-shift-y, 0px) * -0.35));
+/* Inner 4: Deep Teal & Rose Nebula Wave */
+.aurora-blob-inner-4 {
+  background: radial-gradient(circle at 50% 60%, rgba(20, 184, 166, 0.38) 0%, rgba(168, 85, 247, 0.30) 48%, rgba(244, 63, 94, 0.18) 70%, transparent 85%);
+  animation: aurora-morph-4 13s ease-in-out infinite alternate;
 }
 
 /* Lớp vignette tinh tế */
@@ -869,72 +883,108 @@ html.dark .aurora-overlay-vignette,
   background: radial-gradient(circle at 50% 50%, transparent 50%, rgba(6, 9, 19, 0.45) 100%);
 }
 
-/* Chế độ Dark Theme: Tăng độ phát quang và hòa trộn màu màn đêm Arctic */
-html.dark .aurora-blob,
-:root:not(.light) .aurora-blob {
+/* Chế độ Dark Theme: Tăng cường phát sáng cực quang lộng lẫy */
+html.dark .aurora-blob-inner,
+:root:not(.light) .aurora-blob-inner {
   mix-blend-mode: screen;
 }
 
-html.dark .aurora-blob-1,
-:root:not(.light) .aurora-blob-1 {
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.52) 0%, rgba(6, 182, 212, 0.35) 45%, transparent 75%);
+html.dark .aurora-blob-inner-1,
+:root:not(.light) .aurora-blob-inner-1 {
+  background: radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.58) 0%, rgba(6, 182, 212, 0.38) 48%, transparent 75%);
 }
 
-html.dark .aurora-blob-2,
-:root:not(.light) .aurora-blob-2 {
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.48) 0%, rgba(217, 70, 239, 0.32) 48%, transparent 75%);
+html.dark .aurora-blob-inner-2,
+:root:not(.light) .aurora-blob-inner-2 {
+  background: radial-gradient(circle at 60% 40%, rgba(139, 92, 246, 0.52) 0%, rgba(217, 70, 239, 0.36) 48%, transparent 75%);
 }
 
-html.dark .aurora-blob-3,
-:root:not(.light) .aurora-blob-3 {
-  background: radial-gradient(circle, rgba(6, 182, 212, 0.45) 0%, rgba(99, 102, 241, 0.32) 42%, rgba(245, 158, 11, 0.24) 68%, transparent 85%);
+html.dark .aurora-blob-inner-3,
+:root:not(.light) .aurora-blob-inner-3 {
+  background: radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.48) 0%, rgba(99, 102, 241, 0.35) 42%, rgba(245, 158, 11, 0.26) 68%, transparent 85%);
 }
 
-html.dark .aurora-blob-4,
-:root:not(.light) .aurora-blob-4 {
-  background: radial-gradient(circle, rgba(20, 184, 166, 0.42) 0%, rgba(168, 85, 247, 0.35) 50%, rgba(244, 63, 94, 0.20) 72%, transparent 85%);
+html.dark .aurora-blob-inner-4,
+:root:not(.light) .aurora-blob-inner-4 {
+  background: radial-gradient(circle at 50% 60%, rgba(20, 184, 166, 0.45) 0%, rgba(168, 85, 247, 0.38) 48%, rgba(244, 63, 94, 0.22) 70%, transparent 85%);
 }
 
-/* Chế độ Light Theme: Tinh tế, tươi mát ngọc bích, độ tương phản cao */
-:root:not(.dark) .aurora-blob-1 {
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.24) 0%, rgba(6, 182, 212, 0.16) 45%, transparent 70%);
+/* Chế độ Light Theme: Tinh tế dịu mát, không lóa mắt */
+:root:not(.dark) .aurora-blob-inner-1 {
+  background: radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.25) 0%, rgba(6, 182, 212, 0.18) 48%, transparent 70%);
 }
 
-:root:not(.dark) .aurora-blob-2 {
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.22) 0%, rgba(217, 70, 239, 0.14) 48%, transparent 70%);
+:root:not(.dark) .aurora-blob-inner-2 {
+  background: radial-gradient(circle at 60% 40%, rgba(139, 92, 246, 0.23) 0%, rgba(217, 70, 239, 0.16) 48%, transparent 70%);
 }
 
-:root:not(.dark) .aurora-blob-3 {
-  background: radial-gradient(circle, rgba(6, 182, 212, 0.20) 0%, rgba(99, 102, 241, 0.14) 42%, rgba(245, 158, 11, 0.10) 65%, transparent 80%);
+:root:not(.dark) .aurora-blob-inner-3 {
+  background: radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.22) 0%, rgba(99, 102, 241, 0.15) 42%, rgba(245, 158, 11, 0.12) 65%, transparent 80%);
 }
 
-:root:not(.dark) .aurora-blob-4 {
-  background: radial-gradient(circle, rgba(20, 184, 166, 0.20) 0%, rgba(168, 85, 247, 0.14) 50%, transparent 72%);
+:root:not(.dark) .aurora-blob-inner-4 {
+  background: radial-gradient(circle at 50% 60%, rgba(20, 184, 166, 0.22) 0%, rgba(168, 85, 247, 0.16) 48%, transparent 72%);
 }
 
-/* Animation trôi dạt uốn lượn tự nhiên của dải cực quang */
-@keyframes aurora-drift-1 {
-  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-  50% { transform: translate(6vw, 4vh) scale(1.1) rotate(8deg); }
-  100% { transform: translate(-4vw, 8vh) scale(0.95) rotate(-6deg); }
+/* Animation biến hình (Morphing) mềm mại tự nhiên như dòng cực quang lơ lửng */
+@keyframes aurora-morph-1 {
+  0% {
+    border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+  50% {
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    transform: translate(8vw, 5vh) scale(1.12) rotate(10deg);
+  }
+  100% {
+    border-radius: 35% 65% 55% 45% / 40% 60% 40% 60%;
+    transform: translate(-5vw, 9vh) scale(0.94) rotate(-8deg);
+  }
 }
 
-@keyframes aurora-drift-2 {
-  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-  50% { transform: translate(-8vw, 6vh) scale(1.12) rotate(-10deg); }
-  100% { transform: translate(5vw, -4vh) scale(0.92) rotate(7deg); }
+@keyframes aurora-morph-2 {
+  0% {
+    border-radius: 50% 50% 40% 60% / 40% 60% 50% 50%;
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+  50% {
+    border-radius: 35% 65% 60% 40% / 55% 45% 65% 35%;
+    transform: translate(-10vw, 7vh) scale(1.15) rotate(-12deg);
+  }
+  100% {
+    border-radius: 60% 40% 45% 55% / 45% 55% 40% 60%;
+    transform: translate(6vw, -5vh) scale(0.92) rotate(8deg);
+  }
 }
 
-@keyframes aurora-drift-3 {
-  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-  50% { transform: translate(7vw, -6vh) scale(1.08) rotate(12deg); }
-  100% { transform: translate(-6vw, 5vh) scale(0.96) rotate(-8deg); }
+@keyframes aurora-morph-3 {
+  0% {
+    border-radius: 45% 55% 65% 35% / 50% 40% 60% 50%;
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+  50% {
+    border-radius: 65% 35% 40% 60% / 40% 60% 45% 55%;
+    transform: translate(9vw, -7vh) scale(1.1) rotate(14deg);
+  }
+  100% {
+    border-radius: 40% 60% 50% 50% / 60% 40% 55% 45%;
+    transform: translate(-8vw, 6vh) scale(0.95) rotate(-10deg);
+  }
 }
 
-@keyframes aurora-drift-4 {
-  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-  50% { transform: translate(-5vw, 7vh) scale(1.1) rotate(-6deg); }
-  100% { transform: translate(8vw, -5vh) scale(0.94) rotate(9deg); }
+@keyframes aurora-morph-4 {
+  0% {
+    border-radius: 55% 45% 40% 60% / 45% 55% 50% 50%;
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+  50% {
+    border-radius: 40% 60% 65% 35% / 60% 40% 55% 45%;
+    transform: translate(-7vw, 8vh) scale(1.12) rotate(-8deg);
+  }
+  100% {
+    border-radius: 60% 40% 35% 65% / 40% 60% 45% 55%;
+    transform: translate(10vw, -6vh) scale(0.92) rotate(12deg);
+  }
 }
 
 /* Chữ tiêu đề "CoC Rank Dashboard" dạng dải màu cực quang chuyển động sống động */
@@ -991,7 +1041,7 @@ html.dark .aurora-text,
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .aurora-blob {
+  .aurora-blob-inner {
     animation: none !important;
   }
   .aurora-text {
