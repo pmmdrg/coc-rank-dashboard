@@ -389,7 +389,7 @@ export function PlayerTable({
                 title="Nhấp để chỉ xem các người chơi có dữ liệu bất thường cần rà soát"
               >
                 <span className={`inline-block h-1.5 w-1.5 shrink-0 rounded-full ${filterWarnedOnly ? 'bg-white' : 'bg-amber-500'}`} />
-                <span>
+                <span className="text-[11px] font-medium leading-none">
                   {warnedPlayerIds.size} người chơi cần rà soát {filterWarnedOnly ? '(Đang lọc)' : ''}
                 </span>
               </button>
@@ -408,7 +408,7 @@ export function PlayerTable({
                 title="Nhấp để chỉ xem các đối thủ trong bảng đấu đã có nhật ký đối đầu (bạn đã đánh hoặc đối thủ đã đánh bạn)"
               >
                 <span className={`inline-block h-1.5 w-1.5 shrink-0 rounded-full ${filterMatchupOnly ? 'bg-white' : 'bg-indigo-500'}`} />
-                <span>
+                <span className="text-[11px] font-medium leading-none">
                   {matchupPlayerIds.size} đối thủ đã đối đầu {filterMatchupOnly ? '(Đang lọc)' : ''}
                 </span>
               </button>
