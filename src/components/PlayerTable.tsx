@@ -369,11 +369,11 @@ export function PlayerTable({
             <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Danh sách Người chơi</h2>
             {/* Trạng thái cập nhật */}
             <span
-              className="hidden items-center gap-1.5 rounded-full border border-emerald-200/60 bg-emerald-50 px-2.5 py-0.5 text-[11px] font-medium text-emerald-800 dark:border-emerald-800/60 dark:bg-emerald-950/50 dark:text-emerald-300 sm:inline-flex"
+              className="hidden h-6 items-center gap-1.5 rounded-full border border-emerald-200/60 bg-emerald-50 px-2.5 text-[11px] font-medium leading-none text-emerald-800 dark:border-emerald-800/60 dark:bg-emerald-950/50 dark:text-emerald-300 sm:inline-flex"
               title="Dữ liệu thứ hạng, cúp và lượt đánh được tính toán tự động từ Supercell API"
             >
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              Tự động cập nhật theo thời gian thực
+              <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Tự động cập nhật theo thời gian thực</span>
             </span>
 
             {/* Nút lọc người chơi có cảnh báo dữ liệu nếu phát hiện */}
@@ -381,13 +381,14 @@ export function PlayerTable({
               <button
                 type="button"
                 onClick={() => setFilterWarnedOnly((prev) => !prev)}
-                className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-semibold transition-all cursor-pointer ${
+                className={`inline-flex h-6 items-center gap-1.5 rounded-full border px-2.5 text-[11px] font-medium leading-none transition-all cursor-pointer ${
                   filterWarnedOnly
                     ? 'border-amber-500 bg-amber-500 text-white shadow-xs dark:bg-amber-600'
                     : 'border-amber-400/60 bg-amber-500/10 text-amber-800 hover:bg-amber-500/20 dark:border-amber-500/40 dark:bg-amber-950/40 dark:text-amber-300'
                 }`}
                 title="Nhấp để chỉ xem các người chơi có dữ liệu bất thường cần rà soát"
               >
+                <span className={`inline-block h-1.5 w-1.5 shrink-0 rounded-full ${filterWarnedOnly ? 'bg-white' : 'bg-amber-500'}`} />
                 <span>
                   {warnedPlayerIds.size} người chơi cần rà soát {filterWarnedOnly ? '(Đang lọc)' : ''}
                 </span>
@@ -399,13 +400,14 @@ export function PlayerTable({
               <button
                 type="button"
                 onClick={() => setFilterMatchupOnly((prev) => !prev)}
-                className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-semibold transition-all cursor-pointer ${
+                className={`inline-flex h-6 items-center gap-1.5 rounded-full border px-2.5 text-[11px] font-medium leading-none transition-all cursor-pointer ${
                   filterMatchupOnly
                     ? 'border-indigo-500 bg-indigo-500 text-white shadow-xs dark:bg-indigo-600'
                     : 'border-indigo-400/60 bg-indigo-500/10 text-indigo-800 hover:bg-indigo-500/20 dark:border-indigo-500/40 dark:bg-indigo-950/40 dark:text-indigo-300'
                 }`}
                 title="Nhấp để chỉ xem các đối thủ trong bảng đấu đã có nhật ký đối đầu (bạn đã đánh hoặc đối thủ đã đánh bạn)"
               >
+                <span className={`inline-block h-1.5 w-1.5 shrink-0 rounded-full ${filterMatchupOnly ? 'bg-white' : 'bg-indigo-500'}`} />
                 <span>
                   {matchupPlayerIds.size} đối thủ đã đối đầu {filterMatchupOnly ? '(Đang lọc)' : ''}
                 </span>
