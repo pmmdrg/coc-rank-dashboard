@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { X, Download, Copy, Check } from 'lucide-react'
+import { X, DownloadSimple, Copy, Check } from '@phosphor-icons/react'
 import type { Player, RankingStats, Season } from '../types'
 import { formatLeagueName } from '../lib/ranking'
 import { getLeagueIconUrl } from '../lib/leagueIcons'
@@ -268,7 +268,7 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
             className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-slate-100 transition-colors cursor-pointer"
             title="Đóng"
           >
-            <X className="h-5 w-5" />
+            <X weight="bold" className="h-5 w-5" />
           </button>
         </div>
 
@@ -302,12 +302,12 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
             >
               {isCopied ? (
                 <>
-                  <Check className="h-4 w-4 text-emerald-400" />
+                  <Check weight="bold" className="h-4 w-4 text-emerald-400" />
                   <span className="text-emerald-300">Đã chép vào bộ nhớ!</span>
                 </>
               ) : (
                 <>
-                  <Copy className="h-4 w-4" />
+                  <Copy weight="duotone" className="h-4 w-4" />
                   <span>Sao chép ảnh</span>
                 </>
               )}
@@ -319,7 +319,7 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
               className="inline-flex items-center gap-1.5 rounded-lg bg-sky-600 px-4 py-2 text-xs font-semibold text-white hover:bg-sky-500 active:scale-95 transition-all cursor-pointer shadow-sm shadow-sky-600/30"
               title="Tải ảnh PNG về thiết bị"
             >
-              <Download className="h-4 w-4" />
+              <DownloadSimple weight="bold" className="h-4 w-4" />
               <span>Tải ảnh PNG</span>
             </button>
           </div>

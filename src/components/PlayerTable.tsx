@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { AlertTriangle, Search, X } from 'lucide-react'
+import { Warning, MagnifyingGlass, X } from '@phosphor-icons/react'
 import type { Player, RankingStats, Season } from '../types'
 import { PlayerRow } from './PlayerRow'
 import { validatePlayer } from '../lib/validation'
@@ -573,7 +573,7 @@ export function PlayerTable({
       <div className="flex flex-col gap-3 border-b border-slate-200/60 p-4 sm:flex-row sm:items-center sm:justify-between dark:border-slate-700/60 bg-slate-50/50 dark:bg-slate-800/25">
         {/* Ô Tìm kiếm người chơi / Clan */}
         <div className="relative w-full sm:w-72">
-          <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+          <MagnifyingGlass weight="bold" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
           <input
             type="text"
             value={searchQuery}
@@ -588,7 +588,7 @@ export function PlayerTable({
               className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
               title="Xóa tìm kiếm"
             >
-              <X className="h-3.5 w-3.5" />
+              <X weight="bold" className="h-3.5 w-3.5" />
             </button>
           )}
         </div>
@@ -908,7 +908,7 @@ export function PlayerTable({
           Tài khoản của bạn
         </span>
         <span className="inline-flex items-center gap-1.5 font-medium">
-          <AlertTriangle className="h-3.5 w-3.5 text-amber-500" />
+          <Warning weight="fill" className="h-3.5 w-3.5 text-amber-500" />
           Cúp tối đa có thể vượt bạn
         </span>
         {promotionCount > 0 && (

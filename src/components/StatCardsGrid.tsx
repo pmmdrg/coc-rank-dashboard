@@ -1,4 +1,4 @@
-import { Trophy, Swords, Users, ShieldAlert } from 'lucide-react'
+import { Trophy, Sword, Users, ShieldWarning } from '@phosphor-icons/react'
 import type { RankingStats, Season } from '../types'
 
 interface StatCardsGridProps {
@@ -84,7 +84,7 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
         hasMyPlayer && stats.playersWhoCanPassMe === 0
           ? 'text-emerald-600 dark:text-emerald-400'
           : 'text-amber-600 dark:text-amber-400',
-      icon: Swords,
+      icon: Sword,
       iconColor: stats.playersWhoCanPassMe === 0 ? 'text-emerald-500' : 'text-amber-500',
     },
     {
@@ -111,7 +111,7 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
       badgeColor: 'bg-rose-500/10 text-rose-700 dark:bg-rose-400/15 dark:text-rose-300 border-rose-500/30',
       accentGradient: 'from-rose-500 via-pink-500 to-purple-600',
       valueColor: 'text-rose-600 dark:text-rose-400',
-      icon: ShieldAlert,
+      icon: ShieldWarning,
       iconColor: 'text-rose-500',
     },
   ]
@@ -132,7 +132,8 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
 
             {/* Icon lớn mờ chìm nghệ thuật ở góc thẻ */}
             <IconComponent
-              className={`pointer-events-none absolute -bottom-3 -right-3 h-24 w-24 opacity-[0.06] dark:opacity-[0.08] transition-transform duration-300 group-hover:scale-115 ${card.iconColor}`}
+              weight="duotone"
+              className={`pointer-events-none absolute -bottom-3 -right-3 h-24 w-24 opacity-[0.09] dark:opacity-[0.14] transition-transform duration-300 group-hover:scale-115 ${card.iconColor}`}
             />
 
             <div className="relative z-10 flex items-center justify-between">

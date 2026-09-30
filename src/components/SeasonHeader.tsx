@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Loader2, Sparkles, Copy, Check } from 'lucide-react'
+import { CircleNotch, Sparkle, Copy, Check } from '@phosphor-icons/react'
 import { formatLeagueName } from '../lib/ranking'
 import { getLeagueIconUrl } from '../lib/leagueIcons'
 import { ThemeToggle } from './ThemeToggle'
@@ -125,7 +125,7 @@ export function SeasonHeader({
             />
             {isSyncingApi && (
               <span className="pointer-events-none absolute right-2 text-emerald-600 dark:text-emerald-400" title="Đang tải dữ liệu từ Supercell API...">
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                <CircleNotch weight="bold" className="h-3.5 w-3.5 animate-spin" />
               </span>
             )}
           </div>
@@ -138,7 +138,7 @@ export function SeasonHeader({
               className="inline-flex h-9.5 items-center gap-1.5 rounded-lg bg-gradient-to-r from-indigo-600 via-sky-600 to-cyan-500 px-3.5 text-xs font-bold text-white shadow-md shadow-sky-500/25 hover:shadow-sky-500/40 hover:brightness-110 active:scale-95 transition-all cursor-pointer select-none"
               title="Xuất thẻ ảnh thành tích chuẩn 1200x675 để chia sẻ"
             >
-              <Sparkles className="h-3.5 w-3.5" />
+              <Sparkle weight="fill" className="h-3.5 w-3.5" />
               <span>Chia sẻ thẻ</span>
             </button>
           )}

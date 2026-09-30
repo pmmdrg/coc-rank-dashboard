@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { AlertTriangle, Crown, Trophy, Check, Copy } from 'lucide-react'
+import { Warning, Crown, Trophy, Check, Copy } from '@phosphor-icons/react'
 import type { Player, RatingCategory } from '../types'
 import { ratingLabels } from '../lib/ranking'
 import { validatePlayer } from '../lib/validation'
@@ -115,7 +115,7 @@ export function PlayerRow({
               className="inline-flex h-7 w-8 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-amber-300 via-yellow-400 to-amber-500 font-mono text-xs font-black text-amber-950 shadow-md shadow-amber-500/35"
               title="Quán quân #1 Giải đấu"
             >
-              <Crown className="mr-0.5 h-3.5 w-3.5 fill-amber-950/80 text-amber-950" />
+              <Crown weight="fill" className="mr-0.5 h-3.5 w-3.5 fill-amber-950 text-amber-950 drop-shadow-xs" />
               <span>1</span>
             </div>
           ) : player.rank === 2 ? (
@@ -212,9 +212,9 @@ export function PlayerRow({
                   >
                     <span>{player.playerTag}</span>
                     {isTagCopied ? (
-                      <Check className="h-2.5 w-2.5 text-emerald-600 dark:text-emerald-400 animate-bounce" />
+                      <Check weight="bold" className="h-2.5 w-2.5 text-emerald-600 dark:text-emerald-400 animate-bounce" />
                     ) : (
-                      <Copy className="h-2.5 w-2.5 opacity-0 group-hover/tag:opacity-100 transition-opacity" />
+                      <Copy weight="duotone" className="h-2.5 w-2.5 opacity-0 group-hover/tag:opacity-100 transition-opacity" />
                     )}
                   </button>
                 </>
@@ -249,7 +249,7 @@ export function PlayerRow({
               className="shrink-0 flex items-center text-amber-500 hover:text-amber-600 dark:text-amber-400 cursor-default"
               title={`Cảnh báo dữ liệu (${warnings.length}):\n${warnings.map((w) => '• ' + w.message).join('\n')}`}
             >
-              <AlertTriangle className="h-4 w-4 drop-shadow-xs" />
+              <Warning weight="duotone" className="h-4 w-4 drop-shadow-xs" />
             </span>
           )}
         </div>
@@ -324,7 +324,7 @@ export function PlayerRow({
       {/* 5. Cúp Hiện Tại */}
       <td className="w-24 min-w-[88px] px-2 py-2.5 align-middle">
         <div className="flex items-center gap-1.5">
-          <Trophy className="h-3.5 w-3.5 text-amber-500 shrink-0 drop-shadow-xs" />
+          <Trophy weight="duotone" className="h-3.5 w-3.5 text-amber-500 shrink-0 drop-shadow-xs" />
           <span className="font-mono text-sm font-black text-amber-600 dark:text-amber-400">
             {player.currentCups.toLocaleString('vi-VN')}
           </span>
@@ -354,7 +354,7 @@ export function PlayerRow({
               className="inline-flex items-center text-amber-500 hover:text-amber-600 dark:text-amber-400 animate-pulse"
               title={`Có thể vượt bạn: Người này có thể đạt tối đa ${player.maxPossibleCups.toLocaleString('vi-VN')} cúp!`}
             >
-              <AlertTriangle className="h-4 w-4 drop-shadow-xs" />
+              <Warning weight="fill" className="h-4 w-4 drop-shadow-xs text-amber-500" />
             </span>
           )}
         </div>
