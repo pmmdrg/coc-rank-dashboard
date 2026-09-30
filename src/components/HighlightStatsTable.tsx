@@ -525,7 +525,7 @@ export function HighlightStatsTable({
 
         {/* Khung chuyển động co giãn chiều cao mượt mà khi filter */}
         <div ref={animatedWrapperRef} className="will-change-[height]">
-          <div ref={innerContentRef} className="overflow-x-auto rounded-lg border border-slate-200/60 dark:border-slate-700/60">
+          <div ref={innerContentRef} className="overflow-x-auto overflow-y-hidden rounded-lg border border-slate-200/60 dark:border-slate-700/60">
             <table className="w-full text-sm">
               <thead className="soft-table-head text-xs uppercase tracking-wider">
                 <tr>

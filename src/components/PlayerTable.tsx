@@ -400,10 +400,11 @@ export function PlayerTable({
   useLayoutEffect(() => {
     const wrapper = tableAnimatedWrapperRef.current
     const tableEl = tableRef.current
+    const containerEl = tableContainerRef.current
     if (!wrapper || !tableEl || prevTableHeightRef.current === null) return
 
     const startHeight = prevTableHeightRef.current
-    const targetHeight = tableEl.offsetHeight
+    const targetHeight = containerEl ? containerEl.offsetHeight : tableEl.offsetHeight
     prevTableHeightRef.current = null
 
     if (Math.abs(startHeight - targetHeight) < 6) return
@@ -830,11 +831,11 @@ export function PlayerTable({
       )}
 
       {/* 3. Bảng dữ liệu người chơi với hiệu ứng kéo ra / rút lại dạng spring accordion */}
-      <div ref={tableAnimatedWrapperRef} className="will-change-[height]">
+      <div ref={tableAnimatedWrapperRef} className="will-change-[height] overflow-hidden">
         <div
           ref={tableContainerRef}
           onScroll={handleTableContainerScroll}
-          className="overflow-x-auto"
+          className="overflow-x-auto overflow-y-hidden"
         >
           <table ref={tableRef} className="relative w-full min-w-[1080px] border-separate border-spacing-0 text-left text-sm">
             <thead ref={theadRef} className="bg-amber-50/95 dark:bg-slate-900/95 border-b border-amber-200/60 dark:border-slate-800 text-xs uppercase tracking-wider text-amber-900 dark:text-slate-200 shadow-2xs">

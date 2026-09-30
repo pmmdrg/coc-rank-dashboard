@@ -9,7 +9,7 @@ export function TrendHistoryTable({ chronologicalHistory }: TrendHistoryTablePro
   const { dict, interpolate } = useI18n()
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-slate-200/70 dark:border-slate-700/70">
+    <div className="overflow-x-auto overflow-y-hidden rounded-xl border border-slate-200/70 dark:border-slate-700/70">
       <table className="w-full text-left text-xs">
         <thead className="soft-table-head uppercase tracking-wider text-[11px]">
           <tr>
