@@ -31,11 +31,14 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
         {[1, 2, 3, 4].map((i) => (
           <div
             key={i}
-            className="glass-panel relative overflow-hidden rounded-xl p-5 shadow-sm animate-pulse"
+            className="glass-panel relative overflow-hidden rounded-xl p-5 shadow-sm"
           >
-            <div className="h-3 w-28 rounded bg-slate-200 dark:bg-slate-700/80" />
-            <div className="mt-3 h-9 w-24 rounded bg-slate-300/80 dark:bg-slate-600/80" />
-            <div className="mt-3 h-3 w-36 rounded bg-slate-200/80 dark:bg-slate-700/60" />
+            <div className="flex items-center justify-between">
+              <div className="h-3.5 w-28 rounded-md skeleton-shimmer" />
+              <div className="h-8 w-8 rounded-lg skeleton-shimmer" />
+            </div>
+            <div className="mt-3.5 h-8 w-24 rounded-lg skeleton-shimmer" />
+            <div className="mt-3 h-3 w-36 rounded-md skeleton-shimmer" />
           </div>
         ))}
       </div>

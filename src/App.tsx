@@ -441,6 +441,7 @@ function App() {
           leagueHistory={leagueHistory}
           myPlayerName={myPlayerName}
           playerTag={playerTag}
+          isSyncingApi={isSyncingApi}
         />
 
         {/* PHẦN 2: CÁC THÔNG TIN LIÊN QUAN TỚI BẢNG XẾP HẠNG CỦA MÙA GIẢI */}
@@ -451,6 +452,7 @@ function App() {
           activeSeasonIndex={document.activeSeasonIndex}
           onSelectSeasonIndex={handleSelectSeasonIndex}
           onUpdateSeasonMeta={handleUpdateSeasonMeta}
+          isSyncingApi={isSyncingApi}
         />
 
         {/* Khu vực biểu đồ thống kê mùa giải */}
@@ -459,6 +461,7 @@ function App() {
           attackStatusData={attackStatusChartData}
           ratingData={ratingChartData}
           myPlayerName={myPlayerName}
+          isSyncingApi={isSyncingApi}
         />
 
         {/* Bảng thống kê nổi bật & kỷ lục mùa giải */}
@@ -466,6 +469,7 @@ function App() {
           players={rankedSeason.players}
           myPlayerId={rankedSeason.myPlayerId}
           onSelectPlayer={setTargetFocusPlayerId}
+          isSyncingApi={isSyncingApi}
         />
 
         {/* Thông báo biến động thứ hạng kể từ lần gần nhất lấy thứ hạng */}

@@ -5,6 +5,95 @@ export interface HighlightStatsTableProps {
   players: Player[]
   myPlayerId?: string
   onSelectPlayer?: (playerId: string) => void
+  isSyncingApi?: boolean
+}
+
+function HighlightStatsSkeleton() {
+  return (
+    <section>
+      <div className="glass-panel rounded-xl p-5 shadow-sm space-y-4">
+        {/* Header */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-2">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-200">
+              Thống kê nổi bật & kỷ lục mùa giải
+            </h3>
+            <span className="inline-flex h-5 items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 px-2 text-[10px] font-bold text-sky-700 dark:bg-sky-950/60 dark:text-sky-300">
+              <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 animate-ping" />
+              Đang phân tích...
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <div className="h-7 w-52 rounded-lg skeleton-shimmer" />
+          </div>
+        </div>
+
+        {/* 2 Thẻ vị thế năng lực của bạn so với bảng */}
+        <div className="rounded-xl border border-sky-500/20 bg-sky-500/5 p-4 dark:border-sky-500/30 dark:bg-sky-950/20">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-3.5">
+            <div className="h-4 w-72 rounded-md skeleton-shimmer" />
+            <div className="h-3 w-32 rounded-md skeleton-shimmer" />
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            {[1, 2].map((i) => (
+              <div
+                key={i}
+                className="flex flex-col justify-between rounded-lg border border-slate-200/80 bg-white/80 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-900/70"
+              >
+                <div>
+                  <div className="flex items-center justify-between">
+                    <div className="h-3.5 w-24 rounded-md skeleton-shimmer" />
+                    <div className="h-5 w-20 rounded-md skeleton-shimmer" />
+                  </div>
+                  <div className="mt-2.5 h-6 w-36 rounded-md skeleton-shimmer" />
+                </div>
+                <div className="mt-3">
+                  <div className="h-2 w-full rounded-full skeleton-shimmer" />
+                  <div className="mt-2 h-3 w-48 rounded-md skeleton-shimmer" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Bảng hàng kỷ lục */}
+        <div className="overflow-x-auto rounded-lg border border-slate-200/60 dark:border-slate-700/60">
+          <table className="w-full text-sm">
+            <thead className="soft-table-head text-xs uppercase tracking-wider">
+              <tr>
+                <th className="w-64 min-w-[200px] px-4 py-2.5 text-left font-semibold">
+                  Hạng mục thống kê
+                </th>
+                <th className="w-44 min-w-[150px] px-4 py-2.5 text-center font-semibold">
+                  Kỷ lục / Chỉ số
+                </th>
+                <th className="px-4 py-2.5 text-left font-semibold">
+                  Người chơi nắm giữ
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-200/50 dark:divide-slate-700/50">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <tr key={i} className="border-b border-slate-200/40 dark:border-slate-800/40">
+                  <td className="px-4 py-3">
+                    <div className="h-4 w-44 rounded-md skeleton-shimmer" />
+                  </td>
+                  <td className="px-4 py-3 text-center">
+                    <div className="h-5 w-20 mx-auto rounded-md skeleton-shimmer" />
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="h-6 w-36 rounded-md skeleton-shimmer" />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  )
 }
 
 type FilterMode = 'all' | 'best' | 'worst'
@@ -53,7 +142,12 @@ function PlayerBadge({
   )
 }
 
-export function HighlightStatsTable({ players, myPlayerId, onSelectPlayer }: HighlightStatsTableProps) {
+export function HighlightStatsTable({
+  players,
+  myPlayerId,
+  onSelectPlayer,
+  isSyncingApi = false,
+}: HighlightStatsTableProps) {
   const [filterMode, setFilterMode] = useState<FilterMode>('all')
 
   const animatedWrapperRef = useRef<HTMLDivElement>(null)
@@ -221,6 +315,10 @@ export function HighlightStatsTable({ players, myPlayerId, onSelectPlayer }: Hig
 
   const showBest = filterMode === 'all' || filterMode === 'best'
   const showWorst = filterMode === 'all' || filterMode === 'worst'
+
+  if (isSyncingApi) {
+    return <HighlightStatsSkeleton />
+  }
 
   if (activePlayers.length === 0) {
     return (

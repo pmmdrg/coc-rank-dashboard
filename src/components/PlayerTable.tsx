@@ -547,13 +547,23 @@ export function PlayerTable({
             </div>
 
             {/* Trạng thái cập nhật */}
-            <span
-              className="hidden h-6 items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 text-[11px] font-bold leading-none text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 sm:inline-flex shadow-2xs"
-              title="Dữ liệu thứ hạng, cúp và lượt đánh được tính toán tự động từ Supercell API"
-            >
-              <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Thời gian thực</span>
-            </span>
+            {isSyncingApi ? (
+              <span
+                className="inline-flex h-6 items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 px-2.5 text-[11px] font-bold leading-none text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 shadow-2xs"
+                title="Đang đồng bộ dữ liệu mới nhất từ Supercell API"
+              >
+                <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 animate-ping" />
+                <span>Đang đồng bộ API...</span>
+              </span>
+            ) : (
+              <span
+                className="hidden h-6 items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 text-[11px] font-bold leading-none text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 sm:inline-flex shadow-2xs"
+                title="Dữ liệu thứ hạng, cúp và lượt đánh được tính toán tự động từ Supercell API"
+              >
+                <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500 animate-pulse" />
+                <span>Thời gian thực</span>
+              </span>
+            )}
 
             {isFiltered && (
               <span className="inline-flex h-6 items-center rounded-full bg-sky-500/10 px-2.5 text-[11px] font-bold leading-none text-sky-700 dark:bg-sky-400/15 dark:text-sky-300 border border-sky-500/30 shadow-2xs">
@@ -780,20 +790,34 @@ export function PlayerTable({
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200/50 dark:divide-slate-800/60">
-            {isSyncingApi && rankedPlayers.length === 0 ? (
-              // Skeleton loading rows khi đang tải dữ liệu
-              [1, 2, 3, 4, 5, 6].map((i) => (
-                <tr key={`skeleton-${i}`} className="animate-pulse border-b border-slate-200/40 dark:border-slate-800/40">
-                  <td className="px-2.5 py-3"><div className="h-7 w-12 rounded bg-slate-200 dark:bg-slate-700/80" /></td>
-                  <td className="px-2 py-3">
-                    <div className="h-4 w-32 rounded bg-slate-300/80 dark:bg-slate-600/80" />
-                    <div className="h-3 w-20 rounded bg-slate-200 dark:bg-slate-700/60 mt-1.5" />
+            {isSyncingApi ? (
+              // Skeleton loading rows khi đang đồng bộ dữ liệu từ Supercell API
+              [
+                { wName: 'w-32', wTag: 'w-16', wCups: 'w-14' },
+                { wName: 'w-40', wTag: 'w-20', wCups: 'w-16' },
+                { wName: 'w-28', wTag: 'w-14', wCups: 'w-12' },
+                { wName: 'w-36', wTag: 'w-24', wCups: 'w-16' },
+                { wName: 'w-44', wTag: 'w-18', wCups: 'w-14' },
+                { wName: 'w-32', wTag: 'w-20', wCups: 'w-16' },
+                { wName: 'w-24', wTag: 'w-16', wCups: 'w-12' },
+                { wName: 'w-36', wTag: 'w-22', wCups: 'w-14' },
+              ].map((row, i) => (
+                <tr key={`skeleton-${i}`} className="border-b border-slate-200/40 dark:border-slate-800/40">
+                  <td className="px-2.5 py-3">
+                    <div className="flex items-center gap-2">
+                      <div className="h-6 w-8 rounded-md skeleton-shimmer" />
+                      <div className="h-4 w-4 rounded-full skeleton-shimmer" />
+                    </div>
                   </td>
-                  <td className="px-2 py-3"><div className="h-6 w-14 rounded bg-slate-200 dark:bg-slate-700/70" /></td>
-                  <td className="px-2 py-3"><div className="h-6 w-14 rounded bg-slate-200 dark:bg-slate-700/70" /></td>
-                  <td className="px-2 py-3"><div className="h-6 w-16 rounded bg-slate-200 dark:bg-slate-700/70" /></td>
-                  <td className="px-2 py-3"><div className="h-6 w-16 rounded bg-slate-200 dark:bg-slate-700/70" /></td>
-                  <td className="px-2 py-3 text-center"><div className="h-6 w-20 mx-auto rounded-full bg-slate-200 dark:bg-slate-700/70" /></td>
+                  <td className="px-2 py-3">
+                    <div className={`h-4 ${row.wName} rounded-md skeleton-shimmer`} />
+                    <div className={`mt-1.5 h-3 ${row.wTag} rounded-md skeleton-shimmer`} />
+                  </td>
+                  <td className="px-2 py-3"><div className="h-6 w-14 rounded-lg skeleton-shimmer" /></td>
+                  <td className="px-2 py-3"><div className="h-6 w-14 rounded-lg skeleton-shimmer" /></td>
+                  <td className="px-2 py-3"><div className={`h-6 ${row.wCups} rounded-md skeleton-shimmer`} /></td>
+                  <td className="px-2 py-3"><div className={`h-6 ${row.wCups} rounded-md skeleton-shimmer`} /></td>
+                  <td className="px-2 py-3 text-center"><div className="h-6 w-20 mx-auto rounded-full skeleton-shimmer" /></td>
                 </tr>
               ))
             ) : effectivePlayers.length === 0 ? (

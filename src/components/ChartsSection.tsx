@@ -9,10 +9,40 @@ interface ChartsSectionProps {
   attackStatusData: ChartDataItem[]
   ratingData: ChartDataItem[]
   myPlayerName: string
+  isSyncingApi?: boolean
 }
 
 function numberFormatter(value: number) {
   return new Intl.NumberFormat('vi-VN').format(value)
+}
+
+function SkeletonPieChart() {
+  return (
+    <div className="glass-panel flex h-full flex-col rounded-xl p-4 sm:p-5 shadow-sm">
+      <div className="flex items-center justify-between gap-2 shrink-0">
+        <div className="h-4 w-40 rounded-md skeleton-shimmer" />
+        <div className="h-3 w-16 rounded-md skeleton-shimmer" />
+      </div>
+      <div className="my-auto flex flex-col sm:flex-row items-center gap-3.5 sm:gap-4 pt-3 sm:pt-4">
+        <div className="relative flex shrink-0 items-center justify-center">
+          <div className="h-32 w-32 sm:h-34 sm:w-34 rounded-full border-[8.5px] border-slate-200/90 dark:border-slate-800/90 skeleton-shimmer flex items-center justify-center">
+            <div className="h-3.5 w-9 rounded-md skeleton-shimmer" />
+          </div>
+        </div>
+        <div className="w-full min-w-0 flex-1 space-y-2.5">
+          {[1, 2, 3].map((idx) => (
+            <div key={idx} className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <div className="h-2.5 w-2.5 rounded-full skeleton-shimmer shrink-0" />
+                <div className="h-3.5 w-24 rounded-md skeleton-shimmer" />
+              </div>
+              <div className="h-3.5 w-12 rounded-md skeleton-shimmer shrink-0" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
 }
 
 function getPieSlices(values: ChartDataItem[]) {
@@ -138,11 +168,24 @@ export function ChartsSection({
   attackStatusData,
   ratingData,
   myPlayerName,
+  isSyncingApi = false,
 }: ChartsSectionProps) {
   const comparisonTitle =
     myPlayerName && myPlayerName !== '--'
       ? `Tỷ lệ đối thủ so với ${myPlayerName}`
       : 'Tỷ lệ đối thủ so với tôi'
+
+  if (isSyncingApi) {
+    return (
+      <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <SkeletonPieChart />
+        <SkeletonPieChart />
+        <div className="md:col-span-2 lg:col-span-1">
+          <SkeletonPieChart />
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

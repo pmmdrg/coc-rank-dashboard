@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { ChevronDown } from 'lucide-react'
+import { CaretDown } from '@phosphor-icons/react'
 import type { LeagueHistoryItem } from '../types'
 import { parseSeasonDateRange } from '../lib/cocApi'
 import { RANKED_TIERS_METADATA } from '../data/rankedTierMetadata'
@@ -11,12 +11,71 @@ export interface PerformanceTrendSectionProps {
   leagueHistory?: LeagueHistoryItem[]
   myPlayerName?: string
   playerTag?: string
+  isSyncingApi?: boolean
+}
+
+function TrendSectionSkeleton() {
+  return (
+    <section className="glass-panel rounded-xl shadow-sm transition-all overflow-hidden">
+      {/* Header */}
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/60 p-4 sm:p-5 dark:border-slate-700/60">
+        <div>
+          <div className="flex items-center gap-2">
+            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
+              Theo dõi phong độ qua các mùa giải
+            </h2>
+            <span className="inline-flex h-5 items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 px-2 text-[10px] font-bold text-sky-700 dark:bg-sky-950/60 dark:text-sky-300">
+              <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 animate-ping" />
+              Đang tải...
+            </span>
+          </div>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            Lịch sử thứ hạng, cúp, và tỷ lệ chiến đấu lấy trực tiếp từ Supercell API
+          </p>
+        </div>
+      </div>
+
+      <div className="p-4 sm:p-5 space-y-5">
+        {/* 4 Thẻ kỷ lục Skeleton */}
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white/60 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60 h-28"
+            >
+              <div>
+                <div className="h-3 w-24 rounded-md skeleton-shimmer" />
+                <div className="mt-2.5 h-6 w-16 rounded-md skeleton-shimmer" />
+                <div className="mt-2 h-3 w-20 rounded-md skeleton-shimmer" />
+              </div>
+              <div className="mt-2 h-3 w-28 rounded-md skeleton-shimmer" />
+            </div>
+          ))}
+        </div>
+
+        {/* Khung Biểu đồ Skeleton */}
+        <div className="rounded-xl border border-slate-200/70 bg-white/40 p-4 dark:border-slate-700/70 dark:bg-slate-900/40">
+          <div className="flex items-center justify-between gap-3 mb-4">
+            <div className="flex gap-2">
+              <div className="h-7 w-28 rounded-lg skeleton-shimmer" />
+              <div className="h-7 w-28 rounded-lg skeleton-shimmer" />
+            </div>
+            <div className="h-3 w-32 rounded-md skeleton-shimmer" />
+          </div>
+          <div className="h-52 w-full rounded-xl skeleton-shimmer flex items-center justify-center">
+            <div className="h-4 w-44 rounded-md skeleton-shimmer" />
+          </div>
+        </div>
+      </div>
+    </section>
+  )
 }
 
 export function PerformanceTrendSection({
   leagueHistory = [],
   myPlayerName = '',
   playerTag = '',
+  isSyncingApi = false,
 }: PerformanceTrendSectionProps) {
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [activeMetric, setActiveMetric] = useState<'cups_rank' | 'battles_stars'>('cups_rank')
@@ -129,6 +188,10 @@ export function PerformanceTrendSection({
       overallWinRate,
     }
   }, [chronologicalHistory])
+
+  if (isSyncingApi) {
+    return <TrendSectionSkeleton />
+  }
 
   if (chronologicalHistory.length === 0) {
     return (
@@ -310,7 +373,8 @@ export function PerformanceTrendSection({
             aria-expanded={!isCollapsed}
           >
             <span>{isCollapsed ? 'Mở rộng' : 'Thu gọn'}</span>
-            <ChevronDown
+            <CaretDown
+              weight="bold"
               className={`h-3.5 w-3.5 transition-transform duration-300 ${!isCollapsed ? 'rotate-180' : ''}`}
             />
           </button>

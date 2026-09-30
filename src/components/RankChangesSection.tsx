@@ -1,8 +1,5 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
-import {
-  ChevronDown,
-  Search,
-} from 'lucide-react'
+import { CaretDown, MagnifyingGlass } from '@phosphor-icons/react'
 import type { RankChangesSnapshot, RankChangeItem } from '../types'
 
 export interface RankChangesSectionProps {
@@ -15,6 +12,43 @@ export interface RankChangesSectionProps {
 type FilterType = 'all' | 'rose' | 'fell'
 
 const EMPTY_CHANGES: RankChangeItem[] = []
+
+function RankChangesSkeleton() {
+  return (
+    <section className="glass-panel rounded-xl shadow-xs overflow-hidden border border-slate-200/80 dark:border-slate-800/80">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/60 p-4 sm:p-5 dark:border-slate-800/60">
+        <div>
+          <div className="flex items-center gap-2 flex-wrap">
+            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
+              Biến động thứ hạng gần nhất
+            </h2>
+            <span className="inline-flex h-5 items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 px-2 text-[10px] font-bold text-sky-700 dark:bg-sky-950/60 dark:text-sky-300">
+              <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 animate-ping" />
+              Đang phân tích thay đổi...
+            </span>
+          </div>
+          <div className="mt-1.5 h-3 w-64 rounded-md skeleton-shimmer" />
+        </div>
+      </div>
+      <div className="p-4 sm:p-5">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {[1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="flex items-center justify-between rounded-xl border border-slate-200/70 bg-white/50 p-3.5 shadow-2xs dark:border-slate-800 dark:bg-slate-900/50"
+            >
+              <div className="space-y-1.5">
+                <div className="h-4 w-28 rounded-md skeleton-shimmer" />
+                <div className="h-3 w-16 rounded-md skeleton-shimmer" />
+              </div>
+              <div className="h-7 w-16 rounded-lg skeleton-shimmer" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
 
 export function RankChangesSection({
   snapshot,
@@ -137,6 +171,10 @@ export function RankChangesSection({
     lastHeightRef.current = targetHeight
   }, [snapshot, filter, searchQuery, isCollapsed, filteredChanges.length])
 
+  if (isSyncing) {
+    return <RankChangesSkeleton />
+  }
+
   if (!snapshot) return null
 
   const hasActiveChanges = activeChanges.length > 0
@@ -200,7 +238,8 @@ export function RankChangesSection({
             aria-expanded={!isCollapsed}
           >
             <span>{isCollapsed ? 'Mở rộng' : 'Thu gọn'}</span>
-            <ChevronDown
+            <CaretDown
+              weight="bold"
               className={`h-4 w-4 transition-transform duration-300 ${!isCollapsed ? 'rotate-180' : ''}`}
             />
           </button>
@@ -361,7 +400,7 @@ export function RankChangesSection({
 
                 {activeChanges.length > 5 && (
                   <div className="relative w-full sm:w-56">
-                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+                    <MagnifyingGlass weight="bold" className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
                     <input
                       type="text"
                       value={searchQuery}

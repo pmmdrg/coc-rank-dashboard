@@ -9,6 +9,51 @@ interface SeasonMetaFormProps {
   activeSeasonIndex: number
   onSelectSeasonIndex: (index: number) => void
   onUpdateSeasonMeta?: (field: keyof Season, value: string | number) => void
+  isSyncingApi?: boolean
+}
+
+function SeasonMetaSkeleton() {
+  return (
+    <div className="glass-panel rounded-xl p-4 sm:p-5 shadow-sm">
+      <div className="mb-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            Thông tin mùa giải
+          </h2>
+          <span className="inline-flex h-5 items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 px-2 text-[10px] font-bold text-sky-700 dark:bg-sky-950/60 dark:text-sky-300">
+            <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 animate-ping" />
+            Đang tải dữ liệu...
+          </span>
+        </div>
+      </div>
+
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
+        {/* Cột 1 */}
+        <div className="flex flex-col justify-between rounded-xl border border-slate-200/60 bg-white/40 p-4 dark:border-slate-800 dark:bg-slate-900/40 shadow-xs h-26">
+          <div className="h-3 w-16 rounded-md skeleton-shimmer" />
+          <div className="mt-2 flex items-center gap-3">
+            <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-full skeleton-shimmer shrink-0" />
+            <div className="h-6 w-36 rounded-md skeleton-shimmer" />
+          </div>
+        </div>
+
+        {/* Cột 2 */}
+        <div className="flex flex-col justify-between rounded-xl border border-slate-200/60 bg-white/40 p-4 dark:border-slate-800 dark:bg-slate-900/40 shadow-xs h-26">
+          <div className="flex items-center justify-between">
+            <div className="h-3 w-28 rounded-md skeleton-shimmer" />
+            <div className="h-3 w-20 rounded-md skeleton-shimmer" />
+          </div>
+          <div className="mt-2 h-6 w-48 rounded-md skeleton-shimmer" />
+        </div>
+
+        {/* Cột 3 */}
+        <div className="flex flex-col justify-between rounded-xl border border-slate-200/60 bg-white/40 p-4 dark:border-slate-800 dark:bg-slate-900/40 shadow-xs h-26">
+          <div className="h-3 w-24 rounded-md skeleton-shimmer" />
+          <div className="mt-2 h-8 w-full rounded-lg skeleton-shimmer" />
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export function SeasonMetaForm({
@@ -17,7 +62,11 @@ export function SeasonMetaForm({
   activeSeasonIndex,
   onSelectSeasonIndex,
   onUpdateSeasonMeta,
+  isSyncingApi = false,
 }: SeasonMetaFormProps) {
+  if (isSyncingApi) {
+    return <SeasonMetaSkeleton />
+  }
   // Thời gian mùa giải luôn hiển thị từ ngày bắt đầu đến 6 ngày sau (ví dụ 22/09/2026 - 28/09/2026)
   const currentPeriodInfo = parseSeasonDateRange(season.leagueSeasonId, season.startsAt)
 
