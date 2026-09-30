@@ -139,6 +139,16 @@ export function PlayerTable({
   const [filterTab, setFilterTab] = useState<FilterTab>('all')
   const [showJumper, setShowJumper] = useState(false)
   const tableSectionRef = useRef<HTMLElement | null>(null)
+  const tableContainerRef = useRef<HTMLDivElement | null>(null)
+  const tableRef = useRef<HTMLTableElement | null>(null)
+  const theadRef = useRef<HTMLTableSectionElement | null>(null)
+
+  const [isStickyHeaderVisible, setIsStickyHeaderVisible] = useState(false)
+  const [stickyTop, setStickyTop] = useState(72)
+  const [stickyBounds, setStickyBounds] = useState<{ left: number; width: number }>({ left: 0, width: 0 })
+  const [tableScrollLeft, setTableScrollLeft] = useState(0)
+  const [tableWidth, setTableWidth] = useState(1080)
+  const [colWidths, setColWidths] = useState<number[]>([])
 
   const rowRefs = useRef(new Map<string, HTMLTableRowElement>())
   const previousRowTops = useRef(new Map<string, number>())
@@ -264,20 +274,69 @@ export function PlayerTable({
     }
   }, [targetFocusPlayerId, rankedPlayers, onClearTargetFocus])
 
-  // Lắng nghe cuộn trang để hiển thị thanh điều hướng nhanh Floating Zone Jumper
+  // Lắng nghe cuộn trang và co giãn để đồng bộ Sticky Table Header và Floating Zone Jumper
   useEffect(() => {
-    const handleScroll = () => {
-      const el = tableSectionRef.current
-      if (!el) return
-      const rect = el.getBoundingClientRect()
+    const updateScrollState = () => {
+      const sectionEl = tableSectionRef.current
+      const containerEl = tableContainerRef.current
+      const tableEl = tableRef.current
+      const theadEl = theadRef.current
+      if (!sectionEl || !containerEl || !tableEl) return
+
+      const sectionRect = sectionEl.getBoundingClientRect()
+      const containerRect = containerEl.getBoundingClientRect()
+      const tableRect = tableEl.getBoundingClientRect()
+
+      // Lấy chiều cao thực tế của SeasonHeader (sticky ở đỉnh trang)
+      const appHeader = document.querySelector('header.glass-header')
+      const headerBottom = appHeader ? appHeader.getBoundingClientRect().bottom : 72
+      setStickyTop(headerBottom)
+
       // Hiển thị thanh jumper khi đã cuộn qua khỏi đầu bảng và còn trong bảng
-      const inView = rect.top < 0 && rect.bottom > 280
+      const inView = sectionRect.top < 0 && sectionRect.bottom > 280
       setShowJumper(inView)
+
+      // Điều kiện hiển thị Sticky Table Header:
+      // Khi thead gốc của bảng đã cuộn lên trên headerBottom
+      // VÀ mép dưới của table vẫn còn ở dưới headerBottom ít nhất 60px
+      const theadTriggerTop = theadEl ? theadEl.getBoundingClientRect().top : containerRect.top
+      const shouldShowStickyHeader = theadTriggerTop <= headerBottom && tableRect.bottom > headerBottom + 60
+
+      setIsStickyHeaderVisible(shouldShowStickyHeader)
+      if (shouldShowStickyHeader) {
+        setStickyBounds({
+          left: containerRect.left,
+          width: containerRect.width,
+        })
+        setTableScrollLeft(containerEl.scrollLeft)
+        setTableWidth(tableEl.offsetWidth || 1080)
+
+        // Lấy chiều rộng chính xác của từng cột từ thead gốc
+        if (theadEl) {
+          const ths = theadEl.querySelectorAll('th')
+          if (ths.length > 0) {
+            const widths = Array.from(ths).map((th) => th.getBoundingClientRect().width)
+            setColWidths(widths)
+          }
+        }
+      }
     }
 
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', updateScrollState, { passive: true })
+    window.addEventListener('resize', updateScrollState, { passive: true })
+    updateScrollState()
+
+    return () => {
+      window.removeEventListener('scroll', updateScrollState)
+      window.removeEventListener('resize', updateScrollState)
+    }
   }, [])
+
+  function handleTableContainerScroll() {
+    if (tableContainerRef.current) {
+      setTableScrollLeft(tableContainerRef.current.scrollLeft)
+    }
+  }
 
   const effectivePlayers = useMemo(() => {
     let list = rankedPlayers
@@ -625,10 +684,83 @@ export function PlayerTable({
         </div>
       </div>
 
-      {/* 3. Bảng dữ liệu người chơi với Sticky Header */}
-      <div className="overflow-x-auto">
-        <table className="relative w-full min-w-[1080px] border-separate border-spacing-0 text-left text-sm">
-          <thead className="sticky top-[68px] z-20 backdrop-blur-md bg-amber-50/95 dark:bg-slate-900/95 border-b border-amber-200/60 dark:border-slate-800 text-xs uppercase tracking-wider text-amber-900 dark:text-slate-200 shadow-2xs">
+      {/* 2.5 Thanh Sticky Table Header ghim cố định đồng bộ khi cuộn qua bảng */}
+      {isStickyHeaderVisible && (
+        <div
+          className="fixed z-30 overflow-hidden backdrop-blur-md bg-amber-50/95 dark:bg-slate-900/95 border-b border-amber-200/60 dark:border-slate-800 shadow-md transition-opacity duration-150 pointer-events-none"
+          style={{
+            top: `${stickyTop}px`,
+            left: `${stickyBounds.left}px`,
+            width: `${stickyBounds.width}px`,
+          }}
+        >
+          <div
+            style={{
+              transform: `translateX(-${tableScrollLeft}px)`,
+              width: `${tableWidth}px`,
+              minWidth: '1080px',
+            }}
+          >
+            <table className="w-full min-w-[1080px] border-separate border-spacing-0 text-left text-sm">
+              <thead className="text-xs uppercase tracking-wider text-amber-900 dark:text-slate-200">
+                <tr>
+                  <th
+                    className="px-2.5 py-2.5 whitespace-nowrap bg-inherit"
+                    style={colWidths[0] ? { width: `${colWidths[0]}px`, minWidth: `${colWidths[0]}px`, maxWidth: `${colWidths[0]}px` } : { width: '136px', minWidth: '136px', maxWidth: '136px' }}
+                  >
+                    Rank
+                  </th>
+                  <th
+                    className="px-2 py-2.5 bg-inherit"
+                    style={colWidths[1] ? { width: `${colWidths[1]}px`, minWidth: `${colWidths[1]}px`, maxWidth: `${colWidths[1]}px` } : { width: '224px', minWidth: '170px', maxWidth: '240px' }}
+                  >
+                    Tên người chơi
+                  </th>
+                  <th
+                    className="px-2 py-2.5 whitespace-nowrap bg-inherit"
+                    style={colWidths[2] ? { width: `${colWidths[2]}px`, minWidth: `${colWidths[2]}px`, maxWidth: `${colWidths[2]}px` } : { width: '96px', minWidth: '88px' }}
+                  >
+                    Lượt đánh
+                  </th>
+                  <th
+                    className="px-2 py-2.5 whitespace-nowrap bg-inherit"
+                    style={colWidths[3] ? { width: `${colWidths[3]}px`, minWidth: `${colWidths[3]}px`, maxWidth: `${colWidths[3]}px` } : { width: '96px', minWidth: '88px' }}
+                  >
+                    Lượt thủ
+                  </th>
+                  <th
+                    className="px-2 py-2.5 whitespace-nowrap bg-inherit"
+                    style={colWidths[4] ? { width: `${colWidths[4]}px`, minWidth: `${colWidths[4]}px`, maxWidth: `${colWidths[4]}px` } : { width: '96px', minWidth: '88px' }}
+                  >
+                    Cup hiện tại
+                  </th>
+                  <th
+                    className="px-2 py-2.5 whitespace-nowrap bg-inherit"
+                    style={colWidths[5] ? { width: `${colWidths[5]}px`, minWidth: `${colWidths[5]}px`, maxWidth: `${colWidths[5]}px` } : { width: '144px', minWidth: '120px' }}
+                  >
+                    Cup tối đa
+                  </th>
+                  <th
+                    className="px-2 py-2.5 whitespace-nowrap text-center bg-inherit"
+                    style={colWidths[6] ? { width: `${colWidths[6]}px`, minWidth: `${colWidths[6]}px`, maxWidth: `${colWidths[6]}px` } : { width: '96px', minWidth: '92px' }}
+                  >
+                    Đánh giá
+                  </th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* 3. Bảng dữ liệu người chơi */}
+      <div
+        ref={tableContainerRef}
+        onScroll={handleTableContainerScroll}
+        className="overflow-x-auto"
+      >
+        <table ref={tableRef} className="relative w-full min-w-[1080px] border-separate border-spacing-0 text-left text-sm">
+          <thead ref={theadRef} className="bg-amber-50/95 dark:bg-slate-900/95 border-b border-amber-200/60 dark:border-slate-800 text-xs uppercase tracking-wider text-amber-900 dark:text-slate-200 shadow-2xs">
             <tr>
               <th className="w-[136px] min-w-[136px] max-w-[136px] px-2.5 py-2.5 whitespace-nowrap bg-inherit">Rank</th>
               <th className="w-56 min-w-[170px] max-w-[240px] px-2 py-2.5 bg-inherit">Tên người chơi</th>
