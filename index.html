@@ -12,9 +12,11 @@
     />
     <title>CoC Rank Dashboard (Fan Tool)</title>
     <script>
-      const isDark = localStorage.getItem('coc_rank_theme') === 'dark' ||
-        (!localStorage.getItem('coc_rank_theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      const savedTheme = localStorage.getItem('coc_rank_theme');
+      const isDark = savedTheme === 'dark' ||
+        (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
       document.documentElement.classList.toggle('dark', isDark);
+      document.documentElement.classList.toggle('light', !isDark);
     </script>
   </head>
   <body>

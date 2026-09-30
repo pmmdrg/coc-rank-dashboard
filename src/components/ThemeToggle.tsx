@@ -17,6 +17,7 @@ export function ThemeToggle() {
     const nextTheme = theme === 'dark' ? 'light' : 'dark'
     setTheme(nextTheme)
     document.documentElement.classList.toggle('dark', nextTheme === 'dark')
+    document.documentElement.classList.toggle('light', nextTheme === 'light')
     try {
       localStorage.setItem('coc_rank_theme', nextTheme)
     } catch {

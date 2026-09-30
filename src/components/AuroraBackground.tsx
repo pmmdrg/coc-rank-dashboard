@@ -17,7 +17,7 @@ export function AuroraBackground() {
     let rafId: number | null = null
     let targetScrollY = window.scrollY || 0
     let currentScrollY = targetScrollY
-    let targetHue = (targetScrollY * 0.045) % 360
+    let targetHue = Math.sin(targetScrollY * 0.0016) * 24
     let currentHue = targetHue
     let isRunning = true
 
@@ -47,7 +47,7 @@ export function AuroraBackground() {
       // Di chuyển các khối cực quang nhịp nhàng THEO CUỘN CHUỘT nhưng LUÔN NẰM TRONG VIEWPORT
       // Sử dụng hàm sóng lượng giác biên độ hữu hạn để các khối màu uốn lượn, đổi chỗ cho nhau, không bao giờ trôi mất khỏi màn hình
 
-      // Khối 1 (Emerald & Cyan): Lượn sóng ngang và nhấp nhô nhẹ ở mảng trên
+      // Khối 1 (Emerald & Mint Cyan): Lượn sóng ngang và nhấp nhô nhẹ ở mảng trên
       if (blob1Ref.current) {
         const b1X = (Math.sin(currentScrollY * 0.0022) * 110 + scrollRatio * 50).toFixed(1)
         const b1Y = (Math.cos(currentScrollY * 0.0018) * 80 + Math.sin(scrollRatio * Math.PI) * 70).toFixed(1)
@@ -56,7 +56,7 @@ export function AuroraBackground() {
         blob1Ref.current.style.transform = `translate3d(${b1X}px, ${b1Y}px, 0) rotate(${b1Rot}deg) scale(${b1Scale})`
       }
 
-      // Khối 2 (Violet & Magenta): Quét chéo, dạt xuống và giãn rộng theo nhịp cuộn
+      // Khối 2 (Deep Violet & Ice Blue): Quét chéo, dạt xuống và giãn rộng theo nhịp cuộn
       if (blob2Ref.current) {
         const b2X = (-Math.sin(currentScrollY * 0.002) * 130 - scrollRatio * 70).toFixed(1)
         const b2Y = (Math.sin(currentScrollY * 0.0019) * 90 + scrollRatio * 110).toFixed(1)
@@ -65,7 +65,7 @@ export function AuroraBackground() {
         blob2Ref.current.style.transform = `translate3d(${b2X}px, ${b2Y}px, 0) rotate(${b2Rot}deg) scale(${b2Scale})`
       }
 
-      // Khối 3 (Cyan & Solar Amber): Uốn lượn ở khu vực trung tâm, nở to khi cuộn giữa trang
+      // Khối 3 (Electric Cyan & Royal Sapphire): Uốn lượn ở khu vực trung tâm, nở to khi cuộn giữa trang
       if (blob3Ref.current) {
         const b3X = (Math.cos(currentScrollY * 0.0021) * 120 + Math.sin(scrollRatio * Math.PI * 2) * 60).toFixed(1)
         const b3Y = (-Math.sin(currentScrollY * 0.0017) * 90 + (scrollRatio - 0.5) * 120).toFixed(1)
@@ -73,7 +73,7 @@ export function AuroraBackground() {
         blob3Ref.current.style.transform = `translate3d(${b3X}px, ${b3Y}px, 0) scale(${b3Scale})`
       }
 
-      // Khối 4 (Deep Cosmic Wave): Dâng lên và rực rỡ mạnh mẽ ở nửa dưới khi cuộn vào bảng xếp hạng & chân trang
+      // Khối 4 (Deep Teal & Ocean Cobalt Wave): Dâng lên và rực rỡ mạnh mẽ ở nửa dưới khi cuộn vào bảng xếp hạng & chân trang
       if (blob4Ref.current) {
         const b4X = (-Math.cos(currentScrollY * 0.0023) * 110 + (1 - scrollRatio) * 40).toFixed(1)
         const b4Y = (Math.sin(currentScrollY * 0.0018) * 80 - scrollRatio * 90).toFixed(1)
@@ -86,8 +86,9 @@ export function AuroraBackground() {
 
     const onScroll = () => {
       targetScrollY = window.scrollY || 0
-      // Đổi màu cực quang từ tốn theo từng vòng cuộn, êm ái
-      targetHue = (targetScrollY * 0.045) % 360
+      // Khống chế dải chuyển màu chỉ trong phổ màu lạnh tuyệt đối (-24deg đến +24deg)
+      // Uốn lượn mượt mà giữa xanh ngọc bích, xanh lơ, lam băng, chàm và tím lạnh (KHÔNG BAO GIỜ chạm màu nóng)
+      targetHue = Math.sin(targetScrollY * 0.0016) * 24
     }
 
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -111,17 +112,17 @@ export function AuroraBackground() {
         <div className="aurora-blob-inner aurora-blob-inner-1" />
       </div>
 
-      {/* Khối cực quang 2: Dải tím huyền ảo Violet & Magenta (uốn lượn ở góc trên bên phải) */}
+      {/* Khối cực quang 2: Dải tím huyền ảo Deep Violet & Lam Băng (uốn lượn ở góc trên bên phải) */}
       <div ref={blob2Ref} className="aurora-blob-wrapper aurora-blob-pos-2">
         <div className="aurora-blob-inner aurora-blob-inner-2" />
       </div>
 
-      {/* Khối cực quang 3: Dải lam ngọc Cyan & Vệt vàng Amber (dập dềnh ở trung tâm) */}
+      {/* Khối cực quang 3: Dải lam ngọc Cyan & Lam Sapphire (dập dềnh ở trung tâm) */}
       <div ref={blob3Ref} className="aurora-blob-wrapper aurora-blob-pos-3">
         <div className="aurora-blob-inner aurora-blob-inner-3" />
       </div>
 
-      {/* Khối cực quang 4: Sóng cực quang tầng sâu rực rỡ ở nửa dưới màn hình khi xem bảng xếp hạng & chân trang */}
+      {/* Khối cực quang 4: Sóng cực quang đại dương Teal & Cobalt sâu thẳm ở nửa dưới màn hình khi xem bảng xếp hạng & chân trang */}
       <div ref={blob4Ref} className="aurora-blob-wrapper aurora-blob-pos-4">
         <div className="aurora-blob-inner aurora-blob-inner-4" />
       </div>
