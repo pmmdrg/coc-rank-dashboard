@@ -341,9 +341,7 @@ export function PlayerRow({
             className={
               isMyPlayer
                 ? 'text-sky-600 dark:text-sky-400 font-black'
-                : canPassMe
-                  ? 'text-amber-600 dark:text-amber-400 font-extrabold'
-                  : 'text-slate-600 dark:text-slate-300'
+                : 'text-slate-600 dark:text-slate-300'
             }
           >
             {player.maxPossibleCups.toLocaleString('vi-VN')}
@@ -351,7 +349,7 @@ export function PlayerRow({
 
           {canPassMe && (
             <span
-              className="inline-flex items-center text-amber-500 hover:text-amber-600 dark:text-amber-400 animate-pulse"
+              className="inline-flex items-center text-amber-500 hover:text-amber-600 dark:text-amber-400"
               title={`Có thể vượt bạn: Người này có thể đạt tối đa ${player.maxPossibleCups.toLocaleString('vi-VN')} cúp!`}
             >
               <Warning weight="fill" className="h-4 w-4 drop-shadow-xs text-amber-500" />
