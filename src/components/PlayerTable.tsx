@@ -142,6 +142,8 @@ export function PlayerTable({
   const [filterTab, setFilterTab] = useState<FilterTab>('all')
   const [showJumper, setShowJumper] = useState(false)
   const tableSectionRef = useRef<HTMLElement | null>(null)
+  const tableAnimatedWrapperRef = useRef<HTMLDivElement | null>(null)
+  const prevTableHeightRef = useRef<number | null>(null)
   const tableContainerRef = useRef<HTMLDivElement | null>(null)
   const tableRef = useRef<HTMLTableElement | null>(null)
   const theadRef = useRef<HTMLTableSectionElement | null>(null)
@@ -384,12 +386,50 @@ export function PlayerTable({
   const isFiltered = filterTab !== 'all' || searchQuery.trim().length > 0
 
   const handleFilterTabChange = (val: FilterTab) => {
+    if (tableAnimatedWrapperRef.current) {
+      prevTableHeightRef.current = tableAnimatedWrapperRef.current.offsetHeight
+    }
     if (filterTab === val && val !== 'all') {
       setFilterTab('all')
     } else {
       setFilterTab(val)
     }
   }
+
+  // Animation kéo ra / rút lại dạng spring accordion cho bảng khi đổi bộ lọc
+  useLayoutEffect(() => {
+    const wrapper = tableAnimatedWrapperRef.current
+    const tableEl = tableRef.current
+    if (!wrapper || !tableEl || prevTableHeightRef.current === null) return
+
+    const startHeight = prevTableHeightRef.current
+    const targetHeight = tableEl.offsetHeight
+    prevTableHeightRef.current = null
+
+    if (Math.abs(startHeight - targetHeight) < 6) return
+
+    wrapper.style.height = `${startHeight}px`
+    wrapper.style.overflow = 'hidden'
+    void wrapper.offsetHeight // Kích hoạt reflow
+
+    // Hiệu ứng kéo ra / rút lại dạng spring nảy nhẹ mượt mà
+    wrapper.style.transition = 'height 380ms cubic-bezier(0.34, 1.15, 0.64, 1)'
+    wrapper.style.height = `${targetHeight}px`
+
+    const onEnd = () => {
+      if (wrapper) {
+        wrapper.style.height = ''
+        wrapper.style.overflow = ''
+        wrapper.style.transition = ''
+      }
+    }
+
+    const timer = setTimeout(onEnd, 400)
+    return () => {
+      clearTimeout(timer)
+      onEnd()
+    }
+  }, [effectivePlayers])
 
   const filterOptions = useMemo<SegmentedControlOption<FilterTab>[]>(() => {
     const opts: SegmentedControlOption<FilterTab>[] = [
@@ -683,14 +723,24 @@ export function PlayerTable({
           <input
             type="text"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              if (tableAnimatedWrapperRef.current) {
+                prevTableHeightRef.current = tableAnimatedWrapperRef.current.offsetHeight
+              }
+              setSearchQuery(e.target.value)
+            }}
             placeholder={dict.table.searchPlaceholder}
             className="w-full h-8.5 rounded-xl border border-slate-300/70 bg-white/90 pl-9 pr-7 text-xs text-slate-900 placeholder:text-slate-400 shadow-2xs backdrop-blur-md transition-all focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/20 dark:border-white/10 dark:bg-slate-900/80 dark:text-slate-100 dark:placeholder:text-slate-500"
           />
           {searchQuery && (
             <button
               type="button"
-              onClick={() => setSearchQuery('')}
+              onClick={() => {
+                if (tableAnimatedWrapperRef.current) {
+                  prevTableHeightRef.current = tableAnimatedWrapperRef.current.offsetHeight
+                }
+                setSearchQuery('')
+              }}
               className="apple-btn absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
               title={dict.table.clearSearchTooltip}
             >
@@ -707,19 +757,6 @@ export function PlayerTable({
             onChange={handleFilterTabChange}
             ariaLabel={dict.table.title}
           />
-
-          {isFiltered && (
-            <button
-              type="button"
-              onClick={() => {
-                setFilterTab('all')
-                setSearchQuery('')
-              }}
-              className="apple-btn text-xs text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 underline ml-1 cursor-pointer"
-            >
-              {dict.table.clearFilter}
-            </button>
-          )}
         </div>
       </div>
 
@@ -792,25 +829,26 @@ export function PlayerTable({
         </div>
       )}
 
-      {/* 3. Bảng dữ liệu người chơi */}
-      <div
-        ref={tableContainerRef}
-        onScroll={handleTableContainerScroll}
-        className="overflow-x-auto"
-      >
-        <table ref={tableRef} className="relative w-full min-w-[1080px] border-separate border-spacing-0 text-left text-sm">
-          <thead ref={theadRef} className="bg-amber-50/95 dark:bg-slate-900/95 border-b border-amber-200/60 dark:border-slate-800 text-xs uppercase tracking-wider text-amber-900 dark:text-slate-200 shadow-2xs">
-            <tr>
-              <th className="w-[136px] min-w-[136px] max-w-[136px] px-2.5 py-2.5 whitespace-nowrap bg-inherit">{dict.table.colRank}</th>
-              <th className="w-56 min-w-[170px] max-w-[240px] px-2 py-2.5 bg-inherit">{dict.table.colName}</th>
-              <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap bg-inherit">{dict.table.colAttacks}</th>
-              <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap bg-inherit">{dict.table.colDefenses}</th>
-              <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap bg-inherit">{dict.table.colCurrentCups}</th>
-              <th className="w-36 min-w-[120px] px-2 py-2.5 whitespace-nowrap bg-inherit">{dict.table.colMaxCups}</th>
-              <th className="w-24 min-w-[92px] px-2 py-2.5 whitespace-nowrap text-center bg-inherit">{dict.table.colRating}</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-200/50 dark:divide-slate-800/60">
+      {/* 3. Bảng dữ liệu người chơi với hiệu ứng kéo ra / rút lại dạng spring accordion */}
+      <div ref={tableAnimatedWrapperRef} className="will-change-[height]">
+        <div
+          ref={tableContainerRef}
+          onScroll={handleTableContainerScroll}
+          className="overflow-x-auto"
+        >
+          <table ref={tableRef} className="relative w-full min-w-[1080px] border-separate border-spacing-0 text-left text-sm">
+            <thead ref={theadRef} className="bg-amber-50/95 dark:bg-slate-900/95 border-b border-amber-200/60 dark:border-slate-800 text-xs uppercase tracking-wider text-amber-900 dark:text-slate-200 shadow-2xs">
+              <tr>
+                <th className="w-[136px] min-w-[136px] max-w-[136px] px-2.5 py-2.5 whitespace-nowrap bg-inherit">{dict.table.colRank}</th>
+                <th className="w-56 min-w-[170px] max-w-[240px] px-2 py-2.5 bg-inherit">{dict.table.colName}</th>
+                <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap bg-inherit">{dict.table.colAttacks}</th>
+                <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap bg-inherit">{dict.table.colDefenses}</th>
+                <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap bg-inherit">{dict.table.colCurrentCups}</th>
+                <th className="w-36 min-w-[120px] px-2 py-2.5 whitespace-nowrap bg-inherit">{dict.table.colMaxCups}</th>
+                <th className="w-24 min-w-[92px] px-2 py-2.5 whitespace-nowrap text-center bg-inherit">{dict.table.colRating}</th>
+              </tr>
+            </thead>
+            <tbody key={filterTab} className="divide-y divide-slate-200/50 dark:divide-slate-800/60">
             {isSyncingApi ? (
               // Skeleton loading rows khi đang đồng bộ dữ liệu từ Supercell API
               [
@@ -902,6 +940,8 @@ export function PlayerTable({
                       isHighlighted={highlightedPlayerId === player.id}
                       rankJump={rankJumpInfo?.playerId === player.id ? rankJumpInfo : null}
                       setRowRef={(el) => setPlayerRowRef(player.id, el)}
+                      className="animate-row-bounce"
+                      style={{ animationDelay: `${Math.min(index * 18, 180)}ms` }}
                     />
 
                     {/* Vạch Phân Cách Thăng Hạng */}
@@ -944,6 +984,7 @@ export function PlayerTable({
           </tbody>
         </table>
       </div>
+    </div>
 
       {/* 4. Chú thích biểu tượng & trạng thái */}
       <div className="flex flex-wrap items-center gap-4 border-t border-slate-200/80 px-5 py-3 text-xs text-slate-500 dark:border-slate-800/80 dark:text-slate-400">

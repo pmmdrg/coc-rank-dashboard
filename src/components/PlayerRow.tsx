@@ -15,6 +15,8 @@ interface PlayerRowProps {
   isHighlighted?: boolean
   rankJump?: { fromRank: number; toRank: number } | null
   setRowRef: (element: HTMLTableRowElement | null) => void
+  className?: string
+  style?: React.CSSProperties
 }
 
 const ratingTagColors: Record<RatingCategory, string> = {
@@ -35,6 +37,8 @@ export function PlayerRow({
   isHighlighted = false,
   rankJump = null,
   setRowRef,
+  className = '',
+  style,
 }: PlayerRowProps) {
   const { dict, interpolate, language } = useI18n()
   const [isTagCopied, setIsTagCopied] = useState(false)
@@ -111,7 +115,8 @@ export function PlayerRow({
   return (
     <tr
       ref={setRowRef}
-      className={`group transition-colors duration-150 ${borderClass} ${
+      style={style}
+      className={`group transition-colors duration-150 ${className} ${borderClass} ${
         isHighlighted
           ? 'bg-amber-500/20 ring-2 ring-amber-500/50 dark:bg-amber-400/20 dark:ring-amber-400/50'
           : ''

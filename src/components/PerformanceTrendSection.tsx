@@ -617,7 +617,7 @@ export function PerformanceTrendSection({
                           strokeLinecap="round"
                           strokeLinejoin="round"
                         />
-                        {/* Đường Rank */}
+                        {/* Đường Rank (Nét liền rõ nét) */}
                         <path
                           d={rankPath}
                           fill="none"
@@ -625,7 +625,6 @@ export function PerformanceTrendSection({
                           strokeWidth="2.5"
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          strokeDasharray="5 3"
                         />
                       </>
                     ) : (
@@ -639,7 +638,7 @@ export function PerformanceTrendSection({
                           strokeLinecap="round"
                           strokeLinejoin="round"
                         />
-                        {/* Đường Sao thủ bị cướp */}
+                        {/* Đường Sao thủ bị cướp (Nét liền rõ nét) */}
                         <path
                           d={starsPath}
                           fill="none"
@@ -647,7 +646,6 @@ export function PerformanceTrendSection({
                           strokeWidth="2.5"
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          strokeDasharray="5 3"
                         />
                       </>
                     )}
