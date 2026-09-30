@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Moon, Sun } from '@phosphor-icons/react'
 
 type Theme = 'light' | 'dark'
@@ -6,29 +6,20 @@ type Theme = 'light' | 'dark'
 export function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window !== 'undefined') {
-      if (document.documentElement.classList.contains('dark')) return 'dark'
-      if (document.documentElement.classList.contains('light')) return 'light'
-      const stored = localStorage.getItem('coc_rank_theme') as Theme | null
-      if (stored === 'light' || stored === 'dark') return stored
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+      return document.documentElement.classList.contains('dark') ? 'dark' : 'light'
     }
     return 'light'
   })
 
-  useEffect(() => {
-    const root = document.documentElement
-    if (theme === 'dark') {
-      root.classList.add('dark')
-      root.classList.remove('light')
-    } else {
-      root.classList.add('light')
-      root.classList.remove('dark')
-    }
-    localStorage.setItem('coc_rank_theme', theme)
-  }, [theme])
-
   function toggleTheme() {
-    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
+    const nextTheme = theme === 'dark' ? 'light' : 'dark'
+    setTheme(nextTheme)
+    document.documentElement.classList.toggle('dark', nextTheme === 'dark')
+    try {
+      localStorage.setItem('coc_rank_theme', nextTheme)
+    } catch {
+      // Ignore localStorage errors
+    }
   }
 
   return (

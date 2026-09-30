@@ -12,42 +12,10 @@
     />
     <title>CoC Rank Dashboard (Fan Tool)</title>
     <script>
-      (function() {
-        try {
-          var key = 'coc_rank_theme';
-          var stored = localStorage.getItem(key);
-          var isDark = stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches);
-          var root = document.documentElement;
-          if (isDark) {
-            root.classList.add('dark');
-            root.classList.remove('light');
-          } else {
-            root.classList.add('light');
-            root.classList.remove('dark');
-          }
-        } catch (e) {}
-      })();
+      const isDark = localStorage.getItem('coc_rank_theme') === 'dark' ||
+        (!localStorage.getItem('coc_rank_theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.classList.toggle('dark', isDark);
     </script>
-    <style>
-      /* Chống chớp trắng (Anti-FOUC) khi tải trang */
-      html.dark, html.dark body {
-        background-color: #070a13 !important;
-        color: #e2e8f0;
-        color-scheme: dark;
-      }
-      html.light, html.light body {
-        background-color: #f8fafc !important;
-        color: #0f172a;
-        color-scheme: light;
-      }
-      @media (prefers-color-scheme: dark) {
-        html:not(.light), html:not(.light) body {
-          background-color: #070a13;
-          color: #e2e8f0;
-          color-scheme: dark;
-        }
-      }
-    </style>
   </head>
   <body>
     <div id="root"></div>
