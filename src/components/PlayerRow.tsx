@@ -88,7 +88,7 @@ export function PlayerRow({
   const attackedTooltip = useMemo(() => {
     if (!player.attackedByMe || player.attackedByMe.length === 0) return ''
     return player.attackedByMe
-      .map((log) => `• ${log.stars}★, ${log.destructionPercentage}%`)
+      .map((log) => `${log.stars}★, ${log.destructionPercentage}%`)
       .join('\n')
   }, [player.attackedByMe])
 
@@ -103,7 +103,7 @@ export function PlayerRow({
   const defendedTooltip = useMemo(() => {
     if (!player.defendedAgainstMe || player.defendedAgainstMe.length === 0) return ''
     return player.defendedAgainstMe
-      .map((log) => `• ${log.stars}★, ${log.destructionPercentage}%`)
+      .map((log) => `${log.stars}★, ${log.destructionPercentage}%`)
       .join('\n')
   }, [player.defendedAgainstMe])
 
