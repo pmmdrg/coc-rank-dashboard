@@ -1,4 +1,5 @@
-import { Trophy, Sword, Users, ShieldWarning, UserFocus } from '@phosphor-icons/react'
+import { useState } from 'react'
+import { Trophy, Sword, Users, ShieldWarning, UserFocus, CaretDown } from '@phosphor-icons/react'
 import type { RankingStats, Season } from '../types'
 import { useI18n } from '../i18n/LanguageContext'
 
@@ -14,6 +15,26 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
   const locale = language === 'vi' ? 'vi-VN' : 'en-US'
   const hasPlayers = season.players.length > 0
   const hasMyPlayer = Boolean(stats.myPlayer)
+
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('coc_stat_cards_collapsed') === 'true'
+    } catch {
+      return false
+    }
+  })
+
+  function handleToggleCollapse() {
+    setIsCollapsed((prev) => {
+      const next = !prev
+      try {
+        localStorage.setItem('coc_stat_cards_collapsed', String(next))
+      } catch {
+        // Ignore localStorage errors
+      }
+      return next
+    })
+  }
 
   function numberFormatter(value: number) {
     return new Intl.NumberFormat(locale).format(value)
@@ -147,9 +168,13 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
   ]
 
   return (
-    <section className="glass-panel rounded-2xl p-5 sm:p-6 shadow-sm overflow-hidden">
+    <section className="glass-panel rounded-2xl shadow-sm overflow-hidden transition-all duration-300">
       {/* Header Thẻ lớn: Chỉ số tổng quan cá nhân */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 pb-4 border-b border-slate-200/60 dark:border-slate-800/60">
+      <div
+        className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-5 sm:p-6 transition-all duration-300 ${
+          !isCollapsed ? 'border-b border-slate-200/60 dark:border-slate-800/60' : ''
+        }`}
+      >
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-500/10 text-sky-600 dark:bg-sky-400/15 dark:text-sky-300 shadow-2xs">
             <UserFocus weight="duotone" className="h-5 w-5" />
@@ -171,65 +196,85 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
           </div>
         </div>
 
-        {hasMyPlayer && (
-          <div className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400 self-start sm:self-auto">
-            <span className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200/80 bg-white/50 px-2.5 py-1 dark:border-slate-700/80 dark:bg-slate-800/50 shadow-2xs">
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          {hasMyPlayer && (
+            <span className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200/80 bg-white/50 px-2.5 py-1 text-xs font-medium text-slate-500 dark:border-slate-700/80 dark:bg-slate-800/50 dark:text-slate-400 shadow-2xs mr-1">
               <Trophy weight="duotone" className="h-3.5 w-3.5 text-amber-500" />
               <span className="font-mono font-bold text-slate-700 dark:text-slate-200">
                 {numberFormatter(stats.myPlayer!.currentCups)}
               </span>
               <span>{dict.common.trophies}</span>
             </span>
-          </div>
-        )}
+          )}
+
+          {/* Nút thu gọn / mở rộng */}
+          <button
+            type="button"
+            onClick={handleToggleCollapse}
+            className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white/70 px-2.5 py-1.5 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-300 dark:hover:bg-slate-800 cursor-pointer shadow-2xs select-none"
+            aria-expanded={!isCollapsed}
+          >
+            <span>{isCollapsed ? dict.performanceTrend.expand : dict.performanceTrend.collapse}</span>
+            <CaretDown
+              weight="bold"
+              className={`h-3.5 w-3.5 transition-transform duration-300 ${!isCollapsed ? 'rotate-180' : ''}`}
+            />
+          </button>
+        </div>
       </div>
 
-      {/* Lưới 4 thẻ chỉ số con bên trong */}
-      <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
-        {cards.map((card) => {
-          const IconComponent = card.icon
-          return (
-            <div
-              key={card.label}
-              className="hero-stat-card group relative overflow-hidden rounded-xl border border-slate-200/80 bg-white/60 p-4 sm:p-4.5 shadow-2xs dark:border-white/10 dark:bg-slate-900/50 backdrop-blur-md transition-all hover:border-slate-300 dark:hover:border-white/20 cursor-default"
-              style={{
-                backgroundImage: `radial-gradient(circle at 100% 100%, ${card.tonalGlow}, transparent 70%)`,
-              }}
-            >
-              {/* Vạch Accent Glow ở mép trên kiểu Apple Specular Bar */}
-              <div
-                className={`absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r ${card.accentGradient} opacity-85 group-hover:h-[4px] group-hover:opacity-100 transition-all`}
-              />
-
-              {/* Icon lớn mờ chìm nghệ thuật ở góc thẻ */}
-              <IconComponent
-                weight="duotone"
-                className={`pointer-events-none absolute -bottom-3 -right-3 h-24 w-24 opacity-[0.08] dark:opacity-[0.14] transition-transform duration-300 group-hover:scale-115 ${card.iconColor}`}
-              />
-
-              <div className="relative z-10 flex items-center justify-between">
-                <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                  {card.label}
-                </p>
-                {card.badge && (
-                  <span
-                    className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-bold tracking-tight select-none shadow-2xs ${card.badgeColor}`}
+      {/* Lưới 4 thẻ chỉ số con bên trong với animation collapsible-grid */}
+      <div className={`collapsible-grid ${!isCollapsed ? 'is-expanded' : ''}`}>
+        <div className="collapsible-inner">
+          <div className="p-5 sm:p-6">
+            <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+              {cards.map((card) => {
+                const IconComponent = card.icon
+                return (
+                  <div
+                    key={card.label}
+                    className="hero-stat-card group relative overflow-hidden rounded-xl border border-slate-200/80 bg-white/60 p-4 sm:p-4.5 shadow-2xs dark:border-white/10 dark:bg-slate-900/50 backdrop-blur-md transition-all hover:border-slate-300 dark:hover:border-white/20 cursor-default"
+                    style={{
+                      backgroundImage: `radial-gradient(circle at 100% 100%, ${card.tonalGlow}, transparent 70%)`,
+                    }}
                   >
-                    {card.badge}
-                  </span>
-                )}
-              </div>
+                    {/* Vạch Accent Glow ở mép trên kiểu Apple Specular Bar */}
+                    <div
+                      className={`absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r ${card.accentGradient} opacity-85 group-hover:h-[4px] group-hover:opacity-100 transition-all`}
+                    />
 
-              <p className={`relative z-10 mt-2 font-mono text-3xl font-black tracking-tight ${card.valueColor}`}>
-                {card.value}
-              </p>
+                    {/* Icon lớn mờ chìm nghệ thuật ở góc thẻ */}
+                    <IconComponent
+                      weight="duotone"
+                      className={`pointer-events-none absolute -bottom-3 -right-3 h-24 w-24 opacity-[0.08] dark:opacity-[0.14] transition-transform duration-300 group-hover:scale-115 ${card.iconColor}`}
+                    />
 
-              <p className="relative z-10 mt-1.5 text-xs text-slate-500 dark:text-slate-400 truncate font-medium">
-                {card.detail}
-              </p>
+                    <div className="relative z-10 flex items-center justify-between">
+                      <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                        {card.label}
+                      </p>
+                      {card.badge && (
+                        <span
+                          className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-bold tracking-tight select-none shadow-2xs ${card.badgeColor}`}
+                        >
+                          {card.badge}
+                        </span>
+                      )}
+                    </div>
+
+                    <p className={`relative z-10 mt-2 font-mono text-3xl font-black tracking-tight ${card.valueColor}`}>
+                      {card.value}
+                    </p>
+
+                    <p className="relative z-10 mt-1.5 text-xs text-slate-500 dark:text-slate-400 truncate font-medium">
+                      {card.detail}
+                    </p>
+                  </div>
+                )
+              })}
             </div>
-          )
-        })}
+          </div>
+        </div>
       </div>
     </section>
   )
