@@ -218,6 +218,8 @@ export const en: TranslationDictionary = {
     title: 'Tournament Player Standings',
     realtime: 'Live',
     syncingApi: 'Syncing API...',
+    syncedApi: 'Synced API at {time}',
+    syncedApiNoTime: 'Synced API',
     showingCount: 'Showing {shown} / {total} players',
     searchPlaceholder: 'Search player or clan name...',
     filterAll: 'All ({count})',

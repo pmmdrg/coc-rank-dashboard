@@ -1,4 +1,5 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { CaretDown } from '@phosphor-icons/react'
 import type { Player } from '../types'
 import { useI18n } from '../i18n/LanguageContext'
 import { SegmentedControl, type SegmentedControlOption } from './SegmentedControl'
@@ -14,24 +15,26 @@ function HighlightStatsSkeleton() {
   const { dict } = useI18n()
 
   return (
-    <section>
-      <div className="glass-panel rounded-xl p-5 shadow-sm space-y-4">
-        {/* Header */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-2">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-200">
-              {dict.highlights.title}
-            </h3>
-            <span className="inline-flex h-5 items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 px-2 text-[10px] font-bold text-sky-700 dark:bg-sky-950/60 dark:text-sky-300">
-              <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 animate-ping" />
-              {dict.highlights.analyzing}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <div className="h-7 w-52 rounded-lg skeleton-shimmer" />
-          </div>
+    <section className="glass-panel rounded-2xl shadow-sm overflow-hidden">
+      {/* Header */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 sm:p-5 border-b border-slate-200/60 dark:border-slate-800/60">
+        <div className="flex items-center gap-2">
+          <h2 className="text-base font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
+            {dict.highlights.title}
+          </h2>
+          <span className="inline-flex h-5 items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 px-2 text-[10px] font-bold text-sky-700 dark:bg-sky-950/60 dark:text-sky-300">
+            <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 animate-ping" />
+            {dict.highlights.analyzing}
+          </span>
         </div>
+
+        <div className="flex items-center gap-2.5">
+          <div className="h-7 w-52 rounded-lg skeleton-shimmer" />
+          <div className="h-7 w-20 rounded-lg skeleton-shimmer" />
+        </div>
+      </div>
+
+      <div className="p-4 sm:p-5 space-y-4">
 
         {/* 2 Thẻ vị thế năng lực của bạn so với bảng */}
         <div className="rounded-xl border border-sky-500/20 bg-sky-500/5 p-4 dark:border-sky-500/30 dark:bg-sky-950/20">
@@ -156,6 +159,25 @@ export function HighlightStatsTable({
 }: HighlightStatsTableProps) {
   const { dict, interpolate, language } = useI18n()
   const [filterMode, setFilterMode] = useState<FilterMode>('all')
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('coc_highlights_collapsed') === 'true'
+    } catch {
+      return false
+    }
+  })
+
+  function handleToggleCollapse() {
+    setIsCollapsed((prev) => {
+      const next = !prev
+      try {
+        localStorage.setItem('coc_highlights_collapsed', String(next))
+      } catch {
+        // Ignore localStorage errors
+      }
+      return next
+    })
+  }
 
   const animatedWrapperRef = useRef<HTMLDivElement>(null)
   const innerContentRef = useRef<HTMLDivElement>(null)
@@ -267,6 +289,7 @@ export function HighlightStatsTable({
 
   // Animation co giãn chiều cao (Height FLIP transition) mượt mà, triệt tiêu giật layout
   useLayoutEffect(() => {
+    if (isCollapsed) return
     const wrapper = animatedWrapperRef.current
     const inner = innerContentRef.current
     if (!wrapper || !inner || prevHeightRef.current === null) return
@@ -298,7 +321,7 @@ export function HighlightStatsTable({
       clearTimeout(timer)
       onEnd()
     }
-  }, [filterMode])
+  }, [filterMode, isCollapsed])
 
   // --- 1. NHÓM CUP HIỆN TẠI (Cao nhất & Thấp nhất) ---
   const topCurrentCups = useMemo(() => {
@@ -361,12 +384,12 @@ export function HighlightStatsTable({
 
   if (activePlayers.length === 0) {
     return (
-      <section>
-        <div className="glass-panel rounded-xl p-5 shadow-sm space-y-4">
+      <section className="glass-panel rounded-2xl shadow-sm overflow-hidden">
+        <div className="p-4 sm:p-5 space-y-4">
           <div className="flex items-center gap-2">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-200">
+            <h2 className="text-base font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
               {dict.highlights.title}
-            </h3>
+            </h2>
           </div>
           <div className="py-8 text-center text-sm font-medium text-slate-400 dark:text-slate-500">
             {dict.highlights.noActivePlayers}
@@ -377,29 +400,47 @@ export function HighlightStatsTable({
   }
 
   return (
-    <section>
-      <div className="glass-panel rounded-xl p-5 shadow-sm space-y-4">
-        {/* Header với Tiêu đề, Bộ lọc nhanh & Tổng số người chơi */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-2">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-200">
-              {dict.highlights.title}
-            </h3>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <SegmentedControl<FilterMode>
-              options={filterOptions}
-              value={filterMode}
-              onChange={handleFilterChange}
-              ariaLabel={dict.highlights.title}
-            />
-
-            <span className="hidden text-xs text-slate-500 sm:inline dark:text-slate-400">
-              {interpolate(dict.highlights.allPlayersActive, { count: activePlayers.length })}
-            </span>
-          </div>
+    <section className="glass-panel rounded-2xl shadow-sm overflow-hidden transition-all duration-300">
+      {/* Header với Tiêu đề, Bộ lọc nhanh & Nút thu gọn */}
+      <div
+        className={`flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 sm:p-5 transition-all duration-300 ${
+          !isCollapsed ? 'border-b border-slate-200/60 dark:border-slate-800/60' : ''
+        }`}
+      >
+        <div className="flex items-center gap-2">
+          <h2 className="text-base font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
+            {dict.highlights.title}
+          </h2>
         </div>
+
+        <div className="flex items-center gap-2.5">
+          <SegmentedControl<FilterMode>
+            options={filterOptions}
+            value={filterMode}
+            onChange={handleFilterChange}
+            ariaLabel={dict.highlights.title}
+          />
+
+          {/* Nút thu gọn / mở rộng thay thế tổng cộng số người chơi */}
+          <button
+            type="button"
+            onClick={handleToggleCollapse}
+            className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white/70 px-2.5 py-1 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-400 dark:hover:bg-slate-800 cursor-pointer shadow-2xs select-none"
+            aria-expanded={!isCollapsed}
+          >
+            <span>{isCollapsed ? dict.performanceTrend.expand : dict.performanceTrend.collapse}</span>
+            <CaretDown
+              weight="bold"
+              className={`h-3.5 w-3.5 transition-transform duration-300 ${!isCollapsed ? 'rotate-180' : ''}`}
+            />
+          </button>
+        </div>
+      </div>
+
+      {/* Body với animation collapsible-grid */}
+      <div className={`collapsible-grid ${!isCollapsed ? 'is-expanded' : ''}`}>
+        <div className="collapsible-inner">
+          <div className="p-4 sm:p-5 space-y-4">
 
         {/* ==================== ĐỊNH VỊ NĂNG LỰC CỦA BẠN SO VỚI TOÀN BẢNG ==================== */}
         {myPlayer && myComparisonStats ? (
@@ -790,6 +831,8 @@ export function HighlightStatsTable({
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
   )
 }

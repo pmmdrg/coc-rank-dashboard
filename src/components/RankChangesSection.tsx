@@ -23,7 +23,7 @@ function RankChangesSkeleton() {
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/60 p-4 sm:p-5 dark:border-slate-800/60">
         <div>
           <div className="flex items-center gap-2 flex-wrap">
-            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
+            <h2 className="text-base font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
               {dict.rankChanges.title}
             </h2>
             <span className="inline-flex h-5 items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 px-2 text-[10px] font-bold text-sky-700 dark:bg-sky-950/60 dark:text-sky-300">
@@ -224,7 +224,7 @@ export function RankChangesSection({
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/60 p-4 sm:p-5 dark:border-slate-800/60">
         <div>
           <div className="flex items-center gap-2 flex-wrap">
-            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
+            <h2 className="text-base font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
               {dict.rankChanges.title}
             </h2>
             {hasActiveChanges ? (

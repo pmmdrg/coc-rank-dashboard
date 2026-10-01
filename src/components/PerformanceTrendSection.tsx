@@ -25,7 +25,7 @@ function TrendSectionSkeleton() {
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/60 p-4 sm:p-5 dark:border-slate-700/60">
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
+            <h2 className="text-base font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
               {dict.performanceTrend.title}
             </h2>
             <span className="inline-flex h-5 items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 px-2 text-[10px] font-bold text-sky-700 dark:bg-sky-950/60 dark:text-sky-300">
@@ -214,7 +214,7 @@ export function PerformanceTrendSection({
       <section className="glass-panel rounded-xl shadow-sm transition-all">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/60 p-4 sm:p-5 dark:border-slate-700/60">
           <div>
-            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
+            <h2 className="text-base font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
               {dict.performanceTrend.title}
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -406,7 +406,7 @@ export function PerformanceTrendSection({
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/60 p-4 sm:p-5 dark:border-slate-700/60">
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
+            <h2 className="text-base font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
               {dict.performanceTrend.title}
             </h2>
             <span className="rounded-full bg-sky-500/15 px-2 py-0.5 text-[10px] font-bold text-sky-700 dark:text-sky-300">

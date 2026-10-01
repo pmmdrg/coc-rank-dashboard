@@ -92,7 +92,6 @@ function App() {
     loadRankChangesSnapshot(),
   )
   const [document, setDocument] = useState<StorageDocument>(() => loadDraftDocument(emptySeason))
-  const [status, setStatus] = useState<string | null>(null)
   const [error, setError] = useState('')
   const [targetFocusPlayerId, setTargetFocusPlayerId] = useState<string | null>(null)
 
@@ -209,7 +208,6 @@ function App() {
         activeSeasonIndex: index,
         season: targetSeason,
       }))
-      setStatus(interpolate(dict.statusBanner.viewingSeason, { name: targetSeason.seasonName }))
     }
   }
 
@@ -233,11 +231,9 @@ function App() {
         activeSeasonIndex: document.activeSeasonIndex,
       }
       downloadFile(JSON.stringify(exportDoc, null, 2), fileName, 'application/json;charset=utf-8;')
-      setStatus(interpolate(dict.statusBanner.exportSuccess, { fileName }))
     } else {
       const csvData = seasonsToCsv(allSeasons)
       downloadFile(csvData, fileName, 'text/csv;charset=utf-8;')
-      setStatus(interpolate(dict.statusBanner.exportSuccess, { fileName }))
     }
   }
 
@@ -334,7 +330,6 @@ function App() {
     const rawTag = targetTag || playerTag || stats.myPlayer?.playerTag || stats.myPlayer?.id || ''
     const cleanTag = rawTag.replace(/^#/, '').trim()
     if (!cleanTag) {
-      setStatus(dict.statusBanner.promptEnterTag)
       return
     }
 
@@ -376,7 +371,6 @@ function App() {
         activeSeasonIndex: 0,
         season: syncedSeasons[0],
       }))
-      setStatus(interpolate(dict.statusBanner.syncSuccess, { time: result.currentSeason.lastSyncedAt || '' }))
     } catch (err) {
       console.warn('Tải dữ liệu Supercell API thất bại:', err)
       setError(err instanceof Error ? err.message : 'Không thể tải dữ liệu từ Supercell API.')
@@ -420,16 +414,12 @@ function App() {
           </div>
         )}
 
-        {!playerTag ? (
+        {!playerTag && (
           <PlayerTagPromptBanner
             playerTag={playerTag}
             isSyncingApi={isSyncingApi}
             onSync={handleSyncCocApi}
           />
-        ) : (
-          <div className="glass-panel animate-fade-in rounded-xl px-4 py-3 text-sm text-slate-600 dark:text-slate-300 flex items-center justify-between">
-            <span>{status || (playerTag ? dict.common.loading : dict.statusBanner.promptEnterTag)}</span>
-          </div>
         )}
 
         {/* PHẦN 1: CÁC THÔNG TIN RIÊNG VỀ BẢN THÂN */}

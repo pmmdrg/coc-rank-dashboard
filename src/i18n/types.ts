@@ -218,6 +218,8 @@ export interface TranslationDictionary {
     title: string
     realtime: string
     syncingApi: string
+    syncedApi: string
+    syncedApiNoTime: string
     showingCount: string
     searchPlaceholder: string
     filterAll: string

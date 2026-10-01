@@ -674,7 +674,7 @@ export function PlayerTable({
       <div className="flex flex-col gap-3 border-b border-slate-200/80 p-5 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800/80">
         <div>
           <div className="flex flex-wrap items-center gap-2.5">
-            <h2 className="bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-lg font-black tracking-tight text-transparent">
+            <h2 className="text-base font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
               {dict.table.title}
             </h2>
 
@@ -689,11 +689,15 @@ export function PlayerTable({
               </span>
             ) : (
               <span
-                className="hidden h-6 items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 text-[11px] font-bold leading-none text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 sm:inline-flex shadow-2xs"
-                title={dict.table.realtime}
+                className="inline-flex h-6 items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 text-[11px] font-bold leading-none text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 shadow-2xs"
+                title={season.lastSyncedAt ? interpolate(dict.table.syncedApi, { time: season.lastSyncedAt }) : dict.table.syncedApiNoTime}
               >
                 <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500 animate-pulse" />
-                <span>{dict.table.realtime}</span>
+                <span>
+                  {season.lastSyncedAt
+                    ? interpolate(dict.table.syncedApi, { time: season.lastSyncedAt })
+                    : dict.table.syncedApiNoTime}
+                </span>
               </span>
             )}
 

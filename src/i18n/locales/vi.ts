@@ -218,6 +218,8 @@ export const vi: TranslationDictionary = {
     title: 'Bảng Xếp Hạng Người Chơi',
     realtime: 'Thời gian thực',
     syncingApi: 'Đang đồng bộ API...',
+    syncedApi: 'Đã đồng bộ API lúc {time}',
+    syncedApiNoTime: 'Đã đồng bộ API',
     showingCount: 'Hiển thị {shown} / {total} người chơi',
     searchPlaceholder: 'Tìm tên người chơi hoặc Clan...',
     filterAll: 'Tất cả ({count})',

@@ -59,7 +59,7 @@ export function SeasonOverviewSection({
           !isCollapsed ? 'border-b border-slate-200/60 dark:border-slate-800/60' : ''
         }`}
       >
-        <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
+        <h2 className="text-base font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
           {dict.seasonMeta.seasonOverviewTitle}
         </h2>
 
