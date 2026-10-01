@@ -49,6 +49,8 @@ export interface TranslationDictionary {
     exportSuccess: string
   }
   statCards: {
+    overviewTitle: string
+    overviewSubtitle: string
     myRank: string
     topPercentage: string
     opponentsCanPass: string
@@ -64,6 +66,8 @@ export interface TranslationDictionary {
     myStats: string
   }
   seasonMeta: {
+    seasonOverviewTitle: string
+    seasonOverviewSubtitle: string
     title: string
     apiPrefix: string
     league: string
@@ -120,6 +124,8 @@ export interface TranslationDictionary {
     seasonPrefix: string
   }
   charts: {
+    distributionTitle: string
+    distributionSubtitle: string
     opponentRatioWithMe: string
     opponentRatioMe: string
     attackCompletion: string

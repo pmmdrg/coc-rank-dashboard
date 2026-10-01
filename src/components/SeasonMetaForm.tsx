@@ -11,24 +11,27 @@ interface SeasonMetaFormProps {
   onSelectSeasonIndex: (index: number) => void
   onUpdateSeasonMeta?: (field: keyof Season, value: string | number) => void
   isSyncingApi?: boolean
+  embedded?: boolean
 }
 
-function SeasonMetaSkeleton() {
+function SeasonMetaSkeleton({ embedded = false }: { embedded?: boolean }) {
   const { dict } = useI18n()
 
-  return (
-    <div className="glass-panel rounded-xl p-4 sm:p-5 shadow-sm">
-      <div className="mb-3 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-            {dict.seasonMeta.title}
-          </h2>
-          <span className="inline-flex h-5 items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 px-2 text-[10px] font-bold text-sky-700 dark:bg-sky-950/60 dark:text-sky-300">
-            <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 animate-ping" />
-            {dict.common.loading}
-          </span>
+  const content = (
+    <>
+      {!embedded && (
+        <div className="mb-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              {dict.seasonMeta.title}
+            </h2>
+            <span className="inline-flex h-5 items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 px-2 text-[10px] font-bold text-sky-700 dark:bg-sky-950/60 dark:text-sky-300">
+              <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 animate-ping" />
+              {dict.common.loading}
+            </span>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
         {/* Cột 1 */}
@@ -55,6 +58,16 @@ function SeasonMetaSkeleton() {
           <div className="mt-2 h-8 w-full rounded-lg skeleton-shimmer" />
         </div>
       </div>
+    </>
+  )
+
+  if (embedded) {
+    return <div>{content}</div>
+  }
+
+  return (
+    <div className="glass-panel rounded-xl p-4 sm:p-5 shadow-sm">
+      {content}
     </div>
   )
 }
@@ -66,11 +79,12 @@ export function SeasonMetaForm({
   onSelectSeasonIndex,
   onUpdateSeasonMeta,
   isSyncingApi = false,
+  embedded = false,
 }: SeasonMetaFormProps) {
   const { dict } = useI18n()
 
   if (isSyncingApi) {
-    return <SeasonMetaSkeleton />
+    return <SeasonMetaSkeleton embedded={embedded} />
   }
   // Thời gian mùa giải luôn hiển thị từ ngày bắt đầu đến 6 ngày sau (ví dụ 22/09/2026 - 28/09/2026)
   const currentPeriodInfo = parseSeasonDateRange(season.leagueSeasonId, season.startsAt)
@@ -85,20 +99,22 @@ export function SeasonMetaForm({
     label: idx === 0 ? dict.seasonMeta.currentSeason : dict.seasonMeta.previousSeason,
   }))
 
-  return (
-    <div className="glass-panel rounded-2xl p-5 shadow-xs">
-      <div className="mb-3 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-            {dict.seasonMeta.title}
-          </h2>
-          {season.lastSyncedAt && (
-            <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:bg-emerald-400/10 dark:text-emerald-400">
-              {dict.seasonMeta.apiPrefix} {season.lastSyncedAt}
-            </span>
-          )}
+  const content = (
+    <>
+      {!embedded && (
+        <div className="mb-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              {dict.seasonMeta.title}
+            </h2>
+            {season.lastSyncedAt && (
+              <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:bg-emerald-400/10 dark:text-emerald-400">
+                {dict.seasonMeta.apiPrefix} {season.lastSyncedAt}
+              </span>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
         {/* Cột 1: Giải đấu (Phóng to Icon và Text) */}
@@ -208,6 +224,16 @@ export function SeasonMetaForm({
           </div>
         </div>
       </div>
+    </>
+  )
+
+  if (embedded) {
+    return <div>{content}</div>
+  }
+
+  return (
+    <div className="glass-panel rounded-2xl p-5 shadow-xs">
+      {content}
     </div>
   )
 }

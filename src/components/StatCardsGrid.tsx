@@ -1,4 +1,4 @@
-import { Trophy, Sword, Users, ShieldWarning } from '@phosphor-icons/react'
+import { Trophy, Sword, Users, ShieldWarning, UserFocus } from '@phosphor-icons/react'
 import type { RankingStats, Season } from '../types'
 import { useI18n } from '../i18n/LanguageContext'
 
@@ -30,21 +30,33 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
 
   if (isSyncingApi) {
     return (
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {[1, 2, 3, 4].map((i) => (
-          <div
-            key={i}
-            className="glass-panel relative overflow-hidden rounded-2xl p-5 shadow-xs"
-          >
-            <div className="flex items-center justify-between">
-              <div className="h-3.5 w-28 rounded-md skeleton-shimmer" />
-              <div className="h-8 w-8 rounded-lg skeleton-shimmer" />
+      <section className="glass-panel rounded-2xl p-5 sm:p-6 shadow-sm overflow-hidden">
+        <div className="flex items-center justify-between gap-3 mb-5 pb-4 border-b border-slate-200/60 dark:border-slate-800/60">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl skeleton-shimmer" />
+            <div>
+              <div className="h-4 w-44 rounded-md skeleton-shimmer" />
+              <div className="mt-1.5 h-3 w-64 rounded-md skeleton-shimmer" />
             </div>
-            <div className="mt-3.5 h-8 w-24 rounded-lg skeleton-shimmer" />
-            <div className="mt-3 h-3 w-36 rounded-md skeleton-shimmer" />
           </div>
-        ))}
-      </div>
+        </div>
+
+        <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              className="relative overflow-hidden rounded-xl border border-slate-200/80 bg-white/60 p-4 sm:p-4.5 shadow-2xs dark:border-white/10 dark:bg-slate-900/50"
+            >
+              <div className="flex items-center justify-between">
+                <div className="h-3.5 w-24 rounded-md skeleton-shimmer" />
+                <div className="h-4 w-12 rounded-full skeleton-shimmer" />
+              </div>
+              <div className="mt-3.5 h-8 w-20 rounded-lg skeleton-shimmer" />
+              <div className="mt-2.5 h-3 w-32 rounded-md skeleton-shimmer" />
+            </div>
+          ))}
+        </div>
+      </section>
     )
   }
 
@@ -135,51 +147,90 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
   ]
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {cards.map((card) => {
-        const IconComponent = card.icon
-        return (
-          <div
-            key={card.label}
-            className="hero-stat-card glass-panel group relative overflow-hidden rounded-2xl border border-slate-200/80 p-5 shadow-xs dark:border-white/10 cursor-default"
-            style={{
-              backgroundImage: `radial-gradient(circle at 100% 100%, ${card.tonalGlow}, transparent 70%)`,
-            }}
-          >
-            {/* Vạch Accent Glow ở mép trên kiểu Apple Specular Bar */}
-            <div
-              className={`absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r ${card.accentGradient} opacity-85 group-hover:h-[4px] group-hover:opacity-100 transition-all`}
-            />
-
-            {/* Icon lớn mờ chìm nghệ thuật ở góc thẻ */}
-            <IconComponent
-              weight="duotone"
-              className={`pointer-events-none absolute -bottom-3 -right-3 h-24 w-24 opacity-[0.09] dark:opacity-[0.14] transition-transform duration-300 group-hover:scale-115 ${card.iconColor}`}
-            />
-
-            <div className="relative z-10 flex items-center justify-between">
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                {card.label}
-              </p>
-              {card.badge && (
-                <span
-                  className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-bold tracking-tight select-none shadow-2xs ${card.badgeColor}`}
-                >
-                  {card.badge}
+    <section className="glass-panel rounded-2xl p-5 sm:p-6 shadow-sm overflow-hidden">
+      {/* Header Thẻ lớn: Chỉ số tổng quan cá nhân */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 pb-4 border-b border-slate-200/60 dark:border-slate-800/60">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-500/10 text-sky-600 dark:bg-sky-400/15 dark:text-sky-300 shadow-2xs">
+            <UserFocus weight="duotone" className="h-5 w-5" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
+                {dict.statCards.overviewTitle}
+              </h2>
+              {myPlayerName && myPlayerName !== '--' && (
+                <span className="inline-flex items-center rounded-full border border-sky-500/25 bg-sky-500/10 px-2.5 py-0.5 text-xs font-semibold text-sky-700 dark:border-sky-400/30 dark:bg-sky-400/15 dark:text-sky-300 shadow-2xs">
+                  {myPlayerName}
                 </span>
               )}
             </div>
-
-            <p className={`relative z-10 mt-2 font-mono text-3xl font-black tracking-tight ${card.valueColor}`}>
-              {card.value}
-            </p>
-
-            <p className="relative z-10 mt-1.5 text-xs text-slate-500 dark:text-slate-400 truncate font-medium">
-              {card.detail}
+            <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+              {dict.statCards.overviewSubtitle}
             </p>
           </div>
-        )
-      })}
-    </div>
+        </div>
+
+        {hasMyPlayer && (
+          <div className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400 self-start sm:self-auto">
+            <span className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200/80 bg-white/50 px-2.5 py-1 dark:border-slate-700/80 dark:bg-slate-800/50 shadow-2xs">
+              <Trophy weight="duotone" className="h-3.5 w-3.5 text-amber-500" />
+              <span className="font-mono font-bold text-slate-700 dark:text-slate-200">
+                {numberFormatter(stats.myPlayer!.currentCups)}
+              </span>
+              <span>{dict.common.trophies}</span>
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Lưới 4 thẻ chỉ số con bên trong */}
+      <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+        {cards.map((card) => {
+          const IconComponent = card.icon
+          return (
+            <div
+              key={card.label}
+              className="hero-stat-card group relative overflow-hidden rounded-xl border border-slate-200/80 bg-white/60 p-4 sm:p-4.5 shadow-2xs dark:border-white/10 dark:bg-slate-900/50 backdrop-blur-md transition-all hover:border-slate-300 dark:hover:border-white/20 cursor-default"
+              style={{
+                backgroundImage: `radial-gradient(circle at 100% 100%, ${card.tonalGlow}, transparent 70%)`,
+              }}
+            >
+              {/* Vạch Accent Glow ở mép trên kiểu Apple Specular Bar */}
+              <div
+                className={`absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r ${card.accentGradient} opacity-85 group-hover:h-[4px] group-hover:opacity-100 transition-all`}
+              />
+
+              {/* Icon lớn mờ chìm nghệ thuật ở góc thẻ */}
+              <IconComponent
+                weight="duotone"
+                className={`pointer-events-none absolute -bottom-3 -right-3 h-24 w-24 opacity-[0.08] dark:opacity-[0.14] transition-transform duration-300 group-hover:scale-115 ${card.iconColor}`}
+              />
+
+              <div className="relative z-10 flex items-center justify-between">
+                <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  {card.label}
+                </p>
+                {card.badge && (
+                  <span
+                    className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-bold tracking-tight select-none shadow-2xs ${card.badgeColor}`}
+                  >
+                    {card.badge}
+                  </span>
+                )}
+              </div>
+
+              <p className={`relative z-10 mt-2 font-mono text-3xl font-black tracking-tight ${card.valueColor}`}>
+                {card.value}
+              </p>
+
+              <p className="relative z-10 mt-1.5 text-xs text-slate-500 dark:text-slate-400 truncate font-medium">
+                {card.detail}
+              </p>
+            </div>
+          )
+        })}
+      </div>
+    </section>
   )
 }

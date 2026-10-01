@@ -49,6 +49,8 @@ export const en: TranslationDictionary = {
     exportSuccess: 'Successfully exported file {fileName}.',
   },
   statCards: {
+    overviewTitle: 'Personal Overview',
+    overviewSubtitle: 'Your performance and competitive standing in the current season',
     myRank: 'My Standing',
     topPercentage: 'Top {percent}%',
     opponentsCanPass: 'Opponents Who Can Pass Me',
@@ -64,6 +66,8 @@ export const en: TranslationDictionary = {
     myStats: 'My Statistics',
   },
   seasonMeta: {
+    seasonOverviewTitle: 'Season Overview',
+    seasonOverviewSubtitle: 'League tier details, promotion/demotion thresholds, and leaderboard distribution analytics',
     title: 'Season Information',
     apiPrefix: 'API:',
     league: 'League Tier',
@@ -120,6 +124,8 @@ export const en: TranslationDictionary = {
     seasonPrefix: 'Season {period}',
   },
   charts: {
+    distributionTitle: 'Season Distribution Analytics',
+    distributionSubtitle: 'Trophy gap ratio, battle completion progress, and skill ratings',
     opponentRatioWithMe: 'Opponents relative to {name}',
     opponentRatioMe: 'Opponents relative to Me',
     attackCompletion: 'Attack Completion Rate',

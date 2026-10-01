@@ -49,6 +49,8 @@ export const vi: TranslationDictionary = {
     exportSuccess: 'Đã xuất file {fileName} thành công.',
   },
   statCards: {
+    overviewTitle: 'Chỉ số tổng quan cá nhân',
+    overviewSubtitle: 'Hiệu suất thi đấu và vị thế cạnh tranh của bạn trong mùa giải hiện tại',
     myRank: 'Thứ hạng của tôi',
     topPercentage: 'Top {percent}%',
     opponentsCanPass: 'Đối thủ có thể vượt tôi',
@@ -64,6 +66,8 @@ export const vi: TranslationDictionary = {
     myStats: 'Chỉ số của tôi',
   },
   seasonMeta: {
+    seasonOverviewTitle: 'Tổng quan mùa giải',
+    seasonOverviewSubtitle: 'Thông tin giải đấu, thiết lập thăng/xuống hạng và phân tích phân bổ toàn bảng',
     title: 'Thông tin mùa giải',
     apiPrefix: 'API:',
     league: 'Giải đấu',
@@ -120,6 +124,8 @@ export const vi: TranslationDictionary = {
     seasonPrefix: 'Mùa {period}',
   },
   charts: {
+    distributionTitle: 'Phân tích phân bổ mùa giải',
+    distributionSubtitle: 'Tỷ lệ khoảng cách cúp, tiến độ chiến đấu và xếp loại năng lực',
     opponentRatioWithMe: 'Tỷ lệ đối thủ so với {name}',
     opponentRatioMe: 'Tỷ lệ đối thủ so với tôi',
     attackCompletion: 'Tỷ lệ hoàn thành lượt đánh',

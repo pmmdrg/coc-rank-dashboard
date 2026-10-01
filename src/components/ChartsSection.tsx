@@ -1,22 +1,29 @@
 import { useI18n } from '../i18n/LanguageContext'
 
-interface ChartDataItem {
+export interface ChartDataItem {
   label: string
   value: number
   color: string
 }
 
-interface ChartsSectionProps {
+export interface ChartsSectionProps {
   comparisonData: ChartDataItem[]
   attackStatusData: ChartDataItem[]
   ratingData: ChartDataItem[]
   myPlayerName: string
   isSyncingApi?: boolean
+  embedded?: boolean
 }
 
-function SkeletonPieChart() {
+function SkeletonPieChart({ embedded = false }: { embedded?: boolean }) {
   return (
-    <div className="glass-panel flex h-full flex-col rounded-2xl p-4 sm:p-5 shadow-sm">
+    <div
+      className={
+        embedded
+          ? 'flex h-full flex-col rounded-xl border border-slate-200/80 bg-white/60 p-4 sm:p-5 shadow-2xs dark:border-white/10 dark:bg-slate-900/50'
+          : 'glass-panel flex h-full flex-col rounded-2xl p-4 sm:p-5 shadow-sm'
+      }
+    >
       <div className="flex items-center justify-between gap-2 shrink-0">
         <div className="h-4 w-40 rounded-md skeleton-shimmer" />
         <div className="h-3 w-16 rounded-md skeleton-shimmer" />
@@ -65,10 +72,12 @@ function PercentagePieChart({
   title,
   values,
   showPercentage = true,
+  embedded = false,
 }: {
   title: string
   values: ChartDataItem[]
   showPercentage?: boolean
+  embedded?: boolean
 }) {
   const { dict, interpolate, language } = useI18n()
   const slices = getPieSlices(values)
@@ -79,7 +88,13 @@ function PercentagePieChart({
     new Intl.NumberFormat(language === 'vi' ? 'vi-VN' : 'en-US').format(val)
 
   return (
-    <div className="glass-panel flex h-full flex-col rounded-2xl p-4 sm:p-5 shadow-sm hover:border-slate-300 dark:hover:border-slate-700/80 transition-all duration-300">
+    <div
+      className={
+        embedded
+          ? 'flex h-full flex-col rounded-xl border border-slate-200/80 bg-white/60 p-4 sm:p-5 shadow-2xs dark:border-white/10 dark:bg-slate-900/50 backdrop-blur-md transition-all duration-300 hover:border-slate-300 dark:hover:border-white/20'
+          : 'glass-panel flex h-full flex-col rounded-2xl p-4 sm:p-5 shadow-sm hover:border-slate-300 dark:hover:border-slate-700/80 transition-all duration-300'
+      }
+    >
       <div className="flex items-center justify-between gap-2 shrink-0">
         <h3 className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-200 truncate" title={title}>
           {title}
@@ -171,6 +186,7 @@ export function ChartsSection({
   ratingData,
   myPlayerName,
   isSyncingApi = false,
+  embedded = false,
 }: ChartsSectionProps) {
   const { dict, interpolate } = useI18n()
 
@@ -181,32 +197,35 @@ export function ChartsSection({
 
   if (isSyncingApi) {
     return (
-      <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <SkeletonPieChart />
-        <SkeletonPieChart />
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <SkeletonPieChart embedded={embedded} />
+        <SkeletonPieChart embedded={embedded} />
         <div className="md:col-span-2 lg:col-span-1">
-          <SkeletonPieChart />
+          <SkeletonPieChart embedded={embedded} />
         </div>
-      </section>
+      </div>
     )
   }
 
   return (
-    <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       <PercentagePieChart
         title={comparisonTitle}
         values={comparisonData}
+        embedded={embedded}
       />
       <PercentagePieChart
         title={dict.charts.attackCompletion}
         values={attackStatusData}
+        embedded={embedded}
       />
       <div className="md:col-span-2 lg:col-span-1">
         <PercentagePieChart
           title={dict.charts.skillRating}
           values={ratingData}
+          embedded={embedded}
         />
       </div>
-    </section>
+    </div>
   )
 }

@@ -32,10 +32,9 @@ import type {
 } from './types'
 
 import { useI18n } from './i18n/LanguageContext'
-import { ChartsSection } from './components/ChartsSection'
+import { SeasonOverviewSection } from './components/SeasonOverviewSection'
 import { PlayerTable } from './components/PlayerTable'
 import { SeasonHeader } from './components/SeasonHeader'
-import { SeasonMetaForm } from './components/SeasonMetaForm'
 import { StatCardsGrid } from './components/StatCardsGrid'
 import { HighlightStatsTable } from './components/HighlightStatsTable'
 import { PerformanceTrendSection } from './components/PerformanceTrendSection'
@@ -451,18 +450,13 @@ function App() {
         />
 
         {/* PHẦN 2: CÁC THÔNG TIN LIÊN QUAN TỚI BẢNG XẾP HẠNG CỦA MÙA GIẢI */}
-        {/* Form thông tin mùa giải: chọn mùa giải & quy tắc thăng/xuống */}
-        <SeasonMetaForm
+        {/* Thẻ lớn: Tổng quan mùa giải (Thông tin giải đấu, thiết lập & 3 Biểu đồ phân bổ phân tích) */}
+        <SeasonOverviewSection
           season={rankedSeason}
           seasons={document.seasons.map(normalizeSeason)}
           activeSeasonIndex={document.activeSeasonIndex}
           onSelectSeasonIndex={handleSelectSeasonIndex}
           onUpdateSeasonMeta={handleUpdateSeasonMeta}
-          isSyncingApi={isSyncingApi}
-        />
-
-        {/* Khu vực biểu đồ thống kê mùa giải */}
-        <ChartsSection
           comparisonData={comparisonChartData}
           attackStatusData={attackStatusChartData}
           ratingData={ratingChartData}
