@@ -382,7 +382,7 @@ export function PlayerTable({
     warnedPlayerIds,
   ])
 
-  const totalPlayers = effectivePlayers.length
+  const totalRankedPlayers = rankedPlayers.length
   const isFiltered = filterTab !== 'all' || searchQuery.trim().length > 0
 
   const handleFilterTabChange = (val: FilterTab) => {
@@ -517,12 +517,12 @@ export function PlayerTable({
     interpolate,
   ])
 
-  const showPromotionLine = !isFiltered && promotionCount > 0 && promotionCount < totalPlayers
+  const showPromotionLine = !isFiltered && promotionCount > 0 && promotionCount < totalRankedPlayers
   const showDemotionLine =
     !isFiltered &&
     demotionCount > 0 &&
-    demotionCount < totalPlayers &&
-    totalPlayers - demotionCount >= promotionCount
+    demotionCount < totalRankedPlayers &&
+    totalRankedPlayers - demotionCount >= promotionCount
 
   function jumpToMyPlayer() {
     if (!stats.myPlayer) return
@@ -921,11 +921,11 @@ export function PlayerTable({
                 )
                 const isPromotionZone = promotionCount > 0 && player.rank <= promotionCount
                 const isDemotionZone =
-                  demotionCount > 0 && player.rank > totalPlayers - demotionCount
+                  demotionCount > 0 && player.rank > totalRankedPlayers - demotionCount
 
                 const isAfterPromotionLine = showPromotionLine && index === promotionCount - 1
                 const isBeforeDemotionLine =
-                  showDemotionLine && index === totalPlayers - demotionCount - 1
+                  showDemotionLine && index === totalRankedPlayers - demotionCount - 1
 
                 return (
                   <Fragment key={player.id}>
