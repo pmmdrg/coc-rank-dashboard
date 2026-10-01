@@ -191,10 +191,15 @@ select:focus-visible {
   font-weight: 600;
 }
 
-/* Fallback khi không có sliding indicator */
+/* Fallback khi không có sliding indicator (hoặc nút đơn lẻ dùng style segmented pill) */
 .apple-segmented-container:not(:has(.apple-segmented-slider)) .apple-segmented-item.is-active {
   background: #ffffff;
   box-shadow: 0 2px 8px -1px rgba(15, 23, 42, 0.14), 0 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.apple-segmented-container:not(:has(.apple-segmented-slider)) .apple-segmented-item.is-active:hover {
+  background: #ffffff;
+  box-shadow: 0 4px 12px -1px rgba(15, 23, 42, 0.18), 0 0 1px 1px rgba(0, 0, 0, 0.06);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -276,6 +281,11 @@ html.dark .apple-segmented-item.is-active {
 html.dark .apple-segmented-container:not(:has(.apple-segmented-slider)) .apple-segmented-item.is-active {
   background: rgba(51, 65, 85, 0.95);
   box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+html.dark .apple-segmented-container:not(:has(.apple-segmented-slider)) .apple-segmented-item.is-active:hover {
+  background: rgba(71, 85, 105, 0.98);
+  box-shadow: 0 6px 16px -2px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.22);
 }
 
 @keyframes modal-backdrop-in {

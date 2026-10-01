@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react'
-import { CaretDown } from '@phosphor-icons/react'
 import type { LeagueHistoryItem } from '../types'
 import { parseSeasonDateRange } from '../lib/cocApi'
 import { RANKED_TIERS_METADATA } from '../data/rankedTierMetadata'
@@ -8,6 +7,7 @@ import { TrendHistoryTable } from './trend/TrendHistoryTable'
 import type { ProcessedSeasonPoint } from './trend/types'
 import { useI18n } from '../i18n/LanguageContext'
 import { SegmentedControl, type SegmentedControlOption } from './SegmentedControl'
+import { CollapseToggleButton } from './CollapseToggleButton'
 
 export interface PerformanceTrendSectionProps {
   leagueHistory?: LeagueHistoryItem[]
@@ -420,31 +420,26 @@ export function PerformanceTrendSection({
 
         <div className="flex items-center gap-2">
           {/* Nút bật/tắt bảng chi tiết */}
-          <button
-            type="button"
-            onClick={() => setShowTable((prev) => !prev)}
-            className={`rounded-lg border px-2.5 py-1 text-xs font-semibold transition-all ${
-              showTable
-                ? 'border-sky-500/40 bg-sky-500/10 text-sky-700 dark:text-sky-300'
-                : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400'
-            }`}
-          >
-            {showTable ? dict.performanceTrend.hideHistoryTable : dict.performanceTrend.showHistoryTable}
-          </button>
+          <div className="apple-segmented-container">
+            <button
+              type="button"
+              onClick={() => setShowTable((prev) => !prev)}
+              className={`apple-segmented-item ${
+                showTable
+                  ? 'is-active text-sky-700 dark:text-sky-300 font-bold'
+                  : 'hover:text-slate-900 dark:hover:text-white'
+              } transition-all active:scale-95 cursor-pointer font-semibold`}
+            >
+              {showTable ? dict.performanceTrend.hideHistoryTable : dict.performanceTrend.showHistoryTable}
+            </button>
+          </div>
 
           {/* Nút thu gọn / mở rộng section */}
-          <button
-            type="button"
-            onClick={() => setIsCollapsed((prev) => !prev)}
-            className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-100 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 cursor-pointer shadow-2xs"
-            aria-expanded={!isCollapsed}
-          >
-            <span>{isCollapsed ? dict.performanceTrend.expand : dict.performanceTrend.collapse}</span>
-            <CaretDown
-              weight="bold"
-              className={`h-3.5 w-3.5 transition-transform duration-300 ${!isCollapsed ? 'rotate-180' : ''}`}
-            />
-          </button>
+          <CollapseToggleButton
+            isCollapsed={isCollapsed}
+            onToggle={() => setIsCollapsed((prev) => !prev)}
+            ariaLabel={dict.performanceTrend.title}
+          />
         </div>
       </div>
 

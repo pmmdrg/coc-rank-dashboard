@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react'
-import { Trophy, Sword, ShieldWarning, ShieldCheck, CaretDown } from '@phosphor-icons/react'
+import { Trophy, Sword, ShieldWarning, ShieldCheck } from '@phosphor-icons/react'
 import type { RankingStats, Season } from '../types'
 import { useI18n } from '../i18n/LanguageContext'
+import { CollapseToggleButton } from './CollapseToggleButton'
 
 interface StatCardsGridProps {
   stats: RankingStats
@@ -256,19 +257,12 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
           {dict.statCards.overviewTitle}
         </h2>
 
-        {/* Nút thu gọn / mở rộng */}
-        <button
-          type="button"
-          onClick={handleToggleCollapse}
-          className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white/70 px-2.5 py-1 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-400 dark:hover:bg-slate-800 cursor-pointer shadow-2xs select-none"
-          aria-expanded={!isCollapsed}
-        >
-          <span>{isCollapsed ? dict.performanceTrend.expand : dict.performanceTrend.collapse}</span>
-          <CaretDown
-            weight="bold"
-            className={`h-3.5 w-3.5 transition-transform duration-300 ${!isCollapsed ? 'rotate-180' : ''}`}
-          />
-        </button>
+        {/* Nút thu gọn / mở rộng đồng bộ style với filter segmented control */}
+        <CollapseToggleButton
+          isCollapsed={isCollapsed}
+          onToggle={handleToggleCollapse}
+          ariaLabel={dict.statCards.overviewTitle}
+        />
       </div>
 
       {/* Lưới 4 thẻ chỉ số con bên trong với animation collapsible-grid */}

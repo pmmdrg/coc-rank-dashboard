@@ -1,8 +1,9 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { CaretDown, MagnifyingGlass } from '@phosphor-icons/react'
+import { MagnifyingGlass } from '@phosphor-icons/react'
 import type { RankChangesSnapshot, RankChangeItem } from '../types'
 import { useI18n } from '../i18n/LanguageContext'
 import { SegmentedControl, type SegmentedControlOption } from './SegmentedControl'
+import { CollapseToggleButton } from './CollapseToggleButton'
 
 export interface RankChangesSectionProps {
   snapshot: RankChangesSnapshot | null
@@ -265,18 +266,11 @@ export function RankChangesSection({
             </div>
           )}
 
-          <button
-            type="button"
-            onClick={handleToggleCollapse}
-            className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white/70 px-3 py-1.5 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-300 dark:hover:bg-slate-800 cursor-pointer shadow-2xs"
-            aria-expanded={!isCollapsed}
-          >
-            <span>{isCollapsed ? dict.performanceTrend.expand : dict.performanceTrend.collapse}</span>
-            <CaretDown
-              weight="bold"
-              className={`h-4 w-4 transition-transform duration-300 ${!isCollapsed ? 'rotate-180' : ''}`}
-            />
-          </button>
+          <CollapseToggleButton
+            isCollapsed={isCollapsed}
+            onToggle={handleToggleCollapse}
+            ariaLabel={dict.rankChanges.title}
+          />
         </div>
       </div>
 

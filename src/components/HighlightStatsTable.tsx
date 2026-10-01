@@ -1,8 +1,8 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { CaretDown } from '@phosphor-icons/react'
 import type { Player } from '../types'
 import { useI18n } from '../i18n/LanguageContext'
 import { SegmentedControl, type SegmentedControlOption } from './SegmentedControl'
+import { CollapseToggleButton } from './CollapseToggleButton'
 
 export interface HighlightStatsTableProps {
   players: Player[]
@@ -421,19 +421,12 @@ export function HighlightStatsTable({
             ariaLabel={dict.highlights.title}
           />
 
-          {/* Nút thu gọn / mở rộng thay thế tổng cộng số người chơi */}
-          <button
-            type="button"
-            onClick={handleToggleCollapse}
-            className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white/70 px-2.5 py-1 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-400 dark:hover:bg-slate-800 cursor-pointer shadow-2xs select-none"
-            aria-expanded={!isCollapsed}
-          >
-            <span>{isCollapsed ? dict.performanceTrend.expand : dict.performanceTrend.collapse}</span>
-            <CaretDown
-              weight="bold"
-              className={`h-3.5 w-3.5 transition-transform duration-300 ${!isCollapsed ? 'rotate-180' : ''}`}
-            />
-          </button>
+          {/* Nút thu gọn / mở rộng đồng bộ style với filter segmented control */}
+          <CollapseToggleButton
+            isCollapsed={isCollapsed}
+            onToggle={handleToggleCollapse}
+            ariaLabel={dict.highlights.title}
+          />
         </div>
       </div>
 
