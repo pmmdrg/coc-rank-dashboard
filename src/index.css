@@ -590,6 +590,24 @@ select {
   will-change: transform, opacity;
 }
 
+/* Animation mượt mà, nảy nhẹ cho dropdown / select box khi mở */
+@keyframes dropdown-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-dropdown-pop {
+  animation: dropdown-pop 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: top center;
+  will-change: transform, opacity;
+}
+
 /* Animation mượt mà cho thao tác thu gọn / xổ xuống (Accordion Grid) */
 .collapsible-grid {
   display: grid;

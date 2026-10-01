@@ -3,6 +3,7 @@ import { formatLeagueName } from '../lib/ranking'
 import { getLeagueIconUrl } from '../lib/leagueIcons'
 import { parseSeasonDateRange } from '../lib/cocApi'
 import { useI18n } from '../i18n/LanguageContext'
+import { CustomSelect } from './CustomSelect'
 
 interface SeasonMetaFormProps {
   season: Season
@@ -206,21 +207,15 @@ export function SeasonMetaForm({
             </span>
           </div>
           <div className="mt-2.5 flex items-center">
-            <select
+            <CustomSelect<number>
               value={activeSeasonIndex}
-              onChange={(e) => onSelectSeasonIndex(Number(e.target.value))}
-              className="soft-field h-10 w-full rounded-xl px-3.5 pr-8 text-sm font-bold text-slate-800 dark:text-slate-100 truncate cursor-pointer transition-all hover:border-sky-500/50 focus:border-sky-500"
-            >
-              {seasonOptions.map((opt) => (
-                <option
-                  key={opt.index}
-                  value={opt.index}
-                  className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100 font-semibold"
-                >
-                  {opt.label}
-                </option>
-              ))}
-            </select>
+              options={seasonOptions.map((opt) => ({
+                value: opt.index,
+                label: opt.label,
+              }))}
+              onChange={(val) => onSelectSeasonIndex(val)}
+              ariaLabel={dict.seasonMeta.selectSeason}
+            />
           </div>
         </div>
       </div>
