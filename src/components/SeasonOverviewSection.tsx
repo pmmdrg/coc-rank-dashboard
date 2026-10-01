@@ -31,18 +31,9 @@ export function SeasonOverviewSection({
   isSyncingApi = false,
 }: SeasonOverviewSectionProps) {
   const { dict } = useI18n()
-
   const [isCollapsed, setIsCollapsed] = useState<boolean>(() => {
     try {
       return localStorage.getItem('coc_season_overview_collapsed') === 'true'
-    } catch {
-      return false
-    }
-  })
-
-  const [isChartsCollapsed, setIsChartsCollapsed] = useState<boolean>(() => {
-    try {
-      return localStorage.getItem('coc_charts_distribution_collapsed') === 'true'
     } catch {
       return false
     }
@@ -53,18 +44,6 @@ export function SeasonOverviewSection({
       const next = !prev
       try {
         localStorage.setItem('coc_season_overview_collapsed', String(next))
-      } catch {
-        // Ignore localStorage errors
-      }
-      return next
-    })
-  }
-
-  function handleToggleChartsCollapse() {
-    setIsChartsCollapsed((prev) => {
-      const next = !prev
-      try {
-        localStorage.setItem('coc_charts_distribution_collapsed', String(next))
       } catch {
         // Ignore localStorage errors
       }
@@ -117,42 +96,15 @@ export function SeasonOverviewSection({
             {/* Đường phân cách giữa 2 khối thông tin */}
             <div className="border-t border-slate-200/60 dark:border-slate-800/60" />
 
-            {/* Phân mục 2: Phân tích phân bổ mùa giải */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between gap-3">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                  {dict.charts.distributionTitle}
-                </h3>
-
-                {/* Nút thu gọn / mở rộng riêng cho khối Phân tích phân bổ */}
-                <button
-                  type="button"
-                  onClick={handleToggleChartsCollapse}
-                  className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white/70 px-2 py-1 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-400 dark:hover:bg-slate-800 cursor-pointer shadow-2xs select-none"
-                  aria-expanded={!isChartsCollapsed}
-                >
-                  <span>{isChartsCollapsed ? dict.performanceTrend.expand : dict.performanceTrend.collapse}</span>
-                  <CaretDown
-                    weight="bold"
-                    className={`h-3 w-3 transition-transform duration-300 ${!isChartsCollapsed ? 'rotate-180' : ''}`}
-                  />
-                </button>
-              </div>
-
-              {/* Lưới 3 biểu đồ con với animation collapsible-grid */}
-              <div className={`collapsible-grid ${!isChartsCollapsed ? 'is-expanded' : ''}`}>
-                <div className="collapsible-inner">
-                  <ChartsSection
-                    comparisonData={comparisonData}
-                    attackStatusData={attackStatusData}
-                    ratingData={ratingData}
-                    myPlayerName={myPlayerName}
-                    isSyncingApi={isSyncingApi}
-                    embedded={true}
-                  />
-                </div>
-              </div>
-            </div>
+            {/* Phân mục 2: Biểu đồ phân bổ mùa giải */}
+            <ChartsSection
+              comparisonData={comparisonData}
+              attackStatusData={attackStatusData}
+              ratingData={ratingData}
+              myPlayerName={myPlayerName}
+              isSyncingApi={isSyncingApi}
+              embedded={true}
+            />
           </div>
         </div>
       </div>
