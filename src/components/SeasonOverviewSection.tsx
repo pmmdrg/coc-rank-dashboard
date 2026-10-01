@@ -83,28 +83,32 @@ export function SeasonOverviewSection({
         <div className="collapsible-inner">
           <div className="p-4 sm:p-5 space-y-6">
             {/* Phân mục 1: Thông tin & Quy tắc mùa giải */}
-            <SeasonMetaForm
-              season={season}
-              seasons={seasons}
-              activeSeasonIndex={activeSeasonIndex}
-              onSelectSeasonIndex={onSelectSeasonIndex}
-              onUpdateSeasonMeta={onUpdateSeasonMeta}
-              isSyncingApi={isSyncingApi}
-              embedded={true}
-            />
+            <div className="relative z-20">
+              <SeasonMetaForm
+                season={season}
+                seasons={seasons}
+                activeSeasonIndex={activeSeasonIndex}
+                onSelectSeasonIndex={onSelectSeasonIndex}
+                onUpdateSeasonMeta={onUpdateSeasonMeta}
+                isSyncingApi={isSyncingApi}
+                embedded={true}
+              />
+            </div>
 
             {/* Đường phân cách giữa 2 khối thông tin */}
             <div className="border-t border-slate-200/60 dark:border-slate-800/60" />
 
             {/* Phân mục 2: Biểu đồ phân bổ mùa giải */}
-            <ChartsSection
-              comparisonData={comparisonData}
-              attackStatusData={attackStatusData}
-              ratingData={ratingData}
-              myPlayerName={myPlayerName}
-              isSyncingApi={isSyncingApi}
-              embedded={true}
-            />
+            <div className="relative z-10">
+              <ChartsSection
+                comparisonData={comparisonData}
+                attackStatusData={attackStatusData}
+                ratingData={ratingData}
+                myPlayerName={myPlayerName}
+                isSyncingApi={isSyncingApi}
+                embedded={true}
+              />
+            </div>
           </div>
         </div>
       </div>

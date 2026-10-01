@@ -200,7 +200,7 @@ export function SeasonMetaForm({
         </div>
 
         {/* Cột 3: Select box chỉ gồm đúng 2 giá trị: Mùa giải hiện tại và Mùa giải ngay trước đó */}
-        <div className="flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white/60 p-4.5 backdrop-blur-md dark:border-white/10 dark:bg-slate-900/50 shadow-2xs">
+        <div className="relative z-30 flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white/60 p-4.5 backdrop-blur-md dark:border-white/10 dark:bg-slate-900/50 shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
               {dict.seasonMeta.selectSeason}
@@ -223,11 +223,11 @@ export function SeasonMetaForm({
   )
 
   if (embedded) {
-    return <div>{content}</div>
+    return <div className="relative z-20">{content}</div>
   }
 
   return (
-    <div className="glass-panel rounded-2xl p-5 shadow-xs">
+    <div className="glass-panel relative z-20 rounded-2xl p-5 shadow-xs">
       {content}
     </div>
   )

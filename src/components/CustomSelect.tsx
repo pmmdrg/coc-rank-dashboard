@@ -50,7 +50,7 @@ export function CustomSelect<T extends string | number>({
   }, [isOpen])
 
   return (
-    <div ref={containerRef} className={`relative w-full ${className}`}>
+    <div ref={containerRef} className={`relative w-full ${isOpen ? 'z-50' : 'z-10'} ${className}`}>
       {/* Nút trigger select box - Mũi tên được căn lề rộng rãi, bo tròn tinh tế */}
       <button
         type="button"
@@ -59,7 +59,11 @@ export function CustomSelect<T extends string | number>({
         aria-haspopup="listbox"
         aria-label={ariaLabel}
         onClick={() => setIsOpen((prev) => !prev)}
-        className="group relative flex h-10 w-full items-center justify-between rounded-xl border border-slate-200/80 bg-white/70 px-4 text-left text-sm font-bold text-slate-800 shadow-2xs backdrop-blur-md transition-all hover:border-sky-500/50 hover:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500/30 dark:border-white/10 dark:bg-slate-800/70 dark:text-slate-100 dark:hover:border-sky-400/50 dark:hover:bg-slate-800 cursor-pointer select-none"
+        className={`group relative flex h-10 w-full items-center justify-between rounded-xl border px-4 text-left text-sm font-bold shadow-2xs backdrop-blur-md transition-all cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-sky-500/30 ${
+          isOpen
+            ? 'border-sky-500/60 bg-white ring-2 ring-sky-500/30 text-sky-900 dark:border-sky-400/60 dark:bg-slate-800 dark:text-sky-100'
+            : 'border-slate-200/80 bg-white/70 text-slate-800 hover:border-sky-500/50 hover:bg-white dark:border-white/10 dark:bg-slate-800/70 dark:text-slate-100 dark:hover:border-sky-400/50 dark:hover:bg-slate-800'
+        }`}
       >
         <span className="truncate pr-3">{selectedOption?.label}</span>
         <CaretDown
@@ -75,7 +79,7 @@ export function CustomSelect<T extends string | number>({
         <div
           role="listbox"
           aria-label={ariaLabel}
-          className="animate-dropdown-pop absolute left-0 right-0 top-full mt-1.5 z-50 overflow-hidden rounded-2xl border border-slate-200/90 bg-white/95 p-1.5 shadow-xl shadow-slate-900/10 backdrop-blur-xl dark:border-slate-700/80 dark:bg-slate-900/95 dark:shadow-2xl dark:shadow-black/60"
+          className="animate-dropdown-pop absolute left-0 right-0 top-full mt-1.5 z-[100] max-h-60 overflow-y-auto rounded-2xl border border-slate-200/90 bg-white/98 p-1.5 shadow-xl shadow-slate-900/10 backdrop-blur-xl dark:border-slate-700/80 dark:bg-slate-900/98 dark:shadow-2xl dark:shadow-black/60"
         >
           <div className="space-y-0.5">
             {options.map((opt) => {
