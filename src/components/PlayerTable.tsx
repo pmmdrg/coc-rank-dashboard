@@ -674,14 +674,9 @@ export function PlayerTable({
       <div className="flex flex-col gap-3 border-b border-slate-200/80 p-5 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800/80">
         <div>
           <div className="flex flex-wrap items-center gap-2.5">
-            <div className="flex items-center gap-2">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500/15 text-amber-500 border border-amber-500/30 shadow-2xs">
-                ★
-              </span>
-              <h2 className="bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-lg font-black tracking-tight text-transparent">
-                {dict.table.title}
-              </h2>
-            </div>
+            <h2 className="bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-lg font-black tracking-tight text-transparent">
+              {dict.table.title}
+            </h2>
 
             {/* Trạng thái cập nhật */}
             {isSyncingApi ? (
