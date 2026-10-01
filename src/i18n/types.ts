@@ -64,6 +64,11 @@ export interface TranslationDictionary {
     finished: string
     remainingBattles: string
     myStats: string
+    attackPerformance: string
+    defensePerformance: string
+    avgStarsBadge: string
+    attackBattlesDetail: string
+    defenseBattlesDetail: string
   }
   seasonMeta: {
     seasonOverviewTitle: string

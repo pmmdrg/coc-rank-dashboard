@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Trophy, Sword, Users, ShieldWarning, CaretDown } from '@phosphor-icons/react'
+import { useMemo, useState } from 'react'
+import { Trophy, Sword, ShieldWarning, ShieldCheck, CaretDown } from '@phosphor-icons/react'
 import type { RankingStats, Season } from '../types'
 import { useI18n } from '../i18n/LanguageContext'
 
@@ -13,7 +13,6 @@ interface StatCardsGridProps {
 export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = false }: StatCardsGridProps) {
   const { dict, interpolate, language } = useI18n()
   const locale = language === 'vi' ? 'vi-VN' : 'en-US'
-  const hasPlayers = season.players.length > 0
   const hasMyPlayer = Boolean(stats.myPlayer)
 
   const [isCollapsed, setIsCollapsed] = useState<boolean>(() => {
@@ -40,14 +39,79 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
     return new Intl.NumberFormat(locale).format(value)
   }
 
-  function formatDate(value: string) {
-    if (!value) return '--'
-    try {
-      return new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(new Date(value))
-    } catch {
-      return value
+  const attackStats = useMemo(() => {
+    if (!hasMyPlayer) return null
+
+    // 1. Logs trực tiếp từ season.attackLogs hoặc attackedByMe
+    const logs =
+      season.attackLogs && season.attackLogs.length > 0
+        ? season.attackLogs
+        : season.players.flatMap((p) => p.attackedByMe || [])
+
+    if (logs.length > 0) {
+      const totalDestruction = logs.reduce((acc, log) => acc + (log.destructionPercentage || 0), 0)
+      const totalStars = logs.reduce((acc, log) => acc + (log.stars || 0), 0)
+      const avgDestruction = totalDestruction / logs.length
+      const avgStars = totalStars / logs.length
+      return {
+        avgDestruction,
+        avgStars,
+        count: Math.max(logs.length, stats.myPlayer?.attacks || 0),
+      }
     }
-  }
+
+    // 2. Dữ liệu từ stats.myPlayer nếu không có battle logs
+    const myPlayer = stats.myPlayer!
+    const attacks = myPlayer.attacks || 0
+    if (attacks > 0 || (myPlayer.attackDestruction !== undefined && myPlayer.attackDestruction > 0)) {
+      const avgDest = myPlayer.attackDestruction || 0
+      const avgStars = avgDest >= 100 ? 3 : avgDest >= 70 ? 2.5 : avgDest >= 50 ? 2 : avgDest > 0 ? 1 : 0
+      return {
+        avgDestruction: avgDest,
+        avgStars,
+        count: attacks,
+      }
+    }
+
+    return null
+  }, [hasMyPlayer, season.attackLogs, season.players, stats.myPlayer])
+
+  const defenseStats = useMemo(() => {
+    if (!hasMyPlayer) return null
+
+    // 1. Logs trực tiếp từ season.defenseLogs hoặc defendedAgainstMe
+    const logs =
+      season.defenseLogs && season.defenseLogs.length > 0
+        ? season.defenseLogs
+        : season.players.flatMap((p) => p.defendedAgainstMe || [])
+
+    if (logs.length > 0) {
+      const totalDestruction = logs.reduce((acc, log) => acc + (log.destructionPercentage || 0), 0)
+      const totalStars = logs.reduce((acc, log) => acc + (log.stars || 0), 0)
+      const avgDestruction = totalDestruction / logs.length
+      const avgStars = totalStars / logs.length
+      return {
+        avgDestruction,
+        avgStars,
+        count: Math.max(logs.length, stats.myPlayer?.defenses || 0),
+      }
+    }
+
+    // 2. Dữ liệu từ stats.myPlayer nếu không có battle logs
+    const myPlayer = stats.myPlayer!
+    const defenses = myPlayer.defenses || 0
+    if (defenses > 0 || (myPlayer.defenseDestruction !== undefined && myPlayer.defenseDestruction > 0)) {
+      const avgDest = myPlayer.defenseDestruction || 0
+      const avgStars = avgDest >= 100 ? 3 : avgDest >= 70 ? 2.5 : avgDest >= 50 ? 2 : avgDest > 0 ? 1 : 0
+      return {
+        avgDestruction: avgDest,
+        avgStars,
+        count: defenses,
+      }
+    }
+
+    return null
+  }, [hasMyPlayer, season.defenseLogs, season.players, stats.myPlayer])
 
   if (isSyncingApi) {
     return (
@@ -125,42 +189,60 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
         hasMyPlayer && stats.playersWhoCanPassMe === 0
           ? 'text-emerald-600 dark:text-emerald-400'
           : 'text-amber-600 dark:text-amber-400',
-      icon: Sword,
+      icon: ShieldWarning,
       iconColor: stats.playersWhoCanPassMe === 0 ? 'text-emerald-500' : 'text-amber-500',
     },
     {
-      label: dict.statCards.totalPlayers,
-      value: hasPlayers ? season.players.length : '--',
+      label: dict.statCards.attackPerformance,
+      value:
+        attackStats && attackStats.count > 0
+          ? `${(Math.round(attackStats.avgDestruction * 10) / 10).toFixed(1)}%`
+          : '--',
       detail:
-        hasPlayers && (season.startsAt || season.endsAt)
-          ? `${formatDate(season.startsAt)} - ${formatDate(season.endsAt)}`
+        attackStats && attackStats.count > 0
+          ? interpolate(dict.statCards.attackBattlesDetail, {
+              stars: (Math.round(attackStats.avgStars * 10) / 10).toFixed(1),
+              count: attackStats.count,
+            })
           : dict.common.noData,
-      badge: hasPlayers ? dict.statCards.competing : null,
-      badgeColor: 'bg-emerald-500/10 text-emerald-700 dark:bg-emerald-400/15 dark:text-emerald-300 border-emerald-500/30',
-      accentGradient: 'from-emerald-400 via-teal-500 to-indigo-500',
-      tonalGlow: 'rgba(20, 184, 166, 0.08)',
-      valueColor: 'text-slate-800 dark:text-slate-100',
-      icon: Users,
-      iconColor: 'text-emerald-500',
+      badge:
+        attackStats && attackStats.count > 0
+          ? interpolate(dict.statCards.avgStarsBadge, {
+              stars: (Math.round(attackStats.avgStars * 10) / 10).toFixed(1),
+            })
+          : null,
+      badgeColor: 'bg-amber-500/10 text-amber-700 dark:bg-amber-400/15 dark:text-amber-300 border-amber-500/30',
+      accentGradient: 'from-amber-400 via-orange-500 to-red-500',
+      tonalGlow: 'rgba(245, 158, 11, 0.08)',
+      valueColor: 'text-amber-600 dark:text-amber-400',
+      icon: Sword,
+      iconColor: 'text-amber-500',
     },
     {
-      label: dict.statCards.estFinish,
-      value: hasMyPlayer && stats.lowestPossibleRank ? `#${stats.lowestPossibleRank}` : '--',
-      detail: hasMyPlayer
-        ? (stats.myPlayer!.attacks >= (season.maxAttacks ?? 24) && stats.myPlayer!.defenses >= (season.maxDefenses ?? 24)
-            ? dict.statCards.finished
-            : interpolate(dict.statCards.remainingBattles, {
-                attacks: Math.max(0, (season.maxAttacks ?? 24) - stats.myPlayer!.attacks),
-                defenses: Math.max(0, (season.maxDefenses ?? 24) - stats.myPlayer!.defenses),
-              }))
-        : dict.common.noData,
-      badge: hasMyPlayer ? dict.statCards.myStats : null,
-      badgeColor: 'bg-rose-500/10 text-rose-700 dark:bg-rose-400/15 dark:text-rose-300 border-rose-500/30',
-      accentGradient: 'from-rose-500 via-pink-500 to-purple-600',
-      tonalGlow: 'rgba(244, 63, 94, 0.08)',
-      valueColor: 'text-rose-600 dark:text-rose-400',
-      icon: ShieldWarning,
-      iconColor: 'text-rose-500',
+      label: dict.statCards.defensePerformance,
+      value:
+        defenseStats && defenseStats.count > 0
+          ? `${(Math.round(defenseStats.avgDestruction * 10) / 10).toFixed(1)}%`
+          : '--',
+      detail:
+        defenseStats && defenseStats.count > 0
+          ? interpolate(dict.statCards.defenseBattlesDetail, {
+              stars: (Math.round(defenseStats.avgStars * 10) / 10).toFixed(1),
+              count: defenseStats.count,
+            })
+          : dict.common.noData,
+      badge:
+        defenseStats && defenseStats.count > 0
+          ? interpolate(dict.statCards.avgStarsBadge, {
+              stars: (Math.round(defenseStats.avgStars * 10) / 10).toFixed(1),
+            })
+          : null,
+      badgeColor: 'bg-teal-500/10 text-teal-700 dark:bg-teal-400/15 dark:text-teal-300 border-teal-500/30',
+      accentGradient: 'from-teal-400 via-emerald-500 to-cyan-500',
+      tonalGlow: 'rgba(20, 184, 166, 0.08)',
+      valueColor: 'text-teal-600 dark:text-teal-400',
+      icon: ShieldCheck,
+      iconColor: 'text-teal-500',
     },
   ]
 

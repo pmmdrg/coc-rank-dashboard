@@ -64,6 +64,11 @@ export const en: TranslationDictionary = {
     finished: 'Tournament Finished',
     remainingBattles: '{attacks} atks • {defenses} defs left',
     myStats: 'My Statistics',
+    attackPerformance: 'Offense',
+    defensePerformance: 'Defense',
+    avgStarsBadge: '★ {stars}/battle',
+    attackBattlesDetail: 'Avg {stars} ★/battle • {count} attacks',
+    defenseBattlesDetail: 'Avg {stars} ★/battle • {count} defenses',
   },
   seasonMeta: {
     seasonOverviewTitle: 'Season Overview',
