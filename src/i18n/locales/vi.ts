@@ -67,8 +67,8 @@ export const vi: TranslationDictionary = {
     attackPerformance: 'Tấn công',
     defensePerformance: 'Phòng thủ',
     avgStarsBadge: '★ {stars}/trận',
-    attackBattlesDetail: 'TB {stars} ★/trận • {count} trận công',
-    defenseBattlesDetail: 'TB {stars} ★/trận • {count} trận thủ',
+    attackBattlesDetail: '{count} trận công',
+    defenseBattlesDetail: '{count} trận thủ',
   },
   seasonMeta: {
     seasonOverviewTitle: 'Tổng quan mùa giải',

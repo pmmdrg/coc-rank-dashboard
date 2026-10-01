@@ -67,8 +67,8 @@ export const en: TranslationDictionary = {
     attackPerformance: 'Offense',
     defensePerformance: 'Defense',
     avgStarsBadge: '★ {stars}/battle',
-    attackBattlesDetail: 'Avg {stars} ★/battle • {count} attacks',
-    defenseBattlesDetail: 'Avg {stars} ★/battle • {count} defenses',
+    attackBattlesDetail: '{count} attacks',
+    defenseBattlesDetail: '{count} defenses',
   },
   seasonMeta: {
     seasonOverviewTitle: 'Season Overview',

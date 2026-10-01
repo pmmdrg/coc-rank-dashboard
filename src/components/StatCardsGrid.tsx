@@ -201,7 +201,6 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
       detail:
         attackStats && attackStats.count > 0
           ? interpolate(dict.statCards.attackBattlesDetail, {
-              stars: (Math.round(attackStats.avgStars * 10) / 10).toFixed(1),
               count: attackStats.count,
             })
           : dict.common.noData,
@@ -227,7 +226,6 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
       detail:
         defenseStats && defenseStats.count > 0
           ? interpolate(dict.statCards.defenseBattlesDetail, {
-              stars: (Math.round(defenseStats.avgStars * 10) / 10).toFixed(1),
               count: defenseStats.count,
             })
           : dict.common.noData,
