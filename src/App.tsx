@@ -109,7 +109,7 @@ function App() {
 
   const [currentRoute, setCurrentRoute] = useState<AppRoute>(getRouteFromHash)
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
-  const [clanTag, setClanTag] = useState<string>(() => loadSavedClanTag() || '#QVGJR2C9')
+  const [clanTag, setClanTag] = useState<string>(() => loadSavedClanTag() || '')
   const [clanData, setClanData] = useState<ClanData | null>(() => loadSavedClanData())
   const [isSyncingClan, setIsSyncingClan] = useState(false)
   const [clanError, setClanError] = useState('')
@@ -147,14 +147,6 @@ function App() {
     } finally {
       setIsSyncingClan(false)
     }
-  }
-
-  function handleSelectMemberFromClan(memberTag: string) {
-    handleNavigate('personal')
-    const clean = memberTag.trim().toUpperCase().replace(/^#/, '')
-    setPlayerTag(clean)
-    savePlayerTag(clean)
-    handleSyncCocApi(clean)
   }
 
   const [error, setError] = useState('')
@@ -386,6 +378,10 @@ function App() {
       }
     } else {
       clearPlayerData()
+      saveClanTag('')
+      saveClanData(null)
+      setClanTag('')
+      setClanData(null)
       setLeagueHistory([])
       setRankChangesSnapshot(null)
     }
@@ -415,6 +411,11 @@ function App() {
         if (!clanData || clanData.tag !== result.clanTag) {
           handleSyncClan(result.clanTag)
         }
+      } else {
+        setClanTag('')
+        setClanData(null)
+        saveClanTag('')
+        saveClanData(null)
       }
 
       if (result.leagueHistory) {
@@ -457,10 +458,10 @@ function App() {
     const savedTag = loadSavedPlayerTag() || playerTag
     if (savedTag) {
       handleSyncCocApi(savedTag)
-    }
-    const savedClan = loadSavedClanTag() || clanTag
-    if (savedClan && !clanData) {
-      handleSyncClan(savedClan)
+      const savedClan = loadSavedClanTag() || clanTag
+      if (savedClan && !clanData) {
+        handleSyncClan(savedClan)
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -591,11 +592,8 @@ function App() {
               <ClanMembersSection
                 clanData={clanData}
                 isLoading={isSyncingClan}
-                clanTag={clanTag}
-                onClanTagChange={(newTag) => setClanTag(newTag)}
-                onSyncClan={handleSyncClan}
                 myPlayerTag={playerTag || stats.myPlayer?.playerTag || rankedSeason.myPlayerId}
-                onSelectPlayerForDashboard={handleSelectMemberFromClan}
+                tournamentPlayers={rankedSeason.players}
               />
             </div>
           )}

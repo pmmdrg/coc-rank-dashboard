@@ -375,6 +375,7 @@ export const en: TranslationDictionary = {
     thTrophies: 'Trophies',
     thDonations: 'Donations',
     thAction: 'Tournament',
+    thTournamentRank: 'Tournament Rank',
     viewPlayer: 'View Profile',
     viewPlayerTooltip: 'Switch to Personal Dashboard to view ranked tournament analysis for this player',
     noClanPrompt: 'No Clan information found. Please enter a Clan Tag to start tracking.',

@@ -375,6 +375,7 @@ export interface TranslationDictionary {
     thTrophies: string
     thDonations: string
     thAction: string
+    thTournamentRank: string
     viewPlayer: string
     viewPlayerTooltip: string
     noClanPrompt: string

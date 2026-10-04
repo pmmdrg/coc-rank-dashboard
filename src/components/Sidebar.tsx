@@ -99,7 +99,7 @@ export function Sidebar({
         {/* Brand Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="aurora-text text-lg font-black tracking-tight select-none">
+            <h1 className="aurora-text text-xl sm:text-[22px] font-black tracking-tight select-none">
               Coc Rank Dashboard
             </h1>
           </div>

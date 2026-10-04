@@ -375,6 +375,7 @@ export const vi: TranslationDictionary = {
     thTrophies: 'Số cúp',
     thDonations: 'Viện trợ',
     thAction: 'Bảng đấu',
+    thTournamentRank: 'Hạng bảng đấu',
     viewPlayer: 'Xem cá nhân',
     viewPlayerTooltip: 'Chuyển sang Bảng đấu cá nhân và xem phân tích của người chơi này',
     noClanPrompt: 'Chưa có thông tin Clan. Vui lòng nhập Clan Tag để bắt đầu theo dõi.',
