@@ -461,7 +461,20 @@ export async function fetchPlayerTournamentRank(
     const members = Array.isArray(groupData.members) ? groupData.members : []
     const cleanUpper = formattedTag.replace(/^#/, '')
 
-    const memberIdx = members.findIndex(
+    // Sắp xếp các thành viên theo cúp giảm dần và tiêu chí phụ đồng bộ với dashboard chính
+    const sortedMembers = [...members].sort((a: any, b: any) => {
+      const cupDiff = (Number(b.leagueTrophies) || 0) - (Number(a.leagueTrophies) || 0)
+      if (cupDiff !== 0) return cupDiff
+      const aWins = Number(a.attackWinCount) || 0
+      const bWins = Number(b.attackWinCount) || 0
+      if (bWins !== aWins) return bWins - aWins
+      const aAtks = aWins + (Number(a.attackLoseCount) || 0)
+      const bAtks = bWins + (Number(b.attackLoseCount) || 0)
+      if (aAtks !== bAtks) return aAtks - bAtks
+      return ((a.playerName as string) || '').localeCompare((b.playerName as string) || '')
+    })
+
+    const memberIdx = sortedMembers.findIndex(
       (m: any) => (m.playerTag || '').toUpperCase().replace(/^#/, '') === cleanUpper,
     )
 
@@ -474,7 +487,7 @@ export async function fetchPlayerTournamentRank(
       }
     }
 
-    const memberItem = members[memberIdx]
+    const memberItem = sortedMembers[memberIdx]
     const currentCups = Number(memberItem.leagueTrophies) || 0
 
     return {

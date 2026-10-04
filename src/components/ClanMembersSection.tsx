@@ -11,6 +11,7 @@ import {
   Building,
   CircleNotch,
   ArrowClockwise,
+  Info,
 } from '@phosphor-icons/react'
 import type { ClanData, ClanMember, ClanRole, Player, PlayerTournamentRankInfo } from '../types'
 import { getLeagueIconUrl } from '../lib/leagueIcons'
@@ -143,6 +144,18 @@ export function ClanMembersSection({
       setIsFetchingAll(false)
     }
   }
+
+  // Tự động tra cứu ngầm thứ hạng bảng đấu cho các thành viên chưa có dữ liệu khi mở Clan
+  useEffect(() => {
+    if (!clanData?.memberList || clanData.memberList.length === 0 || isFetchingAll) return
+    const hasUnfetched = clanData.memberList.some((m) => {
+      const clean = m.tag.toUpperCase().replace(/^#/, '')
+      return !tournamentRankMap.has(clean) && !memberRanks[clean]
+    })
+    if (hasUnfetched) {
+      handleFetchAllRanks()
+    }
+  }, [clanData?.tag])
 
   // Lọc và sắp xếp thành viên Clan
   const filteredMembers = useMemo(() => {
@@ -434,7 +447,15 @@ export function ClanMembersSection({
                   {dict.clan.thTrophies}
                 </th>
                 <th className="py-3 px-3 text-center w-36">
-                  {dict.clan.thTournamentRank}
+                  <div className="inline-flex items-center justify-center gap-1">
+                    <span>{dict.clan.thTournamentRank}</span>
+                    <span
+                      className="inline-flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-help"
+                      title="Thứ hạng trong bảng đấu 100 người riêng của mỗi thành viên theo giải đấu của họ"
+                    >
+                      <Info weight="bold" className="h-3 w-3" />
+                    </span>
+                  </div>
                 </th>
               </tr>
             </thead>
@@ -529,114 +550,114 @@ export function ClanMembersSection({
                         </div>
                       </td>
 
-                      {/* Cột 5: Thứ hạng trong bảng đấu giải */}
+                      {/* Cột 5: Thứ hạng trong bảng đấu giải (100 người) */}
                       <td className="py-3 px-3 text-center">
-                        {(() => {
-                          // Nếu thành viên cùng bảng đấu giải với người chơi đang chọn hoặc là chính mình
-                          if (tournamentRank) {
-                            return (
-                              <div className="inline-flex items-center justify-center gap-1.5">
-                                <span
-                                  className="inline-flex items-center rounded-lg border border-sky-500/30 bg-sky-500/15 px-2.5 py-0.5 font-mono text-xs font-black text-sky-700 dark:border-sky-400/30 dark:bg-sky-400/15 dark:text-sky-300 shadow-2xs"
-                                  title={isMe ? 'Thứ hạng của bạn trong bảng đấu' : 'Cùng bảng đấu giải với bạn'}
-                                >
-                                  #{tournamentRank}
+                        <div className="relative inline-flex items-center justify-center min-w-[70px]">
+                          {(() => {
+                            // 1. Nếu thành viên cùng bảng đấu giải với người chơi đang chọn hoặc là chính mình
+                            if (typeof tournamentRank === 'number') {
+                              return (
+                                <div className="relative inline-flex items-center justify-center group/rank">
+                                  <RankBadge
+                                    rank={tournamentRank}
+                                    size="sm"
+                                    title={
+                                      isMe
+                                        ? `Thứ hạng của bạn trong bảng đấu 100 người (#${tournamentRank})`
+                                        : `Hạng #${tournamentRank} (Cùng bảng đấu 100 người với bạn)`
+                                    }
+                                    className={isMe ? 'ring-2 ring-sky-500/70 shadow-xs' : ''}
+                                  />
+                                </div>
+                              )
+                            }
+
+                            // 2. Nếu đang gọi API tra cứu thứ hạng cho thành viên này
+                            if (fetchingTags.has(cleanMemberTag)) {
+                              return (
+                                <span className="inline-flex h-6.5 items-center justify-center gap-1 rounded-lg border border-indigo-500/20 bg-indigo-50/70 px-2 text-[10px] font-semibold text-indigo-600 dark:border-indigo-400/20 dark:bg-indigo-950/40 dark:text-indigo-400">
+                                  <CircleNotch weight="bold" className="h-2.5 w-2.5 animate-spin" />
+                                  <span>{dict.clan.fetchingRank}</span>
                                 </span>
-                              </div>
-                            )
-                          }
+                              )
+                            }
 
-                          // Nếu đang gọi API tra cứu thứ hạng cho thành viên này
-                          if (fetchingTags.has(cleanMemberTag)) {
+                            // 3. Nếu đã có kết quả tra cứu riêng qua API
+                            const fetchedInfo = memberRanks[cleanMemberTag]
+                            if (fetchedInfo) {
+                              if (typeof fetchedInfo.rank === 'number') {
+                                const rankNum = fetchedInfo.rank
+                                const rankTitle = `Hạng #${rankNum} trong bảng đấu riêng${
+                                  fetchedInfo.leagueTierName ? ` (${fetchedInfo.leagueTierName})` : ''
+                                }${fetchedInfo.leagueTrophies ? ` - ${fetchedInfo.leagueTrophies} cúp` : ''}${
+                                  fetchedInfo.lastCheckedAt ? ` • Cập nhật: ${fetchedInfo.lastCheckedAt}` : ''
+                                }`
+
+                                return (
+                                  <div className="relative inline-flex items-center justify-center group/rank">
+                                    <RankBadge rank={rankNum} size="sm" title={rankTitle} />
+                                    <button
+                                      type="button"
+                                      onClick={() => handleFetchRank(member.tag)}
+                                      className="absolute -right-5.5 opacity-0 group-hover/rank:opacity-100 transition-opacity p-0.5 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300 cursor-pointer"
+                                      title="Tra cứu lại thứ hạng"
+                                    >
+                                      <ArrowClockwise weight="bold" className="h-3 w-3" />
+                                    </button>
+                                  </div>
+                                )
+                              }
+
+                              if (fetchedInfo.isUnranked) {
+                                return (
+                                  <div className="relative inline-flex items-center justify-center group/rank">
+                                    <span
+                                      className="inline-flex h-6.5 items-center justify-center rounded-lg border border-slate-200 bg-slate-100/70 px-2 font-mono text-[10px] font-semibold text-slate-500 dark:border-slate-800 dark:bg-slate-800/70 dark:text-slate-400 select-none"
+                                      title="Chưa tham gia bảng đấu giải mùa này"
+                                    >
+                                      {dict.clan.unrankedBadge}
+                                    </span>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleFetchRank(member.tag)}
+                                      className="absolute -right-5.5 opacity-0 group-hover/rank:opacity-100 transition-opacity p-0.5 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300 cursor-pointer"
+                                      title="Tra cứu lại"
+                                    >
+                                      <ArrowClockwise weight="bold" className="h-3 w-3" />
+                                    </button>
+                                  </div>
+                                )
+                              }
+
+                              if (fetchedInfo.error) {
+                                return (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleFetchRank(member.tag)}
+                                    className="inline-flex h-6.5 items-center gap-1 rounded-lg border border-rose-300/80 bg-rose-50 px-2 text-[10px] font-semibold text-rose-600 hover:bg-rose-100 dark:border-rose-800 dark:bg-rose-950/40 dark:text-rose-400 cursor-pointer"
+                                    title={`${fetchedInfo.error} - Nhấn để thử lại`}
+                                  >
+                                    <span>Lỗi</span>
+                                    <ArrowClockwise weight="bold" className="h-2.5 w-2.5" />
+                                  </button>
+                                )
+                              }
+                            }
+
+                            // 4. Chưa tra cứu: hiển thị nút Tra cứu thứ hạng
                             return (
-                              <span className="inline-flex items-center gap-1 rounded-lg border border-indigo-500/20 bg-indigo-50/70 px-2 py-0.5 text-[11px] font-semibold text-indigo-600 dark:border-indigo-400/20 dark:bg-indigo-950/40 dark:text-indigo-400">
-                                <CircleNotch weight="bold" className="h-3 w-3 animate-spin" />
-                                <span>{dict.clan.fetchingRank}</span>
-                              </span>
+                              <button
+                                type="button"
+                                onClick={() => handleFetchRank(member.tag)}
+                                className="apple-btn inline-flex h-6.5 items-center justify-center gap-1 rounded-lg border border-indigo-200/80 bg-white/90 px-2 text-[10px] font-semibold text-indigo-600 hover:border-indigo-500 hover:bg-indigo-50 active:scale-95 transition-all dark:border-indigo-900/60 dark:bg-slate-800/80 dark:text-indigo-400 dark:hover:border-indigo-400 dark:hover:bg-slate-700 cursor-pointer shadow-2xs"
+                                title="Gọi API Supercell để tra cứu thứ hạng bảng đấu 100 người của người chơi này"
+                              >
+                                <MagnifyingGlass weight="bold" className="h-2.5 w-2.5" />
+                                <span>{dict.clan.fetchRank}</span>
+                              </button>
                             )
-                          }
-
-                          // Nếu đã có kết quả tra cứu riêng qua API
-                          const fetchedInfo = memberRanks[cleanMemberTag]
-                          if (fetchedInfo) {
-                            if (fetchedInfo.rank) {
-                              const rankNum = fetchedInfo.rank
-                              const badgeStyle =
-                                rankNum <= 3
-                                  ? 'border-amber-500/40 bg-amber-500/20 text-amber-700 dark:text-amber-300'
-                                  : rankNum <= 10
-                                    ? 'border-emerald-500/30 bg-emerald-500/15 text-emerald-700 dark:text-emerald-300'
-                                    : 'border-indigo-500/30 bg-indigo-500/10 text-indigo-700 dark:border-indigo-400/30 dark:bg-indigo-400/10 dark:text-indigo-300'
-
-                              return (
-                                <div className="inline-flex items-center justify-center gap-1 group/rank">
-                                  <span
-                                    className={`inline-flex items-center rounded-lg border px-2.5 py-0.5 font-mono text-xs font-black shadow-2xs ${badgeStyle}`}
-                                    title={`Hạng #${rankNum}${fetchedInfo.leagueTierName ? ` (${fetchedInfo.leagueTierName})` : ''}${fetchedInfo.leagueTrophies ? ` - ${fetchedInfo.leagueTrophies} cúp` : ''}${fetchedInfo.lastCheckedAt ? ` • Cập nhật lúc: ${fetchedInfo.lastCheckedAt}` : ''}`}
-                                  >
-                                    #{rankNum}
-                                  </span>
-                                  <button
-                                    type="button"
-                                    onClick={() => handleFetchRank(member.tag)}
-                                    className="opacity-0 group-hover/rank:opacity-100 transition-opacity p-0.5 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300 cursor-pointer"
-                                    title="Tra cứu lại thứ hạng"
-                                  >
-                                    <ArrowClockwise weight="bold" className="h-3 w-3" />
-                                  </button>
-                                </div>
-                              )
-                            }
-
-                            if (fetchedInfo.isUnranked) {
-                              return (
-                                <div className="inline-flex items-center justify-center gap-1 group/rank">
-                                  <span
-                                    className="inline-flex items-center rounded-lg border border-slate-200 bg-slate-100/70 px-2 py-0.5 text-[11px] font-medium text-slate-500 dark:border-slate-800 dark:bg-slate-800/70 dark:text-slate-400"
-                                    title="Chưa tham gia bảng đấu giải mùa này"
-                                  >
-                                    {dict.clan.unrankedBadge}
-                                  </span>
-                                  <button
-                                    type="button"
-                                    onClick={() => handleFetchRank(member.tag)}
-                                    className="opacity-0 group-hover/rank:opacity-100 transition-opacity p-0.5 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300 cursor-pointer"
-                                    title="Tra cứu lại"
-                                  >
-                                    <ArrowClockwise weight="bold" className="h-3 w-3" />
-                                  </button>
-                                </div>
-                              )
-                            }
-
-                            if (fetchedInfo.error) {
-                              return (
-                                <button
-                                  type="button"
-                                  onClick={() => handleFetchRank(member.tag)}
-                                  className="inline-flex items-center gap-1 rounded-lg border border-rose-300/80 bg-rose-50 px-2 py-0.5 text-[11px] font-semibold text-rose-600 hover:bg-rose-100 dark:border-rose-800 dark:bg-rose-950/40 dark:text-rose-400 cursor-pointer"
-                                  title={`${fetchedInfo.error} - Nhấn để thử lại`}
-                                >
-                                  <span>Lỗi</span>
-                                  <ArrowClockwise weight="bold" className="h-2.5 w-2.5" />
-                                </button>
-                              )
-                            }
-                          }
-
-                          // Chưa tra cứu: hiển thị nút Tra cứu thứ hạng (chỉ gọi API lấy hạng mà không đổi playerTag hiện tại)
-                          return (
-                            <button
-                              type="button"
-                              onClick={() => handleFetchRank(member.tag)}
-                              className="apple-btn inline-flex items-center gap-1.5 rounded-lg border border-indigo-200/80 bg-white/90 px-2.5 py-1 text-xs font-semibold text-indigo-600 hover:border-indigo-500 hover:bg-indigo-50 active:scale-95 transition-all dark:border-indigo-900/60 dark:bg-slate-800/80 dark:text-indigo-400 dark:hover:border-indigo-400 dark:hover:bg-slate-700 cursor-pointer shadow-2xs"
-                              title="Gọi API Supercell để tra cứu thứ hạng bảng đấu của người chơi này (không đổi player hiện tại)"
-                            >
-                              <MagnifyingGlass weight="bold" className="h-3 w-3" />
-                              <span>{dict.clan.fetchRank}</span>
-                            </button>
-                          )
-                        })()}
+                          })()}
+                        </div>
                       </td>
                     </tr>
                   )
