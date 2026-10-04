@@ -1,9 +1,9 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { MagnifyingGlass } from '@phosphor-icons/react'
 import type { RankChangesSnapshot, RankChangeItem } from '../types'
 import { useI18n } from '../i18n/LanguageContext'
 import { SegmentedControl, type SegmentedControlOption } from './SegmentedControl'
 import { CollapseToggleButton } from './CollapseToggleButton'
+import { SearchInput } from './SearchInput'
 
 export interface RankChangesSectionProps {
   snapshot: RankChangesSnapshot | null
@@ -398,16 +398,12 @@ export function RankChangesSection({
                 />
 
                 {activeChanges.length > 5 && (
-                  <div className="relative w-full sm:w-56">
-                    <MagnifyingGlass weight="bold" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
-                    <input
-                      type="text"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder={dict.rankChanges.searchPlaceholder}
-                      className="w-full h-8.5 rounded-xl border border-slate-300/70 bg-white/90 pl-8.5 pr-3 text-xs text-slate-900 placeholder:text-slate-400 shadow-2xs backdrop-blur-md transition-all focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/20 dark:border-white/10 dark:bg-slate-900/80 dark:text-slate-100 dark:placeholder:text-slate-500"
-                    />
-                  </div>
+                  <SearchInput
+                    value={searchQuery}
+                    onChange={setSearchQuery}
+                    placeholder={dict.rankChanges.searchPlaceholder}
+                    className="w-full sm:w-56"
+                  />
                 )}
               </div>
 

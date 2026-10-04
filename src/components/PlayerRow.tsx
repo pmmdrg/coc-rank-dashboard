@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react'
-import { Warning, Crown, Trophy, Check, Copy } from '@phosphor-icons/react'
+import { Warning, Trophy, Check, Copy } from '@phosphor-icons/react'
 import type { Player, RatingCategory } from '../types'
 import { validatePlayer } from '../lib/validation'
 import { useI18n } from '../i18n/LanguageContext'
+import { RankBadge, RankDiffBadge } from './RankBadge'
 
 interface PlayerRowProps {
   player: Player
@@ -126,47 +127,25 @@ export function PlayerRow({
       <td className="w-[136px] min-w-[136px] max-w-[136px] px-2.5 py-2.5 align-middle">
         <div className="flex items-center gap-1.5 whitespace-nowrap">
           {/* Badge Thứ Hạng: Podium Top 1-2-3 hoặc Normal */}
-          {player.rank === 1 ? (
-            <div
-              className="inline-flex h-7 w-8 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-amber-300 via-yellow-400 to-amber-500 font-mono text-xs font-black text-amber-950 shadow-md shadow-amber-500/35"
-              title={dict.table.podiumGold}
-            >
-              <Crown weight="fill" className="mr-0.5 h-3.5 w-3.5 fill-amber-950 text-amber-950 drop-shadow-xs" />
-              <span>1</span>
-            </div>
-          ) : player.rank === 2 ? (
-            <div
-              className="inline-flex h-7 w-8 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-slate-100 via-slate-200 to-slate-400 font-mono text-xs font-black text-slate-900 shadow-sm"
-              title={dict.table.podiumSilver}
-            >
-              <span>2</span>
-            </div>
-          ) : player.rank === 3 ? (
-            <div
-              className="inline-flex h-7 w-8 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-amber-600 via-orange-600 to-amber-700 font-mono text-xs font-black text-white shadow-sm"
-              title={dict.table.podiumBronze}
-            >
-              <span>3</span>
-            </div>
-          ) : (
-            <div className="inline-flex h-7 min-w-[32px] shrink-0 items-center justify-center rounded-md border border-slate-200/80 bg-slate-100/80 px-1.5 font-mono text-xs font-bold text-slate-700 dark:border-slate-800 dark:bg-slate-800/80 dark:text-slate-300">
-              #{player.rank}
-            </div>
-          )}
+          <RankBadge
+            rank={player.rank}
+            title={
+              player.rank === 1
+                ? dict.table.podiumGold
+                : player.rank === 2
+                  ? dict.table.podiumSilver
+                  : player.rank === 3
+                    ? dict.table.podiumBronze
+                    : `#${player.rank}`
+            }
+          />
 
           {/* Biến động thứ hạng nếu có */}
-          {rankDiff !== 0 && (
-            <span
-              className={`inline-flex shrink-0 items-center rounded-full px-1.5 py-0.2 text-[10px] font-mono font-bold leading-none ${
-                rankDiff > 0
-                  ? 'bg-emerald-500/15 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300'
-                  : 'bg-rose-500/15 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300'
-              }`}
-              title={`#${rankJump?.fromRank} ➔ #${rankJump?.toRank}`}
-            >
-              {rankDiff > 0 ? `▲${rankDiff}` : `▼${Math.abs(rankDiff)}`}
-            </span>
-          )}
+          <RankDiffBadge
+            diff={rankDiff}
+            fromRank={rankJump?.fromRank}
+            toRank={rankJump?.toRank}
+          />
 
           {/* Badge Vùng Thăng Hạng / Xuống Hạng */}
           {isPromotionZone ? (

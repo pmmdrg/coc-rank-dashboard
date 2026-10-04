@@ -28,8 +28,6 @@ export interface SidebarProps {
   onSyncCocApi?: (tag?: string) => void
   onExport: (format: 'json' | 'csv') => void
   onOpenShareCard?: () => void
-  clanMembersCount?: number
-  seasonPlayersCount?: number
   isMobileOpen?: boolean
   onCloseMobile?: () => void
 }

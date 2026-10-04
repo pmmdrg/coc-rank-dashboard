@@ -7,8 +7,6 @@ import {
   Crown,
   Medal,
   MagnifyingGlass,
-  ArrowUp,
-  ArrowDown,
   ArrowsDownUp,
   Building,
   CircleNotch,
@@ -19,6 +17,8 @@ import { getLeagueIconUrl } from '../lib/leagueIcons'
 import { fetchPlayerTournamentRank } from '../lib/cocApi'
 import { useI18n } from '../i18n/LanguageContext'
 import { CustomSelect, type SelectOption } from './CustomSelect'
+import { RankBadge, RankDiffBadge } from './RankBadge'
+import { SearchInput } from './SearchInput'
 
 export interface ClanMembersSectionProps {
   clanData: ClanData | null
@@ -222,58 +222,6 @@ export function ClanMembersSection({
     }
   }
 
-  // Huy hiệu thứ hạng Top 1, 2, 3 trong Clan
-  function getRankBadge(rank: number) {
-    if (rank === 1) {
-      return (
-        <span className="inline-flex h-6.5 w-6.5 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 font-mono text-xs font-black text-slate-950 shadow-xs shadow-amber-500/40">
-          1
-        </span>
-      )
-    }
-    if (rank === 2) {
-      return (
-        <span className="inline-flex h-6.5 w-6.5 items-center justify-center rounded-lg bg-gradient-to-br from-slate-200 to-slate-400 font-mono text-xs font-black text-slate-900 shadow-xs shadow-slate-400/30">
-          2
-        </span>
-      )
-    }
-    if (rank === 3) {
-      return (
-        <span className="inline-flex h-6.5 w-6.5 items-center justify-center rounded-lg bg-gradient-to-br from-amber-700 to-amber-800 font-mono text-xs font-black text-amber-100 shadow-xs shadow-amber-700/30">
-          3
-        </span>
-      )
-    }
-    return (
-      <span className="inline-flex h-6.5 min-w-6.5 items-center justify-center rounded-md font-mono text-xs font-bold text-slate-500 dark:text-slate-400">
-        #{rank}
-      </span>
-    )
-  }
-
-  // Biến động hạng trong clan (clanRank vs previousClanRank)
-  function getRankDiffBadge(clanRank: number, prevClanRank?: number) {
-    if (!prevClanRank || clanRank === prevClanRank) {
-      return <span className="text-[11px] font-bold text-slate-400 select-none">-</span>
-    }
-    const diff = prevClanRank - clanRank
-    if (diff > 0) {
-      return (
-        <span className="inline-flex items-center text-[10px] font-black text-emerald-600 dark:text-emerald-400">
-          <ArrowUp weight="bold" className="h-2.5 w-2.5" />
-          {diff}
-        </span>
-      )
-    }
-    return (
-      <span className="inline-flex items-center text-[10px] font-black text-rose-600 dark:text-rose-400">
-        <ArrowDown weight="bold" className="h-2.5 w-2.5" />
-        {Math.abs(diff)}
-      </span>
-    )
-  }
-
   const cleanMyTag = (myPlayerTag || '').trim().toUpperCase().replace(/^#/, '')
 
   // Khi đang tải dữ liệu Clan
@@ -403,14 +351,11 @@ export function ClanMembersSection({
       {/* 2. TOOLBAR TÌM KIẾM, LỌC & SẮP XẾP */}
       <section className="glass-panel relative z-20 flex flex-col gap-3 rounded-2xl border border-slate-200/80 p-4 shadow-2xs backdrop-blur-md sm:flex-row sm:items-center sm:justify-between dark:border-slate-800/80">
         {/* Ô tìm kiếm */}
-        <div className="relative flex-1 sm:max-w-xs">
-          <MagnifyingGlass className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-          <input
-            type="text"
+        <div className="flex-1 sm:max-w-xs">
+          <SearchInput
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={setSearchQuery}
             placeholder={dict.clan.searchPlaceholder}
-            className="h-10 w-full rounded-xl border border-slate-200/80 bg-white/70 pl-9.5 pr-3 text-xs text-slate-900 placeholder:text-slate-400 focus:border-sky-500 focus:outline-none dark:border-white/10 dark:bg-slate-800/70 dark:text-slate-100 dark:focus:border-sky-400 shadow-2xs backdrop-blur-md"
           />
         </div>
 
@@ -520,8 +465,11 @@ export function ClanMembersSection({
                       {/* Cột 1: Hạng trong clan & Biến động */}
                       <td className="py-3 pl-4 pr-2 text-center">
                         <div className="flex flex-col items-center justify-center gap-0.5">
-                          {getRankBadge(member.clanRank)}
-                          {getRankDiffBadge(member.clanRank, member.previousClanRank)}
+                          <RankBadge rank={member.clanRank} size="sm" />
+                          <RankDiffBadge
+                            diff={member.previousClanRank ? member.previousClanRank - member.clanRank : 0}
+                            showDashIfZero={true}
+                          />
                         </div>
                       </td>
 

@@ -484,8 +484,6 @@ function App() {
         onSyncCocApi={handleSyncCocApi}
         onExport={handleExport}
         onOpenShareCard={() => setIsShareCardOpen(true)}
-        clanMembersCount={clanData?.members || clanData?.memberList?.length}
-        seasonPlayersCount={rankedSeason.players.length}
         isMobileOpen={isMobileSidebarOpen}
         onCloseMobile={() => setIsMobileSidebarOpen(false)}
       />

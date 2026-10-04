@@ -1,10 +1,11 @@
 import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { Warning, MagnifyingGlass, X } from '@phosphor-icons/react'
+import { Warning } from '@phosphor-icons/react'
 import type { Player, RankingStats, Season } from '../types'
 import { PlayerRow } from './PlayerRow'
 import { validatePlayer } from '../lib/validation'
 import { useI18n } from '../i18n/LanguageContext'
 import { SegmentedControl, type SegmentedControlOption } from './SegmentedControl'
+import { SearchInput } from './SearchInput'
 
 export type FilterTab = 'all' | 'promotion' | 'demotion' | 'matchup' | 'canPass' | 'warned'
 
@@ -658,36 +659,22 @@ export function PlayerTable({
       {/* 2. Thanh Tìm kiếm & Bộ lọc nhanh (Apple Segmented Filter Bar) */}
       <div className="flex flex-col gap-3 border-b border-slate-200/60 p-4 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800/60 bg-slate-50/60 dark:bg-slate-900/40">
         {/* Ô Tìm kiếm người chơi / Clan (Apple Spotlight Style) */}
-        <div className="relative w-full sm:w-72">
-          <MagnifyingGlass weight="bold" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => {
-              if (tableAnimatedWrapperRef.current) {
-                prevTableHeightRef.current = tableAnimatedWrapperRef.current.offsetHeight
-              }
-              setSearchQuery(e.target.value)
-            }}
-            placeholder={dict.table.searchPlaceholder}
-            className="w-full h-8.5 rounded-xl border border-slate-300/70 bg-white/90 pl-9 pr-7 text-xs text-slate-900 placeholder:text-slate-400 shadow-2xs backdrop-blur-md transition-all focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/20 dark:border-white/10 dark:bg-slate-900/80 dark:text-slate-100 dark:placeholder:text-slate-500"
-          />
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => {
-                if (tableAnimatedWrapperRef.current) {
-                  prevTableHeightRef.current = tableAnimatedWrapperRef.current.offsetHeight
-                }
-                setSearchQuery('')
-              }}
-              className="apple-btn absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
-              title={dict.table.clearSearchTooltip}
-            >
-              <X weight="bold" className="h-3.5 w-3.5" />
-            </button>
-          )}
-        </div>
+        <SearchInput
+          value={searchQuery}
+          onChange={(val) => {
+            if (tableAnimatedWrapperRef.current) {
+              prevTableHeightRef.current = tableAnimatedWrapperRef.current.offsetHeight
+            }
+            setSearchQuery(val)
+          }}
+          onClear={() => {
+            if (tableAnimatedWrapperRef.current) {
+              prevTableHeightRef.current = tableAnimatedWrapperRef.current.offsetHeight
+            }
+          }}
+          placeholder={dict.table.searchPlaceholder}
+          className="w-full sm:w-72"
+        />
 
         {/* Các Tab lọc nhanh - Apple Segmented Control */}
         <div className="flex flex-wrap items-center gap-2 overflow-x-auto pb-0.5 sm:pb-0">
