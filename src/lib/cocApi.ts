@@ -1,4 +1,12 @@
-import type { Season, Player, LeagueHistoryItem, BattleLogEntry, ClanData, ClanMember } from '../types'
+import type {
+  Season,
+  Player,
+  LeagueHistoryItem,
+  BattleLogEntry,
+  ClanData,
+  ClanMember,
+  PlayerTournamentRankInfo,
+} from '../types'
 import { calculateMaxPossibleCups, calculatePlayerRating, getSavedLeagueRules } from './ranking'
 import { getLeagueIconUrl } from './leagueIcons'
 import { getRankedTierMaxAttacks, type RankedTierDefinition } from '../data/rankedTierMetadata'
@@ -392,6 +400,96 @@ export async function fetchClanData(inputClanTag: string): Promise<ClanData> {
     warLeague: data.warLeague,
     memberList,
     lastSyncedAt: syncedTime,
+  }
+}
+
+/**
+ * Gọi API tra cứu riêng thông tin thứ hạng bảng đấu của một người chơi trong Clan
+ * mà không làm thay đổi thông tin dashboard hiện tại.
+ */
+export async function fetchPlayerTournamentRank(
+  rawPlayerTag: string,
+): Promise<PlayerTournamentRankInfo> {
+  const cleanTag = rawPlayerTag.trim().toUpperCase()
+  if (!cleanTag) {
+    return { tag: cleanTag, error: 'Tag không hợp lệ' }
+  }
+  const formattedTag = cleanTag.startsWith('#') ? cleanTag : `#${cleanTag}`
+  const encodedPlayerTag = encodeURIComponent(formattedTag)
+
+  try {
+    // 1. Lấy thông tin người chơi
+    const playerRes = await fetch(`/api/coc?path=${encodeURIComponent(`/players/${encodedPlayerTag}`)}`)
+    if (!playerRes.ok) {
+      const errData = await playerRes.json().catch(() => ({}))
+      return {
+        tag: formattedTag,
+        error: errData.error || `Lỗi tải thông tin (${playerRes.status})`,
+      }
+    }
+
+    const playerData = await playerRes.json()
+    const groupTag = playerData.currentLeagueGroupTag as string | undefined
+    const seasonId = playerData.currentLeagueSeasonId ? String(playerData.currentLeagueSeasonId) : undefined
+    const leagueTier = playerData.leagueTier as {
+      name?: string
+      iconUrls?: { small?: string; medium?: string; large?: string }
+    } | undefined
+
+    if (!groupTag || !seasonId) {
+      return {
+        tag: formattedTag,
+        isUnranked: true,
+        leagueTierName: leagueTier?.name,
+        leagueTierIconUrl: leagueTier?.iconUrls?.small || leagueTier?.iconUrls?.medium,
+        lastCheckedAt: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
+      }
+    }
+
+    // 2. Lấy dữ liệu bảng đấu của người chơi đó
+    const groupPath = `/leaguegroup/${encodeURIComponent(groupTag)}/${encodeURIComponent(seasonId)}?playerTag=${encodedPlayerTag}`
+    const groupRes = await fetch(`/api/coc?path=${encodeURIComponent(groupPath)}`)
+    if (!groupRes.ok) {
+      return {
+        tag: formattedTag,
+        leagueTierName: leagueTier?.name,
+        error: 'Không thể tải bảng đấu',
+      }
+    }
+
+    const groupData = await groupRes.json()
+    const members = Array.isArray(groupData.members) ? groupData.members : []
+    const cleanUpper = formattedTag.replace(/^#/, '')
+
+    const memberIdx = members.findIndex(
+      (m: any) => (m.playerTag || '').toUpperCase().replace(/^#/, '') === cleanUpper,
+    )
+
+    if (memberIdx === -1) {
+      return {
+        tag: formattedTag,
+        leagueTierName: leagueTier?.name,
+        isUnranked: true,
+        lastCheckedAt: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
+      }
+    }
+
+    const memberItem = members[memberIdx]
+    const currentCups = Number(memberItem.leagueTrophies) || 0
+
+    return {
+      tag: formattedTag,
+      rank: memberIdx + 1,
+      leagueTierName: leagueTier?.name,
+      leagueTierIconUrl: leagueTier?.iconUrls?.small || leagueTier?.iconUrls?.medium,
+      leagueTrophies: currentCups,
+      lastCheckedAt: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
+    }
+  } catch (err) {
+    return {
+      tag: formattedTag,
+      error: err instanceof Error ? err.message : 'Lỗi kết nối',
+    }
   }
 }
 

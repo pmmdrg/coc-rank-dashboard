@@ -376,6 +376,12 @@ export interface TranslationDictionary {
     thDonations: string
     thAction: string
     thTournamentRank: string
+    fetchRank: string
+    fetchingRank: string
+    unrankedBadge: string
+    fetchAllRanks: string
+    fetchingAllRanks: string
+    sortTournamentRank: string
     viewPlayer: string
     viewPlayerTooltip: string
     noClanPrompt: string

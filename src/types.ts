@@ -179,3 +179,14 @@ export interface ClanData {
   lastSyncedAt?: string
 }
 
+export interface PlayerTournamentRankInfo {
+  tag: string
+  rank?: number
+  leagueTierName?: string
+  leagueTierIconUrl?: string
+  leagueTrophies?: number
+  isUnranked?: boolean
+  error?: string
+  lastCheckedAt?: string
+}
+
