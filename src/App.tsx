@@ -490,20 +490,12 @@ function App() {
       />
 
       {/* Khu vực Nội dung chính bên phải */}
-      <div className="relative z-10 flex flex-1 flex-col min-w-0">
+      <div className="relative z-10 flex flex-1 flex-col min-w-0 lg:pl-72">
         {/* Top Contextual Bar */}
         <TopBar
           currentRoute={currentRoute}
           onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)}
           lastSyncedAt={rankedSeason.lastSyncedAt || clanData?.lastSyncedAt}
-          isSyncingApi={isSyncingApi || isSyncingClan}
-          onSyncCocApi={() => {
-            if (currentRoute === 'clan') {
-              handleSyncClan()
-            } else {
-              handleSyncCocApi()
-            }
-          }}
           myPlayerName={myPlayerName}
         />
 
@@ -515,7 +507,7 @@ function App() {
             </div>
           )}
 
-          {/* MỤC 1: THÔNG TIN BẢN THÂN */}
+          {/* MỤC 1: THÔNG TIN CÁ NHÂN */}
           {currentRoute === 'personal' && (
             <div className="space-y-6 animate-fade-in">
               {!playerTag && (
@@ -541,16 +533,6 @@ function App() {
                 playerTag={playerTag}
                 isSyncingApi={isSyncingApi}
               />
-
-              {/* Biến động thứ hạng gần nhất của bản thân */}
-              {rankChangesSnapshot && (
-                <RankChangesSection
-                  snapshot={rankChangesSnapshot}
-                  myPlayerId={rankedSeason.myPlayerId}
-                  myPlayerName={myPlayerName}
-                  isSyncing={isSyncingApi}
-                />
-              )}
             </div>
           )}
 
@@ -578,6 +560,16 @@ function App() {
                 onSelectPlayer={setTargetFocusPlayerId}
                 isSyncingApi={isSyncingApi}
               />
+
+              {/* Biến động thứ hạng gần nhất trong mùa giải */}
+              {rankChangesSnapshot && (
+                <RankChangesSection
+                  snapshot={rankChangesSnapshot}
+                  myPlayerId={rankedSeason.myPlayerId}
+                  myPlayerName={myPlayerName}
+                  isSyncing={isSyncingApi}
+                />
+              )}
 
               {/* Bảng danh sách người chơi chi tiết */}
               <PlayerTable

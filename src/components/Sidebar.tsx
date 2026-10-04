@@ -6,9 +6,8 @@ import {
   Sparkle,
   Copy,
   Check,
-  CircleNotch,
+  ArrowsClockwise,
   X,
-  Crown,
 } from '@phosphor-icons/react'
 import type { AppRoute } from '../types'
 import { getLeagueIconUrl } from '../lib/leagueIcons'
@@ -99,19 +98,10 @@ export function Sidebar({
       <div className="space-y-5">
         {/* Brand Header */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-sky-500 via-indigo-600 to-purple-600 text-white shadow-md shadow-indigo-500/25">
-              <Crown weight="fill" className="h-5 w-5" />
-            </div>
-            <div>
-              <h1 className="aurora-text text-lg font-black tracking-tight select-none">
-                CoC Rank
-              </h1>
-              <span className="inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                {dict.header.badge}
-              </span>
-            </div>
+          <div>
+            <h1 className="aurora-text text-lg font-black tracking-tight select-none">
+              Coc Rank Dashboard
+            </h1>
           </div>
 
           {/* Nút đóng trên mobile */}
@@ -144,28 +134,10 @@ export function Sidebar({
                   {displayLeague}
                 </span>
               </div>
-
-              {playerTag ? (
-                <div className="mt-1 flex items-center justify-between">
-                  <button
-                    type="button"
-                    onClick={handleCopyTag}
-                    className="group inline-flex items-center gap-1 font-mono text-[11px] font-bold text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 cursor-pointer"
-                    title={dict.header.copyTagTooltip}
-                  >
-                    <span>{playerTag.startsWith('#') ? playerTag : `#${playerTag}`}</span>
-                    {isTagCopied ? (
-                      <Check className="h-3 w-3 text-emerald-600 animate-bounce" />
-                    ) : (
-                      <Copy className="h-3 w-3 opacity-60 group-hover:opacity-100 transition-opacity" />
-                    )}
-                  </button>
-                </div>
-              ) : null}
             </div>
           </div>
 
-          {/* Ô nhập Player Tag đổi nhanh */}
+          {/* Ô nhập Player Tag đổi nhanh với nút copy bên trong & icon Sync */}
           <div className="mt-2.5 flex items-center gap-1.5">
             <div className="group relative flex-1">
               <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 font-mono text-[11px] font-black text-slate-400 group-focus-within:text-sky-500">
@@ -181,22 +153,35 @@ export function Sidebar({
                   }
                 }}
                 placeholder={dict.header.tagPlaceholder}
-                className="h-7.5 w-full rounded-lg border border-slate-300/80 bg-white/90 pl-5 pr-2 font-mono text-[11px] font-black tracking-wider text-slate-950 placeholder:text-slate-400 placeholder:font-normal focus:border-sky-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900/90 dark:text-white"
+                className="h-8 w-full rounded-lg border border-slate-300/80 bg-white/90 pl-5 pr-7 font-mono text-[11px] font-black tracking-wider text-slate-950 placeholder:text-slate-400 placeholder:font-normal focus:border-sky-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900/90 dark:text-white"
               />
+              {playerTag ? (
+                <button
+                  type="button"
+                  onClick={handleCopyTag}
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-emerald-500 dark:text-slate-500 dark:hover:text-emerald-400 transition-colors cursor-pointer"
+                  title={dict.header.copyTagTooltip}
+                >
+                  {isTagCopied ? (
+                    <Check className="h-3.5 w-3.5 text-emerald-500 animate-bounce" />
+                  ) : (
+                    <Copy className="h-3.5 w-3.5" />
+                  )}
+                </button>
+              ) : null}
             </div>
             {onSyncCocApi && (
               <button
                 type="button"
                 disabled={isSyncingApi || playerTag.trim().length < 3}
                 onClick={() => onSyncCocApi(playerTag)}
-                className="apple-btn inline-flex h-7.5 items-center justify-center rounded-lg bg-sky-600 px-2.5 text-[11px] font-bold text-white shadow-2xs hover:bg-sky-500 disabled:opacity-50 cursor-pointer"
+                className="apple-btn inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-sky-600 text-white shadow-2xs hover:bg-sky-500 disabled:opacity-50 cursor-pointer transition-all"
                 title={dict.header.syncApi}
               >
-                {isSyncingApi ? (
-                  <CircleNotch weight="bold" className="h-3.5 w-3.5 animate-spin" />
-                ) : (
-                  <span>Sync</span>
-                )}
+                <ArrowsClockwise
+                  weight="bold"
+                  className={`h-4 w-4 ${isSyncingApi ? 'animate-spin' : ''}`}
+                />
               </button>
             )}
           </div>
@@ -308,7 +293,7 @@ export function Sidebar({
   return (
     <>
       {/* 1. DESKTOP SIDEBAR: Cố định bên trái màn hình */}
-      <aside className="glass-panel sticky top-0 hidden h-screen w-72 shrink-0 flex-col border-r border-slate-200/80 backdrop-blur-xl lg:flex dark:border-slate-800/80 z-30">
+      <aside className="glass-panel fixed inset-y-0 left-0 hidden h-screen w-72 shrink-0 flex-col border-r border-slate-200/80 backdrop-blur-xl lg:flex dark:border-slate-800/80 z-30">
         {sidebarContent}
       </aside>
 

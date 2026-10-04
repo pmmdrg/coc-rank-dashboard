@@ -1,6 +1,5 @@
 import {
   List,
-  ArrowsClockwise,
   User,
   Trophy,
   Shield,
@@ -12,8 +11,6 @@ export interface TopBarProps {
   currentRoute: AppRoute
   onOpenMobileSidebar: () => void
   lastSyncedAt?: string
-  isSyncingApi?: boolean
-  onSyncCocApi?: () => void
   myPlayerName?: string
 }
 
@@ -21,8 +18,6 @@ export function TopBar({
   currentRoute,
   onOpenMobileSidebar,
   lastSyncedAt,
-  isSyncingApi = false,
-  onSyncCocApi,
 }: TopBarProps) {
   const { dict } = useI18n()
 
@@ -80,33 +75,15 @@ export function TopBar({
           </div>
         </div>
 
-        {/* Trạng thái Đồng bộ & Nút Làm mới */}
+        {/* Trạng thái Đồng bộ */}
         <div className="flex items-center gap-2.5">
           {lastSyncedAt && (
-            <span className="hidden md:inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-[11px] font-bold text-emerald-700 dark:border-emerald-400/30 dark:bg-emerald-400/10 dark:text-emerald-300 shadow-2xs">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-[11px] font-bold text-emerald-700 dark:border-emerald-400/30 dark:bg-emerald-400/10 dark:text-emerald-300 shadow-2xs">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
               <span>
                 {dict.navigation.lastSynced}: {lastSyncedAt}
               </span>
             </span>
-          )}
-
-          {onSyncCocApi && (
-            <button
-              type="button"
-              disabled={isSyncingApi}
-              onClick={onSyncCocApi}
-              className="apple-btn inline-flex h-8.5 items-center gap-1.5 rounded-xl border border-slate-300/80 bg-white/80 px-3 text-xs font-bold text-slate-700 shadow-2xs hover:border-sky-500 hover:bg-sky-50 hover:text-sky-700 active:scale-95 transition-all dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-200 dark:hover:border-sky-400 dark:hover:bg-slate-800 disabled:opacity-50 cursor-pointer"
-              title={dict.navigation.syncApi}
-            >
-              <ArrowsClockwise
-                weight="bold"
-                className={`h-3.5 w-3.5 ${isSyncingApi ? 'animate-spin text-sky-600 dark:text-sky-400' : ''}`}
-              />
-              <span className="hidden sm:inline">
-                {isSyncingApi ? dict.navigation.syncing : dict.navigation.syncApi}
-              </span>
-            </button>
           )}
         </div>
       </div>
