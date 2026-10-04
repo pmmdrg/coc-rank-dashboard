@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { CircleNotch, Sparkle, Copy, Check } from '@phosphor-icons/react'
+import { CircleNotch, Sparkle, Copy, Check, Trophy, Shield } from '@phosphor-icons/react'
+import type { AppRoute } from '../types'
 import { formatLeagueName } from '../lib/ranking'
 import { getLeagueIconUrl } from '../lib/leagueIcons'
 import { ThemeToggle } from './ThemeToggle'
@@ -16,6 +17,9 @@ interface SeasonHeaderProps {
   onSyncCocApi?: (tag?: string) => void
   onExport: (format: 'json' | 'csv') => void
   onOpenShareCard?: () => void
+  currentRoute?: AppRoute
+  onNavigate?: (route: AppRoute) => void
+  clanMembersCount?: number
 }
 
 export function SeasonHeader({
@@ -28,6 +32,9 @@ export function SeasonHeader({
   onSyncCocApi,
   onExport,
   onOpenShareCard,
+  currentRoute = 'personal',
+  onNavigate,
+  clanMembersCount,
 }: SeasonHeaderProps) {
   const { dict } = useI18n()
   const [isTagCopied, setIsTagCopied] = useState(false)
@@ -95,6 +102,47 @@ export function SeasonHeader({
             </span>
           </p>
         </div>
+
+        {/* Thanh Điều Hướng (Navigation Tabs: Dashboard vs Clan) */}
+        {onNavigate && (
+          <nav className="inline-flex items-center rounded-xl border border-slate-300/80 bg-white/70 p-1 shadow-2xs backdrop-blur-md dark:border-white/10 dark:bg-slate-900/60 self-start lg:self-center">
+            <button
+              type="button"
+              onClick={() => onNavigate('personal')}
+              className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-all cursor-pointer ${
+                currentRoute === 'personal'
+                  ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800/60'
+              }`}
+            >
+              <Trophy weight={currentRoute === 'personal' ? 'fill' : 'bold'} className="h-4 w-4" />
+              <span>{dict.clan.navDashboard}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => onNavigate('clan')}
+              className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-all cursor-pointer ${
+                currentRoute === 'clan'
+                  ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800/60'
+              }`}
+            >
+              <Shield weight={currentRoute === 'clan' ? 'fill' : 'bold'} className="h-4 w-4" />
+              <span>{dict.clan.navClan}</span>
+              {typeof clanMembersCount === 'number' && clanMembersCount > 0 ? (
+                <span
+                  className={`inline-flex h-4.5 min-w-4.5 items-center justify-center rounded-full px-1.5 text-[10px] font-extrabold ${
+                    currentRoute === 'clan'
+                      ? 'bg-white/25 text-white'
+                      : 'bg-indigo-500/10 text-indigo-600 dark:bg-indigo-400/20 dark:text-indigo-300'
+                  }`}
+                >
+                  {clanMembersCount}
+                </span>
+              ) : null}
+            </button>
+          </nav>
+        )}
 
         <div className="flex flex-wrap items-center gap-2">
           {/* Ô nhập Player Tag - Apple Spotlight style */}

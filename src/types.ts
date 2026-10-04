@@ -127,3 +127,55 @@ export type StorageDocument = {
   seasons: Season[]
   activeSeasonIndex: number
 }
+
+export type AppRoute = 'personal' | 'season' | 'clan'
+
+export type ClanRole = 'leader' | 'coLeader' | 'admin' | 'member'
+
+export interface ClanMember {
+  tag: string
+  name: string
+  role: ClanRole
+  townHallLevel: number
+  expLevel: number
+  clanRank: number
+  previousClanRank: number
+  trophies: number
+  builderBaseTrophies?: number
+  donations: number
+  donationsReceived: number
+  league?: {
+    id: number
+    name: string
+    iconUrls?: { small?: string; tiny?: string; medium?: string }
+  }
+  leagueTier?: {
+    id: number
+    name: string
+    iconUrls?: { small?: string; large?: string; medium?: string; tiny?: string }
+  }
+}
+
+export interface ClanData {
+  tag: string
+  name: string
+  type: string
+  description?: string
+  clanLevel: number
+  clanPoints: number
+  clanBuilderBasePoints?: number
+  clanCapitalPoints?: number
+  members: number
+  badgeUrls: {
+    small?: string
+    medium?: string
+    large?: string
+  }
+  warLeague?: {
+    id: number
+    name: string
+  }
+  memberList: ClanMember[]
+  lastSyncedAt?: string
+}
+

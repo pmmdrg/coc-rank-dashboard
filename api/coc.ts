@@ -71,13 +71,31 @@ export default async function handler(
       },
     })
 
-    const data = (await apiRes.json()) as Record<string, any>
+    const rawText = await apiRes.text()
+    let data: Record<string, any> | null = null
+    try {
+      data = JSON.parse(rawText)
+    } catch {
+      // Body is not JSON (e.g. Cloudflare HTML error 520/525 or gateway timeout)
+    }
 
     if (!apiRes.ok) {
-      const rawMessage = (data?.message as string) || (data?.reason as string) || ''
-      const errorMessage = rawMessage
-        ? `Lỗi API Supercell (${apiRes.status}): ${rawMessage}`
-        : `Lỗi API Supercell (${apiRes.status})`
+      let errorMessage = `Lỗi API Supercell (${apiRes.status})`
+
+      if (data && typeof data === 'object') {
+        const rawMessage = (data.message as string) || (data.reason as string) || ''
+        if (data.reason === 'accessDenied.invalidIp') {
+          errorMessage = `IP của bạn hoặc proxy chưa được cấp quyền trong Supercell Developer Portal (${rawMessage})`
+        } else if (rawMessage) {
+          errorMessage = `Lỗi API Supercell (${apiRes.status}): ${rawMessage}`
+        }
+      } else {
+        if (apiRes.status === 520 || apiRes.status === 525 || apiRes.status === 502 || apiRes.status === 503) {
+          errorMessage = `Máy chủ proxy RoyaleAPI (${apiRes.status}) đang tạm gián đoạn kết nối đến Supercell. Vui lòng thử lại sau ít phút.`
+        } else {
+          errorMessage = `Máy chủ phản hồi mã ${apiRes.status} (không phải JSON).`
+        }
+      }
 
       res.statusCode = apiRes.status
       res.setHeader('Content-Type', 'application/json')
@@ -86,7 +104,20 @@ export default async function handler(
           error: errorMessage,
           status: apiRes.status,
           targetUrl,
-          details: data,
+          details: data || rawText.slice(0, 300),
+        }),
+      )
+      return
+    }
+
+    if (!data) {
+      res.statusCode = 502
+      res.setHeader('Content-Type', 'application/json')
+      res.end(
+        JSON.stringify({
+          error: 'Phản hồi từ máy chủ không hợp lệ (không phải định dạng JSON).',
+          targetUrl,
+          details: rawText.slice(0, 300),
         }),
       )
       return
@@ -101,7 +132,7 @@ export default async function handler(
     res.setHeader('Content-Type', 'application/json')
     res.end(
       JSON.stringify({
-        error: 'Không thể kết nối đến máy chủ API Clash of Clans qua proxy.',
+        error: 'Không thể kết nối đến máy chủ API Clash of Clans.',
         targetUrl,
         details: errorDetails,
       }),

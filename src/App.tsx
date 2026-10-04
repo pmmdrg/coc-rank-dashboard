@@ -9,7 +9,7 @@ import {
   saveLeagueRules,
 } from './lib/ranking'
 import { seasonsToCsv } from './lib/csv'
-import { fetchRankedSeasonData } from './lib/cocApi'
+import { fetchRankedSeasonData, fetchClanData } from './lib/cocApi'
 import { calculateRankChangesSnapshot } from './lib/rankChanges'
 import {
   clearPlayerData,
@@ -17,12 +17,18 @@ import {
   loadRankChangesSnapshot,
   loadSavedLeagueHistory,
   loadSavedPlayerTag,
+  loadSavedClanTag,
+  saveClanTag,
+  loadSavedClanData,
+  saveClanData,
   saveDraftDocument,
   saveLeagueHistory,
   savePlayerTag,
   saveRankChangesSnapshot,
 } from './lib/storage'
 import type {
+  AppRoute,
+  ClanData,
   LeagueHistoryItem,
   Player,
   RankChangesSnapshot,
@@ -34,12 +40,14 @@ import type {
 import { useI18n } from './i18n/LanguageContext'
 import { SeasonOverviewSection } from './components/SeasonOverviewSection'
 import { PlayerTable } from './components/PlayerTable'
-import { SeasonHeader } from './components/SeasonHeader'
+import { Sidebar } from './components/Sidebar'
+import { TopBar } from './components/TopBar'
 import { StatCardsGrid } from './components/StatCardsGrid'
 import { HighlightStatsTable } from './components/HighlightStatsTable'
 import { PerformanceTrendSection } from './components/PerformanceTrendSection'
 import { PlayerTagPromptBanner } from './components/PlayerTagPromptBanner'
 import { RankChangesSection } from './components/RankChangesSection'
+import { ClanMembersSection } from './components/ClanMembersSection'
 import { Footer } from './components/Footer'
 import { ShareCardModal } from './components/ShareCardModal'
 import { AuroraBackground } from './components/AuroraBackground'
@@ -92,6 +100,63 @@ function App() {
     loadRankChangesSnapshot(),
   )
   const [document, setDocument] = useState<StorageDocument>(() => loadDraftDocument(emptySeason))
+  function getRouteFromHash(): AppRoute {
+    const hash = window.location.hash.toLowerCase()
+    if (hash === '#/season' || hash === '#season') return 'season'
+    if (hash === '#/clan' || hash === '#clan') return 'clan'
+    return 'personal'
+  }
+
+  const [currentRoute, setCurrentRoute] = useState<AppRoute>(getRouteFromHash)
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
+  const [clanTag, setClanTag] = useState<string>(() => loadSavedClanTag() || '#QVGJR2C9')
+  const [clanData, setClanData] = useState<ClanData | null>(() => loadSavedClanData())
+  const [isSyncingClan, setIsSyncingClan] = useState(false)
+  const [clanError, setClanError] = useState('')
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setCurrentRoute(getRouteFromHash())
+    }
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [])
+
+  const handleNavigate = (route: AppRoute) => {
+    window.location.hash = `#/${route}`
+    setCurrentRoute(route)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  async function handleSyncClan(targetClanTag?: string) {
+    const raw = targetClanTag || clanTag
+    const clean = raw.trim()
+    if (!clean) return
+
+    setIsSyncingClan(true)
+    setClanError('')
+    try {
+      const data = await fetchClanData(clean)
+      setClanData(data)
+      saveClanData(data)
+      setClanTag(data.tag)
+      saveClanTag(data.tag)
+    } catch (err) {
+      console.warn('Tải dữ liệu Clan thất bại:', err)
+      setClanError(err instanceof Error ? err.message : 'Không thể tải thông tin Clan.')
+    } finally {
+      setIsSyncingClan(false)
+    }
+  }
+
+  function handleSelectMemberFromClan(memberTag: string) {
+    handleNavigate('personal')
+    const clean = memberTag.trim().toUpperCase().replace(/^#/, '')
+    setPlayerTag(clean)
+    savePlayerTag(clean)
+    handleSyncCocApi(clean)
+  }
+
   const [error, setError] = useState('')
   const [targetFocusPlayerId, setTargetFocusPlayerId] = useState<string | null>(null)
 
@@ -344,6 +409,14 @@ function App() {
       const existingMap = new Map(previousPlayers.map((p) => [(p.playerTag || p.id).toUpperCase(), p]))
       const result = await fetchRankedSeasonData(cleanTag, existingMap)
 
+      if (result.clanTag) {
+        setClanTag(result.clanTag)
+        saveClanTag(result.clanTag)
+        if (!clanData || clanData.tag !== result.clanTag) {
+          handleSyncClan(result.clanTag)
+        }
+      }
+
       if (result.leagueHistory) {
         setLeagueHistory(result.leagueHistory)
         saveLeagueHistory(result.leagueHistory)
@@ -385,108 +458,160 @@ function App() {
     if (savedTag) {
       handleSyncCocApi(savedTag)
     }
+    const savedClan = loadSavedClanTag() || clanTag
+    if (savedClan && !clanData) {
+      handleSyncClan(savedClan)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
-    <div className="app-surface relative flex min-h-screen flex-col overflow-x-hidden">
-      {/* Nền hiệu ứng Cực quang (Aurora Borealis) chuyển màu liên tục theo nhịp cuộn chuột */}
+    <div className="app-surface relative flex min-h-screen overflow-x-hidden">
+      {/* Nền hiệu ứng Cực quang (Aurora Borealis) */}
       <AuroraBackground />
 
-      {/* Header điều khiển: Player Tag, Xuất JSON/CSV, Theme */}
-      <SeasonHeader
-        league={rankedSeason.league}
-        leagueIconUrl={rankedSeason.leagueIconUrl}
+      {/* Thanh Navigation Bên Trái (Desktop Fixed Sidebar & Mobile Drawer) */}
+      <Sidebar
+        currentRoute={currentRoute}
+        onNavigate={handleNavigate}
         myPlayerName={myPlayerName}
         playerTag={playerTag}
         onPlayerTagChange={handlePlayerTagChange}
+        league={rankedSeason.league}
+        leagueIconUrl={rankedSeason.leagueIconUrl}
         isSyncingApi={isSyncingApi}
         onSyncCocApi={handleSyncCocApi}
         onExport={handleExport}
         onOpenShareCard={() => setIsShareCardOpen(true)}
+        clanMembersCount={clanData?.members || clanData?.memberList?.length}
+        seasonPlayersCount={rankedSeason.players.length}
+        isMobileOpen={isMobileSidebarOpen}
+        onCloseMobile={() => setIsMobileSidebarOpen(false)}
       />
 
-      <main className="relative z-10 mx-auto w-full max-w-[1320px] flex-1 px-4 py-6 sm:px-6 lg:px-8 space-y-6">
-        {/* Thông báo lỗi */}
-        {error && (
-          <div className="animate-fade-in rounded-xl border border-rose-300/60 bg-rose-50/80 px-4 py-3 text-sm text-rose-700 backdrop-blur dark:border-rose-500/30 dark:bg-rose-950/40 dark:text-rose-200">
-            {error}
-          </div>
-        )}
-
-        {!playerTag && (
-          <PlayerTagPromptBanner
-            playerTag={playerTag}
-            isSyncingApi={isSyncingApi}
-            onSync={handleSyncCocApi}
-          />
-        )}
-
-        {/* PHẦN 1: CÁC THÔNG TIN RIÊNG VỀ BẢN THÂN */}
-        {/* 4 Thẻ thống kê nổi bật của bản thân */}
-        <StatCardsGrid
-          stats={stats}
-          season={rankedSeason}
+      {/* Khu vực Nội dung chính bên phải */}
+      <div className="relative z-10 flex flex-1 flex-col min-w-0">
+        {/* Top Contextual Bar */}
+        <TopBar
+          currentRoute={currentRoute}
+          onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)}
+          lastSyncedAt={rankedSeason.lastSyncedAt || clanData?.lastSyncedAt}
+          isSyncingApi={isSyncingApi || isSyncingClan}
+          onSyncCocApi={() => {
+            if (currentRoute === 'clan') {
+              handleSyncClan()
+            } else {
+              handleSyncCocApi()
+            }
+          }}
           myPlayerName={myPlayerName}
-          isSyncingApi={isSyncingApi}
         />
 
-        {/* Theo dõi phong độ qua các mùa giải & Kỷ lục cá nhân */}
-        <PerformanceTrendSection
-          leagueHistory={leagueHistory}
-          myPlayerName={myPlayerName}
-          playerTag={playerTag}
-          isSyncingApi={isSyncingApi}
-        />
+        <main className="mx-auto w-full max-w-[1360px] flex-1 px-4 py-6 sm:px-6 lg:px-8 space-y-6">
+          {/* Thông báo lỗi */}
+          {(error || (currentRoute === 'clan' && clanError)) && (
+            <div className="animate-fade-in rounded-xl border border-rose-300/60 bg-rose-50/80 px-4 py-3 text-sm text-rose-700 backdrop-blur dark:border-rose-500/30 dark:bg-rose-950/40 dark:text-rose-200">
+              {currentRoute === 'clan' && clanError ? clanError : error}
+            </div>
+          )}
 
-        {/* PHẦN 2: CÁC THÔNG TIN LIÊN QUAN TỚI BẢNG XẾP HẠNG CỦA MÙA GIẢI */}
-        {/* Thẻ lớn: Tổng quan mùa giải (Thông tin giải đấu, thiết lập & 3 Biểu đồ phân bổ phân tích) */}
-        <SeasonOverviewSection
-          season={rankedSeason}
-          seasons={document.seasons.map(normalizeSeason)}
-          activeSeasonIndex={document.activeSeasonIndex}
-          onSelectSeasonIndex={handleSelectSeasonIndex}
-          onUpdateSeasonMeta={handleUpdateSeasonMeta}
-          comparisonData={comparisonChartData}
-          attackStatusData={attackStatusChartData}
-          ratingData={ratingChartData}
-          myPlayerName={myPlayerName}
-          isSyncingApi={isSyncingApi}
-        />
+          {/* MỤC 1: THÔNG TIN BẢN THÂN */}
+          {currentRoute === 'personal' && (
+            <div className="space-y-6 animate-fade-in">
+              {!playerTag && (
+                <PlayerTagPromptBanner
+                  playerTag={playerTag}
+                  isSyncingApi={isSyncingApi}
+                  onSync={handleSyncCocApi}
+                />
+              )}
 
-        {/* Bảng thống kê nổi bật & kỷ lục mùa giải */}
-        <HighlightStatsTable
-          players={rankedSeason.players}
-          myPlayerId={rankedSeason.myPlayerId}
-          onSelectPlayer={setTargetFocusPlayerId}
-          isSyncingApi={isSyncingApi}
-        />
+              {/* 4 Thẻ chỉ số tổng quan cá nhân */}
+              <StatCardsGrid
+                stats={stats}
+                season={rankedSeason}
+                myPlayerName={myPlayerName}
+                isSyncingApi={isSyncingApi}
+              />
 
-        {/* Thông báo biến động thứ hạng kể từ lần gần nhất lấy thứ hạng */}
-        {rankChangesSnapshot && (
-          <RankChangesSection
-            snapshot={rankChangesSnapshot}
-            myPlayerId={rankedSeason.myPlayerId}
-            myPlayerName={myPlayerName}
-            isSyncing={isSyncingApi}
-          />
-        )}
+              {/* Theo dõi phong độ qua các mùa giải & Kỷ lục cá nhân */}
+              <PerformanceTrendSection
+                leagueHistory={leagueHistory}
+                myPlayerName={myPlayerName}
+                playerTag={playerTag}
+                isSyncingApi={isSyncingApi}
+              />
 
-        {/* Bảng danh sách người chơi chi tiết */}
-        <PlayerTable
-          key={rankedSeason.seasonName}
-          season={rankedSeason}
-          rankedPlayers={rankedSeason.players}
-          stats={stats}
-          onUpdatePlayerField={handleUpdatePlayerField}
-          targetFocusPlayerId={targetFocusPlayerId}
-          onClearTargetFocus={() => setTargetFocusPlayerId(null)}
-          isSyncingApi={isSyncingApi}
-        />
-      </main>
+              {/* Biến động thứ hạng gần nhất của bản thân */}
+              {rankChangesSnapshot && (
+                <RankChangesSection
+                  snapshot={rankChangesSnapshot}
+                  myPlayerId={rankedSeason.myPlayerId}
+                  myPlayerName={myPlayerName}
+                  isSyncing={isSyncingApi}
+                />
+              )}
+            </div>
+          )}
 
-      {/* Footer & chính sách */}
-      <Footer />
+          {/* MỤC 2: THÔNG TIN MÙA GIẢI */}
+          {currentRoute === 'season' && (
+            <div className="space-y-6 animate-fade-in">
+              {/* Thẻ lớn: Tổng quan mùa giải (Thông tin giải đấu, thiết lập & 3 Biểu đồ phân bổ phân tích) */}
+              <SeasonOverviewSection
+                season={rankedSeason}
+                seasons={document.seasons.map(normalizeSeason)}
+                activeSeasonIndex={document.activeSeasonIndex}
+                onSelectSeasonIndex={handleSelectSeasonIndex}
+                onUpdateSeasonMeta={handleUpdateSeasonMeta}
+                comparisonData={comparisonChartData}
+                attackStatusData={attackStatusChartData}
+                ratingData={ratingChartData}
+                myPlayerName={myPlayerName}
+                isSyncingApi={isSyncingApi}
+              />
+
+              {/* Bảng thống kê nổi bật & kỷ lục mùa giải */}
+              <HighlightStatsTable
+                players={rankedSeason.players}
+                myPlayerId={rankedSeason.myPlayerId}
+                onSelectPlayer={setTargetFocusPlayerId}
+                isSyncingApi={isSyncingApi}
+              />
+
+              {/* Bảng danh sách người chơi chi tiết */}
+              <PlayerTable
+                key={rankedSeason.seasonName}
+                season={rankedSeason}
+                rankedPlayers={rankedSeason.players}
+                stats={stats}
+                onUpdatePlayerField={handleUpdatePlayerField}
+                targetFocusPlayerId={targetFocusPlayerId}
+                onClearTargetFocus={() => setTargetFocusPlayerId(null)}
+                isSyncingApi={isSyncingApi}
+              />
+            </div>
+          )}
+
+          {/* MỤC 3: THÔNG TIN CLAN */}
+          {currentRoute === 'clan' && (
+            <div className="animate-fade-in">
+              <ClanMembersSection
+                clanData={clanData}
+                isLoading={isSyncingClan}
+                clanTag={clanTag}
+                onClanTagChange={(newTag) => setClanTag(newTag)}
+                onSyncClan={handleSyncClan}
+                myPlayerTag={playerTag || stats.myPlayer?.playerTag || rankedSeason.myPlayerId}
+                onSelectPlayerForDashboard={handleSelectMemberFromClan}
+              />
+            </div>
+          )}
+        </main>
+
+        {/* Footer & chính sách */}
+        <Footer />
+      </div>
 
       {/* Modal Chia sẻ thẻ thành tích dạng ảnh Canvas */}
       <ShareCardModal

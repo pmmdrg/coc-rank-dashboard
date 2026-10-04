@@ -6,10 +6,10 @@ import cocHandler from './api/coc.ts'
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
-  if (env.COC_API_TOKEN && !process.env.COC_API_TOKEN) {
+  if (env.COC_API_TOKEN) {
     process.env.COC_API_TOKEN = env.COC_API_TOKEN
   }
-  if (env.COC_PROXY_URL && !process.env.COC_PROXY_URL) {
+  if (env.COC_PROXY_URL) {
     process.env.COC_PROXY_URL = env.COC_PROXY_URL
   }
 

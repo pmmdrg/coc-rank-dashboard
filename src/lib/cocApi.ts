@@ -1,4 +1,4 @@
-import type { Season, Player, LeagueHistoryItem, BattleLogEntry } from '../types'
+import type { Season, Player, LeagueHistoryItem, BattleLogEntry, ClanData, ClanMember } from '../types'
 import { calculateMaxPossibleCups, calculatePlayerRating, getSavedLeagueRules } from './ranking'
 import { getLeagueIconUrl } from './leagueIcons'
 import { getRankedTierMaxAttacks, type RankedTierDefinition } from '../data/rankedTierMetadata'
@@ -8,6 +8,8 @@ export interface SyncResult {
   previousSeason?: Season
   playerName: string
   playerTag: string
+  clanTag?: string
+  clanName?: string
   groupTag: string
   seasonId: string
   membersCount: number
@@ -325,10 +327,71 @@ export async function fetchRankedSeasonData(
     previousSeason,
     playerName: playerData.name || '',
     playerTag: formattedTag,
+    clanTag: (playerData.clan?.tag as string) || undefined,
+    clanName: (playerData.clan?.name as string) || undefined,
     groupTag,
     seasonId,
     membersCount: currentPlayers.length,
     leagueHistory,
+  }
+}
+
+/**
+ * Lấy dữ liệu chi tiết Clan và danh sách thành viên từ Supercell API
+ * @param inputClanTag Tag của Clan (ví dụ: #QVGJR2C9 hoặc QVGJR2C9)
+ */
+export async function fetchClanData(inputClanTag: string): Promise<ClanData> {
+  const cleanTag = inputClanTag.trim().toUpperCase()
+  if (!cleanTag) {
+    throw new Error('Vui lòng nhập Clan Tag để tải thông tin.')
+  }
+  const formattedTag = cleanTag.startsWith('#') ? cleanTag : `#${cleanTag}`
+  const encodedTag = encodeURIComponent(formattedTag)
+  const res = await fetch(`/api/coc?path=${encodeURIComponent(`/clans/${encodedTag}`)}`)
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}))
+    throw new Error(errData.error || `Không thể tải thông tin Clan ${formattedTag} (${res.status})`)
+  }
+  const data = (await res.json()) as Record<string, any>
+
+  const now = new Date()
+  const syncedTime = now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+
+  const memberList: ClanMember[] = Array.isArray(data.memberList)
+    ? data.memberList.map((m: any, idx: number) => ({
+        tag: m.tag || `#MEMBER_${idx + 1}`,
+        name: m.name || 'Member',
+        role: m.role || 'member',
+        townHallLevel: Number(m.townHallLevel) || 1,
+        expLevel: Number(m.expLevel) || 1,
+        clanRank: Number(m.clanRank) || idx + 1,
+        previousClanRank: Number(m.previousClanRank) || Number(m.clanRank) || idx + 1,
+        trophies: Number(m.trophies) || 0,
+        builderBaseTrophies: Number(m.builderBaseTrophies) || 0,
+        donations: Number(m.donations) || 0,
+        donationsReceived: Number(m.donationsReceived) || 0,
+        league: m.league,
+        leagueTier: m.leagueTier,
+      }))
+    : []
+
+  // Đảm bảo danh sách được sắp xếp theo clanRank tăng dần (#1 -> #50)
+  memberList.sort((a, b) => a.clanRank - b.clanRank)
+
+  return {
+    tag: data.tag || formattedTag,
+    name: data.name || 'Clan',
+    type: data.type || '',
+    description: data.description,
+    clanLevel: Number(data.clanLevel) || 1,
+    clanPoints: Number(data.clanPoints) || 0,
+    clanBuilderBasePoints: Number(data.clanBuilderBasePoints) || 0,
+    clanCapitalPoints: Number(data.clanCapitalPoints) || 0,
+    members: Number(data.members) || memberList.length,
+    badgeUrls: data.badgeUrls || {},
+    warLeague: data.warLeague,
+    memberList,
+    lastSyncedAt: syncedTime,
   }
 }
 

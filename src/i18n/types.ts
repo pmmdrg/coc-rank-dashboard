@@ -17,6 +17,18 @@ export interface TranslationDictionary {
     cancel: string
     confirm: string
   }
+  navigation: {
+    personal: string
+    personalDesc: string
+    season: string
+    seasonDesc: string
+    clan: string
+    clanDesc: string
+    syncApi: string
+    syncing: string
+    lastSynced: string
+    menu: string
+  }
   header: {
     title: string
     badge: string
@@ -334,4 +346,51 @@ export interface TranslationDictionary {
     designAndDev: string
     fanPolicyNotice: string
   }
+  clan: {
+    navDashboard: string
+    navClan: string
+    clanTitle: string
+    clanSubtitle: string
+    tagPlaceholder: string
+    syncBtn: string
+    syncingBtn: string
+    membersCount: string
+    totalPoints: string
+    warLeague: string
+    level: string
+    searchPlaceholder: string
+    filterAllRoles: string
+    filterLeader: string
+    filterCoLeader: string
+    filterElder: string
+    filterMember: string
+    sortRank: string
+    sortTrophies: string
+    sortTownHall: string
+    sortDonations: string
+    sortName: string
+    thRank: string
+    thMember: string
+    thLeague: string
+    thTrophies: string
+    thDonations: string
+    thAction: string
+    viewPlayer: string
+    viewPlayerTooltip: string
+    noClanPrompt: string
+    noClanSub: string
+    statTotalMembers: string
+    statTotalTrophies: string
+    statTopTier: string
+    statDonations: string
+    donated: string
+    received: string
+    clanDescription: string
+    roleLeader: string
+    roleCoLeader: string
+    roleElder: string
+    roleMember: string
+    you: string
+  }
 }
+
