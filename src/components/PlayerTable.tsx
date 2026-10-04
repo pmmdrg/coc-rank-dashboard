@@ -140,8 +140,6 @@ export function PlayerTable({
 
   const [searchQuery, setSearchQuery] = useState('')
   const [filterTab, setFilterTab] = useState<FilterTab>('all')
-  const [showJumper, setShowJumper] = useState(false)
-  const tableSectionRef = useRef<HTMLElement | null>(null)
   const tableAnimatedWrapperRef = useRef<HTMLDivElement | null>(null)
   const prevTableHeightRef = useRef<number | null>(null)
   const tableContainerRef = useRef<HTMLDivElement | null>(null)
@@ -282,13 +280,11 @@ export function PlayerTable({
   // Lắng nghe cuộn trang và co giãn để đồng bộ Sticky Table Header và Floating Zone Jumper
   useEffect(() => {
     const updateScrollState = () => {
-      const sectionEl = tableSectionRef.current
       const containerEl = tableContainerRef.current
       const tableEl = tableRef.current
       const theadEl = theadRef.current
-      if (!sectionEl || !containerEl || !tableEl) return
+      if (!containerEl || !tableEl) return
 
-      const sectionRect = sectionEl.getBoundingClientRect()
       const containerRect = containerEl.getBoundingClientRect()
       const tableRect = tableEl.getBoundingClientRect()
 
@@ -296,10 +292,6 @@ export function PlayerTable({
       const appHeader = document.querySelector('header.glass-header')
       const headerBottom = appHeader ? appHeader.getBoundingClientRect().bottom : 72
       setStickyTop(headerBottom)
-
-      // Hiển thị thanh jumper khi đã cuộn qua khỏi đầu bảng và còn trong bảng
-      const inView = sectionRect.top < 0 && sectionRect.bottom > 280
-      setShowJumper(inView)
 
       // Điều kiện hiển thị Sticky Table Header:
       // Khi thead gốc của bảng đã cuộn lên trên headerBottom
@@ -524,58 +516,6 @@ export function PlayerTable({
     demotionCount < totalRankedPlayers &&
     totalRankedPlayers - demotionCount >= promotionCount
 
-  function jumpToMyPlayer() {
-    if (!stats.myPlayer) return
-    if (isFiltered) {
-      setFilterTab('all')
-      setSearchQuery('')
-    }
-    setTimeout(() => {
-      const el = rowRefs.current.get(stats.myPlayer!.id)
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'center' })
-        setHighlightedPlayerId(stats.myPlayer!.id)
-        setTimeout(() => setHighlightedPlayerId(null), 3000)
-      }
-    }, 50)
-  }
-
-  function jumpToPromotion() {
-    if (isFiltered) {
-      setFilterTab('all')
-      setSearchQuery('')
-    }
-    setTimeout(() => {
-      const targetRank = Math.min(promotionCount, rankedPlayers.length)
-      const targetPlayer = rankedPlayers.find((p) => p.rank === targetRank)
-      if (targetPlayer) {
-        const el = rowRefs.current.get(targetPlayer.id)
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      }
-    }, 50)
-  }
-
-  function jumpToDemotion() {
-    if (isFiltered) {
-      setFilterTab('all')
-      setSearchQuery('')
-    }
-    setTimeout(() => {
-      const targetRank = Math.max(1, rankedPlayers.length - demotionCount + 1)
-      const targetPlayer = rankedPlayers.find((p) => p.rank === targetRank)
-      if (targetPlayer) {
-        const el = rowRefs.current.get(targetPlayer.id)
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      }
-    }, 50)
-  }
-
-  function jumpToTop() {
-    if (tableSectionRef.current) {
-      tableSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }
-  }
-
   useLayoutEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const currentScroll = window.scrollY || document.documentElement.scrollTop
@@ -669,7 +609,7 @@ export function PlayerTable({
   }
 
   return (
-    <section ref={tableSectionRef} className="glass-panel relative rounded-xl shadow-sm">
+    <section className="glass-panel relative rounded-xl shadow-sm">
       {/* 1. Header tiêu đề & trạng thái */}
       <div className="flex flex-col gap-3 border-b border-slate-200/80 p-5 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800/80">
         <div>
@@ -1022,53 +962,6 @@ export function PlayerTable({
           {dict.table.legendOpponentAttacked}
         </span>
       </div>
-
-      {/* 5. Floating Zone Jumper - Apple Dynamic Island Capsule */}
-      {showJumper && (
-        <div className="fixed bottom-6 right-6 z-40 animate-fade-in">
-          <div className="dynamic-island-capsule flex items-center gap-1.5 p-1.5 shadow-2xl">
-            {stats.myPlayer && (
-              <button
-                type="button"
-                onClick={jumpToMyPlayer}
-                className="apple-btn inline-flex h-7.5 items-center rounded-full bg-sky-500/25 px-3 text-xs font-black text-sky-300 hover:bg-sky-500/40 shadow-xs shadow-sky-500/30 transition-all cursor-pointer select-none"
-                title={dict.table.jumpMyTooltip}
-              >
-                <span className="h-1.5 w-1.5 rounded-full bg-sky-400 mr-1.5 animate-pulse" />
-                {interpolate(dict.table.jumpMe, { rank: stats.myPlayer.rank })}
-              </button>
-            )}
-            {promotionCount > 0 && (
-              <button
-                type="button"
-                onClick={jumpToPromotion}
-                className="apple-btn inline-flex h-7.5 items-center rounded-full bg-emerald-500/20 px-2.5 text-xs font-bold text-emerald-300 hover:bg-emerald-500/35 transition-all cursor-pointer select-none"
-                title={interpolate(dict.table.jumpPromotionTooltip, { count: promotionCount })}
-              >
-                {dict.table.jumpPromotion}
-              </button>
-            )}
-            {demotionCount > 0 && (
-              <button
-                type="button"
-                onClick={jumpToDemotion}
-                className="apple-btn inline-flex h-7.5 items-center rounded-full bg-rose-500/20 px-2.5 text-xs font-bold text-rose-300 hover:bg-rose-500/35 transition-all cursor-pointer select-none"
-                title={interpolate(dict.table.jumpDemotionTooltip, { rank: rankedPlayers.length - demotionCount + 1 })}
-              >
-                {dict.table.jumpDemotion}
-              </button>
-            )}
-            <button
-              type="button"
-              onClick={jumpToTop}
-              className="apple-btn inline-flex h-7.5 items-center rounded-full bg-slate-800/80 px-2.5 text-xs font-semibold text-slate-300 hover:bg-slate-700 hover:text-white transition-all cursor-pointer select-none"
-              title={dict.table.jumpTopTooltip}
-            >
-              {dict.table.jumpTop}
-            </button>
-          </div>
-        </div>
-      )}
     </section>
   )
 }
