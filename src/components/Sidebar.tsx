@@ -46,8 +46,6 @@ export function Sidebar({
   onSyncCocApi,
   onExport,
   onOpenShareCard,
-  clanMembersCount,
-  seasonPlayersCount = 100,
   isMobileOpen = false,
   onCloseMobile,
 }: SidebarProps) {
@@ -74,21 +72,18 @@ export function Sidebar({
       icon: User,
       label: dict.navigation.personal,
       desc: dict.navigation.personalDesc,
-      badge: null,
     },
     {
       id: 'season' as AppRoute,
       icon: Trophy,
       label: dict.navigation.season,
       desc: dict.navigation.seasonDesc,
-      badge: seasonPlayersCount > 0 ? `${seasonPlayersCount}` : null,
     },
     {
       id: 'clan' as AppRoute,
       icon: Shield,
       label: dict.navigation.clan,
       desc: dict.navigation.clanDesc,
-      badge: typeof clanMembersCount === 'number' && clanMembersCount > 0 ? `${clanMembersCount}` : null,
     },
   ]
 
@@ -225,18 +220,6 @@ export function Sidebar({
                     </div>
                   </div>
                 </div>
-
-                {item.badge && (
-                  <span
-                    className={`inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 font-mono text-[10px] font-extrabold ${
-                      isActive
-                        ? 'bg-sky-600 text-white dark:bg-sky-500'
-                        : 'bg-slate-200/80 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
-                    }`}
-                  >
-                    {item.badge}
-                  </span>
-                )}
               </button>
             )
           })}

@@ -18,6 +18,7 @@ import type { ClanData, ClanMember, ClanRole, Player, PlayerTournamentRankInfo }
 import { getLeagueIconUrl } from '../lib/leagueIcons'
 import { fetchPlayerTournamentRank } from '../lib/cocApi'
 import { useI18n } from '../i18n/LanguageContext'
+import { CustomSelect, type SelectOption } from './CustomSelect'
 
 export interface ClanMembersSectionProps {
   clanData: ClanData | null
@@ -39,6 +40,28 @@ export function ClanMembersSection({
   const [roleFilter, setRoleFilter] = useState<'all' | ClanRole>('all')
   const [sortField, setSortField] = useState<SortField>('rank')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
+
+  const roleOptions = useMemo<SelectOption<'all' | ClanRole>[]>(
+    () => [
+      { value: 'all', label: dict.clan.filterAllRoles },
+      { value: 'leader', label: dict.clan.roleLeader },
+      { value: 'coLeader', label: dict.clan.roleCoLeader },
+      { value: 'admin', label: dict.clan.roleElder },
+      { value: 'member', label: dict.clan.roleMember },
+    ],
+    [dict.clan],
+  )
+
+  const sortOptions = useMemo<SelectOption<SortField>[]>(
+    () => [
+      { value: 'rank', label: dict.clan.sortRank },
+      { value: 'tournamentRank', label: dict.clan.sortTournamentRank },
+      { value: 'trophies', label: dict.clan.sortTrophies },
+      { value: 'th', label: dict.clan.sortTownHall },
+      { value: 'name', label: dict.clan.sortName },
+    ],
+    [dict.clan],
+  )
 
   // Map thứ hạng của người chơi trong bảng đấu giải hiện tại (nếu có trong bracket 100 người)
   const tournamentRankMap = useMemo(() => {
@@ -378,55 +401,49 @@ export function ClanMembersSection({
       </section>
 
       {/* 2. TOOLBAR TÌM KIẾM, LỌC & SẮP XẾP */}
-      <section className="glass-panel flex flex-col gap-3 rounded-xl border border-slate-200/80 p-4 shadow-2xs backdrop-blur-md sm:flex-row sm:items-center sm:justify-between dark:border-slate-800/80">
+      <section className="glass-panel relative z-20 flex flex-col gap-3 rounded-2xl border border-slate-200/80 p-4 shadow-2xs backdrop-blur-md sm:flex-row sm:items-center sm:justify-between dark:border-slate-800/80">
         {/* Ô tìm kiếm */}
         <div className="relative flex-1 sm:max-w-xs">
-          <MagnifyingGlass className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <MagnifyingGlass className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={dict.clan.searchPlaceholder}
-            className="h-9 w-full rounded-lg border border-slate-300/80 bg-white/80 pl-9 pr-3 text-xs text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-100"
+            className="h-10 w-full rounded-xl border border-slate-200/80 bg-white/70 pl-9.5 pr-3 text-xs text-slate-900 placeholder:text-slate-400 focus:border-sky-500 focus:outline-none dark:border-white/10 dark:bg-slate-800/70 dark:text-slate-100 dark:focus:border-sky-400 shadow-2xs backdrop-blur-md"
           />
         </div>
 
-        {/* Bộ lọc vai trò & sắp xếp */}
-        <div className="flex flex-wrap items-center gap-2">
-          {/* Lọc theo chức vụ */}
-          <select
-            value={roleFilter}
-            onChange={(e) => setRoleFilter(e.target.value as 'all' | ClanRole)}
-            className="h-9 rounded-lg border border-slate-300/80 bg-white/80 px-2.5 text-xs font-semibold text-slate-700 focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-200 cursor-pointer"
-          >
-            <option value="all">{dict.clan.filterAllRoles}</option>
-            <option value="leader">{dict.clan.filterLeader}</option>
-            <option value="coLeader">{dict.clan.filterCoLeader}</option>
-            <option value="admin">{dict.clan.filterElder}</option>
-            <option value="member">{dict.clan.filterMember}</option>
-          </select>
+        {/* Bộ lọc vai trò, sắp xếp & nút tra cứu tất cả */}
+        <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
+          {/* Lọc theo chức vụ (CustomSelect đồng bộ giao diện chọn mùa giải) */}
+          <div className="w-full sm:w-44">
+            <CustomSelect<'all' | ClanRole>
+              value={roleFilter}
+              options={roleOptions}
+              onChange={(val) => setRoleFilter(val)}
+              ariaLabel={dict.clan.filterAllRoles}
+            />
+          </div>
 
-          {/* Sắp xếp theo tiêu chí (Đã bỏ donations) */}
-          <div className="inline-flex items-center rounded-lg border border-slate-300/80 bg-white/80 p-0.5 dark:border-slate-700 dark:bg-slate-900/80">
-            <select
-              value={sortField}
-              onChange={(e) => setSortField(e.target.value as SortField)}
-              className="h-7.5 rounded-md bg-transparent px-2 text-xs font-semibold text-slate-700 focus:outline-none dark:text-slate-200 cursor-pointer"
-            >
-              <option value="rank">{dict.clan.sortRank}</option>
-              <option value="tournamentRank">{dict.clan.sortTournamentRank}</option>
-              <option value="trophies">{dict.clan.sortTrophies}</option>
-              <option value="th">{dict.clan.sortTownHall}</option>
-              <option value="name">{dict.clan.sortName}</option>
-            </select>
+          {/* Sắp xếp theo tiêu chí (CustomSelect đồng bộ giao diện chọn mùa giải) + Đổi chiều */}
+          <div className="flex items-center gap-1.5 w-full sm:w-auto">
+            <div className="w-full sm:w-48">
+              <CustomSelect<SortField>
+                value={sortField}
+                options={sortOptions}
+                onChange={(val) => setSortField(val)}
+                ariaLabel={dict.clan.sortRank}
+              />
+            </div>
 
             <button
               type="button"
               onClick={() => setSortOrder((curr) => (curr === 'asc' ? 'desc' : 'asc'))}
-              className="inline-flex h-7.5 w-7.5 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100 cursor-pointer"
-              title="Đổi chiều sắp xếp"
+              className="apple-btn inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200/80 bg-white/70 text-slate-600 hover:border-sky-500/50 hover:bg-white hover:text-slate-900 active:scale-95 transition-all shadow-2xs backdrop-blur-md dark:border-white/10 dark:bg-slate-800/70 dark:text-slate-300 dark:hover:border-sky-400/50 dark:hover:bg-slate-800 dark:hover:text-white cursor-pointer"
+              title={sortOrder === 'asc' ? 'Tăng dần (Nhấn để đổi giảm dần)' : 'Giảm dần (Nhấn để đổi tăng dần)'}
             >
-              <ArrowsDownUp className="h-3.5 w-3.5" />
+              <ArrowsDownUp weight="bold" className={`h-4 w-4 ${sortOrder === 'desc' ? 'rotate-180' : ''} transition-transform duration-200`} />
             </button>
           </div>
 
@@ -435,7 +452,7 @@ export function ClanMembersSection({
             type="button"
             onClick={handleFetchAllRanks}
             disabled={isFetchingAll}
-            className="apple-btn inline-flex h-9 items-center gap-1.5 rounded-lg border border-indigo-500/30 bg-indigo-500/10 px-3 text-xs font-bold text-indigo-600 hover:bg-indigo-500/20 active:scale-95 disabled:opacity-50 transition-all dark:border-indigo-400/30 dark:bg-indigo-400/10 dark:text-indigo-400 cursor-pointer shadow-2xs"
+            className="apple-btn inline-flex h-10 items-center gap-1.5 rounded-xl border border-indigo-500/30 bg-indigo-500/10 px-3.5 text-xs font-bold text-indigo-600 hover:bg-indigo-500/20 active:scale-95 disabled:opacity-50 transition-all dark:border-indigo-400/30 dark:bg-indigo-400/10 dark:text-indigo-400 cursor-pointer shadow-2xs"
             title="Tự động gọi API tra cứu thứ hạng của tất cả thành viên trong Clan"
           >
             {isFetchingAll ? (
