@@ -1,4 +1,5 @@
 import { useI18n } from '../i18n/LanguageContext'
+import { APP_VERSION } from '../version'
 
 export function Footer() {
   const { dict } = useI18n()
@@ -14,10 +15,10 @@ export function Footer() {
                 CoC Rank Dashboard
               </span>
               <span className="rounded-full bg-slate-500/10 px-2 py-0.5 text-[11px] font-semibold text-slate-600 dark:bg-slate-400/10 dark:text-slate-400">
-                Fan Tool
+                v{APP_VERSION}
               </span>
               <span className="rounded-full bg-sky-500/10 px-2 py-0.5 text-[11px] font-semibold text-sky-600 dark:bg-sky-400/10 dark:text-sky-400">
-                Ranked
+                Fan Tool
               </span>
             </div>
             <p className="text-sm font-medium text-slate-700 dark:text-slate-300">

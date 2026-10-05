@@ -15,6 +15,7 @@ import { formatLeagueName } from '../lib/ranking'
 import { ThemeToggle } from './ThemeToggle'
 import { LanguageSwitcher } from './LanguageSwitcher'
 import { useI18n } from '../i18n/LanguageContext'
+import { APP_VERSION } from '../version'
 
 export interface SidebarProps {
   currentRoute: AppRoute
@@ -264,7 +265,7 @@ export function Sidebar({
             <ThemeToggle />
           </div>
           <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500">
-            v1.0 • CoC Fan Tool
+            v{APP_VERSION} • CoC Fan Tool
           </span>
         </div>
       </div>
