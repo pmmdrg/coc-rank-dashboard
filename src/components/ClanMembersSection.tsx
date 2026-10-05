@@ -11,6 +11,7 @@ import {
   Building,
   CircleNotch,
   ArrowClockwise,
+  ArrowsClockwise,
   Info,
 } from '@phosphor-icons/react'
 import type { ClanData, ClanMember, ClanRole, Player, PlayerTournamentRankInfo } from '../types'
@@ -121,14 +122,17 @@ export function ClanMembersSection({
     }
   }
 
-  // Gọi API tra cứu cho toàn bộ thành viên trong Clan chưa có dữ liệu thứ hạng
-  const handleFetchAllRanks = async () => {
+  // Gọi API tra cứu hoặc làm mới thứ hạng cho toàn bộ thành viên trong Clan
+  const handleFetchAllRanks = async (forceRefresh: boolean = false) => {
     if (!clanData?.memberList || isFetchingAll) return
     setIsFetchingAll(true)
 
     try {
       const toFetch = clanData.memberList.filter((m) => {
         const clean = m.tag.toUpperCase().replace(/^#/, '')
+        if (forceRefresh) {
+          return !tournamentRankMap.has(clean)
+        }
         return !tournamentRankMap.has(clean) && !memberRanks[clean]?.rank
       })
 
@@ -145,6 +149,15 @@ export function ClanMembersSection({
     }
   }
 
+  // Kiểm tra xem tất cả thành viên trong Clan đã có dữ liệu thứ hạng bảng đấu hay chưa
+  const isAllRanksFetched = useMemo(() => {
+    if (!clanData?.memberList || clanData.memberList.length === 0) return false
+    return clanData.memberList.every((m) => {
+      const clean = m.tag.toUpperCase().replace(/^#/, '')
+      return tournamentRankMap.has(clean) || Boolean(memberRanks[clean]?.rank || memberRanks[clean]?.isUnranked)
+    })
+  }, [clanData?.memberList, tournamentRankMap, memberRanks])
+
   // Tự động tra cứu ngầm thứ hạng bảng đấu cho các thành viên chưa có dữ liệu khi mở Clan
   useEffect(() => {
     if (!clanData?.memberList || clanData.memberList.length === 0 || isFetchingAll) return
@@ -153,7 +166,7 @@ export function ClanMembersSection({
       return !tournamentRankMap.has(clean) && !memberRanks[clean]
     })
     if (hasUnfetched) {
-      handleFetchAllRanks()
+      handleFetchAllRanks(false)
     }
   }, [clanData?.tag])
 
@@ -405,18 +418,27 @@ export function ClanMembersSection({
             </button>
           </div>
 
-          {/* Nút gọi API tra cứu thứ hạng tất cả thành viên trong Clan */}
+          {/* Nút gọi API tra cứu / làm mới thứ hạng tất cả thành viên trong Clan */}
           <button
             type="button"
-            onClick={handleFetchAllRanks}
+            onClick={() => handleFetchAllRanks(true)}
             disabled={isFetchingAll}
             className="apple-btn inline-flex h-10 items-center gap-1.5 rounded-xl border border-indigo-500/30 bg-indigo-500/10 px-3.5 text-xs font-bold text-indigo-600 hover:bg-indigo-500/20 active:scale-95 disabled:opacity-50 transition-all dark:border-indigo-400/30 dark:bg-indigo-400/10 dark:text-indigo-400 cursor-pointer shadow-2xs"
-            title="Tự động gọi API tra cứu thứ hạng của tất cả thành viên trong Clan"
+            title={
+              isAllRanksFetched
+                ? 'Gọi lại API Supercell để cập nhật thứ hạng mới nhất cho tất cả thành viên'
+                : 'Tự động gọi API tra cứu thứ hạng của tất cả thành viên trong Clan'
+            }
           >
             {isFetchingAll ? (
               <>
                 <CircleNotch weight="bold" className="h-3.5 w-3.5 animate-spin" />
                 <span>{dict.clan.fetchingAllRanks}</span>
+              </>
+            ) : isAllRanksFetched ? (
+              <>
+                <ArrowsClockwise weight="bold" className="h-3.5 w-3.5" />
+                <span>{dict.clan.refreshAllRanks}</span>
               </>
             ) : (
               <>

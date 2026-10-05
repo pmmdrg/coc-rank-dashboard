@@ -381,6 +381,7 @@ export interface TranslationDictionary {
     unrankedBadge: string
     fetchAllRanks: string
     fetchingAllRanks: string
+    refreshAllRanks: string
     sortTournamentRank: string
     viewPlayer: string
     viewPlayerTooltip: string

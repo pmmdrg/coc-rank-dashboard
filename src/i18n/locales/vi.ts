@@ -381,6 +381,7 @@ export const vi: TranslationDictionary = {
     unrankedBadge: 'Chưa đấu',
     fetchAllRanks: 'Tra cứu tất cả',
     fetchingAllRanks: 'Đang tra cứu...',
+    refreshAllRanks: 'Làm mới tất cả',
     sortTournamentRank: 'Hạng bảng đấu',
     viewPlayer: 'Xem cá nhân',
     viewPlayerTooltip: 'Chuyển sang Bảng đấu cá nhân và xem phân tích của người chơi này',

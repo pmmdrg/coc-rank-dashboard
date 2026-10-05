@@ -381,6 +381,7 @@ export const en: TranslationDictionary = {
     unrankedBadge: 'Unranked',
     fetchAllRanks: 'Check All',
     fetchingAllRanks: 'Checking All...',
+    refreshAllRanks: 'Refresh All',
     sortTournamentRank: 'Tournament Rank',
     viewPlayer: 'View Profile',
     viewPlayerTooltip: 'Switch to Personal Dashboard to view ranked tournament analysis for this player',
