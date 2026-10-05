@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   attackStatusColors,
   calculateMaxPossibleCups,
@@ -114,20 +114,6 @@ function App() {
   const [isSyncingClan, setIsSyncingClan] = useState(false)
   const [clanError, setClanError] = useState('')
 
-  useEffect(() => {
-    const handleHashChange = () => {
-      setCurrentRoute(getRouteFromHash())
-    }
-    window.addEventListener('hashchange', handleHashChange)
-    return () => window.removeEventListener('hashchange', handleHashChange)
-  }, [])
-
-  const handleNavigate = (route: AppRoute) => {
-    window.location.hash = `#/${route}`
-    setCurrentRoute(route)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-
   async function handleSyncClan(targetClanTag?: string) {
     const raw = targetClanTag || clanTag
     const clean = raw.trim()
@@ -156,6 +142,54 @@ function App() {
   const rankedSeason = useMemo(() => normalizeSeason(season), [season])
   const stats = useMemo(() => getRankingStats(rankedSeason), [rankedSeason])
   const myPlayerName = stats.myPlayer?.name || (playerTag ? dict.common.me : '--')
+
+  // Lưu thời điểm fetch gần nhất cho từng route để tránh spam request liên tục
+  const lastSyncRouteTimeRef = useRef<Record<string, number>>({})
+
+  // Tự động fetch lại API tương ứng khi truy cập hoặc chuyển tab
+  const triggerRouteSync = useCallback(
+    (route: AppRoute) => {
+      const now = Date.now()
+      const lastTime = lastSyncRouteTimeRef.current[route] || 0
+      // Cooldown 2s: Nếu vừa fetch dữ liệu cho route này cách đây dưới 2 giây thì không gọi lặp
+      if (now - lastTime < 2000) {
+        return
+      }
+      lastSyncRouteTimeRef.current[route] = now
+
+      const activeTag = playerTag || stats.myPlayer?.playerTag || rankedSeason.myPlayerId
+      if (route === 'personal' || route === 'season') {
+        if (activeTag && !isSyncingApi) {
+          handleSyncCocApi(activeTag)
+        }
+      } else if (route === 'clan') {
+        const activeClan = clanTag || clanData?.tag
+        if (activeClan && !isSyncingClan) {
+          handleSyncClan(activeClan)
+        } else if (activeTag && !isSyncingApi) {
+          handleSyncCocApi(activeTag)
+        }
+      }
+    },
+    [playerTag, stats.myPlayer?.playerTag, rankedSeason.myPlayerId, isSyncingApi, clanTag, clanData?.tag, isSyncingClan],
+  )
+
+  const handleNavigate = (route: AppRoute) => {
+    window.location.hash = `#/${route}`
+    setCurrentRoute(route)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    triggerRouteSync(route)
+  }
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const newRoute = getRouteFromHash()
+      setCurrentRoute(newRoute)
+      triggerRouteSync(newRoute)
+    }
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [triggerRouteSync])
 
   const isInitialMount = useRef(true)
 
@@ -496,6 +530,7 @@ function App() {
           onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)}
           lastSyncedAt={rankedSeason.lastSyncedAt || clanData?.lastSyncedAt}
           myPlayerName={myPlayerName}
+          isSyncing={isSyncingApi || isSyncingClan}
         />
 
         <main className="mx-auto w-full max-w-[1360px] flex-1 px-4 py-6 sm:px-6 lg:px-8 space-y-6">

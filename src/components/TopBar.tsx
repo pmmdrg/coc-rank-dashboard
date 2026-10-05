@@ -3,6 +3,7 @@ import {
   User,
   Trophy,
   Shield,
+  CircleNotch,
 } from '@phosphor-icons/react'
 import type { AppRoute } from '../types'
 import { useI18n } from '../i18n/LanguageContext'
@@ -12,12 +13,14 @@ export interface TopBarProps {
   onOpenMobileSidebar: () => void
   lastSyncedAt?: string
   myPlayerName?: string
+  isSyncing?: boolean
 }
 
 export function TopBar({
   currentRoute,
   onOpenMobileSidebar,
   lastSyncedAt,
+  isSyncing = false,
 }: TopBarProps) {
   const { dict } = useI18n()
 
@@ -77,14 +80,19 @@ export function TopBar({
 
         {/* Trạng thái Đồng bộ */}
         <div className="flex items-center gap-2.5">
-          {lastSyncedAt && (
+          {isSyncing ? (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 px-3 py-1 text-[11px] font-bold text-sky-700 dark:border-sky-400/30 dark:bg-sky-400/10 dark:text-sky-300 shadow-2xs">
+              <CircleNotch weight="bold" className="h-3.5 w-3.5 animate-spin text-sky-600 dark:text-sky-400" />
+              <span>{dict.header.syncing}</span>
+            </span>
+          ) : lastSyncedAt ? (
             <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-[11px] font-bold text-emerald-700 dark:border-emerald-400/30 dark:bg-emerald-400/10 dark:text-emerald-300 shadow-2xs">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
               <span>
                 {dict.navigation.lastSynced}: {lastSyncedAt}
               </span>
             </span>
-          )}
+          ) : null}
         </div>
       </div>
     </header>
