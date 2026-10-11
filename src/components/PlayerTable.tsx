@@ -19,110 +19,6 @@ interface PlayerTableProps {
   isSyncingApi?: boolean
 }
 
-function getElementDocumentTop(element: HTMLElement): number {
-  let transformY = 0
-  const transform = element.style.transform
-  if (transform && transform !== 'none') {
-    const match = transform.match(/translateY\((-?[\d.]+)px\)/)
-    if (match) transformY = parseFloat(match[1])
-  }
-  const rect = element.getBoundingClientRect()
-  const scrollY = window.scrollY || document.documentElement.scrollTop
-  return rect.top + scrollY - transformY
-}
-
-interface AnimatedRowItem {
-  element: HTMLElement
-  deltaY: number
-}
-
-// Đường cong gia tốc sóng Sine tự nhiên (easeInOutSine): khởi đầu êm dịu, đỉnh vận tốc chỉ 1.57x, hãm phanh tự nhiên mềm mại
-function easeInOutSine(t: number): number {
-  return -(Math.cos(Math.PI * t) - 1) / 2
-}
-
-function runUnifiedAnimation({
-  targetScrollY,
-  duration,
-  rows,
-  easing = easeInOutSine,
-}: {
-  targetScrollY?: number
-  duration: number
-  rows: AnimatedRowItem[]
-  easing?: (t: number) => number
-}): { cancel: () => void } {
-  const startScrollY = window.scrollY || document.documentElement.scrollTop
-  const shouldScroll = targetScrollY !== undefined && Math.abs(targetScrollY - startScrollY) >= 3
-  const scrollDiff = shouldScroll ? targetScrollY - startScrollY : 0
-
-  let isCancelled = false
-  let frameId = 0
-  let startTime: number | null = null
-
-  // Gán vị trí xuất phát cho toàn bộ các hàng ngay lập tức trong layout frame (0ms delay)
-  rows.forEach(({ element, deltaY }) => {
-    element.style.transform = `translateY(${deltaY}px)`
-    element.style.willChange = 'transform'
-  })
-
-  const cleanup = () => {
-    rows.forEach(({ element }) => {
-      element.style.transform = ''
-      element.style.willChange = ''
-    })
-    window.removeEventListener('wheel', cancel)
-    window.removeEventListener('touchmove', cancel)
-  }
-
-  const cancel = () => {
-    if (isCancelled) return
-    isCancelled = true
-    cancelAnimationFrame(frameId)
-    cleanup()
-  }
-
-  window.addEventListener('wheel', cancel, { passive: true, once: true })
-  window.addEventListener('touchmove', cancel, { passive: true, once: true })
-
-  function step(currentTime: number) {
-    if (isCancelled) return
-
-    if (startTime === null) {
-      startTime = currentTime
-    }
-
-    const elapsed = currentTime - startTime
-    const progress = Math.min(elapsed / duration, 1)
-    const ease = easing(progress)
-
-    // 1. Cuộn camera đồng bộ
-    if (shouldScroll) {
-      window.scrollTo(0, startScrollY + scrollDiff * ease)
-    }
-
-    // 2. Di chuyển các hàng cùng 1 biến ease và 1 tick đồng hồ duy nhất
-    const remaining = 1 - ease
-    rows.forEach(({ element, deltaY }) => {
-      const currentY = deltaY * remaining
-      if (Math.abs(currentY) < 0.2) {
-        element.style.transform = ''
-      } else {
-        element.style.transform = `translateY(${currentY}px)`
-      }
-    })
-
-    if (progress < 1) {
-      frameId = requestAnimationFrame(step)
-    } else {
-      cleanup()
-    }
-  }
-
-  frameId = requestAnimationFrame(step)
-  return { cancel }
-}
-
 export function PlayerTable({
   season,
   rankedPlayers,
@@ -133,11 +29,6 @@ export function PlayerTable({
 }: PlayerTableProps) {
   const { dict, interpolate } = useI18n()
   const [highlightedPlayerId, setHighlightedPlayerId] = useState<string | null>(null)
-  const [rankJumpInfo, setRankJumpInfo] = useState<{
-    playerId: string
-    fromRank: number
-    toRank: number
-  } | null>(null)
 
   const [searchQuery, setSearchQuery] = useState('')
   const [filterTab, setFilterTab] = useState<FilterTab>('all')
@@ -155,51 +46,14 @@ export function PlayerTable({
   const [colWidths, setColWidths] = useState<number[]>([])
 
   const rowRefs = useRef(new Map<string, HTMLTableRowElement>())
-  const previousRowTops = useRef(new Map<string, number>())
-  const activeScrollAnimation = useRef<{ cancel: () => void } | null>(null)
-  const pendingScrollPlayerId = useRef<string | null>(null)
-  const previousRanksRef = useRef<Map<string, number>>(
-    new Map(rankedPlayers.map((p) => [p.id, p.rank])),
-  )
   const highlightCleanupTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // Dọn dẹp timer và animation khi unmount
+  // Dọn dẹp timer khi unmount
   useEffect(() => {
     return () => {
       if (highlightCleanupTimer.current) clearTimeout(highlightCleanupTimer.current)
-      if (activeScrollAnimation.current) activeScrollAnimation.current.cancel()
     }
   }, [])
-
-  // Theo dõi sự thay đổi thứ hạng khi dữ liệu mùa giải được cập nhật từ Supercell API
-  useEffect(() => {
-    const prevMap = previousRanksRef.current
-    let jumpingPlayer: { playerId: string; fromRank: number; toRank: number } | null = null
-
-    for (const p of rankedPlayers) {
-      const fromRank = prevMap.get(p.id)
-      if (fromRank !== undefined && fromRank !== p.rank) {
-        jumpingPlayer = { playerId: p.id, fromRank, toRank: p.rank }
-        break
-      }
-    }
-
-    if (jumpingPlayer) {
-      setRankJumpInfo(jumpingPlayer)
-      setHighlightedPlayerId(jumpingPlayer.playerId)
-      pendingScrollPlayerId.current = jumpingPlayer.playerId
-
-      if (highlightCleanupTimer.current) clearTimeout(highlightCleanupTimer.current)
-      highlightCleanupTimer.current = setTimeout(() => {
-        setHighlightedPlayerId(null)
-        setRankJumpInfo(null)
-      }, 5000)
-    }
-
-    const nextMap = new Map<string, number>()
-    rankedPlayers.forEach((p) => nextMap.set(p.id, p.rank))
-    previousRanksRef.current = nextMap
-  }, [rankedPlayers])
 
   const warnedPlayerIds = useMemo(() => {
     const ids = new Set<string>()
@@ -517,89 +371,7 @@ export function PlayerTable({
     demotionCount < totalRankedPlayers &&
     totalRankedPlayers - demotionCount >= promotionCount
 
-  useLayoutEffect(() => {
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const currentScroll = window.scrollY || document.documentElement.scrollTop
-    const nextTops = new Map<string, number>()
 
-    rowRefs.current.forEach((element, playerId) => {
-      let transformY = 0
-      const transform = element.style.transform
-      if (transform && transform !== 'none') {
-        const match = transform.match(/translateY\((-?[\d.]+)px\)/)
-        if (match) transformY = parseFloat(match[1])
-      }
-      const rect = element.getBoundingClientRect()
-      nextTops.set(playerId, rect.top + currentScroll - transformY)
-    })
-
-    if (!prefersReducedMotion) {
-      const jumpingPlayerId = pendingScrollPlayerId.current
-      pendingScrollPlayerId.current = null
-
-      // Thu thập toàn bộ các hàng có sự thay đổi vị trí
-      const movingRows: AnimatedRowItem[] = []
-      nextTops.forEach((currentTop, playerId) => {
-        const previousTop = previousRowTops.current.get(playerId)
-        const element = rowRefs.current.get(playerId)
-        if (previousTop === undefined || !element) return
-
-        const deltaY = previousTop - currentTop
-        if (Math.abs(deltaY) < 1) return
-
-        movingRows.push({ element, deltaY })
-      })
-
-      if (movingRows.length > 0) {
-        let targetTop: number | undefined
-
-        const targetRowEl = jumpingPlayerId ? rowRefs.current.get(jumpingPlayerId) : null
-        if (jumpingPlayerId && targetRowEl && targetRowEl.isConnected) {
-          const rowDocTop = getElementDocumentTop(targetRowEl)
-          const currentScroll = window.scrollY || document.documentElement.scrollTop
-          const headerOffset = 110
-          const rowHeight = targetRowEl.offsetHeight || 48
-
-          const jumpingRowMovement = movingRows.find((r) => r.element === targetRowEl)
-          const isLargeJump = jumpingRowMovement && Math.abs(jumpingRowMovement.deltaY) > 120
-
-          // Nếu bước nhảy nhỏ (chỉ đổi chỗ 1 hàng ngay trong tầm mắt), không cần cuộn camera
-          // Nếu bước nhảy xa hoặc vị trí đích ở ngoài/sát viền màn hình, luôn cuộn mượt để căn giữa
-          const isComfortablyVisible =
-            !isLargeJump &&
-            rowDocTop >= currentScroll + headerOffset + 20 &&
-            rowDocTop + rowHeight <= currentScroll + window.innerHeight - 60
-
-          if (!isComfortablyVisible) {
-            targetTop = Math.max(
-              0,
-              rowDocTop - (window.innerHeight / 2) + (rowHeight / 2)
-            )
-          }
-        }
-
-        const currentScroll = window.scrollY || document.documentElement.scrollTop
-        const scrollDistance = targetTop !== undefined ? Math.abs(targetTop - currentScroll) : 0
-        const maxRowDelta = Math.max(0, ...movingRows.map((r) => Math.abs(r.deltaY)))
-        const maxDistance = Math.max(maxRowDelta, scrollDistance)
-
-        // Gia tốc sóng Sine tự nhiên (easeInOutSine): khởi đầu êm dịu, không giật vọt, cập bến nhẹ nhàng
-        // Thời lượng scale theo quãng đường: tối thiểu 800ms (cho 1 rank) đến tối đa 3000ms (cho bước nhảy xa kèm cuộn)
-        const duration = targetTop !== undefined
-          ? Math.min(3000, Math.max(2200, 1600 + maxDistance * 1.0))
-          : Math.min(2000, Math.max(800, 600 + maxDistance * 1.5))
-
-        activeScrollAnimation.current = runUnifiedAnimation({
-          targetScrollY: targetTop,
-          duration,
-          rows: movingRows,
-          easing: easeInOutSine,
-        })
-      }
-    }
-
-    previousRowTops.current = nextTops
-  }, [effectivePlayers])
 
   function setPlayerRowRef(playerId: string, element: HTMLTableRowElement | null) {
     if (element) {
@@ -865,7 +637,6 @@ export function PlayerTable({
                       isPromotionZone={isPromotionZone}
                       isDemotionZone={isDemotionZone}
                       isHighlighted={highlightedPlayerId === player.id}
-                      rankJump={rankJumpInfo?.playerId === player.id ? rankJumpInfo : null}
                       setRowRef={(el) => setPlayerRowRef(player.id, el)}
                       className="animate-row-bounce"
                       style={{ animationDelay: `${Math.min(index * 18, 180)}ms` }}

@@ -491,74 +491,7 @@ html.dark .apple-segmented-container:not(:has(.apple-segmented-slider)) .apple-s
   }
 }
 
-@keyframes row-jump-glow {
-  0% {
-    background-color: rgba(56, 189, 248, 0.08) !important;
-    box-shadow: inset 0 2px 0 0 rgba(56, 189, 248, 0.9), inset 0 -2px 0 0 rgba(56, 189, 248, 0.9);
-  }
-  18% {
-    background-color: rgba(56, 189, 248, 0.22) !important;
-    box-shadow: inset 0 2px 0 0 rgba(56, 189, 248, 0.95), inset 0 -2px 0 0 rgba(56, 189, 248, 0.95);
-  }
-  48% {
-    background-color: rgba(168, 85, 247, 0.16) !important;
-    box-shadow: inset 0 2px 0 0 rgba(168, 85, 247, 0.85), inset 0 -2px 0 0 rgba(168, 85, 247, 0.85);
-  }
-  80% {
-    background-color: rgba(56, 189, 248, 0.12) !important;
-    box-shadow: inset 0 2px 0 0 rgba(56, 189, 248, 0.6), inset 0 -2px 0 0 rgba(56, 189, 248, 0.6);
-  }
-  100% {
-    background-color: transparent;
-    box-shadow: inset 0 0 0 0 transparent, inset 0 0 0 0 transparent;
-  }
-}
 
-@keyframes row-jump-left-border {
-  0%, 18% {
-    box-shadow: inset 0 2px 0 0 rgba(56, 189, 248, 0.95), inset 0 -2px 0 0 rgba(56, 189, 248, 0.95), inset 3px 0 0 0 rgba(56, 189, 248, 0.95);
-  }
-  48% {
-    box-shadow: inset 0 2px 0 0 rgba(168, 85, 247, 0.85), inset 0 -2px 0 0 rgba(168, 85, 247, 0.85), inset 3px 0 0 0 rgba(168, 85, 247, 0.85);
-  }
-  80% {
-    box-shadow: inset 0 2px 0 0 rgba(56, 189, 248, 0.6), inset 0 -2px 0 0 rgba(56, 189, 248, 0.6), inset 3px 0 0 0 rgba(56, 189, 248, 0.6);
-  }
-  100% {
-    box-shadow: inset 0 0 0 0 transparent, inset 0 0 0 0 transparent, inset 0 0 0 0 transparent;
-  }
-}
-
-@keyframes row-jump-right-border {
-  0%, 18% {
-    box-shadow: inset 0 2px 0 0 rgba(56, 189, 248, 0.95), inset 0 -2px 0 0 rgba(56, 189, 248, 0.95), inset -3px 0 0 0 rgba(56, 189, 248, 0.95);
-  }
-  48% {
-    box-shadow: inset 0 2px 0 0 rgba(168, 85, 247, 0.85), inset 0 -2px 0 0 rgba(168, 85, 247, 0.85), inset -3px 0 0 0 rgba(168, 85, 247, 0.85);
-  }
-  80% {
-    box-shadow: inset 0 2px 0 0 rgba(56, 189, 248, 0.6), inset 0 -2px 0 0 rgba(56, 189, 248, 0.6), inset -3px 0 0 0 rgba(56, 189, 248, 0.6);
-  }
-  100% {
-    box-shadow: inset 0 0 0 0 transparent, inset 0 0 0 0 transparent, inset 0 0 0 0 transparent;
-  }
-}
-
-tr.row-jump-highlight td {
-  animation: row-jump-glow 5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-tr.row-jump-highlight td:first-child {
-  animation: row-jump-glow 5s cubic-bezier(0.22, 1, 0.36, 1) forwards, row-jump-left-border 5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
-}
-
-tr.row-jump-highlight td:last-child {
-  animation: row-jump-glow 5s cubic-bezier(0.22, 1, 0.36, 1) forwards, row-jump-right-border 5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  border-top-right-radius: 8px;
-  border-bottom-right-radius: 8px;
-}
 
 /* Đảm bảo ô nhập ngày và select không bị tràn chiều ngang trên màn hình điện thoại */
 input[type="date"],

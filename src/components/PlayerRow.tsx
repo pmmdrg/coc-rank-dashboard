@@ -14,7 +14,6 @@ interface PlayerRowProps {
   isPromotionZone?: boolean
   isDemotionZone?: boolean
   isHighlighted?: boolean
-  rankJump?: { fromRank: number; toRank: number } | null
   setRowRef: (element: HTMLTableRowElement | null) => void
   className?: string
   style?: React.CSSProperties
@@ -36,7 +35,6 @@ export function PlayerRow({
   isPromotionZone = false,
   isDemotionZone = false,
   isHighlighted = false,
-  rankJump = null,
   setRowRef,
   className = '',
   style,
@@ -108,7 +106,7 @@ export function PlayerRow({
       .join('\n')
   }, [player.defendedAgainstMe])
 
-  const rankDiff = rankJump ? rankJump.fromRank - rankJump.toRank : 0
+  const rankDiff = player.rankDiff ?? 0
 
   const formatNumber = (val: number) =>
     val.toLocaleString(language === 'vi' ? 'vi-VN' : 'en-US')
@@ -143,8 +141,8 @@ export function PlayerRow({
           {/* Biến động thứ hạng nếu có */}
           <RankDiffBadge
             diff={rankDiff}
-            fromRank={rankJump?.fromRank}
-            toRank={rankJump?.toRank}
+            fromRank={player.prevRank}
+            toRank={player.rank}
           />
 
           {/* Badge Vùng Thăng Hạng / Xuống Hạng */}
