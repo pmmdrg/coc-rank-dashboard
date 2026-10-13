@@ -1,7 +1,7 @@
 export type RatingCategory =
-  | 'dominant'   // Từ 70% cúp tối đa ban đầu trở lên: Áp đảo
-  | 'superior'   // Từ 60% tới dưới 70%: Vượt trội
-  | 'potential'  // Từ 50% tới dưới 60%: Tiềm năng
+  | 'dominant'   // Từ 60% cúp tối đa ban đầu trở lên: Áp đảo
+  | 'superior'   // Từ 55% tới dưới 60%: Vượt trội
+  | 'potential'  // Từ 50% tới dưới 55%: Tiềm năng
   | 'alarm'      // Dưới 50%: Báo động
 
 export interface LeagueHistoryItem {

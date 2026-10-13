@@ -16,9 +16,9 @@ export const ratingLabels: Record<RatingCategory, string> = {
 }
 
 export const ratingColors: Record<RatingCategory, string> = {
-  dominant: '#8b5cf6', // Tím (Áp đảo - >= 70% cúp tối đa ban đầu)
-  superior: '#10b981', // Xanh lục (Vượt trội - 60% đến < 70% cúp tối đa ban đầu)
-  potential: '#0284c7', // Xanh lam (Tiềm năng - 50% đến < 60% cúp tối đa ban đầu)
+  dominant: '#8b5cf6', // Tím (Áp đảo - >= 60% cúp tối đa ban đầu)
+  superior: '#10b981', // Xanh lục (Vượt trội - 55% đến < 60% cúp tối đa ban đầu)
+  potential: '#0284c7', // Xanh lam (Tiềm năng - 50% đến < 55% cúp tối đa ban đầu)
   alarm: '#e11d48',    // Đỏ hồng (Báo động - < 50% cúp tối đa ban đầu)
 }
 
@@ -75,17 +75,17 @@ export function calculatePlayerRating(
   const initialMaxCups = (safeMaxAttacks + safeMaxDefenses) * 40
 
   // Bộ đánh giá theo tỷ lệ % so với cúp tối đa ban đầu x:
-  // - Từ 70% x trở lên: Áp đảo (dominant)
-  // - Từ 60% tới dưới 70% x: Vượt trội (superior)
-  // - Từ 50% tới dưới 60% x: Tiềm năng (potential)
+  // - Từ 60% x trở lên: Áp đảo (dominant)
+  // - Từ 55% tới dưới 60% x: Vượt trội (superior)
+  // - Từ 50% tới dưới 55% x: Tiềm năng (potential)
   // - Dưới 50% x: Báo động (alarm)
   let rating: RatingCategory = 'alarm'
 
   if (initialMaxCups > 0) {
     const ratio = currentCups / initialMaxCups
-    if (ratio >= 0.7) {
+    if (ratio >= 0.6) {
       rating = 'dominant'
-    } else if (ratio >= 0.6) {
+    } else if (ratio >= 0.55) {
       rating = 'superior'
     } else if (ratio >= 0.5) {
       rating = 'potential'

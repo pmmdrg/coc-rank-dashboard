@@ -78,4 +78,4 @@ Hỗ trợ cả mùa giải đơn lẻ và file đa mùa giải (Multi-season):
 ```csv
 league,seasonName,startsAt,endsAt,myPlayerId,id,name,rank,attacks,defenses,currentCups,maxPossibleCups,rating
 ```
-Các hạng mục `rating`: `dominant` (Áp đảo - ≥ 70% cúp tối đa ban đầu), `superior` (Vượt trội - 60% đến < 70%), `potential` (Tiềm năng - 50% đến < 60%), `alarm` (Báo động - < 50%).
+Các hạng mục `rating`: `dominant` (Áp đảo - ≥ 60% cúp tối đa ban đầu), `superior` (Vượt trội - 55% đến < 60%), `potential` (Tiềm năng - 50% đến < 55%), `alarm` (Báo động - < 50%).
