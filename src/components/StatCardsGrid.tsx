@@ -275,11 +275,16 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
                 return (
                   <div
                     key={card.label}
-                    className="hero-stat-card group relative overflow-hidden rounded-xl border border-slate-200/80 bg-white/60 p-4 sm:p-4.5 shadow-2xs dark:border-white/10 dark:bg-slate-900/50 backdrop-blur-md transition-all hover:border-slate-300 dark:hover:border-white/20 cursor-default"
-                    style={{
-                      backgroundImage: `radial-gradient(circle at 100% 100%, ${card.tonalGlow}, transparent 70%)`,
-                    }}
+                    className="hero-stat-card group relative overflow-hidden rounded-xl p-4 sm:p-4.5 shadow-2xs backdrop-blur-md transition-all cursor-default"
                   >
+                    {/* Tonal radial glow */}
+                    <div
+                      className="pointer-events-none absolute inset-0 opacity-80"
+                      style={{
+                        background: `radial-gradient(circle at 100% 100%, ${card.tonalGlow}, transparent 70%)`,
+                      }}
+                    />
+
                     {/* Vạch Accent Glow ở mép trên kiểu Apple Specular Bar */}
                     <div
                       className={`absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r ${card.accentGradient} opacity-85 group-hover:h-[4px] group-hover:opacity-100 transition-all`}
@@ -288,11 +293,11 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
                     {/* Icon lớn mờ chìm nghệ thuật ở góc thẻ */}
                     <IconComponent
                       weight="duotone"
-                      className={`pointer-events-none absolute -bottom-3 -right-3 h-24 w-24 opacity-[0.08] dark:opacity-[0.14] transition-transform duration-300 group-hover:scale-115 ${card.iconColor}`}
+                      className={`pointer-events-none absolute -bottom-3 -right-3 h-24 w-24 opacity-20 dark:opacity-[0.14] transition-transform duration-300 group-hover:scale-115 ${card.iconColor}`}
                     />
 
                     <div className="relative z-10 flex items-center justify-between">
-                      <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                      <p className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                         {card.label}
                       </p>
                       {card.badge && (
@@ -308,7 +313,7 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
                       {card.value}
                     </p>
 
-                    <p className="relative z-10 mt-1.5 text-xs text-slate-500 dark:text-slate-400 truncate font-medium">
+                    <p className="relative z-10 mt-1.5 text-xs text-slate-600 dark:text-slate-400 truncate font-semibold">
                       {card.detail}
                     </p>
                   </div>

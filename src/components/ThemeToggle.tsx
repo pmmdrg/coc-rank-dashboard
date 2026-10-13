@@ -29,7 +29,7 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={toggleTheme}
-      className="apple-btn inline-flex h-9.5 w-9.5 items-center justify-center rounded-xl border border-slate-300/70 bg-white/70 text-slate-700 shadow-2xs backdrop-blur-md transition-all hover:bg-white hover:shadow-xs dark:border-white/10 dark:bg-slate-800/70 dark:text-slate-200 dark:hover:bg-slate-700/80 cursor-pointer select-none"
+      className="apple-btn inline-flex h-9.5 w-9.5 items-center justify-center rounded-xl border border-slate-300 bg-slate-200/60 text-slate-800 shadow-2xs backdrop-blur-md transition-all hover:bg-slate-100 hover:shadow-xs dark:border-white/10 dark:bg-slate-800/70 dark:text-slate-200 dark:hover:bg-slate-700/80 cursor-pointer select-none"
       title={theme === 'dark' ? dict.header.themeToggleLight : dict.header.themeToggleDark}
       aria-label="Toggle theme"
     >

@@ -40,7 +40,7 @@ function RankChangesSkeleton() {
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="flex items-center justify-between rounded-xl border border-slate-200/70 bg-white/50 p-3.5 shadow-2xs dark:border-slate-800 dark:bg-slate-900/50"
+              className="flex items-center justify-between rounded-xl border border-slate-300/80 bg-slate-200/40 p-3.5 shadow-2xs dark:border-slate-800 dark:bg-slate-900/50"
             >
               <div className="space-y-1.5">
                 <div className="h-4 w-28 rounded-md skeleton-shimmer" />
@@ -431,8 +431,8 @@ export function RankChangesSection({
                           isUser
                             ? 'border-sky-400/60 bg-sky-50/70 dark:border-sky-500/40 dark:bg-sky-950/30 ring-1 ring-sky-400/40'
                             : isRose
-                              ? 'border-emerald-200/80 bg-white/70 dark:border-emerald-900/40 dark:bg-slate-900/60'
-                              : 'border-rose-200/80 bg-white/70 dark:border-rose-900/40 dark:bg-slate-900/60'
+                              ? 'border-emerald-300/80 bg-emerald-50/70 dark:border-emerald-900/40 dark:bg-slate-900/60'
+                              : 'border-rose-300/80 bg-rose-50/70 dark:border-rose-900/40 dark:bg-slate-900/60'
                         }`}
                       >
                         <div className="flex items-center justify-between gap-2">

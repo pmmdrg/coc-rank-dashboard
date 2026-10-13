@@ -45,7 +45,7 @@ function TrendSectionSkeleton() {
           {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white/60 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60 h-28"
+              className="flex flex-col justify-between rounded-xl border border-slate-300/80 bg-slate-200/40 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60 h-28"
             >
               <div>
                 <div className="h-3 w-24 rounded-md skeleton-shimmer" />
@@ -58,7 +58,7 @@ function TrendSectionSkeleton() {
         </div>
 
         {/* Khung Biểu đồ Skeleton */}
-        <div className="rounded-xl border border-slate-200/70 bg-white/40 p-4 dark:border-slate-700/70 dark:bg-slate-900/40">
+        <div className="rounded-xl border border-slate-300/80 bg-slate-200/35 p-4 dark:border-slate-700/70 dark:bg-slate-900/40">
           <div className="flex items-center justify-between gap-3 mb-4">
             <div className="flex gap-2">
               <div className="h-7 w-28 rounded-lg skeleton-shimmer" />
@@ -450,9 +450,9 @@ export function PerformanceTrendSection({
               />
 
           {/* KHU VỰC BIỂU ĐỒ SVG TƯƠNG TÁC */}
-          <div className="rounded-xl border border-slate-200/70 bg-white/40 p-4 dark:border-slate-700/70 dark:bg-slate-900/40">
+          <div className="rounded-xl border border-slate-300/80 bg-slate-200/35 p-4 dark:border-slate-700/70 dark:bg-slate-900/40">
             {/* Chuyển đổi tab đo lường */}
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-slate-200/60 dark:border-slate-700/60">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-slate-300/70 dark:border-slate-700/60">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                   {dict.performanceTrend.chartMetric}

@@ -429,7 +429,7 @@ export function PlayerTable({
       </div>
 
       {/* 2. Thanh Tìm kiếm & Bộ lọc nhanh (Apple Segmented Filter Bar) */}
-      <div className="flex flex-col gap-3 border-b border-slate-200/60 p-4 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800/60 bg-slate-50/60 dark:bg-slate-900/40">
+      <div className="flex flex-col gap-3 border-b border-slate-300/80 p-4 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800/60 bg-slate-200/40 dark:bg-slate-900/40">
         {/* Ô Tìm kiếm người chơi / Clan (Apple Spotlight Style) */}
         <SearchInput
           value={searchQuery}
