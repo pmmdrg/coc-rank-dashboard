@@ -420,19 +420,15 @@ export function PerformanceTrendSection({
 
         <div className="flex items-center gap-2">
           {/* Nút bật/tắt bảng chi tiết */}
-          <div className="apple-segmented-container">
-            <button
-              type="button"
-              onClick={() => setShowTable((prev) => !prev)}
-              className={`apple-segmented-item ${
-                showTable
-                  ? 'is-active text-sky-700 dark:text-sky-300 font-bold'
-                  : 'hover:text-slate-900 dark:hover:text-white'
-              } transition-all active:scale-95 cursor-pointer font-semibold`}
-            >
-              {showTable ? dict.performanceTrend.hideHistoryTable : dict.performanceTrend.showHistoryTable}
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => setShowTable((prev) => !prev)}
+            className={`liquid-collapse-btn group shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs sm:text-[13px] font-bold rounded-full select-none cursor-pointer transition-all active:scale-98 ${
+              showTable ? '!text-sky-600 dark:!text-sky-400 font-extrabold' : ''
+            }`}
+          >
+            {showTable ? dict.performanceTrend.hideHistoryTable : dict.performanceTrend.showHistoryTable}
+          </button>
 
           {/* Nút thu gọn / mở rộng section */}
           <CollapseToggleButton
