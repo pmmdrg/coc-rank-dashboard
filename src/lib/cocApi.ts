@@ -7,7 +7,7 @@ import type {
   ClanMember,
   PlayerTournamentRankInfo,
 } from '../types'
-import { calculateMaxPossibleCups, calculatePlayerRating, getSavedLeagueRules } from './ranking'
+import { calculateMaxPossibleCups, calculatePlayerRating, getSavedLeagueRules, getDefaultLeagueRules } from './ranking'
 import { getLeagueIconUrl } from './leagueIcons'
 import { getRankedTierMaxAttacks, type RankedTierDefinition } from '../data/rankedTierMetadata'
 
@@ -246,8 +246,9 @@ export async function fetchRankedSeasonData(
     getSavedLeagueRules(leagueName) ||
     getSavedLeagueRules(currentLimits.matchedTier?.name) ||
     getSavedLeagueRules(currentLimits.matchedTier?.id)
-  const currentPromotionCount = savedCurrentRules?.promotionCount ?? 10
-  const currentDemotionCount = savedCurrentRules?.demotionCount ?? 10
+  const defaultCurrentRules = getDefaultLeagueRules(leagueName || currentLimits.matchedTier?.name || currentLimits.matchedTier?.id)
+  const currentPromotionCount = savedCurrentRules?.promotionCount ?? defaultCurrentRules.promotionCount
+  const currentDemotionCount = savedCurrentRules?.demotionCount ?? defaultCurrentRules.demotionCount
 
   const currentSeason: Season = {
     league: leagueName,
@@ -305,8 +306,9 @@ export async function fetchRankedSeasonData(
           getSavedLeagueRules(prevLeagueName) ||
           getSavedLeagueRules(prevLimits.matchedTier?.name) ||
           getSavedLeagueRules(prevLimits.matchedTier?.id)
-        const prevPromotionCount = savedPrevRules?.promotionCount ?? 10
-        const prevDemotionCount = savedPrevRules?.demotionCount ?? 10
+        const defaultPrevRules = getDefaultLeagueRules(prevLeagueName || prevLimits.matchedTier?.name || prevLimits.matchedTier?.id)
+        const prevPromotionCount = savedPrevRules?.promotionCount ?? defaultPrevRules.promotionCount
+        const prevDemotionCount = savedPrevRules?.demotionCount ?? defaultPrevRules.demotionCount
 
         previousSeason = {
           league: prevLeagueName,

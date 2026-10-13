@@ -325,3 +325,34 @@ export function getSavedLeagueRules(
   }
 }
 
+export function getDefaultLeagueRules(
+  leagueIdentifier?: string | number,
+): { promotionCount: number; demotionCount: number } {
+  const str = String(leagueIdentifier || '').toLowerCase()
+  if (
+    str.includes('legend 1') ||
+    (str.includes('legend i') && !str.includes('legend ii') && !str.includes('legend iii')) ||
+    str === '36' ||
+    str === '105000036'
+  ) {
+    return { promotionCount: 0, demotionCount: 15 }
+  }
+  if (
+    str.includes('legend 2') ||
+    str.includes('legend ii') ||
+    str.includes('legend 3') ||
+    str.includes('legend iii') ||
+    str.includes('legend') ||
+    str === '34' ||
+    str === '35' ||
+    str === '105000034' ||
+    str === '105000035'
+  ) {
+    return { promotionCount: 5, demotionCount: 15 }
+  }
+  if (str.includes('electro') || str === '31' || str === '32' || str === '33' || str.startsWith('10500003')) {
+    return { promotionCount: 15, demotionCount: 15 }
+  }
+  return { promotionCount: 15, demotionCount: 15 }
+}
+
