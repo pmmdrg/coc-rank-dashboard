@@ -509,7 +509,7 @@ function App() {
   }, [])
 
   return (
-    <div className="app-surface relative flex min-h-screen overflow-x-hidden">
+    <div className="app-surface relative flex min-h-screen overflow-x-clip">
       {/* Nền hiệu ứng Cực quang (Aurora Borealis) */}
       <AuroraBackground />
 

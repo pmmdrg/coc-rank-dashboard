@@ -48,7 +48,7 @@ export function TopBar({
   const Icon = routeMeta.icon
 
   return (
-    <header className="glass-header sticky top-0 z-20 border-b border-slate-200/80 backdrop-blur-xl dark:border-slate-800/80">
+    <header className="glass-header !sticky top-0 z-20 border-b border-slate-200/80 backdrop-blur-xl dark:border-slate-800/80">
       <div className="mx-auto flex max-w-[1360px] items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         {/* Nút Hamburger (Mobile) & Tiêu đề Route hiện tại */}
         <div className="flex items-center gap-3">

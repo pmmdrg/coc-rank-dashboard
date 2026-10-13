@@ -275,7 +275,7 @@ export function Sidebar({
   return (
     <>
       {/* 1. DESKTOP SIDEBAR: Cố định bên trái màn hình */}
-      <aside className="glass-panel fixed inset-y-0 left-0 hidden h-screen w-72 shrink-0 flex-col border-r border-slate-200/80 backdrop-blur-xl lg:flex dark:border-slate-800/80 z-30">
+      <aside className="glass-panel !fixed inset-y-0 left-0 hidden h-screen w-72 shrink-0 flex-col border-r border-slate-200/80 backdrop-blur-xl lg:flex dark:border-slate-800/80 z-30">
         {sidebarContent}
       </aside>
 

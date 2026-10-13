@@ -65,7 +65,6 @@ select:focus-visible {
 
 /* Liquid Glass Material - Khúc xạ ánh sáng đa tầng & Viền thấu kính chất lỏng */
 .glass-panel {
-  position: relative;
   border: 1px solid var(--panel-border);
   background: linear-gradient(
     140deg,
@@ -90,7 +89,6 @@ select:focus-visible {
 }
 
 .glass-header {
-  position: relative;
   border-bottom: 1px solid var(--panel-border);
   background: linear-gradient(
     180deg,
