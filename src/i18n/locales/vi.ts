@@ -317,7 +317,7 @@ export const vi: TranslationDictionary = {
     cardDefaultLeague: 'Bảng đấu Ranked',
     cardNoClan: 'Không Clan',
     cardYourAccount: 'Người chơi',
-    cardRatingDominant: 'THỐNG TRỊ',
+    cardRatingDominant: 'ÁP ĐẢO',
     cardRatingSuperior: 'VƯỢT TRỘI',
     cardRatingPotential: 'TIỀM NĂNG',
     cardRatingAlarm: 'BÁO ĐỘNG',

@@ -132,6 +132,8 @@ function mapMembersToPlayers(
       attackDestruction,
       defenses,
       avgCups,
+      maxAttacks,
+      maxDefenses,
     )
 
     return {

@@ -9,17 +9,17 @@ import type {
 import { getLeagueIconUrl } from './leagueIcons'
 
 export const ratingLabels: Record<RatingCategory, string> = {
-  dominant: 'Thống trị',
+  dominant: 'Áp đảo',
   superior: 'Vượt trội',
   potential: 'Tiềm năng',
   alarm: 'Báo động',
 }
 
 export const ratingColors: Record<RatingCategory, string> = {
-  dominant: '#8b5cf6', // Tím (Thống trị - >= 1200 cup)
-  superior: '#10b981', // Xanh lục (Vượt trội - 1000 đến < 1200 cup)
-  potential: '#0284c7', // Xanh lam (Tiềm năng - 800 đến < 1000 cup)
-  alarm: '#e11d48',    // Đỏ hồng (Báo động - < 800 cup)
+  dominant: '#8b5cf6', // Tím (Áp đảo - >= 70% cúp tối đa ban đầu)
+  superior: '#10b981', // Xanh lục (Vượt trội - 60% đến < 70% cúp tối đa ban đầu)
+  potential: '#0284c7', // Xanh lam (Tiềm năng - 50% đến < 60% cúp tối đa ban đầu)
+  alarm: '#e11d48',    // Đỏ hồng (Báo động - < 50% cúp tối đa ban đầu)
 }
 
 export const attackStatusLabels: Record<AttackStatusCategory, string> = {
@@ -59,6 +59,8 @@ export function calculatePlayerRating(
   _attackDestruction: number = 0,
   _defenses: number = 0,
   _avgCups: number = 0,
+  maxAttacks: number = 24,
+  maxDefenses: number = 24,
 ): {
   rating: RatingCategory
   avgCupsPerAttack: number
@@ -67,21 +69,29 @@ export function calculatePlayerRating(
   estimatedAttackCups: number
   estimatedDefenseCups: number
 } {
-  // Bộ đánh giá theo đề xuất thực tế mùa giải:
-  // - Nhóm từ 1200 cup đổ lên: Thống trị
-  // - Nhóm từ 1000 tới dưới 1200 cup: Vượt trội
-  // - Nhóm từ 800 tới dưới 1000 cup: Tiềm năng
-  // - Nhóm dưới 800 cup: Báo động
+  const safeMaxAttacks = maxAttacks > 0 ? maxAttacks : 24
+  const safeMaxDefenses = maxDefenses > 0 ? maxDefenses : safeMaxAttacks
+  // Cúp tối đa ban đầu x: tổng cúp tối đa có thể đạt được từ toàn bộ các lượt công và thủ
+  const initialMaxCups = (safeMaxAttacks + safeMaxDefenses) * 40
+
+  // Bộ đánh giá theo tỷ lệ % so với cúp tối đa ban đầu x:
+  // - Từ 70% x trở lên: Áp đảo (dominant)
+  // - Từ 60% tới dưới 70% x: Vượt trội (superior)
+  // - Từ 50% tới dưới 60% x: Tiềm năng (potential)
+  // - Dưới 50% x: Báo động (alarm)
   let rating: RatingCategory = 'alarm'
 
-  if (currentCups >= 1200) {
-    rating = 'dominant'
-  } else if (currentCups >= 1000) {
-    rating = 'superior'
-  } else if (currentCups >= 800) {
-    rating = 'potential'
-  } else {
-    rating = 'alarm'
+  if (initialMaxCups > 0) {
+    const ratio = currentCups / initialMaxCups
+    if (ratio >= 0.7) {
+      rating = 'dominant'
+    } else if (ratio >= 0.6) {
+      rating = 'superior'
+    } else if (ratio >= 0.5) {
+      rating = 'potential'
+    } else {
+      rating = 'alarm'
+    }
   }
 
   const avgCupsPerAttack = attacks > 0 ? Math.round((currentCups / attacks) * 10) / 10 : 0
@@ -178,6 +188,8 @@ export function normalizeSeason(season: Season): RankedSeason {
       attackDestruction,
       defenses,
       avgCups,
+      maxAttacks,
+      maxDefenses,
     )
 
     return {
