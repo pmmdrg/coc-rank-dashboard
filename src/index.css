@@ -13,11 +13,11 @@
 :root {
   overflow-anchor: none;
   --app-bg: #f8fafc;
-  --panel-bg: rgba(255, 255, 255, 0.82);
-  --panel-border: rgba(203, 213, 225, 0.6);
-  --header-bg: rgba(255, 255, 255, 0.88);
-  --field-bg: rgba(255, 255, 255, 0.9);
-  --field-border: rgba(203, 213, 225, 0.8);
+  --panel-bg: rgba(255, 255, 255, 0.72);
+  --panel-border: rgba(255, 255, 255, 0.78);
+  --header-bg: rgba(255, 255, 255, 0.82);
+  --field-bg: rgba(255, 255, 255, 0.85);
+  --field-border: rgba(203, 213, 225, 0.75);
   --field-text: #0f172a;
   --soft-table-head: rgba(254, 243, 199, 0.85);
   --table-head-text: #78350f;
@@ -63,25 +63,46 @@ select:focus-visible {
   position: relative;
 }
 
-/* Apple Pro Vibrancy & Frosted Glass với Specular Inset Highlight */
+/* Liquid Glass Material - Khúc xạ ánh sáng đa tầng & Viền thấu kính chất lỏng */
 .glass-panel {
+  position: relative;
   border: 1px solid var(--panel-border);
-  background: var(--panel-bg);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  background: linear-gradient(
+    140deg,
+    rgba(255, 255, 255, 0.76) 0%,
+    rgba(255, 255, 255, 0.58) 50%,
+    rgba(248, 250, 252, 0.70) 100%
+  );
+  backdrop-filter: blur(24px) saturate(200%) contrast(102%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%) contrast(102%);
   box-shadow:
     0 20px 48px -12px rgba(15, 23, 42, 0.08),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.7);
+    0 2px 6px -1px rgba(15, 23, 42, 0.04),
+    /* Đỉnh thấu kính bắt sáng (Lens Crown Highlight) */
+    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.95),
+    /* Đáy thấu kính cong đổ bóng khúc xạ (Refraction Base) */
+    inset 0 -1.5px 2px 0 rgba(15, 23, 42, 0.04),
+    /* Tán sắc quang học mép kính (Prismatic Edge Dispersion) */
+    inset 1px 0 2px 0 rgba(255, 255, 255, 0.4),
+    inset -1px 0 2px 0 rgba(255, 255, 255, 0.4),
+    inset 0 0 24px 0 rgba(255, 255, 255, 0.18);
+  transition: box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
 }
 
 .glass-header {
+  position: relative;
   border-bottom: 1px solid var(--panel-border);
-  background: var(--header-bg);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.88) 0%,
+    rgba(255, 255, 255, 0.72) 100%
+  );
+  backdrop-filter: blur(24px) saturate(200%) contrast(102%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%) contrast(102%);
   box-shadow:
-    0 8px 24px -6px rgba(15, 23, 42, 0.04),
-    inset 0 -1px 0 0 rgba(255, 255, 255, 0.4);
+    0 8px 32px -6px rgba(15, 23, 42, 0.05),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1.5px 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .soft-field {
@@ -123,25 +144,29 @@ select:focus-visible {
   background: rgba(148, 163, 184, 0.08) !important;
 }
 
-/* Apple Fluid Haptic Micro-Interactions */
+/* Liquid Fluid Haptic Micro-Interactions */
 .apple-btn {
-  transition: transform 0.18s cubic-bezier(0.32, 0.72, 0, 1), background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  transition: transform 0.22s cubic-bezier(0.34, 1.4, 0.64, 1), background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
 .apple-btn:active {
-  transform: scale(0.96);
+  transform: scale(0.95);
+  transition-duration: 0.08s;
 }
 
-/* Apple Segmented Pill Control: Thanh gạt lọc con nhộng thanh lịch */
+/* Apple Segmented Pill Control: Thanh gạt lọc con nhộng chất lỏng */
 .apple-segmented-container {
   display: inline-flex;
   align-items: center;
-  padding: 3px;
-  border-radius: 14px;
-  background: rgba(148, 163, 184, 0.18);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(148, 163, 184, 0.25);
+  padding: 3.5px;
+  border-radius: 16px;
+  background: rgba(148, 163, 184, 0.16);
+  backdrop-filter: blur(20px) saturate(190%);
+  -webkit-backdrop-filter: blur(20px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
   position: relative;
   isolation: isolate;
 }
@@ -227,11 +252,11 @@ select:focus-visible {
 /* Explicit class .dark override */
 html.dark {
   --app-bg: #060913;
-  --panel-bg: rgba(15, 23, 42, 0.76);
-  --panel-border: rgba(255, 255, 255, 0.08);
-  --header-bg: rgba(10, 16, 31, 0.88);
-  --field-bg: rgba(30, 41, 59, 0.72);
-  --field-border: rgba(255, 255, 255, 0.12);
+  --panel-bg: rgba(15, 23, 42, 0.70);
+  --panel-border: rgba(255, 255, 255, 0.12);
+  --header-bg: rgba(10, 16, 31, 0.84);
+  --field-bg: rgba(30, 41, 59, 0.65);
+  --field-border: rgba(255, 255, 255, 0.14);
   --field-text: #f1f5f9;
   --soft-table-head: rgba(245, 158, 11, 0.16);
   --table-head-text: #fde68a;
@@ -249,15 +274,47 @@ html.dark {
 }
 
 html.dark .glass-panel {
+  background: linear-gradient(
+    140deg,
+    rgba(15, 23, 42, 0.74) 0%,
+    rgba(15, 23, 42, 0.56) 50%,
+    rgba(10, 16, 31, 0.78) 100%
+  );
+  border-color: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(28px) saturate(210%) contrast(105%);
+  -webkit-backdrop-filter: blur(28px) saturate(210%) contrast(105%);
   box-shadow:
-    0 24px 64px -16px rgba(0, 0, 0, 0.7),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.15);
+    0 24px 64px -16px rgba(0, 0, 0, 0.8),
+    0 4px 16px -4px rgba(0, 0, 0, 0.5),
+    /* Đỉnh thấu kính bắt sáng lơ lửng */
+    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.28),
+    /* Đáy thấu kính cong sâu thẳm */
+    inset 0 -1.5px 2px 0 rgba(0, 0, 0, 0.75),
+    /* Quầng sáng quang sai xanh lơ ngọc (Cyan Ambient Caustic) */
+    inset 0 0 28px -4px rgba(56, 189, 248, 0.05);
+}
+
+html.dark .glass-header {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    180deg,
+    rgba(10, 16, 31, 0.90) 0%,
+    rgba(10, 16, 31, 0.74) 100%
+  );
+  backdrop-filter: blur(28px) saturate(210%) contrast(105%);
+  -webkit-backdrop-filter: blur(28px) saturate(210%) contrast(105%);
+  box-shadow:
+    0 12px 36px -6px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.5);
 }
 
 html.dark .apple-segmented-container {
   background: rgba(15, 23, 42, 0.65);
-  border-color: rgba(255, 255, 255, 0.08);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow:
+    inset 0 1.5px 3px rgba(0, 0, 0, 0.4),
+    inset 0 0.5px 0 rgba(255, 255, 255, 0.15);
 }
 
 html.dark .apple-segmented-slider {
@@ -622,24 +679,116 @@ select {
   box-shadow: 0 0 16px rgba(244, 63, 94, 0.2), inset 0 0 8px rgba(244, 63, 94, 0.1);
 }
 
+/* Liquid Crystal Droplet Cards (.hero-stat-card) */
 .hero-stat-card {
   position: relative;
   border-radius: 20px;
-  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.78) 0%,
+    rgba(255, 255, 255, 0.52) 50%,
+    rgba(241, 245, 249, 0.68) 100%
+  );
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow:
+    0 12px 28px -8px rgba(15, 23, 42, 0.07),
+    0 2px 6px -1px rgba(15, 23, 42, 0.03),
+    inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1.5px 2px 0 rgba(15, 23, 42, 0.05),
+    inset 0 0 24px 0 rgba(255, 255, 255, 0.25);
+  transition:
+    transform 0.32s cubic-bezier(0.34, 1.4, 0.64, 1),
+    box-shadow 0.32s cubic-bezier(0.34, 1.4, 0.64, 1),
+    border-color 0.25s ease;
   overflow: hidden;
 }
 
+/* Lớp vệt sáng phản chiếu lướt chất lỏng (Liquid Sheen Shimmer) */
+.hero-stat-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(
+    125deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.05) 30%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0.05) 70%,
+    transparent 100%
+  );
+  opacity: 0;
+  transform: translateX(-100%);
+  transition: opacity 0.3s ease;
+  z-index: 15;
+}
+
+.hero-stat-card:hover::after {
+  opacity: 1;
+  animation: liquid-sheen-sweep 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 .hero-stat-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 16px 36px -8px rgba(15, 23, 42, 0.12), inset 0 1px 1px 0 rgba(255, 255, 255, 0.7);
+  transform: translateY(-4px) scale(1.015);
+  border-color: rgba(255, 255, 255, 0.95);
+  box-shadow:
+    0 22px 48px -10px rgba(15, 23, 42, 0.15),
+    0 6px 16px -3px rgba(15, 23, 42, 0.06),
+    inset 0 2px 2px 0 rgba(255, 255, 255, 1),
+    inset 0 -2px 3px 0 rgba(15, 23, 42, 0.06),
+    inset 0 0 32px 0 rgba(255, 255, 255, 0.4);
 }
 
 .hero-stat-card:active {
   transform: translateY(-1px) scale(0.99);
 }
 
+html.dark .hero-stat-card {
+  background: linear-gradient(
+    145deg,
+    rgba(30, 41, 59, 0.70) 0%,
+    rgba(15, 23, 42, 0.58) 50%,
+    rgba(15, 23, 42, 0.80) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 16px 40px -12px rgba(0, 0, 0, 0.72),
+    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1.5px 2px 0 rgba(0, 0, 0, 0.65),
+    inset 0 0 24px 0 rgba(56, 189, 248, 0.04);
+}
+
+html.dark .hero-stat-card::after {
+  background: linear-gradient(
+    125deg,
+    transparent 0%,
+    rgba(56, 189, 248, 0.06) 30%,
+    rgba(255, 255, 255, 0.22) 50%,
+    rgba(168, 85, 247, 0.08) 70%,
+    transparent 100%
+  );
+}
+
 html.dark .hero-stat-card:hover {
-  box-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.65), 0 0 24px -6px rgba(56, 189, 248, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.28);
+  box-shadow:
+    0 24px 56px -12px rgba(0, 0, 0, 0.85),
+    0 0 36px -4px rgba(56, 189, 248, 0.22),
+    inset 0 2px 1.5px 0 rgba(255, 255, 255, 0.48),
+    inset 0 -2px 3px 0 rgba(0, 0, 0, 0.75),
+    inset 0 0 36px 0 rgba(56, 189, 248, 0.09);
+}
+
+@keyframes liquid-sheen-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 /* Skeleton Shimmer Wave Effect - Tinh tế, không chói mắt, chuẩn phong cách glassmorphism */

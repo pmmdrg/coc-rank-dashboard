@@ -20,6 +20,15 @@
     </script>
   </head>
   <body>
+    <!-- SVG Liquid Lens Distortion & Refraction Filter (Hidden) -->
+    <svg style="position: absolute; width: 0; height: 0; overflow: hidden; pointer-events: none;" aria-hidden="true">
+      <defs>
+        <filter id="liquid-lens-filter" x="-10%" y="-10%" width="120%" height="120%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.015 0.015" numOctaves="2" result="liquidNoise" />
+          <feDisplacementMap in="SourceGraphic" in2="liquidNoise" scale="3" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+      </defs>
+    </svg>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
