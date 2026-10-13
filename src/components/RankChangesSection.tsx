@@ -40,7 +40,7 @@ function RankChangesSkeleton() {
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="flex items-center justify-between rounded-xl border border-slate-300/80 bg-slate-200/40 p-3.5 shadow-2xs dark:border-slate-800 dark:bg-slate-900/50"
+              className="flex items-center justify-between rounded-xl border border-white/60 bg-white/30 p-3.5 shadow-2xs dark:border-slate-800 dark:bg-slate-900/50"
             >
               <div className="space-y-1.5">
                 <div className="h-4 w-28 rounded-md skeleton-shimmer" />

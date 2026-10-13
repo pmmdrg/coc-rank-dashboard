@@ -13,13 +13,13 @@
 :root {
   overflow-anchor: none;
   --app-bg: #edf2f7;
-  --panel-bg: rgba(241, 245, 249, 0.90);
-  --panel-border: rgba(203, 213, 225, 0.90);
-  --header-bg: rgba(241, 245, 249, 0.94);
-  --field-bg: rgba(248, 250, 252, 0.95);
-  --field-border: rgba(203, 213, 225, 0.85);
+  --panel-bg: rgba(241, 245, 249, 0.65);
+  --panel-border: rgba(203, 213, 225, 0.65);
+  --header-bg: rgba(241, 245, 249, 0.75);
+  --field-bg: rgba(248, 250, 252, 0.70);
+  --field-border: rgba(203, 213, 225, 0.60);
   --field-text: #0f172a;
-  --soft-table-head: rgba(254, 243, 199, 0.90);
+  --soft-table-head: rgba(254, 243, 199, 0.75);
   --table-head-text: #78350f;
   --row-mine: rgba(14, 165, 233, 0.14);
   --row-mine-hover: rgba(14, 165, 233, 0.24);
@@ -65,42 +65,42 @@ select:focus-visible {
 
 /* Liquid Glass Material - Khúc xạ ánh sáng đa tầng & Viền thấu kính chất lỏng */
 .glass-panel {
-  border: 1px solid var(--panel-border);
+  border: 1px solid rgba(255, 255, 255, 0.65);
   background: linear-gradient(
     140deg,
-    rgba(241, 245, 249, 0.94) 0%,
-    rgba(235, 241, 248, 0.85) 50%,
-    rgba(226, 234, 244, 0.90) 100%
+    rgba(241, 245, 249, 0.68) 0%,
+    rgba(235, 241, 248, 0.50) 50%,
+    rgba(226, 234, 244, 0.62) 100%
   );
-  backdrop-filter: blur(24px) saturate(180%) contrast(102%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%) contrast(102%);
+  backdrop-filter: blur(28px) saturate(190%) contrast(104%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%) contrast(104%);
   box-shadow:
-    0 16px 40px -10px rgba(15, 23, 42, 0.08),
-    0 2px 6px -1px rgba(15, 23, 42, 0.04),
+    0 16px 40px -10px rgba(15, 23, 42, 0.07),
+    0 2px 6px -1px rgba(15, 23, 42, 0.03),
     /* Đỉnh thấu kính bắt sáng nhẹ */
-    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.95),
     /* Đáy thấu kính cong đổ bóng khúc xạ slate */
-    inset 0 -1.5px 2px 0 rgba(148, 163, 184, 0.16),
+    inset 0 -1.5px 2px 0 rgba(148, 163, 184, 0.12),
     /* Tán sắc quang học mép kính */
-    inset 1px 0 2px 0 rgba(255, 255, 255, 0.45),
-    inset -1px 0 2px 0 rgba(255, 255, 255, 0.45),
-    inset 0 0 24px 0 rgba(203, 213, 225, 0.25);
+    inset 1px 0 2px 0 rgba(255, 255, 255, 0.5),
+    inset -1px 0 2px 0 rgba(255, 255, 255, 0.5),
+    inset 0 0 24px 0 rgba(203, 213, 225, 0.15);
   transition: box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
 }
 
 .glass-header {
-  border-bottom: 1px solid var(--panel-border);
+  border-bottom: 1px solid rgba(203, 213, 225, 0.60);
   background: linear-gradient(
     180deg,
-    rgba(241, 245, 249, 0.96) 0%,
-    rgba(226, 232, 240, 0.92) 100%
+    rgba(241, 245, 249, 0.78) 0%,
+    rgba(226, 232, 240, 0.65) 100%
   );
-  backdrop-filter: blur(24px) saturate(180%) contrast(102%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%) contrast(102%);
+  backdrop-filter: blur(28px) saturate(190%) contrast(104%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%) contrast(104%);
   box-shadow:
-    0 8px 28px -6px rgba(15, 23, 42, 0.06),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.85),
-    inset 0 -1.5px 1px 0 rgba(148, 163, 184, 0.18);
+    0 8px 28px -6px rgba(15, 23, 42, 0.05),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1.5px 1px 0 rgba(148, 163, 184, 0.12);
 }
 
 .soft-field {
@@ -161,15 +161,15 @@ select:focus-visible {
   border-radius: 9999px;
   background: linear-gradient(
     135deg,
-    rgba(226, 232, 240, 0.90) 0%,
-    rgba(203, 213, 225, 0.75) 100%
+    rgba(226, 232, 240, 0.65) 0%,
+    rgba(203, 213, 225, 0.45) 100%
   );
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(186, 201, 219, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.65);
   box-shadow:
-    0 2px 8px -2px rgba(15, 23, 42, 0.06),
-    inset 0 1.5px 2px rgba(148, 163, 184, 0.2),
+    0 2px 8px -2px rgba(15, 23, 42, 0.05),
+    inset 0 1.5px 2px rgba(148, 163, 184, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
   position: relative;
   isolation: isolate;
@@ -184,15 +184,15 @@ select:focus-visible {
   border-radius: 9999px;
   background: linear-gradient(
     180deg,
-    #ffffff 0%,
-    rgba(241, 245, 249, 0.96) 100%
+    rgba(255, 255, 255, 0.92) 0%,
+    rgba(241, 245, 249, 0.82) 100%
   );
   box-shadow:
-    0 3px 12px -1px rgba(15, 23, 42, 0.16),
-    0 1px 3px rgba(15, 23, 42, 0.08),
+    0 3px 12px -1px rgba(15, 23, 42, 0.12),
+    0 1px 3px rgba(15, 23, 42, 0.06),
     inset 0 1.5px 1px rgba(255, 255, 255, 1),
-    inset 0 -1px 1px rgba(148, 163, 184, 0.14);
-  border: 1px solid rgba(186, 201, 219, 0.85);
+    inset 0 -1px 1px rgba(148, 163, 184, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.85);
   box-sizing: border-box;
   pointer-events: none;
   z-index: 1;
@@ -238,18 +238,18 @@ select:focus-visible {
 .apple-segmented-container:not(:has(.apple-segmented-slider)) .apple-segmented-item.is-active {
   background: linear-gradient(
     180deg,
-    #ffffff 0%,
-    rgba(241, 245, 249, 0.96) 100%
+    rgba(255, 255, 255, 0.92) 0%,
+    rgba(241, 245, 249, 0.82) 100%
   );
   box-shadow:
-    0 3px 12px -1px rgba(15, 23, 42, 0.14),
+    0 3px 12px -1px rgba(15, 23, 42, 0.12),
     inset 0 1.5px 1px rgba(255, 255, 255, 1);
 }
 
 .apple-segmented-container:not(:has(.apple-segmented-slider)) .apple-segmented-item.is-active:hover {
   background: #ffffff;
   box-shadow:
-    0 4px 14px -1px rgba(15, 23, 42, 0.18),
+    0 4px 14px -1px rgba(15, 23, 42, 0.16),
     inset 0 1.5px 1px rgba(255, 255, 255, 1);
 }
 
@@ -258,17 +258,17 @@ select:focus-visible {
   min-height: 36px;
   background: linear-gradient(
     135deg,
-    rgba(238, 244, 250, 0.94) 0%,
-    rgba(226, 234, 244, 0.85) 100%
+    rgba(238, 244, 250, 0.72) 0%,
+    rgba(226, 234, 244, 0.52) 100%
   );
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(186, 201, 219, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.65);
   box-shadow:
-    0 3px 10px -2px rgba(15, 23, 42, 0.08),
-    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 3px 10px -2px rgba(15, 23, 42, 0.06),
+    0 1px 2px rgba(15, 23, 42, 0.03),
     inset 0 1.5px 1px rgba(255, 255, 255, 0.95),
-    inset 0 -1px 1px rgba(148, 163, 184, 0.15);
+    inset 0 -1px 1px rgba(148, 163, 184, 0.12);
   color: #334155;
   box-sizing: border-box;
   transition:
@@ -282,13 +282,13 @@ select:focus-visible {
 .liquid-collapse-btn:hover {
   background: linear-gradient(
     135deg,
-    rgba(248, 250, 252, 0.98) 0%,
-    rgba(235, 241, 248, 0.90) 100%
+    rgba(248, 250, 252, 0.88) 0%,
+    rgba(235, 241, 248, 0.72) 100%
   );
-  border-color: rgba(148, 163, 184, 1);
+  border-color: rgba(255, 255, 255, 0.90);
   box-shadow:
-    0 6px 16px -2px rgba(15, 23, 42, 0.14),
-    0 2px 4px rgba(15, 23, 42, 0.08),
+    0 6px 16px -2px rgba(15, 23, 42, 0.10),
+    0 2px 4px rgba(15, 23, 42, 0.06),
     inset 0 1.5px 1px rgba(255, 255, 255, 1);
   color: #0f172a;
   transform: translateY(-0.5px);
@@ -806,19 +806,19 @@ select {
   border-radius: 20px;
   background: linear-gradient(
     145deg,
-    rgba(238, 244, 250, 0.96) 0%,
-    rgba(228, 236, 246, 0.90) 50%,
-    rgba(220, 230, 242, 0.94) 100%
+    rgba(238, 244, 250, 0.70) 0%,
+    rgba(228, 236, 246, 0.52) 50%,
+    rgba(220, 230, 242, 0.65) 100%
   );
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(186, 201, 219, 0.95);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.65);
   box-shadow:
-    0 10px 24px -6px rgba(15, 23, 42, 0.08),
-    0 2px 6px -1px rgba(15, 23, 42, 0.04),
+    0 10px 24px -6px rgba(15, 23, 42, 0.06),
+    0 2px 6px -1px rgba(15, 23, 42, 0.03),
     inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.95),
-    inset 0 -1.5px 2px 0 rgba(148, 163, 184, 0.16),
-    inset 0 0 20px 0 rgba(199, 214, 232, 0.4);
+    inset 0 -1.5px 2px 0 rgba(148, 163, 184, 0.12),
+    inset 0 0 20px 0 rgba(199, 214, 232, 0.25);
   transition:
     transform 0.32s cubic-bezier(0.34, 1.4, 0.64, 1),
     box-shadow 0.32s cubic-bezier(0.34, 1.4, 0.64, 1),

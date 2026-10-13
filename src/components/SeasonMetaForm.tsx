@@ -36,7 +36,7 @@ function SeasonMetaSkeleton({ embedded = false }: { embedded?: boolean }) {
 
       <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
         {/* Cột 1 */}
-        <div className="flex flex-col justify-between rounded-xl border border-slate-300/80 bg-slate-200/40 p-4 dark:border-slate-800 dark:bg-slate-900/40 shadow-xs h-26">
+        <div className="flex flex-col justify-between rounded-xl border border-white/60 bg-white/30 p-4 dark:border-slate-800 dark:bg-slate-900/40 shadow-xs h-26">
           <div className="h-3 w-16 rounded-md skeleton-shimmer" />
           <div className="mt-2 flex items-center gap-3">
             <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-full skeleton-shimmer shrink-0" />
@@ -45,7 +45,7 @@ function SeasonMetaSkeleton({ embedded = false }: { embedded?: boolean }) {
         </div>
 
         {/* Cột 2 */}
-        <div className="flex flex-col justify-between rounded-xl border border-slate-300/80 bg-slate-200/40 p-4 dark:border-slate-800 dark:bg-slate-900/40 shadow-xs h-26">
+        <div className="flex flex-col justify-between rounded-xl border border-white/60 bg-white/30 p-4 dark:border-slate-800 dark:bg-slate-900/40 shadow-xs h-26">
           <div className="flex items-center justify-between">
             <div className="h-3 w-28 rounded-md skeleton-shimmer" />
             <div className="h-3 w-20 rounded-md skeleton-shimmer" />
@@ -54,7 +54,7 @@ function SeasonMetaSkeleton({ embedded = false }: { embedded?: boolean }) {
         </div>
 
         {/* Cột 3 */}
-        <div className="flex flex-col justify-between rounded-xl border border-slate-300/80 bg-slate-200/40 p-4 dark:border-slate-800 dark:bg-slate-900/40 shadow-xs h-26">
+        <div className="flex flex-col justify-between rounded-xl border border-white/60 bg-white/30 p-4 dark:border-slate-800 dark:bg-slate-900/40 shadow-xs h-26">
           <div className="h-3 w-24 rounded-md skeleton-shimmer" />
           <div className="mt-2 h-8 w-full rounded-lg skeleton-shimmer" />
         </div>
@@ -119,7 +119,7 @@ export function SeasonMetaForm({
 
       <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
         {/* Cột 1: Giải đấu (Phóng to Icon và Text) */}
-        <div className="flex flex-col justify-between rounded-2xl border border-slate-300/80 bg-slate-200/45 p-4.5 backdrop-blur-md dark:border-white/10 dark:bg-slate-900/50 shadow-2xs">
+        <div className="flex flex-col justify-between rounded-2xl border border-white/60 bg-white/35 p-4.5 backdrop-blur-md dark:border-white/10 dark:bg-slate-900/50 shadow-2xs">
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <div className="flex items-center gap-1.5">
               <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 shrink-0">
@@ -154,7 +154,7 @@ export function SeasonMetaForm({
         </div>
 
         {/* Cột 2: Thời gian mùa giải & Vạch thăng/xuống hạng */}
-        <div className="flex flex-col justify-between rounded-2xl border border-slate-300/80 bg-slate-200/45 p-4.5 backdrop-blur-md dark:border-white/10 dark:bg-slate-900/50 shadow-2xs">
+        <div className="flex flex-col justify-between rounded-2xl border border-white/60 bg-white/35 p-4.5 backdrop-blur-md dark:border-white/10 dark:bg-slate-900/50 shadow-2xs">
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400 shrink-0">
               {dict.seasonMeta.seasonDuration}
@@ -200,7 +200,7 @@ export function SeasonMetaForm({
         </div>
 
         {/* Cột 3: Select box chỉ gồm đúng 2 giá trị: Mùa giải hiện tại và Mùa giải ngay trước đó */}
-        <div className="relative z-30 flex flex-col justify-between rounded-2xl border border-slate-300/80 bg-slate-200/45 p-4.5 backdrop-blur-md dark:border-white/10 dark:bg-slate-900/50 shadow-2xs">
+        <div className="relative z-30 flex flex-col justify-between rounded-2xl border border-white/60 bg-white/35 p-4.5 backdrop-blur-md dark:border-white/10 dark:bg-slate-900/50 shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
               {dict.seasonMeta.selectSeason}

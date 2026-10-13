@@ -14,7 +14,7 @@ export function LanguageSwitcher() {
     <button
       type="button"
       onClick={handleToggle}
-      className="apple-btn inline-flex h-9.5 items-center justify-center gap-1.5 rounded-xl border border-slate-300 bg-slate-200/60 px-2.5 text-xs font-bold text-slate-800 shadow-2xs backdrop-blur-md transition-all hover:bg-slate-100 hover:shadow-xs dark:border-white/10 dark:bg-slate-800/70 dark:text-slate-200 dark:hover:bg-slate-700/80 cursor-pointer select-none"
+      className="apple-btn inline-flex h-9.5 items-center justify-center gap-1.5 rounded-xl border border-white/60 bg-white/40 px-2.5 text-xs font-bold text-slate-800 shadow-2xs backdrop-blur-md transition-all hover:bg-white/70 hover:shadow-xs dark:border-white/10 dark:bg-slate-800/70 dark:text-slate-200 dark:hover:bg-slate-700/80 cursor-pointer select-none"
       title={`${dict.header.langToggle}: ${nextLanguageName}`}
       aria-label="Toggle language"
     >

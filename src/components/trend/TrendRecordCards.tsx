@@ -39,7 +39,7 @@ export function TrendRecordCards({ overallStats, historyCount }: TrendRecordCard
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
       {/* Thẻ 1: Thứ hạng */}
-      <div className="glass-panel group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-300/90 bg-slate-200/40 p-4 shadow-2xs transition-all hover:shadow-xs dark:border-white/10 dark:bg-transparent">
+      <div className="glass-panel group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/60 bg-white/35 p-4 shadow-2xs transition-all hover:shadow-xs dark:border-white/10 dark:bg-transparent">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
             {dict.performanceTrend.latestRank}
@@ -66,7 +66,7 @@ export function TrendRecordCards({ overallStats, historyCount }: TrendRecordCard
       </div>
 
       {/* Thẻ 2: Cúp mùa giải */}
-      <div className="glass-panel group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-300/90 bg-slate-200/40 p-4 shadow-2xs transition-all hover:shadow-xs dark:border-white/10 dark:bg-transparent">
+      <div className="glass-panel group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/60 bg-white/35 p-4 shadow-2xs transition-all hover:shadow-xs dark:border-white/10 dark:bg-transparent">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
             {dict.performanceTrend.latestCups}
@@ -93,7 +93,7 @@ export function TrendRecordCards({ overallStats, historyCount }: TrendRecordCard
       </div>
 
       {/* Thẻ 3: Tỷ lệ thắng công */}
-      <div className="glass-panel group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-300/90 bg-slate-200/40 p-4 shadow-2xs transition-all hover:shadow-xs dark:border-white/10 dark:bg-transparent">
+      <div className="glass-panel group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/60 bg-white/35 p-4 shadow-2xs transition-all hover:shadow-xs dark:border-white/10 dark:bg-transparent">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
             {dict.performanceTrend.attackWinRate}
@@ -113,7 +113,7 @@ export function TrendRecordCards({ overallStats, historyCount }: TrendRecordCard
       </div>
 
       {/* Thẻ 4: Cấp giải đấu */}
-      <div className="glass-panel group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-300/90 bg-slate-200/40 p-4 shadow-2xs transition-all hover:shadow-xs dark:border-white/10 dark:bg-transparent">
+      <div className="glass-panel group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/60 bg-white/35 p-4 shadow-2xs transition-all hover:shadow-xs dark:border-white/10 dark:bg-transparent">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
             {dict.performanceTrend.currentTier}

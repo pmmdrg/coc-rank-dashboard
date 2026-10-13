@@ -47,7 +47,7 @@ function HighlightStatsSkeleton() {
             {[1, 2].map((i) => (
               <div
                 key={i}
-                className="flex flex-col justify-between rounded-lg border border-slate-300/80 bg-slate-200/40 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-900/70"
+                className="flex flex-col justify-between rounded-lg border border-white/60 bg-white/30 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-900/70"
               >
                 <div>
                   <div className="flex items-center justify-between">
@@ -449,7 +449,7 @@ export function HighlightStatsTable({
 
             <div className="grid gap-3 sm:grid-cols-2">
               {/* Thẻ 1: Cúp hiện tại */}
-              <div className="flex flex-col justify-between rounded-lg border border-amber-500/35 bg-amber-50/70 p-3.5 shadow-2xs transition-all hover:border-amber-500/50 dark:border-amber-500/25 dark:bg-slate-900/70">
+              <div className="flex flex-col justify-between rounded-lg border border-amber-500/35 bg-amber-50/45 backdrop-blur-md p-3.5 shadow-2xs transition-all hover:border-amber-500/50 dark:border-amber-500/25 dark:bg-slate-900/70">
                 <div>
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
@@ -500,7 +500,7 @@ export function HighlightStatsTable({
               </div>
 
               {/* Thẻ 2: Cúp tối đa có thể đạt */}
-              <div className="flex flex-col justify-between rounded-lg border border-indigo-500/35 bg-indigo-50/70 p-3.5 shadow-2xs transition-all hover:border-indigo-500/50 dark:border-indigo-500/25 dark:bg-slate-900/70">
+              <div className="flex flex-col justify-between rounded-lg border border-indigo-500/35 bg-indigo-50/45 backdrop-blur-md p-3.5 shadow-2xs transition-all hover:border-indigo-500/50 dark:border-indigo-500/25 dark:bg-slate-900/70">
                 <div>
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
