@@ -374,7 +374,15 @@ function App() {
           maxAttacks,
           maxDefenses,
         )
-        const ratingResult = calculatePlayerRating(currentCups, attacks, attackDestruction, defenses, avgCups)
+        const ratingResult = calculatePlayerRating(
+          currentCups,
+          attacks,
+          attackDestruction,
+          defenses,
+          avgCups,
+          maxAttacks,
+          maxDefenses,
+        )
         updated.rating = ratingResult.rating
         updated.attackCups = ratingResult.attackCups
         updated.defenseCups = ratingResult.defenseCups
