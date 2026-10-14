@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react'
 import { Warning, Trophy, Check, Copy } from '@phosphor-icons/react'
-import type { Player, RatingCategory } from '../types'
+import type { Player } from '../types'
 import { validatePlayer } from '../lib/validation'
 import { useI18n } from '../i18n/LanguageContext'
 import { RankBadge, RankDiffBadge } from './RankBadge'
+import { RatingChip } from './RatingChip'
 
 interface PlayerRowProps {
   player: Player
@@ -19,12 +20,7 @@ interface PlayerRowProps {
   style?: React.CSSProperties
 }
 
-const ratingTagColors: Record<RatingCategory, string> = {
-  dominant: 'bg-gradient-to-r from-purple-500/20 to-indigo-500/20 text-purple-700 dark:text-purple-300 border-purple-500/40 shadow-xs shadow-purple-500/10',
-  superior: 'bg-gradient-to-r from-emerald-500/20 to-teal-500/20 text-emerald-700 dark:text-emerald-300 border-emerald-500/40 shadow-xs shadow-emerald-500/10',
-  potential: 'bg-gradient-to-r from-sky-500/20 to-blue-500/20 text-sky-700 dark:text-sky-300 border-sky-500/40 shadow-xs shadow-sky-500/10',
-  alarm: 'bg-gradient-to-r from-rose-500/20 to-red-500/20 text-rose-700 dark:text-rose-300 border-rose-500/40 shadow-xs shadow-rose-500/10',
-}
+
 
 export function PlayerRow({
   player,
@@ -42,12 +38,7 @@ export function PlayerRow({
   const { dict, interpolate, language } = useI18n()
   const [isTagCopied, setIsTagCopied] = useState(false)
 
-  const ratingLabelsMap: Record<RatingCategory, string> = {
-    dominant: dict.charts.ratingDominant,
-    superior: dict.charts.ratingSuperior,
-    potential: dict.charts.ratingPotential,
-    alarm: dict.charts.ratingAlarm,
-  }
+
 
   function handleCopyTag(e: React.MouseEvent) {
     e.stopPropagation()
@@ -364,12 +355,7 @@ export function PlayerRow({
 
       {/* 7. Phân Loại Đánh Giá */}
       <td className="px-2 py-2.5 align-middle text-center">
-        <div
-          className={`inline-flex h-7.5 w-full items-center justify-center rounded-full border px-2.5 text-xs font-extrabold select-none transition-all ${ratingTagColors[player.rating]}`}
-          title={`${dict.common.rating}: ${ratingLabelsMap[player.rating]}`}
-        >
-          {ratingLabelsMap[player.rating]}
-        </div>
+        <RatingChip rating={player.rating} />
       </td>
     </tr>
   )

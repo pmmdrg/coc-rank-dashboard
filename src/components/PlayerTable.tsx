@@ -2,6 +2,7 @@ import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState } from 
 import { Warning } from '@phosphor-icons/react'
 import type { Player, RankingStats, Season } from '../types'
 import { PlayerRow } from './PlayerRow'
+import { RatingChip } from './RatingChip'
 import { validatePlayer } from '../lib/validation'
 import { useI18n } from '../i18n/LanguageContext'
 import { SegmentedControl, type SegmentedControlOption } from './SegmentedControl'
@@ -719,6 +720,12 @@ export function PlayerTable({
           </span>
           {dict.table.legendOpponentAttacked}
         </span>
+        <div className="hidden xl:flex items-center gap-1.5 border-l border-slate-200/80 dark:border-slate-800/80 pl-3">
+          <span className="font-bold text-slate-700 dark:text-slate-200 mr-1">{dict.common.rating}:</span>
+          {(['dominant', 'superior', 'potential', 'alarm'] as const).map((r) => (
+            <RatingChip key={r} rating={r} className="!h-6 !text-[10.5px] !px-2.5 !w-auto" />
+          ))}
+        </div>
       </div>
     </section>
   )
