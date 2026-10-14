@@ -1,3 +1,4 @@
+import { Trophy, CalendarBlank, ClockCounterClockwise } from '@phosphor-icons/react'
 import type { Season } from '../types'
 import { formatLeagueName } from '../lib/ranking'
 import { getLeagueIconUrl } from '../lib/leagueIcons'
@@ -36,7 +37,7 @@ function SeasonMetaSkeleton({ embedded = false }: { embedded?: boolean }) {
 
       <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
         {/* Cột 1 */}
-        <div className="flex flex-col justify-between rounded-xl border border-white/60 bg-white/30 p-4 dark:border-slate-800 dark:bg-slate-900/40 shadow-xs h-26">
+        <div className="hero-stat-card flex flex-col justify-between rounded-2xl p-4.5 shadow-2xs h-26">
           <div className="h-3 w-16 rounded-md skeleton-shimmer" />
           <div className="mt-2 flex items-center gap-3">
             <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-full skeleton-shimmer shrink-0" />
@@ -45,7 +46,7 @@ function SeasonMetaSkeleton({ embedded = false }: { embedded?: boolean }) {
         </div>
 
         {/* Cột 2 */}
-        <div className="flex flex-col justify-between rounded-xl border border-white/60 bg-white/30 p-4 dark:border-slate-800 dark:bg-slate-900/40 shadow-xs h-26">
+        <div className="hero-stat-card flex flex-col justify-between rounded-2xl p-4.5 shadow-2xs h-26">
           <div className="flex items-center justify-between">
             <div className="h-3 w-28 rounded-md skeleton-shimmer" />
             <div className="h-3 w-20 rounded-md skeleton-shimmer" />
@@ -54,7 +55,7 @@ function SeasonMetaSkeleton({ embedded = false }: { embedded?: boolean }) {
         </div>
 
         {/* Cột 3 */}
-        <div className="flex flex-col justify-between rounded-xl border border-white/60 bg-white/30 p-4 dark:border-slate-800 dark:bg-slate-900/40 shadow-xs h-26">
+        <div className="hero-stat-card flex flex-col justify-between rounded-2xl p-4.5 shadow-2xs h-26">
           <div className="h-3 w-24 rounded-md skeleton-shimmer" />
           <div className="mt-2 h-8 w-full rounded-lg skeleton-shimmer" />
         </div>
@@ -119,20 +120,37 @@ export function SeasonMetaForm({
 
       <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
         {/* Cột 1: Giải đấu (Phóng to Icon và Text) */}
-        <div className="flex flex-col justify-between rounded-2xl border border-white/60 bg-white/35 p-4.5 backdrop-blur-md dark:border-white/10 dark:bg-slate-900/50 shadow-2xs">
-          <div className="flex items-center justify-between gap-2 flex-wrap">
+        <div className="hero-stat-card group relative overflow-hidden rounded-2xl p-4.5 shadow-2xs backdrop-blur-md transition-all cursor-default flex flex-col justify-between">
+          {/* Tonal radial glow */}
+          <div
+            className="pointer-events-none absolute inset-0 opacity-80"
+            style={{
+              background: 'radial-gradient(circle at 100% 100%, rgba(245, 158, 11, 0.08), transparent 70%)',
+            }}
+          />
+
+          {/* Vạch Accent Glow ở mép trên kiểu Apple Specular Bar */}
+          <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-amber-400 via-orange-500 to-yellow-500 opacity-85 group-hover:h-[4px] group-hover:opacity-100 transition-all" />
+
+          {/* Icon lớn mờ chìm nghệ thuật ở góc thẻ */}
+          <Trophy
+            weight="duotone"
+            className="pointer-events-none absolute -bottom-3 -right-3 h-24 w-24 opacity-15 dark:opacity-[0.10] text-amber-500 transition-transform duration-300 group-hover:scale-115"
+          />
+
+          <div className="relative z-10 flex items-center justify-between gap-2 flex-wrap">
             <div className="flex items-center gap-1.5">
-              <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 shrink-0">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 shrink-0">
                 {dict.seasonMeta.league}
               </span>
               {season.leagueGroupTag && (
-                <span className="rounded-md bg-amber-500/10 px-1.5 py-0.2 text-[10px] font-bold text-amber-600 dark:bg-amber-400/10 dark:text-amber-400">
+                <span className="rounded-md bg-amber-500/15 border border-amber-500/30 px-1.5 py-0.2 text-[10px] font-bold text-amber-700 dark:text-amber-300">
                   {season.leagueGroupTag}
                 </span>
               )}
             </div>
           </div>
-          <div className="mt-2.5 flex items-center gap-3 font-semibold text-slate-900 dark:text-slate-100">
+          <div className="relative z-10 mt-2.5 flex items-center gap-3 font-semibold text-slate-900 dark:text-slate-100">
             {season.league && season.league !== '--' ? (
               <>
                 <img
@@ -154,9 +172,26 @@ export function SeasonMetaForm({
         </div>
 
         {/* Cột 2: Thời gian mùa giải & Vạch thăng/xuống hạng */}
-        <div className="flex flex-col justify-between rounded-2xl border border-white/60 bg-white/35 p-4.5 backdrop-blur-md dark:border-white/10 dark:bg-slate-900/50 shadow-2xs">
-          <div className="flex items-center justify-between gap-2 flex-wrap">
-            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 shrink-0">
+        <div className="hero-stat-card group relative overflow-hidden rounded-2xl p-4.5 shadow-2xs backdrop-blur-md transition-all cursor-default flex flex-col justify-between">
+          {/* Tonal radial glow */}
+          <div
+            className="pointer-events-none absolute inset-0 opacity-80"
+            style={{
+              background: 'radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.08), transparent 70%)',
+            }}
+          />
+
+          {/* Vạch Accent Glow ở mép trên kiểu Apple Specular Bar */}
+          <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500 opacity-85 group-hover:h-[4px] group-hover:opacity-100 transition-all" />
+
+          {/* Icon lớn mờ chìm nghệ thuật ở góc thẻ */}
+          <CalendarBlank
+            weight="duotone"
+            className="pointer-events-none absolute -bottom-3 -right-3 h-24 w-24 opacity-15 dark:opacity-[0.10] text-emerald-500 transition-transform duration-300 group-hover:scale-115"
+          />
+
+          <div className="relative z-10 flex items-center justify-between gap-2 flex-wrap">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 shrink-0">
               {dict.seasonMeta.seasonDuration}
             </span>
             {season.players.length === 0 ? (
@@ -187,26 +222,41 @@ export function SeasonMetaForm({
                 </label>
               </div>
             ) : (
-              <span className="rounded-md bg-emerald-500/10 px-2 py-0.5 text-[11px] font-semibold text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400">
+              <span className="rounded-md bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 text-[11px] font-bold text-emerald-700 dark:text-emerald-300">
                 {dict.seasonMeta.promote} {season.promotionCount ?? 2} • {dict.seasonMeta.demote} {season.demotionCount ?? 1}
               </span>
             )}
           </div>
-          <div className="mt-2.5 flex items-center">
-            <span className="text-sm sm:text-base font-bold tracking-tight text-slate-800 dark:text-slate-100">
+          <div className="relative z-10 mt-2.5 flex items-center">
+            <span className="text-sm sm:text-base font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
               {currentPeriodInfo.displayPeriod || '--'}
             </span>
           </div>
         </div>
 
         {/* Cột 3: Select box chỉ gồm đúng 2 giá trị: Mùa giải hiện tại và Mùa giải ngay trước đó */}
-        <div className="relative z-30 flex flex-col justify-between rounded-2xl border border-white/60 bg-white/35 p-4.5 backdrop-blur-md dark:border-white/10 dark:bg-slate-900/50 shadow-2xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+        <div className="hero-stat-card group relative !overflow-visible rounded-2xl p-4.5 shadow-2xs backdrop-blur-md transition-all z-30 flex flex-col justify-between">
+          {/* Lớp nền hiệu ứng bên trong giữ overflow-hidden để không cắt dropdown select */}
+          <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]">
+            <div
+              className="absolute inset-0 opacity-80"
+              style={{
+                background: 'radial-gradient(circle at 100% 100%, rgba(14, 165, 233, 0.08), transparent 70%)',
+              }}
+            />
+            <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-sky-400 via-blue-500 to-indigo-500 opacity-85 group-hover:h-[4px] group-hover:opacity-100 transition-all" />
+            <ClockCounterClockwise
+              weight="duotone"
+              className="absolute -bottom-3 -right-3 h-24 w-24 opacity-15 dark:opacity-[0.10] text-sky-500 transition-transform duration-300 group-hover:scale-115"
+            />
+          </div>
+
+          <div className="relative z-10 flex items-center justify-between">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
               {dict.seasonMeta.selectSeason}
             </span>
           </div>
-          <div className="mt-2.5 flex items-center">
+          <div className="relative z-10 mt-2.5 flex items-center">
             <CustomSelect<number>
               value={activeSeasonIndex}
               options={seasonOptions.map((opt) => ({

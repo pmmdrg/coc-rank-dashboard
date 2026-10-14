@@ -285,7 +285,7 @@ export function RankChangesSection({
                   {myChange ? (
                     <div
                       key={`my-change-${snapshot.updatedAt || 'init'}`}
-                      className={`animate-change-card rounded-xl border p-3.5 shadow-2xs transition-all ${
+                      className={`animate-change-card backdrop-blur-md rounded-xl border p-3.5 shadow-xs transition-all ${
                         myChange.rankDiff > 0
                           ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-900 dark:border-emerald-500/30 dark:bg-emerald-950/40 dark:text-emerald-200'
                           : myChange.rankDiff < 0
@@ -356,7 +356,7 @@ export function RankChangesSection({
               ) : (
                 <div
                   key={`my-change-stable-${snapshot.updatedAt || 'init'}`}
-                  className="animate-change-card rounded-xl border border-slate-200/80 bg-slate-50/70 p-3 text-xs text-slate-600 dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-400 flex items-center justify-between gap-2"
+                  className="animate-change-card backdrop-blur-md rounded-xl border border-slate-200/80 bg-slate-50/70 p-3 text-xs text-slate-600 dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-400 flex items-center justify-between gap-2"
                 >
                   <div className="flex items-center gap-2">
                     <span className="rounded-md bg-sky-500/20 px-1.5 py-0.5 text-[10px] font-bold text-sky-700 dark:text-sky-300">
@@ -427,7 +427,7 @@ export function RankChangesSection({
                         style={{
                           animationDelay: `${Math.min(index * 35, 300)}ms`,
                         }}
-                        className={`animate-change-card flex flex-col justify-between rounded-xl border p-2.5 shadow-2xs transition-all hover:scale-[1.01] ${
+                        className={`animate-change-card backdrop-blur-md flex flex-col justify-between rounded-xl border p-2.5 shadow-2xs transition-all hover:scale-[1.01] ${
                           isUser
                             ? 'border-sky-400/60 bg-sky-50/70 dark:border-sky-500/40 dark:bg-sky-950/30 ring-1 ring-sky-400/40'
                             : isRose

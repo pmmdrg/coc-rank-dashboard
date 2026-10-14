@@ -1,3 +1,4 @@
+import { UsersThree, Sword, Star } from '@phosphor-icons/react'
 import { useI18n } from '../i18n/LanguageContext'
 
 export interface ChartDataItem {
@@ -15,15 +16,10 @@ export interface ChartsSectionProps {
   embedded?: boolean
 }
 
-function SkeletonPieChart({ embedded = false }: { embedded?: boolean }) {
+function SkeletonPieChart({ embedded = false }: { embedded?: boolean } = {}) {
+  void embedded
   return (
-    <div
-      className={
-        embedded
-          ? 'flex h-full flex-col rounded-xl border border-slate-200/80 bg-white/60 p-4 sm:p-5 shadow-2xs dark:border-white/10 dark:bg-slate-900/50'
-          : 'glass-panel flex h-full flex-col rounded-2xl p-4 sm:p-5 shadow-sm'
-      }
-    >
+    <div className="hero-stat-card flex h-full flex-col overflow-hidden rounded-2xl p-4 sm:p-5 shadow-2xs">
       <div className="flex items-center justify-between gap-2 shrink-0">
         <div className="h-4 w-40 rounded-md skeleton-shimmer" />
         <div className="h-3 w-16 rounded-md skeleton-shimmer" />
@@ -73,12 +69,19 @@ function PercentagePieChart({
   values,
   showPercentage = true,
   embedded = false,
+  accentGradient,
+  tonalGlow,
+  icon: IconComponent,
 }: {
   title: string
   values: ChartDataItem[]
   showPercentage?: boolean
   embedded?: boolean
+  accentGradient?: string
+  tonalGlow?: string
+  icon?: any
 }) {
+  void embedded
   const { dict, interpolate, language } = useI18n()
   const slices = getPieSlices(values)
   const total = values.reduce((sum, item) => sum + item.value, 0)
@@ -88,28 +91,47 @@ function PercentagePieChart({
     new Intl.NumberFormat(language === 'vi' ? 'vi-VN' : 'en-US').format(val)
 
   return (
-    <div
-      className={
-        embedded
-          ? 'flex h-full flex-col rounded-xl border border-slate-200/80 bg-white/60 p-4 sm:p-5 shadow-2xs dark:border-white/10 dark:bg-slate-900/50 backdrop-blur-md transition-all duration-300 hover:border-slate-300 dark:hover:border-white/20'
-          : 'glass-panel flex h-full flex-col rounded-2xl p-4 sm:p-5 shadow-sm hover:border-slate-300 dark:hover:border-slate-700/80 transition-all duration-300'
-      }
-    >
-      <div className="flex items-center justify-between gap-2 shrink-0">
-        <h3 className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-200 truncate" title={title}>
+    <div className="hero-stat-card group relative flex h-full flex-col overflow-hidden rounded-2xl p-4 sm:p-5 shadow-2xs backdrop-blur-md transition-all duration-300">
+      {/* Tonal radial glow */}
+      {tonalGlow && (
+        <div
+          className="pointer-events-none absolute inset-0 opacity-80"
+          style={{
+            background: `radial-gradient(circle at 100% 100%, ${tonalGlow}, transparent 70%)`,
+          }}
+        />
+      )}
+
+      {/* Vạch Accent Glow ở mép trên kiểu Apple Specular Bar */}
+      {accentGradient && (
+        <div
+          className={`absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r ${accentGradient} opacity-85 group-hover:h-[4px] group-hover:opacity-100 transition-all`}
+        />
+      )}
+
+      {/* Icon lớn mờ chìm nghệ thuật ở góc thẻ */}
+      {IconComponent && (
+        <IconComponent
+          weight="duotone"
+          className="pointer-events-none absolute -bottom-3 -right-3 h-24 w-24 opacity-15 dark:opacity-[0.10] transition-transform duration-300 group-hover:scale-115 text-slate-400 dark:text-slate-500"
+        />
+      )}
+
+      <div className="relative z-10 flex items-center justify-between gap-2 shrink-0">
+        <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 truncate" title={title}>
           {title}
         </h3>
-        <span className="text-xs text-slate-400 dark:text-slate-500 shrink-0 font-medium">
+        <span className="text-xs text-slate-500 dark:text-slate-400 shrink-0 font-semibold">
           {hasData ? interpolate(dict.charts.total, { total: formatNumber(total) }) : '--'}
         </span>
       </div>
 
       {!hasData ? (
-        <div className="my-auto flex flex-col items-center justify-center py-10 text-center text-sm font-medium text-slate-400 dark:text-slate-500">
+        <div className="relative z-10 my-auto flex flex-col items-center justify-center py-10 text-center text-sm font-medium text-slate-400 dark:text-slate-500">
           {dict.common.noData}
         </div>
       ) : (
-        <div className="my-auto flex flex-col sm:flex-row items-center gap-3.5 sm:gap-4 pt-3 sm:pt-4">
+        <div className="relative z-10 my-auto flex flex-col sm:flex-row items-center gap-3.5 sm:gap-4 pt-3 sm:pt-4">
           <div className="relative flex shrink-0 items-center justify-center">
             <svg viewBox="0 0 42 42" className="h-32 w-32 sm:h-34 sm:w-34 -rotate-90 drop-shadow-sm">
               <circle
@@ -142,7 +164,7 @@ function PercentagePieChart({
             {/* Tâm Donut */}
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
               <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500">{dict.charts.ratioCenter}</span>
-              <span className="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-100">
+              <span className="text-sm sm:text-base font-extrabold text-slate-800 dark:text-slate-100">
                 100%
               </span>
             </div>
@@ -160,9 +182,9 @@ function PercentagePieChart({
                       style={{ backgroundColor: item.color }}
                       aria-hidden="true"
                     />
-                    <span className="truncate font-medium" title={item.label}>{item.label}</span>
+                    <span className="truncate font-semibold" title={item.label}>{item.label}</span>
                   </span>
-                  <span className="font-bold text-slate-900 dark:text-slate-50 shrink-0 whitespace-nowrap pl-1">
+                  <span className="font-mono font-bold text-slate-900 dark:text-slate-50 shrink-0 whitespace-nowrap pl-1">
                     {formatNumber(item.value)}
                     {showPercentage && (
                       <span className="ml-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
@@ -213,17 +235,26 @@ export function ChartsSection({
         title={comparisonTitle}
         values={comparisonData}
         embedded={embedded}
+        accentGradient="from-emerald-400 via-teal-500 to-cyan-500"
+        tonalGlow="rgba(16, 185, 129, 0.08)"
+        icon={UsersThree}
       />
       <PercentagePieChart
         title={dict.charts.attackCompletion}
         values={attackStatusData}
         embedded={embedded}
+        accentGradient="from-amber-400 via-orange-500 to-red-500"
+        tonalGlow="rgba(245, 158, 11, 0.08)"
+        icon={Sword}
       />
       <div className="md:col-span-2 lg:col-span-1">
         <PercentagePieChart
           title={dict.charts.skillRating}
           values={ratingData}
           embedded={embedded}
+          accentGradient="from-indigo-400 via-purple-500 to-pink-500"
+          tonalGlow="rgba(99, 102, 241, 0.08)"
+          icon={Star}
         />
       </div>
     </div>

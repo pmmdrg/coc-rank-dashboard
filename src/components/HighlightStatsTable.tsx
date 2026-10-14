@@ -1,4 +1,5 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { Trophy, TrendUp } from '@phosphor-icons/react'
 import type { Player } from '../types'
 import { useI18n } from '../i18n/LanguageContext'
 import { SegmentedControl, type SegmentedControlOption } from './SegmentedControl'
@@ -47,7 +48,7 @@ function HighlightStatsSkeleton() {
             {[1, 2].map((i) => (
               <div
                 key={i}
-                className="flex flex-col justify-between rounded-lg border border-white/60 bg-white/30 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-900/70"
+                className="hero-stat-card flex flex-col justify-between rounded-xl p-4 shadow-2xs"
               >
                 <div>
                   <div className="flex items-center justify-between">
@@ -449,10 +450,27 @@ export function HighlightStatsTable({
 
             <div className="grid gap-3 sm:grid-cols-2">
               {/* Thẻ 1: Cúp hiện tại */}
-              <div className="flex flex-col justify-between rounded-lg border border-amber-500/35 bg-amber-50/45 backdrop-blur-md p-3.5 shadow-2xs transition-all hover:border-amber-500/50 dark:border-amber-500/25 dark:bg-slate-900/70">
-                <div>
+              <div className="hero-stat-card group relative overflow-hidden rounded-xl p-4 shadow-2xs backdrop-blur-md transition-all cursor-default flex flex-col justify-between">
+                {/* Tonal radial glow */}
+                <div
+                  className="pointer-events-none absolute inset-0 opacity-80"
+                  style={{
+                    background: 'radial-gradient(circle at 100% 100%, rgba(245, 158, 11, 0.08), transparent 70%)',
+                  }}
+                />
+
+                {/* Vạch Accent Glow ở mép trên kiểu Apple Specular Bar */}
+                <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-amber-400 via-orange-500 to-yellow-500 opacity-85 group-hover:h-[4px] group-hover:opacity-100 transition-all" />
+
+                {/* Icon lớn mờ chìm nghệ thuật ở góc thẻ */}
+                <Trophy
+                  weight="duotone"
+                  className="pointer-events-none absolute -bottom-3 -right-3 h-24 w-24 opacity-15 dark:opacity-[0.10] text-amber-500 transition-transform duration-300 group-hover:scale-115"
+                />
+
+                <div className="relative z-10">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                       {dict.highlights.currentCups}
                     </span>
                     <span className="rounded-md border border-amber-500/30 bg-amber-500/15 px-2 py-0.5 text-xs font-bold text-amber-700 dark:text-amber-300">
@@ -476,7 +494,7 @@ export function HighlightStatsTable({
                   </div>
                 </div>
 
-                <div className="mt-3">
+                <div className="relative z-10 mt-3">
                   <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200/80 dark:bg-slate-700/80">
                     <div
                       className="h-full rounded-full bg-gradient-to-r from-amber-500 to-amber-400 transition-all duration-600"
@@ -489,7 +507,7 @@ export function HighlightStatsTable({
                       }}
                     />
                   </div>
-                  <p className="mt-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+                  <p className="mt-1.5 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                     {myComparisonStats.currentCupsTiedCount === myComparisonStats.totalOpponents
                       ? interpolate(dict.highlights.tiedWithAll, { count: myComparisonStats.totalOpponents })
                       : `${interpolate(dict.highlights.higherThanCount, { better: myComparisonStats.currentCupsBetterCount, total: myComparisonStats.totalOpponents })}${
@@ -500,10 +518,27 @@ export function HighlightStatsTable({
               </div>
 
               {/* Thẻ 2: Cúp tối đa có thể đạt */}
-              <div className="flex flex-col justify-between rounded-lg border border-indigo-500/35 bg-indigo-50/45 backdrop-blur-md p-3.5 shadow-2xs transition-all hover:border-indigo-500/50 dark:border-indigo-500/25 dark:bg-slate-900/70">
-                <div>
+              <div className="hero-stat-card group relative overflow-hidden rounded-xl p-4 shadow-2xs backdrop-blur-md transition-all cursor-default flex flex-col justify-between">
+                {/* Tonal radial glow */}
+                <div
+                  className="pointer-events-none absolute inset-0 opacity-80"
+                  style={{
+                    background: 'radial-gradient(circle at 100% 100%, rgba(99, 102, 241, 0.08), transparent 70%)',
+                  }}
+                />
+
+                {/* Vạch Accent Glow ở mép trên kiểu Apple Specular Bar */}
+                <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 opacity-85 group-hover:h-[4px] group-hover:opacity-100 transition-all" />
+
+                {/* Icon lớn mờ chìm nghệ thuật ở góc thẻ */}
+                <TrendUp
+                  weight="duotone"
+                  className="pointer-events-none absolute -bottom-3 -right-3 h-24 w-24 opacity-15 dark:opacity-[0.10] text-indigo-500 transition-transform duration-300 group-hover:scale-115"
+                />
+
+                <div className="relative z-10">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                       {dict.highlights.maxCups}
                     </span>
                     <span className="rounded-md border border-indigo-500/30 bg-indigo-500/15 px-2 py-0.5 text-xs font-bold text-indigo-700 dark:text-indigo-300">
@@ -527,7 +562,7 @@ export function HighlightStatsTable({
                   </div>
                 </div>
 
-                <div className="mt-3">
+                <div className="relative z-10 mt-3">
                   <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200/80 dark:bg-slate-700/80">
                     <div
                       className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-400 transition-all duration-600"
@@ -540,7 +575,7 @@ export function HighlightStatsTable({
                       }}
                     />
                   </div>
-                  <p className="mt-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+                  <p className="mt-1.5 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                     {myComparisonStats.cupsTiedCount === myComparisonStats.totalOpponents
                       ? interpolate(dict.highlights.maxCupsFormulaNotice, { count: myComparisonStats.totalOpponents })
                       : `${interpolate(dict.highlights.higherMaxCupsCount, { better: myComparisonStats.cupsBetterCount, total: myComparisonStats.totalOpponents })}${
