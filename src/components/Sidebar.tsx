@@ -275,7 +275,7 @@ export function Sidebar({
   return (
     <>
       {/* 1. DESKTOP SIDEBAR: Cố định bên trái màn hình */}
-      <aside className="glass-panel !fixed inset-y-0 left-0 hidden h-screen w-72 shrink-0 flex-col border-r border-slate-200/80 backdrop-blur-xl lg:flex dark:border-slate-800/80 z-30">
+      <aside className="glass-panel !fixed inset-y-0 left-0 hidden h-screen w-72 shrink-0 flex-col border-r border-white/60 backdrop-blur-xl lg:flex dark:border-white/10 z-30">
         {sidebarContent}
       </aside>
 
@@ -288,7 +288,7 @@ export function Sidebar({
             onClick={onCloseMobile}
           />
           {/* Panel trượt */}
-          <aside className="glass-panel relative flex h-full w-72 flex-col border-r border-slate-200/80 bg-white/95 dark:bg-slate-950/95 backdrop-blur-2xl shadow-2xl animate-slide-right">
+          <aside className="glass-panel relative flex h-full w-72 flex-col border-r border-white/60 bg-white/95 backdrop-blur-2xl shadow-2xl animate-slide-right dark:border-white/10 dark:bg-slate-950/95">
             {sidebarContent}
           </aside>
         </div>

@@ -89,18 +89,37 @@ select:focus-visible {
 }
 
 .glass-header {
-  border-bottom: 1px solid rgba(203, 213, 225, 0.60);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.65);
   background: linear-gradient(
     180deg,
-    rgba(241, 245, 249, 0.78) 0%,
-    rgba(226, 232, 240, 0.65) 100%
+    rgba(241, 245, 249, 0.72) 0%,
+    rgba(228, 236, 246, 0.54) 100%
   );
   backdrop-filter: blur(28px) saturate(190%) contrast(104%);
   -webkit-backdrop-filter: blur(28px) saturate(190%) contrast(104%);
   box-shadow:
-    0 8px 28px -6px rgba(15, 23, 42, 0.05),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.9),
-    inset 0 -1.5px 1px 0 rgba(148, 163, 184, 0.12);
+    0 10px 32px -6px rgba(15, 23, 42, 0.06),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 1px 0 rgba(148, 163, 184, 0.12),
+    inset 0 0 24px 0 rgba(203, 213, 225, 0.15);
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.65);
+  background: linear-gradient(
+    180deg,
+    rgba(241, 245, 249, 0.68) 0%,
+    rgba(228, 236, 246, 0.52) 100%
+  );
+  backdrop-filter: blur(28px) saturate(190%) contrast(104%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%) contrast(104%);
+  box-shadow:
+    0 -12px 36px -6px rgba(15, 23, 42, 0.05),
+    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 1px 0 rgba(148, 163, 184, 0.10),
+    inset 0 0 28px 0 rgba(203, 213, 225, 0.15);
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .soft-field {
@@ -366,18 +385,35 @@ html.dark .glass-panel {
 }
 
 html.dark .glass-header {
-  border-bottom-color: rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   background: linear-gradient(
     180deg,
-    rgba(10, 16, 31, 0.90) 0%,
-    rgba(10, 16, 31, 0.74) 100%
+    rgba(15, 23, 42, 0.78) 0%,
+    rgba(10, 16, 31, 0.88) 100%
   );
   backdrop-filter: blur(28px) saturate(210%) contrast(105%);
   -webkit-backdrop-filter: blur(28px) saturate(210%) contrast(105%);
   box-shadow:
-    0 12px 36px -6px rgba(0, 0, 0, 0.65),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.22),
-    inset 0 -1px 0 0 rgba(0, 0, 0, 0.5);
+    0 16px 40px -8px rgba(0, 0, 0, 0.75),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.25),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.6),
+    inset 0 0 28px -4px rgba(56, 189, 248, 0.05);
+}
+
+html.dark .glass-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(
+    180deg,
+    rgba(15, 23, 42, 0.75) 0%,
+    rgba(10, 16, 31, 0.88) 100%
+  );
+  backdrop-filter: blur(28px) saturate(210%) contrast(105%);
+  -webkit-backdrop-filter: blur(28px) saturate(210%) contrast(105%);
+  box-shadow:
+    0 -16px 44px -8px rgba(0, 0, 0, 0.75),
+    inset 0 1.2px 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.6),
+    inset 0 0 28px -4px rgba(56, 189, 248, 0.04);
 }
 
 html.dark .apple-segmented-container {

@@ -463,7 +463,7 @@ export function PlayerTable({
       {/* 2.5 Thanh Sticky Table Header ghim cố định đồng bộ khi cuộn qua bảng */}
       {isStickyHeaderVisible && (
         <div
-          className="fixed z-30 overflow-hidden backdrop-blur-md bg-amber-50/95 dark:bg-slate-900/95 border-b border-amber-200/60 dark:border-slate-800 shadow-md transition-opacity duration-150 pointer-events-none"
+          className="glass-header fixed z-30 overflow-hidden shadow-md transition-opacity duration-150 pointer-events-none"
           style={{
             top: `${stickyTop}px`,
             left: `${stickyBounds.left}px`,
@@ -686,7 +686,7 @@ export function PlayerTable({
     </div>
 
       {/* 4. Chú thích biểu tượng & trạng thái */}
-      <div className="flex flex-wrap items-center gap-4 border-t border-slate-200/80 px-5 py-3 text-xs text-slate-500 dark:border-slate-800/80 dark:text-slate-400">
+      <div className="flex flex-wrap items-center gap-4 border-t border-white/60 bg-white/20 backdrop-blur-md px-5 py-3 text-xs text-slate-600 dark:border-white/10 dark:bg-slate-900/30 dark:text-slate-400">
         <span className="font-bold text-slate-700 dark:text-slate-200">{dict.table.legendTitle}</span>
         <span className="inline-flex items-center gap-1.5 font-medium">
           <span className="h-3 w-3 rounded-xs border-l-[3px] border-l-sky-500 bg-sky-400/20" />
@@ -720,7 +720,7 @@ export function PlayerTable({
           </span>
           {dict.table.legendOpponentAttacked}
         </span>
-        <div className="hidden xl:flex items-center gap-1.5 border-l border-slate-200/80 dark:border-slate-800/80 pl-3">
+        <div className="hidden xl:flex items-center gap-1.5 border-l border-white/60 dark:border-white/10 pl-3">
           <span className="font-bold text-slate-700 dark:text-slate-200 mr-1">{dict.common.rating}:</span>
           {(['dominant', 'superior', 'potential', 'alarm'] as const).map((r) => (
             <RatingChip key={r} rating={r} className="!h-6 !text-[10.5px] !px-2.5 !w-auto" />
