@@ -146,23 +146,13 @@ export function RankChangesSection({
     },
     {
       value: 'rose',
-      label: (
-        <>
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-          <span>{interpolate(dict.rankChanges.filterRose, { count: roseChanges.length })}</span>
-        </>
-      ),
+      label: <span>{interpolate(dict.rankChanges.filterRose, { count: roseChanges.length })}</span>,
       activeColorClass: 'text-emerald-700 dark:text-emerald-300',
       hoverColorClass: 'hover:text-emerald-600 dark:hover:text-emerald-400',
     },
     {
       value: 'fell',
-      label: (
-        <>
-          <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
-          <span>{interpolate(dict.rankChanges.filterFell, { count: fellChanges.length })}</span>
-        </>
-      ),
+      label: <span>{interpolate(dict.rankChanges.filterFell, { count: fellChanges.length })}</span>,
       activeColorClass: 'text-rose-700 dark:text-rose-300',
       hoverColorClass: 'hover:text-rose-600 dark:hover:text-rose-400',
     },

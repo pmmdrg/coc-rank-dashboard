@@ -291,12 +291,7 @@ export function PlayerTable({
     if (promotionCount > 0) {
       opts.push({
         value: 'promotion',
-        label: (
-          <>
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-            <span>{interpolate(dict.table.filterPromotion, { count: Math.min(promotionCount, rankedPlayers.length) })}</span>
-          </>
-        ),
+        label: <span>{interpolate(dict.table.filterPromotion, { count: Math.min(promotionCount, rankedPlayers.length) })}</span>,
         activeColorClass: 'text-emerald-700 dark:text-emerald-300',
         hoverColorClass: 'hover:text-emerald-600 dark:hover:text-emerald-400',
       })
@@ -305,12 +300,7 @@ export function PlayerTable({
     if (demotionCount > 0) {
       opts.push({
         value: 'demotion',
-        label: (
-          <>
-            <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
-            <span>{interpolate(dict.table.filterDemotion, { count: Math.min(demotionCount, rankedPlayers.length) })}</span>
-          </>
-        ),
+        label: <span>{interpolate(dict.table.filterDemotion, { count: Math.min(demotionCount, rankedPlayers.length) })}</span>,
         activeColorClass: 'text-rose-700 dark:text-rose-300',
         hoverColorClass: 'hover:text-rose-600 dark:hover:text-rose-400',
       })
@@ -328,12 +318,7 @@ export function PlayerTable({
     if (canPassPlayerIds.size > 0) {
       opts.push({
         value: 'canPass',
-        label: (
-          <>
-            <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-            <span>{interpolate(dict.table.filterCanPass, { count: canPassPlayerIds.size })}</span>
-          </>
-        ),
+        label: <span>{interpolate(dict.table.filterCanPass, { count: canPassPlayerIds.size })}</span>,
         activeColorClass: 'text-amber-700 dark:text-amber-300',
         hoverColorClass: 'hover:text-amber-600 dark:hover:text-amber-400',
       })
@@ -342,12 +327,7 @@ export function PlayerTable({
     if (warnedPlayerIds.size > 0) {
       opts.push({
         value: 'warned',
-        label: (
-          <>
-            <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-            <span>{interpolate(dict.table.filterWarned, { count: warnedPlayerIds.size })}</span>
-          </>
-        ),
+        label: <span>{interpolate(dict.table.filterWarned, { count: warnedPlayerIds.size })}</span>,
         activeColorClass: 'text-amber-700 dark:text-amber-300',
         hoverColorClass: 'hover:text-amber-600 dark:hover:text-amber-400',
       })
