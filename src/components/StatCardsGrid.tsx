@@ -115,6 +115,33 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
   }, [hasMyPlayer, season.defenseLogs, season.players, stats.myPlayer])
 
   if (isSyncingApi) {
+    const skeletonStatCards = [
+      {
+        accentGradient: 'from-sky-400 via-blue-500 to-indigo-500',
+        tonalGlow: 'rgba(14, 165, 233, 0.08)',
+        icon: Trophy,
+        iconColor: 'text-sky-500',
+      },
+      {
+        accentGradient: 'from-amber-400 via-orange-500 to-yellow-500',
+        tonalGlow: 'rgba(245, 158, 11, 0.08)',
+        icon: ShieldWarning,
+        iconColor: 'text-amber-500',
+      },
+      {
+        accentGradient: 'from-rose-400 via-red-500 to-orange-500',
+        tonalGlow: 'rgba(244, 63, 94, 0.08)',
+        icon: Sword,
+        iconColor: 'text-rose-500',
+      },
+      {
+        accentGradient: 'from-teal-400 via-emerald-500 to-cyan-500',
+        tonalGlow: 'rgba(20, 184, 166, 0.08)',
+        icon: ShieldCheck,
+        iconColor: 'text-teal-500',
+      },
+    ]
+
     return (
       <section className="glass-panel rounded-2xl shadow-sm overflow-hidden">
         <div className="flex items-center justify-between gap-3 p-4 sm:p-5 border-b border-slate-200/60 dark:border-slate-800/60">
@@ -124,19 +151,43 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
 
         <div className="p-4 sm:p-5">
           <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
-            {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className="relative overflow-hidden rounded-xl border border-slate-200/80 bg-white/60 p-4 sm:p-4.5 shadow-2xs dark:border-white/10 dark:bg-slate-900/50"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="h-3.5 w-24 rounded-md skeleton-shimmer" />
-                  <div className="h-4 w-12 rounded-full skeleton-shimmer" />
+            {skeletonStatCards.map((card, idx) => {
+              const IconComponent = card.icon
+              return (
+                <div
+                  key={idx}
+                  className="hero-stat-card group relative overflow-hidden rounded-xl p-4 sm:p-4.5 shadow-2xs backdrop-blur-md transition-all cursor-default"
+                >
+                  {/* Tonal radial glow */}
+                  <div
+                    className="pointer-events-none absolute inset-0 opacity-80"
+                    style={{
+                      background: `radial-gradient(circle at 100% 100%, ${card.tonalGlow}, transparent 70%)`,
+                    }}
+                  />
+
+                  {/* Vạch Accent Glow ở mép trên kiểu Apple Specular Bar */}
+                  <div
+                    className={`absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r ${card.accentGradient} opacity-60 transition-all`}
+                  />
+
+                  {/* Icon lớn mờ chìm nghệ thuật ở góc thẻ */}
+                  <IconComponent
+                    weight="duotone"
+                    className={`pointer-events-none absolute -bottom-3 -right-3 h-24 w-24 opacity-15 dark:opacity-[0.10] transition-transform duration-300 ${card.iconColor}`}
+                  />
+
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-between">
+                      <div className="h-3.5 w-24 rounded-md skeleton-shimmer" />
+                      <div className="h-4 w-12 rounded-full skeleton-shimmer" />
+                    </div>
+                    <div className="mt-3.5 h-8 w-20 rounded-lg skeleton-shimmer" />
+                    <div className="mt-2.5 h-3 w-32 rounded-md skeleton-shimmer" />
+                  </div>
                 </div>
-                <div className="mt-3.5 h-8 w-20 rounded-lg skeleton-shimmer" />
-                <div className="mt-2.5 h-3 w-32 rounded-md skeleton-shimmer" />
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </section>

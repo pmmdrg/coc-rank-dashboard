@@ -45,7 +45,7 @@ function TrendSectionSkeleton() {
           {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="flex flex-col justify-between rounded-xl border border-white/60 bg-white/30 p-3.5 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800/60 h-28"
+              className="hero-stat-card relative flex flex-col justify-between overflow-hidden rounded-2xl p-4 shadow-2xs backdrop-blur-md h-28"
             >
               <div>
                 <div className="h-3 w-24 rounded-md skeleton-shimmer" />
