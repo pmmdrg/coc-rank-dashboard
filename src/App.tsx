@@ -664,7 +664,6 @@ function App() {
         groupTag={rankedSeason.leagueGroupTag}
         seasonId={rankedSeason.leagueSeasonId}
         myPlayerTag={playerTag || stats.myPlayer?.playerTag || rankedSeason.myPlayerId}
-        allPlayers={rankedSeason.players}
       />
 
       {/* Vercel Web Analytics */}

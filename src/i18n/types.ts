@@ -417,7 +417,6 @@ export interface TranslationDictionary {
     totalCupsWon: string
     totalCupsLost: string
     versusYou: string
-    inGroup: string
     viewLogTooltip: string
     actionLog: string
     loading: string

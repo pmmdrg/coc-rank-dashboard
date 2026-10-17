@@ -417,7 +417,6 @@ export const en: TranslationDictionary = {
     totalCupsWon: 'Total Cups Won',
     totalCupsLost: 'Total Cups Lost',
     versusYou: 'Versus You',
-    inGroup: 'In Tournament',
     viewLogTooltip: 'View battle log for this player',
     actionLog: 'Log',
     loading: 'Loading battle log...',

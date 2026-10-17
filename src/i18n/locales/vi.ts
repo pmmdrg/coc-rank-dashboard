@@ -417,7 +417,6 @@ export const vi: TranslationDictionary = {
     totalCupsWon: 'Tổng cúp nhận',
     totalCupsLost: 'Tổng cúp mất',
     versusYou: 'Đối đầu với bạn',
-    inGroup: 'Cùng bảng đấu',
     viewLogTooltip: 'Xem nhật ký chiến đấu của người chơi này',
     actionLog: 'Nhật ký',
     loading: 'Đang tải lịch sử trận đánh...',

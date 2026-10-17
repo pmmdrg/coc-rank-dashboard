@@ -22,7 +22,6 @@ export interface BattleLogDrawerProps {
   groupTag?: string
   seasonId?: string | number
   myPlayerTag?: string
-  allPlayers?: Player[]
 }
 
 type BattleTab = 'attacks' | 'defenses'
@@ -49,7 +48,6 @@ export function BattleLogDrawer({
   groupTag,
   seasonId,
   myPlayerTag,
-  allPlayers = [],
 }: BattleLogDrawerProps) {
   const { dict } = useI18n()
   const [activeTab, setActiveTab] = useState<BattleTab>('attacks')
@@ -58,16 +56,6 @@ export function BattleLogDrawer({
   const [defenseLogs, setDefenseLogs] = useState<BattleLogEntry[]>([])
   const [error, setError] = useState<string | null>(null)
   const [isCopiedTag, setIsCopiedTag] = useState(false)
-
-  // Map tất cả người chơi trong bảng đấu để kiểm tra đối thủ có thuộc bảng này hay không
-  const groupMemberTags = useMemo(() => {
-    const set = new Set<string>()
-    for (const p of allPlayers) {
-      const clean = (p.playerTag || p.id).toUpperCase().replace(/^#/, '')
-      set.add(clean)
-    }
-    return set
-  }, [allPlayers])
 
   const cleanMyTag = useMemo(() => {
     return (myPlayerTag || '').toUpperCase().replace(/^#/, '')
@@ -403,7 +391,6 @@ export function BattleLogDrawer({
                 {currentLogs.map((log, index) => {
                   const cleanOpponentTag = (log.opponentPlayerTag || '').toUpperCase().replace(/^#/, '')
                   const isOpponentMe = cleanMyTag && cleanOpponentTag === cleanMyTag
-                  const isOpponentInGroup = groupMemberTags.has(cleanOpponentTag)
 
                   return (
                     <div
@@ -420,11 +407,6 @@ export function BattleLogDrawer({
                             {isOpponentMe && (
                               <span className="rounded-full bg-gradient-to-r from-sky-500 to-indigo-600 px-2 py-0.5 text-[9px] font-black text-white shadow-xs uppercase tracking-wider">
                                 {dict.battleLog.versusYou}
-                              </span>
-                            )}
-                            {isOpponentInGroup && !isOpponentMe && (
-                              <span className="rounded-full bg-indigo-500/15 border border-indigo-500/30 px-2 py-0.5 text-[9px] font-bold text-indigo-700 dark:text-indigo-300">
-                                {dict.battleLog.inGroup}
                               </span>
                             )}
                           </div>
