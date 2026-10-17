@@ -24,6 +24,8 @@ export interface SyncResult {
   leagueHistory?: LeagueHistoryItem[]
 }
 
+const playerBattleLogsCache = new Map<string, { attackLogs: BattleLogEntry[]; defenseLogs: BattleLogEntry[] }>()
+
 /**
  * Tự động xác định số lượt đánh/thủ tối đa của bảng đấu dựa theo Metadata Tier và số liệu bảng đấu
  */
@@ -268,6 +270,12 @@ export async function fetchRankedSeasonData(
     attackLogs: currentAttackLogs,
     defenseLogs: currentDefenseLogs,
   }
+
+  // Lưu cache cho người chơi hiện tại
+  playerBattleLogsCache.set(`${groupTag}_${seasonId}_${formattedTag}`, {
+    attackLogs: currentAttackLogs,
+    defenseLogs: currentDefenseLogs,
+  })
 
   // 4. Lấy dữ liệu bảng đấu mùa ngay trước đó (nếu có)
   let previousSeason: Season | undefined = undefined
@@ -574,4 +582,38 @@ export function parseSeasonDateRange(
   const displayPeriod = `${formatVn(startDate)} - ${formatVn(endDate)}`
 
   return { startsAt, endsAt, displayPeriod }
+}
+
+/**
+ * Lấy lịch sử trận đấu (Battle Logs: Tấn công & Phòng thủ) của một người chơi trong bảng đấu Ranked
+ */
+export async function fetchPlayerBattleLogs(
+  groupTag: string,
+  seasonId: string,
+  playerTag: string,
+  forceRefresh = false,
+): Promise<{ attackLogs: BattleLogEntry[]; defenseLogs: BattleLogEntry[] }> {
+  const cleanTag = playerTag.trim().toUpperCase()
+  const formattedTag = cleanTag.startsWith('#') ? cleanTag : `#${cleanTag}`
+  const cacheKey = `${groupTag}_${seasonId}_${formattedTag}`
+
+  if (!forceRefresh && playerBattleLogsCache.has(cacheKey)) {
+    return playerBattleLogsCache.get(cacheKey)!
+  }
+
+  const groupPath = `/leaguegroup/${encodeURIComponent(groupTag)}/${encodeURIComponent(seasonId)}?playerTag=${encodeURIComponent(formattedTag)}`
+  const res = await fetch(`/api/coc?path=${encodeURIComponent(groupPath)}`)
+
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}))
+    throw new Error(errData.error || `Không thể tải nhật ký chiến đấu (${res.status})`)
+  }
+
+  const data = await res.json()
+  const attackLogs: BattleLogEntry[] = Array.isArray(data.attackLogs) ? data.attackLogs : []
+  const defenseLogs: BattleLogEntry[] = Array.isArray(data.defenseLogs) ? data.defenseLogs : []
+
+  const result = { attackLogs, defenseLogs }
+  playerBattleLogsCache.set(cacheKey, result)
+  return result
 }

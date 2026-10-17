@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Warning, Trophy, Check, Copy } from '@phosphor-icons/react'
+import { Warning, Trophy, Check, Copy, Sword } from '@phosphor-icons/react'
 import type { Player } from '../types'
 import { validatePlayer } from '../lib/validation'
 import { useI18n } from '../i18n/LanguageContext'
@@ -16,11 +16,10 @@ interface PlayerRowProps {
   isDemotionZone?: boolean
   isHighlighted?: boolean
   setRowRef: (element: HTMLTableRowElement | null) => void
+  onOpenBattleLog?: (player: Player) => void
   className?: string
   style?: React.CSSProperties
 }
-
-
 
 export function PlayerRow({
   player,
@@ -32,6 +31,7 @@ export function PlayerRow({
   isDemotionZone = false,
   isHighlighted = false,
   setRowRef,
+  onOpenBattleLog,
   className = '',
   style,
 }: PlayerRowProps) {
@@ -161,7 +161,8 @@ export function PlayerRow({
           <div className="flex flex-col justify-center min-w-0 pr-2">
             <div className="flex items-center gap-1.5 truncate">
               <span
-                className={`truncate font-bold text-sm cursor-default ${
+                onClick={() => onOpenBattleLog?.(player)}
+                className={`truncate font-bold text-sm cursor-pointer hover:underline hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors ${
                   isMyPlayer
                     ? 'text-sky-600 dark:text-sky-400 font-black'
                     : 'text-slate-900 dark:text-slate-100'
@@ -228,14 +229,29 @@ export function PlayerRow({
             )}
           </div>
 
-          {warnings.length > 0 && (
-            <span
-              className="shrink-0 flex items-center text-amber-500 hover:text-amber-600 dark:text-amber-400 cursor-default"
-              title={`${warnings.map((w) => '• ' + w.message).join('\n')}`}
+          <div className="flex items-center gap-1.5 shrink-0">
+            {warnings.length > 0 && (
+              <span
+                className="shrink-0 flex items-center text-amber-500 hover:text-amber-600 dark:text-amber-400 cursor-default"
+                title={`${warnings.map((w) => '• ' + w.message).join('\n')}`}
+              >
+                <Warning weight="duotone" className="h-4 w-4 drop-shadow-xs" />
+              </span>
+            )}
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                onOpenBattleLog?.(player)
+              }}
+              className="apple-btn inline-flex items-center gap-1 rounded-lg border border-slate-200/90 bg-white/70 px-2 py-1 text-[11px] font-bold text-slate-700 shadow-2xs backdrop-blur-md hover:border-indigo-400 hover:bg-indigo-50/90 hover:text-indigo-600 dark:border-white/10 dark:bg-slate-800/70 dark:text-slate-300 dark:hover:border-indigo-400/50 dark:hover:bg-indigo-950/60 dark:hover:text-indigo-300 transition-all cursor-pointer select-none"
+              title={dict.battleLog.viewLogTooltip}
             >
-              <Warning weight="duotone" className="h-4 w-4 drop-shadow-xs" />
-            </span>
-          )}
+              <Sword weight="bold" className="h-3.5 w-3.5 text-indigo-500 dark:text-indigo-400" />
+              <span className="hidden xl:inline text-[10px]">{dict.battleLog.actionLog}</span>
+            </button>
+          </div>
         </div>
       </td>
 

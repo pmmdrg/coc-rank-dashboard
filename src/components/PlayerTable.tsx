@@ -17,6 +17,7 @@ interface PlayerTableProps {
   onUpdatePlayerField?: (playerId: string, field: keyof Player, value: string | number) => void
   targetFocusPlayerId?: string | null
   onClearTargetFocus?: () => void
+  onOpenBattleLog?: (player: Player) => void
   isSyncingApi?: boolean
 }
 
@@ -26,6 +27,7 @@ export function PlayerTable({
   stats,
   targetFocusPlayerId,
   onClearTargetFocus,
+  onOpenBattleLog,
   isSyncingApi = false,
 }: PlayerTableProps) {
   const { dict, interpolate } = useI18n()
@@ -619,6 +621,7 @@ export function PlayerTable({
                       isDemotionZone={isDemotionZone}
                       isHighlighted={highlightedPlayerId === player.id}
                       setRowRef={(el) => setPlayerRowRef(player.id, el)}
+                      onOpenBattleLog={onOpenBattleLog}
                       className="animate-row-bounce"
                       style={{ animationDelay: `${Math.min(index * 18, 180)}ms` }}
                     />

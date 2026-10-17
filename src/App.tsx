@@ -50,6 +50,7 @@ import { RankChangesSection } from './components/RankChangesSection'
 import { ClanMembersSection } from './components/ClanMembersSection'
 import { Footer } from './components/Footer'
 import { ShareCardModal } from './components/ShareCardModal'
+import { BattleLogDrawer } from './components/BattleLogDrawer'
 import { AuroraBackground } from './components/AuroraBackground'
 import { Analytics } from '@vercel/analytics/react'
 
@@ -137,6 +138,7 @@ function App() {
 
   const [error, setError] = useState('')
   const [targetFocusPlayerId, setTargetFocusPlayerId] = useState<string | null>(null)
+  const [battleLogPlayer, setBattleLogPlayer] = useState<Player | null>(null)
 
   const season = document.season
   const rankedSeason = useMemo(() => normalizeSeason(season), [season])
@@ -622,6 +624,7 @@ function App() {
                 onUpdatePlayerField={handleUpdatePlayerField}
                 targetFocusPlayerId={targetFocusPlayerId}
                 onClearTargetFocus={() => setTargetFocusPlayerId(null)}
+                onOpenBattleLog={setBattleLogPlayer}
                 isSyncingApi={isSyncingApi}
               />
             </div>
@@ -650,6 +653,18 @@ function App() {
         onClose={() => setIsShareCardOpen(false)}
         season={rankedSeason}
         stats={stats}
+      />
+
+      {/* Drawer Xem nhật ký chiến đấu của người chơi */}
+      <BattleLogDrawer
+        key={battleLogPlayer ? battleLogPlayer.playerTag || battleLogPlayer.id : 'closed'}
+        isOpen={Boolean(battleLogPlayer)}
+        onClose={() => setBattleLogPlayer(null)}
+        player={battleLogPlayer}
+        groupTag={rankedSeason.leagueGroupTag}
+        seasonId={rankedSeason.leagueSeasonId}
+        myPlayerTag={playerTag || stats.myPlayer?.playerTag || rankedSeason.myPlayerId}
+        allPlayers={rankedSeason.players}
       />
 
       {/* Vercel Web Analytics */}

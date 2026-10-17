@@ -400,5 +400,31 @@ export interface TranslationDictionary {
     roleMember: string
     you: string
   }
+  battleLog: {
+    drawerTitle: string
+    attacksTab: string
+    defensesTab: string
+    noAttacks: string
+    noDefenses: string
+    opponent: string
+    stars: string
+    destruction: string
+    trophies: string
+    time: string
+    totalBattles: string
+    avgStars: string
+    avgDestruction: string
+    totalCupsWon: string
+    totalCupsLost: string
+    versusYou: string
+    inGroup: string
+    viewLogTooltip: string
+    actionLog: string
+    loading: string
+    errorLoading: string
+    retry: string
+    win: string
+    loss: string
+  }
 }
 

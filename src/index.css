@@ -122,6 +122,21 @@ select:focus-visible {
   transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+.glass-drawer {
+  background: linear-gradient(
+    145deg,
+    rgba(248, 250, 252, 0.94) 0%,
+    rgba(241, 245, 249, 0.90) 100%
+  );
+  backdrop-filter: blur(32px) saturate(190%) contrast(104%);
+  -webkit-backdrop-filter: blur(32px) saturate(190%) contrast(104%);
+  border-left: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow:
+    -16px 0 44px -8px rgba(15, 23, 42, 0.14),
+    inset 1px 0 2px 0 rgba(255, 255, 255, 0.95),
+    inset 0 0 28px 0 rgba(203, 213, 225, 0.12);
+}
+
 .soft-field {
   border: 1px solid var(--field-border);
   background: var(--field-bg);
@@ -416,6 +431,21 @@ html.dark .glass-footer {
     inset 0 0 28px -4px rgba(56, 189, 248, 0.04);
 }
 
+html.dark .glass-drawer {
+  background: linear-gradient(
+    145deg,
+    rgba(15, 23, 42, 0.95) 0%,
+    rgba(10, 16, 31, 0.98) 100%
+  );
+  backdrop-filter: blur(32px) saturate(210%) contrast(105%);
+  -webkit-backdrop-filter: blur(32px) saturate(210%) contrast(105%);
+  border-left: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    -20px 0 52px -8px rgba(0, 0, 0, 0.8),
+    inset 1px 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 0 32px -4px rgba(56, 189, 248, 0.05);
+}
+
 html.dark .apple-segmented-container {
   background: linear-gradient(
     135deg,
@@ -528,6 +558,21 @@ html.dark .liquid-collapse-btn:hover {
 
 .animate-modal-dialog {
   animation: modal-dialog-in 280ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes drawer-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-drawer-slide-in {
+  animation: drawer-slide-in 280ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes modal-backdrop-out {
