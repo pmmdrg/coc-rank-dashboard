@@ -309,16 +309,10 @@ export function BattleLogDrawer({
                 </div>
                 <div className="p-1.5 rounded-lg border border-white/40 bg-white/30 dark:border-white/5 dark:bg-slate-800/40">
                   <span className="block text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-tight font-bold">
-                    {activeTab === 'attacks' ? dict.battleLog.totalCupsWon : dict.battleLog.totalCupsLost}
+                    {activeTab === 'attacks' ? dict.battleLog.totalCupsWon : dict.battleLog.totalCupsDefense}
                   </span>
-                  <span
-                    className={`font-mono text-sm font-black ${
-                      activeTab === 'attacks'
-                        ? 'text-emerald-600 dark:text-emerald-400'
-                        : 'text-rose-600 dark:text-rose-400'
-                    }`}
-                  >
-                    {activeTab === 'attacks' ? `+${summary.totalCups}` : `-${summary.totalCups}`}
+                  <span className="font-mono text-sm font-black text-emerald-600 dark:text-emerald-400">
+                    +{summary.totalCups}
                   </span>
                 </div>
               </div>
@@ -458,13 +452,13 @@ export function BattleLogDrawer({
 
                           <span
                             className={`inline-flex items-center gap-1 font-mono text-xs font-bold ${
-                              activeTab === 'attacks'
+                              log.trophies > 0
                                 ? 'text-emerald-600 dark:text-emerald-400'
-                                : 'text-rose-600 dark:text-rose-400'
+                                : 'text-slate-400 dark:text-slate-500'
                             }`}
                           >
                             <Trophy weight="duotone" className="h-3.5 w-3.5" />
-                            {activeTab === 'attacks' ? `+${log.trophies}` : `-${log.trophies}`}
+                            {log.trophies > 0 ? `+${log.trophies}` : '0'}
                           </span>
                         </div>
                       </div>
