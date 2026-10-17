@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   X,
   Sword,
@@ -61,15 +61,35 @@ export function BattleLogDrawer({
     return (myPlayerTag || '').toUpperCase().replace(/^#/, '')
   }, [myPlayerTag])
 
+  const [isClosing, setIsClosing] = useState(false)
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const handleClose = useCallback(() => {
+    if (isClosing) return
+    setIsClosing(true)
+    closeTimerRef.current = setTimeout(() => {
+      setIsClosing(false)
+      onClose()
+    }, 240)
+  }, [isClosing, onClose])
+
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) {
+        clearTimeout(closeTimerRef.current)
+      }
+    }
+  }, [])
+
   // Lắng nghe phím ESC để đóng Drawer
   useEffect(() => {
-    if (!isOpen) return
+    if (!isOpen || isClosing) return
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
+      if (e.key === 'Escape') handleClose()
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isOpen, onClose])
+  }, [isOpen, isClosing, handleClose])
 
   // Khóa cuộn trang nền khi mở Drawer
   useEffect(() => {
@@ -154,14 +174,20 @@ export function BattleLogDrawer({
     <div className="fixed inset-0 z-50 overflow-hidden">
       {/* 1. Backdrop làm tối & mờ nhẹ nền */}
       <div
-        className="fixed inset-0 bg-slate-950/50 backdrop-blur-xs transition-opacity animate-fade-in"
-        onClick={onClose}
+        className={`fixed inset-0 bg-slate-950/50 backdrop-blur-xs transition-opacity ${
+          isClosing ? 'animate-drawer-backdrop-out pointer-events-none' : 'animate-drawer-backdrop-in'
+        }`}
+        onClick={handleClose}
         aria-hidden="true"
       />
 
       {/* 2. Drawer Panel trượt ra từ cạnh phải */}
-      <div className="fixed inset-y-0 right-0 flex max-w-full pl-6">
-        <aside className="glass-drawer animate-drawer-slide-in relative flex w-screen max-w-md sm:max-w-lg flex-col overflow-hidden shadow-2xl">
+      <div className="fixed inset-y-0 right-0 flex max-w-full pl-6 pointer-events-none">
+        <aside
+          className={`glass-drawer pointer-events-auto relative flex w-screen max-w-md sm:max-w-lg flex-col overflow-hidden shadow-2xl ${
+            isClosing ? 'animate-drawer-slide-out' : 'animate-drawer-slide-in'
+          }`}
+        >
           {/* Dải phản quang đỉnh Drawer */}
           <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-sky-400 via-indigo-500 to-purple-500 opacity-90" />
 
@@ -218,7 +244,7 @@ export function BattleLogDrawer({
               {/* Nút Đóng X */}
               <button
                 type="button"
-                onClick={onClose}
+                onClick={handleClose}
                 className="apple-btn inline-flex h-8 w-8 items-center justify-center rounded-xl border border-white/60 bg-white/40 text-slate-500 shadow-2xs backdrop-blur-md hover:bg-white/70 hover:text-slate-900 dark:border-white/10 dark:bg-slate-800/60 dark:text-slate-400 dark:hover:bg-slate-700/80 dark:hover:text-white"
                 title={dict.common.close}
               >
