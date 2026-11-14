@@ -421,7 +421,7 @@ export function RankChangesSection({
                           isUser
                             ? 'border-red-500/60 bg-red-950/30 ring-1 ring-red-500/40'
                             : isRose
-                              ? 'border-amber-500/30 bg-[#121114]'
+                              ? 'border-amber-500/40 bg-gradient-to-b from-amber-500/10 to-[#121114]'
                               : 'border-red-500/30 bg-[#121114]'
                         }`}
                       >

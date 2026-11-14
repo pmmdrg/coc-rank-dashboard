@@ -148,7 +148,9 @@ export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSy
         ? `${numberFormatter(stats.myPlayer!.currentCups)} ${dict.common.trophies}`
         : dict.common.noData,
       badge: myRankPercentage ? `Top ${myRankPercentage}%` : null,
-      badgeType: 'neutral',
+      badgeType: 'gold',
+      topBorder: 'border-t-2 border-t-amber-500/70',
+      valueColor: 'text-amber-400 font-black',
     },
     {
       label: dict.statCards.opponentsCanPass,
@@ -162,6 +164,8 @@ export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSy
           : `${stats.playersWhoCanPassMe} đối thủ`
         : null,
       badgeType: hasMyPlayer && stats.playersWhoCanPassMe === 0 ? 'success' : 'warning',
+      topBorder: 'border-t-2 border-t-red-600/70',
+      valueColor: 'text-white font-bold',
     },
     {
       label: dict.statCards.attackPerformance,
@@ -178,6 +182,8 @@ export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSy
           ? `${(Math.round(attackStats.avgStars * 10) / 10).toFixed(1)}★ TB`
           : null,
       badgeType: 'neutral',
+      topBorder: 'border-t-2 border-t-red-600/70',
+      valueColor: 'text-white font-bold',
     },
     {
       label: dict.statCards.defensePerformance,
@@ -193,7 +199,9 @@ export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSy
         defenseStats && defenseStats.count > 0
           ? `${(Math.round(defenseStats.avgStars * 10) / 10).toFixed(1)}★ TB`
           : null,
-      badgeType: 'neutral',
+      badgeType: 'gold',
+      topBorder: 'border-t-2 border-t-amber-500/70',
+      valueColor: 'text-amber-300 font-bold',
     },
   ]
 
@@ -224,7 +232,7 @@ export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSy
               {cards.map((card) => (
                 <div
                   key={card.label}
-                  className="rounded-lg border border-[#272226] bg-[#121114] p-4 transition-colors"
+                  className={`rounded-lg border border-[#272226] ${card.topBorder} bg-[#121114] p-4 transition-colors shadow-2xs`}
                 >
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 truncate">
@@ -233,7 +241,7 @@ export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSy
                     {card.badge && (
                       <span
                         className={`inline-flex shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold ${
-                          card.badgeType === 'success'
+                          card.badgeType === 'gold' || card.badgeType === 'success'
                             ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
                             : card.badgeType === 'warning'
                               ? 'bg-red-500/20 text-red-300 border border-red-500/30'
@@ -246,7 +254,7 @@ export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSy
                   </div>
 
                   <div className="mt-2 flex items-baseline gap-2">
-                    <span className="font-mono text-2xl font-bold tracking-tight text-white">
+                    <span className={`font-mono text-2xl tracking-tight ${card.valueColor}`}>
                       {card.value}
                     </span>
                   </div>

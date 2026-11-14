@@ -569,10 +569,10 @@ export function HighlightStatsTable({
                 {showBest && (
                   <>
                     {filterMode === 'all' && (
-                      <tr className="animate-filter-row bg-[#18171b] border-t border-b border-[#272226]">
+                      <tr className="animate-filter-row bg-gradient-to-r from-amber-500/20 via-amber-500/5 to-transparent border-t border-b border-amber-500/30">
                         <td
                           colSpan={3}
-                          className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-amber-400"
+                          className="px-4 py-1.5 text-[11px] font-black uppercase tracking-wider text-amber-300"
                         >
                           {dict.highlights.bestSection}
                         </td>
@@ -637,7 +637,7 @@ export function HighlightStatsTable({
                       </td>
                       <td className="px-4 py-3 text-center align-middle">
                         {topMaxCups !== null ? (
-                          <span className="inline-flex items-center gap-1.5 rounded-full border border-red-500/30 bg-red-500/15 px-3 py-1 text-sm font-bold text-red-300 shadow-2xs">
+                          <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/15 px-3 py-1 text-sm font-bold text-amber-300 shadow-2xs">
                             {formatNumber(topMaxCups.maxCups)} {dict.common.trophies}
                           </span>
                         ) : (
@@ -690,10 +690,10 @@ export function HighlightStatsTable({
                 {showWorst && (
                   <>
                     {filterMode === 'all' && (
-                      <tr className="animate-filter-row bg-[#18171b] border-t border-b border-[#272226]">
+                      <tr className="animate-filter-row bg-gradient-to-r from-red-600/20 via-red-600/5 to-transparent border-t border-b border-red-600/30">
                         <td
                           colSpan={3}
-                          className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-red-400"
+                          className="px-4 py-1.5 text-[11px] font-black uppercase tracking-wider text-red-400"
                         >
                           {dict.highlights.worstSection}
                         </td>

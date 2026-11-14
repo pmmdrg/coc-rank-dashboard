@@ -189,10 +189,10 @@ export function BattleLogDrawer({
           }`}
         >
           {/* Dải phản quang đỉnh Drawer - Concept TH19 Đỏ & Vàng ánh kim */}
-          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-red-600 via-amber-500 to-red-600" />
+          <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-red-600 via-amber-400 to-red-600 shadow-[0_0_12px_rgba(245,158,11,0.5)]" />
 
           {/* Header Drawer: Thông tin người chơi & nút đóng */}
-          <div className="p-4 sm:p-5 border-b border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-950/60 space-y-3.5">
+          <div className="p-4 sm:p-5 border-b border-[#272226] bg-[#121114] space-y-3.5">
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3 min-w-0">
                 <RankBadge rank={player.rank} className="shrink-0 scale-105" />
@@ -201,26 +201,26 @@ export function BattleLogDrawer({
                     <h2
                       className={`truncate text-base sm:text-lg font-black tracking-tight ${
                         isCurrentPlayerMe
-                          ? 'text-red-600 dark:text-red-400'
-                          : 'text-zinc-900 dark:text-white'
+                          ? 'text-red-400'
+                          : 'text-white'
                       }`}
                       title={player.name}
                     >
                       {player.name}
                     </h2>
                     {isCurrentPlayerMe && (
-                      <span className="shrink-0 rounded bg-red-500/15 border border-red-500/30 px-1.5 py-0.5 text-[9px] font-bold text-red-600 dark:text-red-400 uppercase tracking-wider">
+                      <span className="shrink-0 rounded bg-red-500/15 border border-red-500/30 px-1.5 py-0.5 text-[9px] font-bold text-red-400 uppercase tracking-wider">
                         {dict.common.me}
                       </span>
                     )}
                   </div>
 
-                  <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400 truncate mt-0.5">
+                  <div className="flex items-center gap-2 text-xs text-zinc-400 truncate mt-0.5">
                     {player.playerTag && (
                       <button
                         type="button"
                         onClick={handleCopyTag}
-                        className="inline-flex items-center gap-1 font-mono text-[11px] text-zinc-500 hover:text-amber-500 dark:text-zinc-400 dark:hover:text-amber-400 cursor-pointer transition-colors"
+                        className="inline-flex items-center gap-1 font-mono text-[11px] text-zinc-400 hover:text-amber-400 cursor-pointer transition-colors"
                         title={dict.header.copyTagTooltip}
                       >
                         <span>{player.playerTag}</span>
@@ -233,7 +233,7 @@ export function BattleLogDrawer({
                     )}
                     {player.clanName && (
                       <>
-                        <span className="text-zinc-300 dark:text-zinc-700">•</span>
+                        <span className="text-zinc-600">•</span>
                         <span className="truncate">{player.clanName}</span>
                       </>
                     )}
@@ -245,7 +245,7 @@ export function BattleLogDrawer({
               <button
                 type="button"
                 onClick={handleClose}
-                className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-200 bg-white text-zinc-500 shadow-2xs hover:bg-zinc-100 hover:text-zinc-900 dark:border-zinc-800 dark:bg-zinc-800/80 dark:text-zinc-400 dark:hover:bg-zinc-700 dark:hover:text-white transition-colors cursor-pointer"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[#272226] bg-[#18171b] text-zinc-400 shadow-2xs hover:bg-[#201d22] hover:text-white transition-colors cursor-pointer"
                 title={dict.common.close}
               >
                 <X weight="bold" className="h-4 w-4" />
@@ -255,11 +255,11 @@ export function BattleLogDrawer({
             {/* Thông số nhanh: Cúp hiện tại & Rating */}
             <div className="flex items-center justify-between gap-2 pt-1">
               <div className="flex items-center gap-1.5 font-mono text-xs">
-                <Trophy weight="duotone" className="h-4 w-4 text-amber-500 shrink-0" />
-                <span className="font-extrabold text-amber-600 dark:text-amber-400 text-sm">
+                <Trophy weight="fill" className="h-4 w-4 text-amber-500 shrink-0" />
+                <span className="font-extrabold text-amber-400 text-sm">
                   {player.currentCups.toLocaleString()}
                 </span>
-                <span className="text-zinc-400 dark:text-zinc-500 font-sans">
+                <span className="text-zinc-400 font-sans">
                   {dict.common.trophies}
                 </span>
               </div>
@@ -270,14 +270,14 @@ export function BattleLogDrawer({
             </div>
 
             {/* Bộ chuyển đổi Tab: Tấn công (Đỏ) & Phòng thủ (Vàng) */}
-            <div className="grid grid-cols-2 gap-1.5 rounded-lg border border-zinc-200 bg-zinc-100/80 p-1 dark:border-zinc-800 dark:bg-zinc-900/80">
+            <div className="grid grid-cols-2 gap-1.5 rounded-lg border border-[#272226] bg-[#18171b] p-1">
               <button
                 type="button"
                 onClick={() => setActiveTab('attacks')}
                 className={`inline-flex items-center justify-center gap-2 rounded-md py-1.5 px-3 text-xs font-bold transition-all cursor-pointer select-none ${
                   activeTab === 'attacks'
-                    ? 'bg-red-600 text-white shadow-xs dark:bg-red-600 dark:text-white'
-                    : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white'
+                    ? 'bg-red-600 text-white shadow-xs font-bold'
+                    : 'text-zinc-400 hover:text-white'
                 }`}
               >
                 <Sword weight="bold" className={`h-3.5 w-3.5 ${activeTab === 'attacks' ? 'text-white' : 'text-red-500'}`} />
@@ -285,7 +285,7 @@ export function BattleLogDrawer({
                 <span className={`rounded px-1.5 py-0.2 text-[10px] font-bold ${
                   activeTab === 'attacks'
                     ? 'bg-red-800/80 text-white'
-                    : 'bg-zinc-200/60 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400'
+                    : 'bg-[#272226] text-zinc-400'
                 }`}>
                   {attackLogs.length}
                 </span>
@@ -296,8 +296,8 @@ export function BattleLogDrawer({
                 onClick={() => setActiveTab('defenses')}
                 className={`inline-flex items-center justify-center gap-2 rounded-md py-1.5 px-3 text-xs font-bold transition-all cursor-pointer select-none ${
                   activeTab === 'defenses'
-                    ? 'bg-amber-500 text-black shadow-xs font-bold dark:bg-amber-400 dark:text-black'
-                    : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white'
+                    ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-black shadow-xs font-black shadow-[0_0_10px_rgba(245,158,11,0.25)]'
+                    : 'text-zinc-400 hover:text-white'
                 }`}
               >
                 <Shield weight="bold" className={`h-3.5 w-3.5 ${activeTab === 'defenses' ? 'text-black' : 'text-amber-500'}`} />
@@ -305,7 +305,7 @@ export function BattleLogDrawer({
                 <span className={`rounded px-1.5 py-0.2 text-[10px] font-bold ${
                   activeTab === 'defenses'
                     ? 'bg-amber-600/30 text-black font-black'
-                    : 'bg-zinc-200/60 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400'
+                    : 'bg-[#272226] text-zinc-400'
                 }`}>
                   {defenseLogs.length}
                 </span>
@@ -315,37 +315,37 @@ export function BattleLogDrawer({
 
           {/* Dải tổng hợp thông số hiệu suất (Summary Strip) */}
           {!isLoading && !error && currentLogs.length > 0 && (
-            <div className="px-4 sm:px-5 py-2.5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-900/60">
+            <div className="px-4 sm:px-5 py-2.5 border-b border-[#272226] bg-[#0e0d10]">
               <div className="grid grid-cols-4 gap-2 text-center">
-                <div className="p-2 rounded-md border border-zinc-200/80 bg-white dark:border-zinc-800 dark:bg-zinc-900 shadow-2xs">
-                  <span className="block text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-wider font-semibold">
+                <div className="p-2 rounded-md border border-[#272226] bg-[#121114] shadow-2xs">
+                  <span className="block text-[10px] text-zinc-400 uppercase tracking-wider font-semibold">
                     {dict.battleLog.totalBattles}
                   </span>
-                  <span className="font-mono text-sm font-bold text-zinc-800 dark:text-zinc-200">
+                  <span className="font-mono text-sm font-bold text-white">
                     {summary.total}
                   </span>
                 </div>
-                <div className="p-2 rounded-md border border-zinc-200/80 bg-white dark:border-zinc-800 dark:bg-zinc-900 shadow-2xs">
-                  <span className="block text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-wider font-semibold">
+                <div className="p-2 rounded-md border border-[#272226] bg-[#121114] shadow-2xs">
+                  <span className="block text-[10px] text-zinc-400 uppercase tracking-wider font-semibold">
                     {dict.battleLog.avgStars}
                   </span>
-                  <span className="font-mono text-sm font-bold text-amber-500">
+                  <span className="font-mono text-sm font-black text-amber-400">
                     {summary.avgStars}★
                   </span>
                 </div>
-                <div className="p-2 rounded-md border border-zinc-200/80 bg-white dark:border-zinc-800 dark:bg-zinc-900 shadow-2xs">
-                  <span className="block text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-wider font-semibold">
+                <div className="p-2 rounded-md border border-[#272226] bg-[#121114] shadow-2xs">
+                  <span className="block text-[10px] text-zinc-400 uppercase tracking-wider font-semibold">
                     {dict.battleLog.avgDestruction}
                   </span>
-                  <span className="font-mono text-sm font-bold text-red-600 dark:text-red-400">
+                  <span className="font-mono text-sm font-bold text-red-500">
                     {summary.avgDestruction}
                   </span>
                 </div>
-                <div className="p-2 rounded-md border border-zinc-200/80 bg-white dark:border-zinc-800 dark:bg-zinc-900 shadow-2xs">
-                  <span className="block text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-wider font-semibold">
+                <div className="p-2 rounded-md border border-[#272226] bg-[#121114] shadow-2xs">
+                  <span className="block text-[10px] text-zinc-400 uppercase tracking-wider font-semibold">
                     {activeTab === 'attacks' ? dict.battleLog.totalCupsWon : dict.battleLog.totalCupsDefense}
                   </span>
-                  <span className="font-mono text-sm font-bold text-amber-600 dark:text-amber-400">
+                  <span className="font-mono text-sm font-black text-amber-400">
                     +{summary.totalCups}
                   </span>
                 </div>
@@ -423,35 +423,35 @@ export function BattleLogDrawer({
                   return (
                     <div
                       key={`${log.opponentPlayerTag}-${log.creationTime || index}`}
-                      className="group relative rounded-lg border border-zinc-200/90 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 p-3 shadow-2xs transition-colors hover:border-zinc-300 dark:hover:border-zinc-700"
+                      className="group relative rounded-lg border border-[#272226] bg-[#121114] p-3 shadow-2xs transition-colors hover:border-[#38323a]"
                     >
                       {/* Dòng trên: Tên & Tag đối thủ, Huy hiệu đặc biệt, Thời gian */}
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0">
                           <div className="flex items-center gap-1.5 flex-wrap">
-                            <span className="font-semibold text-xs sm:text-sm text-zinc-900 dark:text-white truncate">
+                            <span className="font-semibold text-xs sm:text-sm text-white truncate">
                               {log.opponentName || log.opponentPlayerTag}
                             </span>
                             {isOpponentMe && (
-                              <span className="rounded bg-red-500/15 border border-red-500/30 px-1.5 py-0.2 text-[9px] font-bold text-red-600 dark:text-red-400 uppercase tracking-wider">
+                              <span className="rounded bg-red-500/15 border border-red-500/30 px-1.5 py-0.2 text-[9px] font-bold text-red-400 uppercase tracking-wider">
                                 {dict.battleLog.versusYou}
                               </span>
                             )}
                           </div>
-                          <span className="font-mono text-[11px] text-zinc-400 dark:text-zinc-500">
+                          <span className="font-mono text-[11px] text-zinc-400">
                             {log.opponentPlayerTag}
                           </span>
                         </div>
 
                         {log.creationTime && (
-                          <span className="shrink-0 text-[11px] font-medium text-zinc-400 dark:text-zinc-500">
+                          <span className="shrink-0 text-[11px] font-medium text-zinc-400">
                             {formatBattleTime(log.creationTime)}
                           </span>
                         )}
                       </div>
 
                       {/* Dòng dưới: 3 Sao (Stars), % Phá hủy, Cúp */}
-                      <div className="mt-2.5 flex items-center justify-between border-t border-zinc-100 dark:border-zinc-800/80 pt-2">
+                      <div className="mt-2.5 flex items-center justify-between border-t border-[#272226] pt-2">
                         {/* Biểu tượng 3 ngôi sao */}
                         <div className="flex items-center gap-0.5">
                           {[1, 2, 3].map((starIdx) => (
@@ -461,11 +461,11 @@ export function BattleLogDrawer({
                               className={`h-4 w-4 ${
                                 starIdx <= log.stars
                                   ? 'text-amber-400'
-                                  : 'text-zinc-200 dark:text-zinc-700'
+                                  : 'text-zinc-700'
                               }`}
                             />
                           ))}
-                          <span className="ml-1 text-xs font-semibold text-zinc-700 dark:text-zinc-300 font-mono">
+                          <span className="ml-1 text-xs font-semibold text-zinc-300 font-mono">
                             {log.stars}/3
                           </span>
                         </div>
@@ -475,23 +475,23 @@ export function BattleLogDrawer({
                           <span
                             className={`inline-flex items-center rounded px-1.5 py-0.5 text-xs font-semibold font-mono ${
                               log.destructionPercentage === 100
-                                ? 'bg-amber-500/15 text-amber-700 dark:bg-amber-400/15 dark:text-amber-300 border border-amber-500/30'
+                                ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
                                 : log.destructionPercentage >= 70
-                                  ? 'bg-red-500/15 text-red-700 dark:bg-red-400/15 dark:text-red-300 border border-red-500/30'
-                                  : 'bg-zinc-500/15 text-zinc-700 dark:bg-zinc-400/15 dark:text-zinc-300 border border-zinc-500/30'
+                                  ? 'bg-red-500/15 text-red-300 border border-red-500/30'
+                                  : 'bg-[#18171b] text-zinc-300 border border-[#272226]'
                             }`}
                           >
                             {log.destructionPercentage}%
                           </span>
 
                           <span
-                            className={`inline-flex items-center gap-1 font-mono text-xs font-semibold ${
+                            className={`inline-flex items-center gap-1 font-mono text-xs font-black ${
                               log.trophies > 0
-                                ? 'text-amber-500 dark:text-amber-400'
-                                : 'text-zinc-400 dark:text-zinc-500'
+                                ? 'text-amber-400'
+                                : 'text-zinc-500'
                             }`}
                           >
-                            <Trophy weight="bold" className="h-3.5 w-3.5" />
+                            <Trophy weight="fill" className={`h-3.5 w-3.5 ${log.trophies > 0 ? 'text-amber-500' : 'text-zinc-600'}`} />
                             {log.trophies > 0 ? `+${log.trophies}` : '0'}
                           </span>
                         </div>

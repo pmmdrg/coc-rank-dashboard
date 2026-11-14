@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Warning, Check, Copy } from '@phosphor-icons/react'
+import { Warning, Check, Copy, Trophy } from '@phosphor-icons/react'
 import type { Player } from '../types'
 import { validatePlayer } from '../lib/validation'
 import { useI18n } from '../i18n/LanguageContext'
@@ -136,10 +136,10 @@ export function PlayerRow({
             toRank={player.rank}
           />
 
-          {/* Badge Vùng Thăng Hạng / Xuống Hạng - Chuẩn TH19 */}
+          {/* Badge Vùng Thăng Hạng / Xuống Hạng - Chuẩn TH19 Vàng ánh kim */}
           {isPromotionZone ? (
             <span
-              className="inline-flex shrink-0 items-center rounded-sm bg-amber-500/15 border border-amber-500/35 px-1 py-0.5 text-[9px] font-black uppercase tracking-tight text-amber-700 dark:text-amber-300 select-none shadow-2xs"
+              className="inline-flex shrink-0 items-center rounded-sm bg-gradient-to-r from-amber-500/25 to-amber-600/15 border border-amber-400/50 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-tight text-amber-300 select-none shadow-[0_0_8px_rgba(245,158,11,0.2)]"
               title={dict.table.badgePromotionTooltip}
             >
               {dict.table.badgePromotion}
@@ -296,11 +296,12 @@ export function PlayerRow({
         </div>
       </td>
 
-      {/* 5. Cúp Hiện Tại */}
+      {/* 5. Cúp Hiện Tại - Chuẩn TH19 Vàng ánh kim */}
       <td className="w-24 min-w-[88px] px-2 py-2.5 align-middle">
-        <span className="font-mono text-sm font-bold text-white">
-          {formatNumber(player.currentCups)}
-        </span>
+        <div className="flex items-center gap-1 font-mono text-sm font-black text-amber-400">
+          <Trophy weight="fill" className="h-3.5 w-3.5 text-amber-500 shrink-0 drop-shadow-xs" />
+          <span>{formatNumber(player.currentCups)}</span>
+        </div>
       </td>
 
       {/* 6. Cúp Tối Đa Có Thể Đạt */}

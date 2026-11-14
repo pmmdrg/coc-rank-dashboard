@@ -18,7 +18,7 @@ export function RankBadge({ rank, title, className = '', size = 'md' }: RankBadg
   if (rank === 1) {
     return (
       <div
-        className={`inline-flex shrink-0 items-center justify-center rounded-md border border-amber-400/40 bg-amber-500/20 font-mono font-black text-amber-300 select-none shadow-2xs ${sizeClasses} ${className}`}
+        className={`inline-flex shrink-0 items-center justify-center rounded-md border border-amber-400 bg-gradient-to-br from-amber-500/35 to-amber-600/20 font-mono font-black text-amber-300 select-none shadow-[0_0_10px_rgba(245,158,11,0.3)] ${sizeClasses} ${className}`}
         title={title || 'Top 1'}
       >
         #1

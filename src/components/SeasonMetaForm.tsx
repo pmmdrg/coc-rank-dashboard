@@ -66,7 +66,7 @@ export function SeasonMetaForm({
             {dict.seasonMeta.league}
           </span>
           {season.leagueGroupTag && (
-            <span className="rounded font-mono px-1.5 py-0.5 text-[10px] font-semibold bg-[#18171b] text-zinc-400 border border-[#272226]">
+            <span className="rounded font-mono px-1.5 py-0.5 text-[10px] font-bold bg-amber-500/10 text-amber-300 border border-amber-500/30">
               {season.leagueGroupTag}
             </span>
           )}
@@ -78,9 +78,9 @@ export function SeasonMetaForm({
                 src={season.leagueIconUrl || getLeagueIconUrl(season.league)}
                 alt={season.league}
                 referrerPolicy="no-referrer"
-                className="h-8 w-8 shrink-0 object-contain"
+                className="h-8 w-8 shrink-0 object-contain drop-shadow-xs"
               />
-              <span className="truncate text-base font-bold tracking-tight text-white">
+              <span className="truncate text-base font-bold tracking-tight text-amber-400">
                 {formatLeagueName(season.league) || '--'}
               </span>
             </>
@@ -98,14 +98,14 @@ export function SeasonMetaForm({
           </span>
           {season.players.length > 0 && onUpdateSeasonMeta ? (
             <div className="flex items-center gap-2 text-xs">
-              <label className="flex items-center gap-1 text-amber-400 font-medium">
+              <label className="flex items-center gap-1 text-amber-300 font-bold">
                 <span>{dict.seasonMeta.promote}</span>
                 <input
                   type="number"
                   min="0"
                   value={season.promotionCount ?? 2}
                   onChange={(e) => onUpdateSeasonMeta('promotionCount', Math.max(0, parseInt(e.target.value, 10) || 0))}
-                  className="h-5 w-8 rounded border border-[#272226] bg-[#18171b] text-center text-xs font-semibold text-white"
+                  className="h-5 w-8 rounded border border-amber-500/40 bg-[#18171b] text-center text-xs font-bold text-amber-300 focus:border-amber-400"
                 />
               </label>
               <label className="flex items-center gap-1 text-red-400 font-medium">
@@ -115,17 +115,17 @@ export function SeasonMetaForm({
                   min="0"
                   value={season.demotionCount ?? 1}
                   onChange={(e) => onUpdateSeasonMeta('demotionCount', Math.max(0, parseInt(e.target.value, 10) || 0))}
-                  className="h-5 w-8 rounded border border-[#272226] bg-[#18171b] text-center text-xs font-semibold text-white"
+                  className="h-5 w-8 rounded border border-red-500/40 bg-[#18171b] text-center text-xs font-semibold text-white focus:border-red-400"
                 />
               </label>
             </div>
           ) : (
             <span className="text-xs text-zinc-400">
-              {dict.seasonMeta.promote} {season.promotionCount ?? 2} • {dict.seasonMeta.demote} {season.demotionCount ?? 1}
+              <span className="text-amber-300 font-bold">{dict.seasonMeta.promote} {season.promotionCount ?? 2}</span> • <span className="text-red-400">{dict.seasonMeta.demote} {season.demotionCount ?? 1}</span>
             </span>
           )}
         </div>
-        <div className="mt-2.5 text-sm sm:text-base font-bold font-mono text-white">
+        <div className="mt-2.5 text-sm sm:text-base font-bold font-mono text-zinc-200">
           {currentPeriodInfo.displayPeriod || '--'}
         </div>
       </div>

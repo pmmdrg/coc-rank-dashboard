@@ -88,10 +88,10 @@ export function Sidebar({
       <div className="space-y-5">
         {/* Brand Header - Concept TH19: Đen, Đỏ, Trắng, Vàng ánh kim */}
         <div className="flex items-center justify-between">
-          <h1 className="flex items-center gap-1.5 text-lg font-black tracking-tight text-zinc-900 dark:text-white select-none">
-            <span className="text-red-600">CoC</span>
+          <h1 className="flex items-center gap-2 text-lg font-black tracking-tight text-white select-none">
+            <span className="text-red-500">CoC</span>
             <span>Rank</span>
-            <span className="rounded bg-amber-500/15 border border-amber-500/30 px-1.5 py-0.2 text-[9px] font-black tracking-wider text-amber-600 dark:text-amber-400 uppercase">
+            <span className="rounded-md bg-gradient-to-r from-amber-500/25 to-amber-600/15 border border-amber-400/50 px-2 py-0.5 text-[10px] font-black tracking-wider text-amber-300 uppercase shadow-[0_0_10px_rgba(245,158,11,0.25)]">
               TH19
             </span>
           </h1>
@@ -101,7 +101,7 @@ export function Sidebar({
             <button
               type="button"
               onClick={onCloseMobile}
-              className="lg:hidden inline-flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+              className="lg:hidden inline-flex h-8 w-8 items-center justify-center rounded-lg text-zinc-400 hover:bg-[#18171b] hover:text-white"
             >
               <X weight="bold" className="h-4.5 w-4.5" />
             </button>
@@ -109,20 +109,22 @@ export function Sidebar({
         </div>
 
         {/* Thẻ tóm tắt người chơi & Ô đổi Player Tag */}
-        <div className="rounded-xl border border-zinc-200/80 bg-zinc-50/60 p-3 dark:border-zinc-800 dark:bg-zinc-900/60">
+        <div className="rounded-xl border border-[#272226] border-t-2 border-t-amber-500/50 bg-[#121114] p-3 shadow-xs">
           <div className="flex items-center gap-3">
-            <img
-              src={leagueIconUrl || getLeagueIconUrl(league)}
-              alt={displayLeague}
-              referrerPolicy="no-referrer"
-              className="h-9 w-9 shrink-0 object-contain drop-shadow-xs"
-            />
+            <div className="relative shrink-0">
+              <img
+                src={leagueIconUrl || getLeagueIconUrl(league)}
+                alt={displayLeague}
+                referrerPolicy="no-referrer"
+                className="h-9 w-9 shrink-0 object-contain drop-shadow-xs"
+              />
+            </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center justify-between gap-1">
-                <span className="truncate text-xs font-semibold text-zinc-900 dark:text-white">
+                <span className="truncate text-xs font-semibold text-white">
                   {myPlayerName && myPlayerName !== '--' ? myPlayerName : dict.header.noAccount}
                 </span>
-                <span className="shrink-0 text-[10px] text-amber-600 dark:text-amber-400 font-medium">
+                <span className="shrink-0 text-[10px] text-amber-400 font-bold">
                   {displayLeague}
                 </span>
               </div>
@@ -167,7 +169,7 @@ export function Sidebar({
                 type="button"
                 disabled={isSyncingApi || playerTag.trim().length < 3}
                 onClick={() => onSyncCocApi(playerTag)}
-                className="apple-btn inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-zinc-200 bg-white text-zinc-700 hover:bg-red-50 hover:text-red-600 disabled:opacity-40 cursor-pointer transition-colors dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-red-950/40 dark:hover:text-red-400"
+                className="apple-btn inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[#272226] bg-[#18171b] text-zinc-300 hover:border-amber-500/50 hover:bg-[#201d22] hover:text-amber-400 disabled:opacity-40 cursor-pointer transition-colors"
                 title={dict.header.syncApi}
               >
                 <ArrowsClockwise
@@ -181,7 +183,7 @@ export function Sidebar({
 
         {/* 3 MỤC ĐIỀU HƯỚNG CHÍNH - TINH GỌN, ĐẬM CHẤT TH19 ĐỎ & ĐEN */}
         <nav className="space-y-1" aria-label="Sidebar Navigation">
-          <div className="px-1 pb-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+          <div className="px-1 pb-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-400">
             {dict.navigation.menu}
           </div>
 
@@ -197,7 +199,7 @@ export function Sidebar({
                 className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-xs font-medium transition-colors cursor-pointer select-none ${
                   isActive
                     ? 'bg-red-600 text-white font-semibold shadow-xs shadow-red-950/40'
-                    : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800/60 dark:hover:text-white'
+                    : 'text-zinc-400 hover:bg-[#18171b] hover:text-white'
                 }`}
               >
                 <Icon
@@ -213,12 +215,12 @@ export function Sidebar({
 
       {/* PHẦN DƯỚI: NÚT CHIA SẺ, XUẤT FILE, CÀI ĐẶT */}
       <div className="space-y-3 pt-4 border-t border-[#272226]">
-        {/* Nút Chia sẻ thẻ thành tích - Phong cách TH19 */}
+        {/* Nút Chia sẻ thẻ thành tích - Phong cách TH19 Vàng ánh kim */}
         {onOpenShareCard && (
           <button
             type="button"
             onClick={onOpenShareCard}
-            className="flex w-full items-center justify-center gap-2 rounded-lg border border-[#272226] bg-[#18171b] py-2 text-xs font-semibold text-zinc-200 shadow-2xs hover:border-red-500/50 hover:bg-[#201d22] hover:text-white transition-colors cursor-pointer select-none"
+            className="flex w-full items-center justify-center gap-2 rounded-lg border border-amber-500/40 bg-gradient-to-r from-amber-500/10 to-amber-500/5 py-2 text-xs font-semibold text-amber-300 shadow-2xs hover:border-amber-400/70 hover:bg-amber-500/20 hover:text-amber-200 transition-colors cursor-pointer select-none"
           >
             <ShareNetwork weight="bold" className="h-3.5 w-3.5 text-amber-400" />
             <span>{dict.header.shareCard}</span>
@@ -247,7 +249,7 @@ export function Sidebar({
         {/* Nút Ngôn ngữ */}
         <div className="flex items-center justify-between px-1">
           <LanguageSwitcher />
-          <span className="text-[10px] text-zinc-500 font-mono">
+          <span className="text-[10px] text-amber-400/80 font-mono font-bold">
             v{APP_VERSION}
           </span>
         </div>

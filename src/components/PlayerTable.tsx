@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { Warning } from '@phosphor-icons/react'
+import { Warning, Trophy } from '@phosphor-icons/react'
 import type { Player, RankingStats, Season } from '../types'
 import { PlayerRow } from './PlayerRow'
 import { validatePlayer } from '../lib/validation'
@@ -486,10 +486,13 @@ export function PlayerTable({
                     {dict.table.colDefenses}
                   </th>
                   <th
-                    className="px-2 py-2.5 whitespace-nowrap bg-inherit"
+                    className="px-2 py-2.5 whitespace-nowrap bg-inherit text-amber-400 font-bold"
                     style={colWidths[4] ? { width: `${colWidths[4]}px`, minWidth: `${colWidths[4]}px`, maxWidth: `${colWidths[4]}px` } : { width: '96px', minWidth: '88px' }}
                   >
-                    {dict.table.colCurrentCups}
+                    <div className="flex items-center gap-1">
+                      <Trophy weight="fill" className="h-3 w-3 text-amber-500 shrink-0" />
+                      <span>{dict.table.colCurrentCups}</span>
+                    </div>
                   </th>
                   <th
                     className="px-2 py-2.5 whitespace-nowrap bg-inherit"
@@ -524,7 +527,12 @@ export function PlayerTable({
                 <th className="w-56 min-w-[170px] max-w-[240px] px-2 py-2.5 bg-inherit">{dict.table.colName}</th>
                 <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap bg-inherit">{dict.table.colAttacks}</th>
                 <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap bg-inherit">{dict.table.colDefenses}</th>
-                <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap bg-inherit">{dict.table.colCurrentCups}</th>
+                <th className="w-24 min-w-[88px] px-2 py-2.5 whitespace-nowrap bg-inherit text-amber-400 font-bold">
+                  <div className="flex items-center gap-1">
+                    <Trophy weight="fill" className="h-3 w-3 text-amber-500 shrink-0" />
+                    <span>{dict.table.colCurrentCups}</span>
+                  </div>
+                </th>
                 <th className="w-36 min-w-[120px] px-2 py-2.5 whitespace-nowrap bg-inherit">{dict.table.colMaxCups}</th>
                 <th className="w-24 min-w-[92px] px-2 py-2.5 whitespace-nowrap text-center bg-inherit">{dict.table.colRating}</th>
               </tr>
@@ -629,12 +637,12 @@ export function PlayerTable({
                     {isAfterPromotionLine && (
                       <tr key="divider-promotion" className="select-none animate-fade-in">
                         <td colSpan={7} className="p-0 laser-line-emerald">
-                          <div className="flex items-center justify-between px-5 py-2 text-xs font-black text-amber-800 dark:text-amber-300">
+                          <div className="flex items-center justify-between px-5 py-2 text-xs font-black text-amber-300">
                             <span className="flex items-center gap-2 tracking-wider uppercase">
-                              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-500 text-black text-[10px] font-black shadow-xs">▲</span>
+                              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-r from-amber-500 to-amber-400 text-black text-[10px] font-black shadow-[0_0_8px_rgba(245,158,11,0.5)]">▲</span>
                               <span>{interpolate(dict.table.laserPromotionTitle, { count: promotionCount })}</span>
                             </span>
-                            <span className="text-[11px] font-semibold text-amber-700 dark:text-amber-400">
+                            <span className="text-[11px] font-bold text-amber-400">
                               {dict.table.laserPromotionSub}
                             </span>
                           </div>

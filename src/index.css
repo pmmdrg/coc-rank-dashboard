@@ -753,9 +753,10 @@ select {
 /* Vạch phân chia khu vực thăng hạng / xuống hạng (Chuẩn TH19: Vàng ánh kim & Đỏ thẫm) */
 .laser-line-emerald,
 .zone-line-gold {
-  background: rgba(245, 158, 11, 0.08);
-  border-top: 1px solid rgba(245, 158, 11, 0.35);
-  border-bottom: 1px solid rgba(245, 158, 11, 0.35);
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.16) 0%, rgba(245, 158, 11, 0.05) 50%, rgba(245, 158, 11, 0.16) 100%);
+  border-top: 1px solid rgba(245, 158, 11, 0.6);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.6);
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.2);
 }
 
 .laser-line-rose,
