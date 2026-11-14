@@ -37,7 +37,7 @@ function HighlightStatsSkeleton() {
       <div className="p-4 sm:p-5 space-y-4">
 
         {/* 2 Thẻ vị thế năng lực của bạn so với bảng */}
-        <div className="rounded-xl border border-sky-500/20 bg-sky-500/5 p-4 dark:border-sky-500/30 dark:bg-sky-950/20">
+        <div className="rounded-xl border border-slate-200/80 bg-slate-50/50 p-4 dark:border-slate-800 dark:bg-slate-900/40">
           <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-3.5">
             <div className="h-4 w-72 rounded-md skeleton-shimmer" />
             <div className="h-3 w-32 rounded-md skeleton-shimmer" />
@@ -427,7 +427,7 @@ export function HighlightStatsTable({
 
         {/* ==================== ĐỊNH VỊ NĂNG LỰC CỦA BẠN SO VỚI TOÀN BẢNG ==================== */}
         {myPlayer && myComparisonStats ? (
-          <div className="rounded-xl border border-sky-500/20 bg-sky-500/5 p-4 dark:border-sky-500/30 dark:bg-sky-950/20">
+          <div className="rounded-xl border border-slate-200/80 bg-slate-50/50 p-4 dark:border-slate-800 dark:bg-slate-900/40">
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-3.5">
               <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-100">
                 {interpolate(dict.highlights.myStandingTitle, { name: myPlayer.name })}

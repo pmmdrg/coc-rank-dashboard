@@ -211,7 +211,7 @@ export function PlayerRow({
               <div className="mt-1 flex flex-wrap items-center gap-1 select-none">
                 {hasAttackedByMe && (
                   <span
-                    className="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold bg-emerald-500/15 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-300 border border-emerald-500/30 whitespace-nowrap shadow-2xs"
+                    className="inline-flex items-center rounded px-1.5 py-0.2 text-[9px] font-bold bg-emerald-500/15 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-300 border border-emerald-500/30 whitespace-nowrap shadow-2xs"
                     title={attackedTooltip}
                   >
                     {dict.table.attackedByMe}{attackSummaryText}
@@ -219,7 +219,7 @@ export function PlayerRow({
                 )}
                 {hasDefendedAgainstMe && (
                   <span
-                    className="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold bg-amber-500/15 text-amber-800 dark:bg-amber-500/20 dark:text-amber-300 border border-amber-500/30 whitespace-nowrap shadow-2xs"
+                    className="inline-flex items-center rounded px-1.5 py-0.2 text-[9px] font-bold bg-amber-500/15 text-amber-800 dark:bg-amber-500/20 dark:text-amber-300 border border-amber-500/30 whitespace-nowrap shadow-2xs"
                     title={defendedTooltip}
                   >
                     {dict.table.attackedMe}{defenseSummaryText}

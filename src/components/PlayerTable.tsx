@@ -410,8 +410,8 @@ export function PlayerTable({
         </div>
       </div>
 
-      {/* 2. Thanh Tìm kiếm & Bộ lọc nhanh (Apple Segmented Filter Bar) */}
-      <div className="flex flex-col gap-3 border-b border-white/60 p-4 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800/60 bg-white/20 dark:bg-slate-900/40">
+      {/* 2. Thanh Tìm kiếm & Bộ lọc nhanh (Standard Dashboard Filter Bar) */}
+      <div className="flex flex-col gap-3 border-b border-slate-200 p-3 sm:px-4 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
         {/* Ô Tìm kiếm người chơi / Clan (Apple Spotlight Style) */}
         <SearchInput
           value={searchQuery}
@@ -459,7 +459,7 @@ export function PlayerTable({
             }}
           >
             <table className="w-full min-w-[1080px] border-separate border-spacing-0 text-left text-sm">
-              <thead className="text-xs uppercase tracking-wider text-amber-900 dark:text-slate-200">
+              <thead className="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 <tr>
                   <th
                     className="px-2.5 py-2.5 whitespace-nowrap bg-inherit"
@@ -518,7 +518,7 @@ export function PlayerTable({
           className="overflow-x-auto overflow-y-hidden"
         >
           <table ref={tableRef} className="relative w-full min-w-[1080px] border-separate border-spacing-0 text-left text-sm">
-            <thead ref={theadRef} className="bg-amber-50/95 dark:bg-slate-900/95 border-b border-amber-200/60 dark:border-slate-800 text-xs uppercase tracking-wider text-amber-900 dark:text-slate-200 shadow-2xs">
+            <thead ref={theadRef} className="bg-slate-50/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               <tr>
                 <th className="w-[136px] min-w-[136px] max-w-[136px] px-2.5 py-2.5 whitespace-nowrap bg-inherit">{dict.table.colRank}</th>
                 <th className="w-56 min-w-[170px] max-w-[240px] px-2 py-2.5 bg-inherit">{dict.table.colName}</th>

@@ -12,21 +12,21 @@
 
 :root {
   overflow-anchor: none;
-  --app-bg: #edf2f7;
-  --panel-bg: rgba(241, 245, 249, 0.65);
-  --panel-border: rgba(203, 213, 225, 0.65);
-  --header-bg: rgba(241, 245, 249, 0.75);
-  --field-bg: rgba(248, 250, 252, 0.70);
-  --field-border: rgba(203, 213, 225, 0.60);
+  --app-bg: #f8fafc;
+  --panel-bg: #ffffff;
+  --panel-border: #e2e8f0;
+  --header-bg: rgba(255, 255, 255, 0.92);
+  --field-bg: #ffffff;
+  --field-border: #cbd5e1;
   --field-text: #0f172a;
-  --soft-table-head: rgba(254, 243, 199, 0.75);
-  --table-head-text: #78350f;
-  --row-mine: rgba(14, 165, 233, 0.14);
-  --row-mine-hover: rgba(14, 165, 233, 0.24);
+  --soft-table-head: #f8fafc;
+  --table-head-text: #64748b;
+  --row-mine: rgba(14, 165, 233, 0.08);
+  --row-mine-hover: rgba(14, 165, 233, 0.14);
   --text-main: #0f172a;
-  --text-muted: #475569;
+  --text-muted: #64748b;
   color: #0f172a;
-  background: #edf2f7;
+  background: #f8fafc;
   font-family: var(--font-sans);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -63,99 +63,55 @@ select:focus-visible {
   position: relative;
 }
 
-/* Liquid Glass Material - Khúc xạ ánh sáng đa tầng & Viền thấu kính chất lỏng */
+/* Modern Dashboard Card Surface (Chuẩn phong cách Dashboard/SaaS: Vercel, Linear, Stripe) */
 .glass-panel {
-  border: 1px solid rgba(255, 255, 255, 0.65);
-  background: linear-gradient(
-    140deg,
-    rgba(241, 245, 249, 0.68) 0%,
-    rgba(235, 241, 248, 0.50) 50%,
-    rgba(226, 234, 244, 0.62) 100%
-  );
-  backdrop-filter: blur(28px) saturate(190%) contrast(104%);
-  -webkit-backdrop-filter: blur(28px) saturate(190%) contrast(104%);
-  box-shadow:
-    0 16px 40px -10px rgba(15, 23, 42, 0.07),
-    0 2px 6px -1px rgba(15, 23, 42, 0.03),
-    /* Đỉnh thấu kính bắt sáng nhẹ */
-    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.95),
-    /* Đáy thấu kính cong đổ bóng khúc xạ slate */
-    inset 0 -1.5px 2px 0 rgba(148, 163, 184, 0.12),
-    /* Tán sắc quang học mép kính */
-    inset 1px 0 2px 0 rgba(255, 255, 255, 0.5),
-    inset -1px 0 2px 0 rgba(255, 255, 255, 0.5),
-    inset 0 0 24px 0 rgba(203, 213, 225, 0.15);
-  transition: box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+  border: 1px solid var(--panel-border);
+  background: var(--panel-bg);
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .glass-header {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.65);
-  background: linear-gradient(
-    180deg,
-    rgba(241, 245, 249, 0.72) 0%,
-    rgba(228, 236, 246, 0.54) 100%
-  );
-  backdrop-filter: blur(28px) saturate(190%) contrast(104%);
-  -webkit-backdrop-filter: blur(28px) saturate(190%) contrast(104%);
-  box-shadow:
-    0 10px 32px -6px rgba(15, 23, 42, 0.06),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.95),
-    inset 0 -1px 1px 0 rgba(148, 163, 184, 0.12),
-    inset 0 0 24px 0 rgba(203, 213, 225, 0.15);
-  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  border-bottom: 1px solid var(--panel-border);
+  background: var(--header-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.03);
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .glass-footer {
-  border-top: 1px solid rgba(255, 255, 255, 0.65);
-  background: linear-gradient(
-    180deg,
-    rgba(241, 245, 249, 0.68) 0%,
-    rgba(228, 236, 246, 0.52) 100%
-  );
-  backdrop-filter: blur(28px) saturate(190%) contrast(104%);
-  -webkit-backdrop-filter: blur(28px) saturate(190%) contrast(104%);
-  box-shadow:
-    0 -12px 36px -6px rgba(15, 23, 42, 0.05),
-    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.95),
-    inset 0 -1px 1px 0 rgba(148, 163, 184, 0.10),
-    inset 0 0 28px 0 rgba(203, 213, 225, 0.15);
-  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  border-top: 1px solid var(--panel-border);
+  background: var(--panel-bg);
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .glass-drawer {
-  background: linear-gradient(
-    145deg,
-    rgba(248, 250, 252, 0.94) 0%,
-    rgba(241, 245, 249, 0.90) 100%
-  );
-  backdrop-filter: blur(32px) saturate(190%) contrast(104%);
-  -webkit-backdrop-filter: blur(32px) saturate(190%) contrast(104%);
-  border-left: 1px solid rgba(255, 255, 255, 0.75);
-  box-shadow:
-    -16px 0 44px -8px rgba(15, 23, 42, 0.14),
-    inset 1px 0 2px 0 rgba(255, 255, 255, 0.95),
-    inset 0 0 28px 0 rgba(203, 213, 225, 0.12);
+  background: var(--panel-bg);
+  border-left: 1px solid var(--panel-border);
+  box-shadow: -10px 0 25px -5px rgba(15, 23, 42, 0.08);
 }
 
 .soft-field {
   border: 1px solid var(--field-border);
   background: var(--field-bg);
   color: var(--field-text);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  transition: border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .soft-field:focus {
   border-color: #38bdf8;
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25), inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
 }
 
 .soft-table-head {
   background: var(--soft-table-head);
   color: var(--table-head-text);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--panel-border);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .row-mine {
@@ -186,47 +142,29 @@ select:focus-visible {
   transition-duration: 0.08s;
 }
 
-/* Apple Segmented Pill Control: Thanh gạt lọc con nhộng chất lỏng (Liquid Glass Filter Bar) */
+/* Dashboard Segmented Pill Control (Tabs lọc tiêu chuẩn: Vercel, Linear, Stripe) */
 .apple-segmented-container {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
-  padding: 4px;
-  border-radius: 9999px;
-  background: linear-gradient(
-    135deg,
-    rgba(226, 232, 240, 0.65) 0%,
-    rgba(203, 213, 225, 0.45) 100%
-  );
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.65);
-  box-shadow:
-    0 2px 8px -2px rgba(15, 23, 42, 0.05),
-    inset 0 1.5px 2px rgba(148, 163, 184, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  min-height: 36px;
+  padding: 3px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
   position: relative;
   isolation: isolate;
   box-sizing: border-box;
 }
 
-/* Thanh trượt con nhộng vật lý (Sliding Pill Indicator) lướt êm ái giữa các tab - Giọt chất lỏng Liquid Glass */
+/* Thanh trượt chỉ báo tab (Sliding Tab Indicator) */
 .apple-segmented-slider {
   position: absolute;
   top: 0;
   left: 0;
-  border-radius: 9999px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.92) 0%,
-    rgba(241, 245, 249, 0.82) 100%
-  );
-  box-shadow:
-    0 3px 12px -1px rgba(15, 23, 42, 0.12),
-    0 1px 3px rgba(15, 23, 42, 0.06),
-    inset 0 1.5px 1px rgba(255, 255, 255, 1),
-    inset 0 -1px 1px rgba(148, 163, 184, 0.10);
-  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 6px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.04);
   box-sizing: border-box;
   pointer-events: none;
   z-index: 1;
@@ -240,13 +178,13 @@ select:focus-visible {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 6px 14px;
-  font-size: 13px;
-  font-weight: 600;
-  border-radius: 9999px;
-  min-height: 32px;
-  color: #475569;
-  transition: color 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.18s ease;
+  padding: 4px 11px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 6px;
+  min-height: 28px;
+  color: #64748b;
+  transition: color 0.15s ease;
   cursor: pointer;
   user-select: none;
   border: none;
@@ -265,71 +203,35 @@ select:focus-visible {
 
 .apple-segmented-item.is-active {
   color: #0f172a;
-  font-weight: 700;
+  font-weight: 600;
 }
 
-/* Fallback khi không có sliding indicator (hoặc nút đơn lẻ dùng style segmented pill) */
+/* Fallback khi không có sliding indicator */
 .apple-segmented-container:not(:has(.apple-segmented-slider)) .apple-segmented-item.is-active {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.92) 0%,
-    rgba(241, 245, 249, 0.82) 100%
-  );
-  box-shadow:
-    0 3px 12px -1px rgba(15, 23, 42, 0.12),
-    inset 0 1.5px 1px rgba(255, 255, 255, 1);
-}
-
-.apple-segmented-container:not(:has(.apple-segmented-slider)) .apple-segmented-item.is-active:hover {
   background: #ffffff;
-  box-shadow:
-    0 4px 14px -1px rgba(15, 23, 42, 0.16),
-    inset 0 1.5px 1px rgba(255, 255, 255, 1);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
 
-/* Nút thu gọn / mở rộng & nút thao tác đơn Liquid Glass Capsule */
+/* Nút thu gọn / mở rộng tiêu chuẩn */
 .liquid-collapse-btn {
-  min-height: 36px;
-  background: linear-gradient(
-    135deg,
-    rgba(238, 244, 250, 0.72) 0%,
-    rgba(226, 234, 244, 0.52) 100%
-  );
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.65);
-  box-shadow:
-    0 3px 10px -2px rgba(15, 23, 42, 0.06),
-    0 1px 2px rgba(15, 23, 42, 0.03),
-    inset 0 1.5px 1px rgba(255, 255, 255, 0.95),
-    inset 0 -1px 1px rgba(148, 163, 184, 0.12);
-  color: #334155;
+  min-height: 32px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+  color: #64748b;
   box-sizing: border-box;
-  transition:
-    color 0.2s ease,
-    background 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.18s ease;
+  transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
 }
 
 .liquid-collapse-btn:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(248, 250, 252, 0.88) 0%,
-    rgba(235, 241, 248, 0.72) 100%
-  );
-  border-color: rgba(255, 255, 255, 0.90);
-  box-shadow:
-    0 6px 16px -2px rgba(15, 23, 42, 0.10),
-    0 2px 4px rgba(15, 23, 42, 0.06),
-    inset 0 1.5px 1px rgba(255, 255, 255, 1);
+  background: #f8fafc;
+  border-color: #cbd5e1;
   color: #0f172a;
-  transform: translateY(-0.5px);
 }
 
 .liquid-collapse-btn:active {
-  transform: scale(0.98) translateY(0);
+  transform: scale(0.98);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -356,17 +258,17 @@ select:focus-visible {
 
 /* Explicit class .dark override */
 html.dark {
-  --app-bg: #060913;
-  --panel-bg: rgba(15, 23, 42, 0.70);
-  --panel-border: rgba(255, 255, 255, 0.12);
-  --header-bg: rgba(10, 16, 31, 0.84);
-  --field-bg: rgba(30, 41, 59, 0.65);
-  --field-border: rgba(255, 255, 255, 0.14);
-  --field-text: #f1f5f9;
-  --soft-table-head: rgba(245, 158, 11, 0.16);
-  --table-head-text: #fde68a;
-  --row-mine: rgba(14, 165, 233, 0.22);
-  --row-mine-hover: rgba(14, 165, 233, 0.32);
+  --app-bg: #0b0f19;
+  --panel-bg: #0f172a;
+  --panel-border: #1e293b;
+  --header-bg: rgba(15, 23, 42, 0.90);
+  --field-bg: #1e293b;
+  --field-border: #334155;
+  --field-text: #f8fafc;
+  --soft-table-head: #0b1120;
+  --table-head-text: #94a3b8;
+  --row-mine: rgba(14, 165, 233, 0.16);
+  --row-mine-hover: rgba(14, 165, 233, 0.24);
   --row-risk: rgba(244, 63, 94, 0.2);
   --row-risk-hover: rgba(244, 63, 94, 0.3);
   --row-below: rgba(16, 185, 129, 0.18);
@@ -374,103 +276,44 @@ html.dark {
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   color: #e2e8f0;
-  background: #060913;
+  background: #0b0f19;
   color-scheme: dark;
 }
 
 html.dark .glass-panel {
-  background: linear-gradient(
-    140deg,
-    rgba(15, 23, 42, 0.74) 0%,
-    rgba(15, 23, 42, 0.56) 50%,
-    rgba(10, 16, 31, 0.78) 100%
-  );
-  border-color: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(28px) saturate(210%) contrast(105%);
-  -webkit-backdrop-filter: blur(28px) saturate(210%) contrast(105%);
-  box-shadow:
-    0 24px 64px -16px rgba(0, 0, 0, 0.8),
-    0 4px 16px -4px rgba(0, 0, 0, 0.5),
-    /* Đỉnh thấu kính bắt sáng lơ lửng */
-    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.28),
-    /* Đáy thấu kính cong sâu thẳm */
-    inset 0 -1.5px 2px 0 rgba(0, 0, 0, 0.75),
-    /* Quầng sáng quang sai xanh lơ ngọc (Cyan Ambient Caustic) */
-    inset 0 0 28px -4px rgba(56, 189, 248, 0.05);
+  border: 1px solid var(--panel-border);
+  background: rgba(15, 23, 42, 0.85);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
 }
 
 html.dark .glass-header {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  background: linear-gradient(
-    180deg,
-    rgba(15, 23, 42, 0.78) 0%,
-    rgba(10, 16, 31, 0.88) 100%
-  );
-  backdrop-filter: blur(28px) saturate(210%) contrast(105%);
-  -webkit-backdrop-filter: blur(28px) saturate(210%) contrast(105%);
-  box-shadow:
-    0 16px 40px -8px rgba(0, 0, 0, 0.75),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.25),
-    inset 0 -1px 0 0 rgba(0, 0, 0, 0.6),
-    inset 0 0 28px -4px rgba(56, 189, 248, 0.05);
+  border-bottom: 1px solid var(--panel-border);
+  background: var(--header-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
 }
 
 html.dark .glass-footer {
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  background: linear-gradient(
-    180deg,
-    rgba(15, 23, 42, 0.75) 0%,
-    rgba(10, 16, 31, 0.88) 100%
-  );
-  backdrop-filter: blur(28px) saturate(210%) contrast(105%);
-  -webkit-backdrop-filter: blur(28px) saturate(210%) contrast(105%);
-  box-shadow:
-    0 -16px 44px -8px rgba(0, 0, 0, 0.75),
-    inset 0 1.2px 1px 0 rgba(255, 255, 255, 0.22),
-    inset 0 -1px 0 0 rgba(0, 0, 0, 0.6),
-    inset 0 0 28px -4px rgba(56, 189, 248, 0.04);
+  border-top: 1px solid var(--panel-border);
+  background: rgba(15, 23, 42, 0.85);
 }
 
 html.dark .glass-drawer {
-  background: linear-gradient(
-    145deg,
-    rgba(15, 23, 42, 0.95) 0%,
-    rgba(10, 16, 31, 0.98) 100%
-  );
-  backdrop-filter: blur(32px) saturate(210%) contrast(105%);
-  -webkit-backdrop-filter: blur(32px) saturate(210%) contrast(105%);
-  border-left: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow:
-    -20px 0 52px -8px rgba(0, 0, 0, 0.8),
-    inset 1px 0 1px 0 rgba(255, 255, 255, 0.22),
-    inset 0 0 32px -4px rgba(56, 189, 248, 0.05);
+  background: #0f172a;
+  border-left: 1px solid var(--panel-border);
+  box-shadow: -10px 0 30px -5px rgba(0, 0, 0, 0.5);
 }
 
 html.dark .apple-segmented-container {
-  background: linear-gradient(
-    135deg,
-    rgba(15, 23, 42, 0.72) 0%,
-    rgba(30, 41, 59, 0.5) 100%
-  );
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow:
-    0 2px 8px -2px rgba(0, 0, 0, 0.5),
-    inset 0 1.5px 3px rgba(0, 0, 0, 0.45),
-    inset 0 0.5px 0 rgba(255, 255, 255, 0.16);
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid #334155;
 }
 
 html.dark .apple-segmented-slider {
-  background: linear-gradient(
-    180deg,
-    rgba(51, 65, 85, 0.9) 0%,
-    rgba(30, 41, 59, 0.8) 100%
-  );
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow:
-    0 4px 16px -2px rgba(0, 0, 0, 0.55),
-    0 1px 3px rgba(0, 0, 0, 0.3),
-    inset 0 1.5px 1px rgba(255, 255, 255, 0.28),
-    inset 0 -1px 1px rgba(0, 0, 0, 0.4);
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
 }
 
 html.dark .apple-segmented-item {
@@ -487,48 +330,19 @@ html.dark .apple-segmented-item.is-active {
 }
 
 html.dark .apple-segmented-container:not(:has(.apple-segmented-slider)) .apple-segmented-item.is-active {
-  background: linear-gradient(
-    180deg,
-    rgba(51, 65, 85, 0.9) 0%,
-    rgba(30, 41, 59, 0.8) 100%
-  );
-  box-shadow:
-    0 4px 16px -2px rgba(0, 0, 0, 0.5),
-    inset 0 1.5px 1px rgba(255, 255, 255, 0.28);
+  background: #1e293b;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
 }
 
-html.dark .apple-segmented-container:not(:has(.apple-segmented-slider)) .apple-segmented-item.is-active:hover {
-  background: rgba(71, 85, 105, 0.98);
-  box-shadow:
-    0 6px 18px -2px rgba(0, 0, 0, 0.6),
-    inset 0 1.5px 1px rgba(255, 255, 255, 0.32);
-}
-
-/* Nút thu gọn / mở rộng Liquid Glass Dark Mode */
 html.dark .liquid-collapse-btn {
-  background: linear-gradient(
-    135deg,
-    rgba(30, 41, 59, 0.72) 0%,
-    rgba(15, 23, 42, 0.55) 100%
-  );
-  border-color: rgba(255, 255, 255, 0.14);
-  box-shadow:
-    0 3px 12px -2px rgba(0, 0, 0, 0.5),
-    inset 0 1.5px 1px rgba(255, 255, 255, 0.22),
-    inset 0 -1px 1px rgba(0, 0, 0, 0.4);
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid #334155;
   color: #94a3b8;
 }
 
 html.dark .liquid-collapse-btn:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(51, 65, 85, 0.85) 0%,
-    rgba(30, 41, 59, 0.7) 100%
-  );
-  border-color: rgba(255, 255, 255, 0.25);
-  box-shadow:
-    0 6px 18px -2px rgba(0, 0, 0, 0.65),
-    inset 0 1.5px 1px rgba(255, 255, 255, 0.35);
+  background: rgba(51, 65, 85, 0.7);
+  border-color: #475569;
   color: #f8fafc;
 }
 
@@ -907,58 +721,38 @@ select {
   will-change: transform, opacity;
 }
 
-/* Hiệu ứng đồ họa cao cấp cho Gaming/Esports */
+/* Vạch phân chia khu vực thăng hạng / xuống hạng (Chuẩn bảng xếp hạng giải đấu) */
 .laser-line-emerald {
-  background: linear-gradient(90deg, rgba(16, 185, 129, 0.05) 0%, rgba(16, 185, 129, 0.2) 20%, rgba(16, 185, 129, 0.35) 50%, rgba(16, 185, 129, 0.2) 80%, rgba(16, 185, 129, 0.05) 100%);
-  border-top: 1px solid rgba(16, 185, 129, 0.6);
-  border-bottom: 1px solid rgba(16, 185, 129, 0.6);
-  box-shadow: 0 0 16px rgba(16, 185, 129, 0.2), inset 0 0 8px rgba(16, 185, 129, 0.1);
+  background: rgba(16, 185, 129, 0.08);
+  border-top: 1px solid rgba(16, 185, 129, 0.3);
+  border-bottom: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .laser-line-rose {
-  background: linear-gradient(90deg, rgba(244, 63, 94, 0.05) 0%, rgba(244, 63, 94, 0.2) 20%, rgba(244, 63, 94, 0.35) 50%, rgba(244, 63, 94, 0.2) 80%, rgba(244, 63, 94, 0.05) 100%);
-  border-top: 1px solid rgba(244, 63, 94, 0.6);
-  border-bottom: 1px solid rgba(244, 63, 94, 0.6);
-  box-shadow: 0 0 16px rgba(244, 63, 94, 0.2), inset 0 0 8px rgba(244, 63, 94, 0.1);
+  background: rgba(244, 63, 94, 0.08);
+  border-top: 1px solid rgba(244, 63, 94, 0.3);
+  border-bottom: 1px solid rgba(244, 63, 94, 0.3);
 }
 
-/* Liquid Crystal Droplet Cards (.hero-stat-card) */
+/* Thẻ chỉ số năng lực (.hero-stat-card) */
 .hero-stat-card {
   position: relative;
-  border-radius: 20px;
-  background: linear-gradient(
-    145deg,
-    rgba(238, 244, 250, 0.70) 0%,
-    rgba(228, 236, 246, 0.52) 50%,
-    rgba(220, 230, 242, 0.65) 100%
-  );
-  backdrop-filter: blur(28px) saturate(190%);
-  -webkit-backdrop-filter: blur(28px) saturate(190%);
-  border: 1px solid rgba(255, 255, 255, 0.65);
-  box-shadow:
-    0 10px 24px -6px rgba(15, 23, 42, 0.06),
-    0 2px 6px -1px rgba(15, 23, 42, 0.03),
-    inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.95),
-    inset 0 -1.5px 2px 0 rgba(148, 163, 184, 0.12),
-    inset 0 0 20px 0 rgba(199, 214, 232, 0.25);
-  transition:
-    transform 0.32s cubic-bezier(0.34, 1.4, 0.64, 1),
-    box-shadow 0.32s cubic-bezier(0.34, 1.4, 0.64, 1),
-    border-color 0.25s ease;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   overflow: hidden;
 }
 
-/* Lớp vệt sáng phản chiếu lướt chất lỏng (Liquid Sheen Shimmer) - disabled for clean minimalism */
 .hero-stat-card::after {
   display: none;
 }
 
 .hero-stat-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(148, 163, 184, 0.8);
-  box-shadow:
-    0 12px 28px -6px rgba(15, 23, 42, 0.08),
-    0 3px 8px -2px rgba(15, 23, 42, 0.04);
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.08);
 }
 
 .hero-stat-card:active {
@@ -966,10 +760,9 @@ select {
 }
 
 html.dark .hero-stat-card {
-  background: rgba(15, 23, 42, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow:
-    0 8px 24px -6px rgba(0, 0, 0, 0.5);
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
 }
 
 html.dark .hero-stat-card::after {
@@ -977,9 +770,8 @@ html.dark .hero-stat-card::after {
 }
 
 html.dark .hero-stat-card:hover {
-  border-color: rgba(255, 255, 255, 0.2);
-  box-shadow:
-    0 16px 36px -8px rgba(0, 0, 0, 0.7);
+  border-color: #334155;
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.5);
 }
 
 @keyframes liquid-sheen-sweep {
@@ -991,26 +783,24 @@ html.dark .hero-stat-card:hover {
   }
 }
 
-/* Liquid Rating Chips (Huy hiệu đánh giá thực lực giọt kính lỏng Liquid Glass) */
+/* Rating Chips (Huy hiệu trạng thái tiêu chuẩn phong cách Dashboard: Vercel, Linear, Stripe) */
 .liquid-rating-chip {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 4px;
   width: 100%;
-  height: 29px;
-  padding: 0 9px;
-  border-radius: 9999px;
-  font-size: 11.5px;
-  font-weight: 800;
-  letter-spacing: 0.015em;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   user-select: none;
-  backdrop-filter: blur(18px) saturate(180%);
-  -webkit-backdrop-filter: blur(18px) saturate(180%);
   box-sizing: border-box;
   overflow: hidden;
-  transition: transform 0.22s cubic-bezier(0.34, 1.4, 0.64, 1), box-shadow 0.22s ease, border-color 0.2s ease, background 0.2s ease;
+  transition: border-color 0.15s ease, background 0.15s ease;
   cursor: default;
 }
 
