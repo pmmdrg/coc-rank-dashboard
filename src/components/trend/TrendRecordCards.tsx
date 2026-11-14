@@ -1,4 +1,4 @@
-import type { OverallStats } from './types'
+﻿import type { OverallStats } from './types'
 import { useI18n } from '../../i18n/LanguageContext'
 
 interface TrendRecordCardsProps {
@@ -39,7 +39,7 @@ export function TrendRecordCards({ overallStats, historyCount }: TrendRecordCard
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
       {/* Thẻ 1: Thứ hạng */}
-      <div className="glass-panel group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-[#272226] bg-[#121114] p-4 shadow-2xs transition-all hover:border-red-500/40">
+      <div className="glass-panel group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-[#27272a] bg-[#111113] p-4 shadow-2xs transition-all hover:border-red-500/40">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
             {dict.performanceTrend.latestRank}
@@ -66,7 +66,7 @@ export function TrendRecordCards({ overallStats, historyCount }: TrendRecordCard
       </div>
 
       {/* Thẻ 2: Cúp mùa giải */}
-      <div className="glass-panel group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-[#272226] bg-[#121114] p-4 shadow-2xs transition-all hover:border-red-500/40">
+      <div className="glass-panel group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-[#27272a] bg-[#111113] p-4 shadow-2xs transition-all hover:border-red-500/40">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
             {dict.performanceTrend.latestCups}
@@ -93,7 +93,7 @@ export function TrendRecordCards({ overallStats, historyCount }: TrendRecordCard
       </div>
 
       {/* Thẻ 3: Tỷ lệ thắng công */}
-      <div className="glass-panel group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-[#272226] bg-[#121114] p-4 shadow-2xs transition-all hover:border-red-500/40">
+      <div className="glass-panel group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-[#27272a] bg-[#111113] p-4 shadow-2xs transition-all hover:border-red-500/40">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
             {dict.performanceTrend.attackWinRate}
@@ -113,7 +113,7 @@ export function TrendRecordCards({ overallStats, historyCount }: TrendRecordCard
       </div>
 
       {/* Thẻ 4: Cấp giải đấu */}
-      <div className="glass-panel group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-[#272226] bg-[#121114] p-4 shadow-2xs transition-all hover:border-red-500/40">
+      <div className="glass-panel group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-[#27272a] bg-[#111113] p-4 shadow-2xs transition-all hover:border-red-500/40">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
             {dict.performanceTrend.currentTier}

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import type { Season } from '../types'
 import { useI18n } from '../i18n/LanguageContext'
 import { SeasonMetaForm } from './SeasonMetaForm'
@@ -52,11 +52,11 @@ export function SeasonOverviewSection({
   }
 
   return (
-    <section className="glass-panel rounded-xl shadow-xs overflow-hidden border border-[#272226] transition-all duration-200">
+    <section className="glass-panel rounded-xl shadow-xs overflow-hidden border border-[#27272a] transition-all duration-200">
       {/* Header: Tinh gọn */}
       <div
         className={`flex items-center justify-between gap-3 px-4 py-3.5 sm:px-5 transition-colors ${
-          !isCollapsed ? 'border-b border-[#272226]' : ''
+          !isCollapsed ? 'border-b border-[#27272a]' : ''
         }`}
       >
         <h2 className="text-xs font-bold uppercase tracking-wider text-white">

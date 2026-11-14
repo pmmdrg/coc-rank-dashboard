@@ -1,11 +1,11 @@
-import { useI18n } from '../i18n/LanguageContext'
+﻿import { useI18n } from '../i18n/LanguageContext'
 import { APP_VERSION } from '../version'
 
 export function Footer() {
   const { dict } = useI18n()
 
   return (
-    <footer className="glass-footer relative mt-12 overflow-hidden border-t border-[#272226]">
+    <footer className="glass-footer relative mt-12 overflow-hidden border-t border-[#27272a]">
       <div className="mx-auto max-w-[1360px] px-4 pt-8 pb-20 sm:px-6 sm:pb-24 lg:px-8">
         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           {/* Brand & Project Info */}
@@ -14,7 +14,7 @@ export function Footer() {
               <span className="text-white font-bold tracking-tight">
                 CoC Rank Dashboard
               </span>
-              <span className="rounded-full border border-[#272226] bg-[#18171b] px-2 py-0.5 text-[11px] font-semibold text-zinc-300 shadow-2xs">
+              <span className="rounded-full border border-[#27272a] bg-[#18181b] px-2 py-0.5 text-[11px] font-semibold text-zinc-300 shadow-2xs">
                 v{APP_VERSION}
               </span>
               <span className="rounded-full border border-red-500/40 bg-red-500/15 px-2 py-0.5 text-[11px] font-semibold text-red-300 shadow-2xs">
@@ -35,14 +35,14 @@ export function Footer() {
               href="https://github.com/pmmdrg/coc-rank-dashboard"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center rounded-xl border border-[#272226] bg-[#18171b] px-3.5 py-2 font-semibold text-zinc-200 shadow-2xs transition hover:border-red-500/40 hover:bg-[#221f24] hover:text-white"
+              className="inline-flex items-center rounded-xl border border-[#27272a] bg-[#18181b] px-3.5 py-2 font-semibold text-zinc-200 shadow-2xs transition hover:border-red-500/40 hover:bg-[#221f24] hover:text-white"
             >
               <span>GitHub</span>
             </a>
 
             <a
               href="mailto:pmmdrg2605@gmail.com"
-              className="inline-flex items-center rounded-xl border border-[#272226] bg-[#18171b] px-3.5 py-2 font-semibold text-zinc-200 shadow-2xs transition hover:border-red-500/40 hover:bg-[#221f24] hover:text-white"
+              className="inline-flex items-center rounded-xl border border-[#27272a] bg-[#18181b] px-3.5 py-2 font-semibold text-zinc-200 shadow-2xs transition hover:border-red-500/40 hover:bg-[#221f24] hover:text-white"
             >
               <span>{dict.footer.contactFeedback}</span>
             </a>
@@ -50,7 +50,7 @@ export function Footer() {
         </div>
 
         {/* Divider & Disclaimer */}
-        <div className="mt-6 flex flex-col gap-3 border-t border-[#272226] pt-4 text-[11px] text-zinc-400 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-6 flex flex-col gap-3 border-t border-[#27272a] pt-4 text-[11px] text-zinc-400 sm:flex-row sm:items-center sm:justify-between">
           <p>
             {dict.footer.designAndDev} <span className="font-medium text-zinc-200">Man Pham</span>
           </p>

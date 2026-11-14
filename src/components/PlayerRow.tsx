@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+﻿import { useMemo, useState } from 'react'
 import { Warning, Check, Copy, Trophy } from '@phosphor-icons/react'
 import type { Player } from '../types'
 import { validatePlayer } from '../lib/validation'
@@ -245,7 +245,7 @@ export function PlayerRow({
                 e.stopPropagation()
                 onOpenBattleLog?.(player)
               }}
-              className="inline-flex items-center rounded-md border border-[#272226] bg-[#18171b] px-2 py-0.5 text-[11px] font-medium text-zinc-300 hover:border-red-500/50 hover:bg-[#201d22] hover:text-white transition-colors cursor-pointer select-none shadow-2xs"
+              className="inline-flex items-center rounded-md border border-[#27272a] bg-[#18181b] px-2 py-0.5 text-[11px] font-medium text-zinc-300 hover:border-red-500/50 hover:bg-[#202023] hover:text-white transition-colors cursor-pointer select-none shadow-2xs"
               title={dict.battleLog.viewLogTooltip}
             >
               <span>{dict.battleLog.actionLog}</span>

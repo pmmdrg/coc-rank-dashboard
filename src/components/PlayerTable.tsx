@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+﻿import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Warning, Trophy } from '@phosphor-icons/react'
 import type { Player, RankingStats, Season } from '../types'
 import { PlayerRow } from './PlayerRow'
@@ -366,7 +366,7 @@ export function PlayerTable({
   return (
     <section className="glass-panel relative rounded-xl shadow-sm">
       {/* 1. Header tiêu đề & trạng thái */}
-      <div className="flex flex-col gap-3 border-b border-[#272226] p-5 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 border-b border-[#27272a] p-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="flex flex-wrap items-center gap-2.5">
             <h2 className="text-base font-bold uppercase tracking-wider text-white">
@@ -411,7 +411,7 @@ export function PlayerTable({
       </div>
 
       {/* 2. Thanh Tìm kiếm & Bộ lọc nhanh */}
-      <div className="flex flex-col gap-3 border-b border-[#272226] p-3 sm:px-4 sm:flex-row sm:items-center sm:justify-between bg-[#0c0b0e]">
+      <div className="flex flex-col gap-3 border-b border-[#27272a] p-3 sm:px-4 sm:flex-row sm:items-center sm:justify-between bg-[#0d0d0f]">
         {/* Ô Tìm kiếm người chơi / Clan (Apple Spotlight Style) */}
         <SearchInput
           value={searchQuery}
@@ -459,7 +459,7 @@ export function PlayerTable({
             }}
           >
             <table className="w-full min-w-[1080px] border-separate border-spacing-0 text-left text-sm">
-              <thead className="bg-[#121114] border-b border-[#272226] text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+              <thead className="bg-[#111113] border-b border-[#27272a] text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
                 <tr>
                   <th
                     className="px-2.5 py-2.5 whitespace-nowrap bg-inherit"
@@ -521,7 +521,7 @@ export function PlayerTable({
           className="overflow-x-auto overflow-y-hidden"
         >
           <table ref={tableRef} className="relative w-full min-w-[1080px] border-separate border-spacing-0 text-left text-sm">
-            <thead ref={theadRef} className="bg-[#121114] border-b border-[#272226] text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+            <thead ref={theadRef} className="bg-[#111113] border-b border-[#27272a] text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
               <tr>
                 <th className="w-[136px] min-w-[136px] max-w-[136px] px-2.5 py-2.5 whitespace-nowrap bg-inherit">{dict.table.colRank}</th>
                 <th className="w-56 min-w-[170px] max-w-[240px] px-2 py-2.5 bg-inherit">{dict.table.colName}</th>
@@ -537,7 +537,7 @@ export function PlayerTable({
                 <th className="w-24 min-w-[92px] px-2 py-2.5 whitespace-nowrap text-center bg-inherit">{dict.table.colRating}</th>
               </tr>
             </thead>
-            <tbody key={filterTab} className="divide-y divide-[#272226]">
+            <tbody key={filterTab} className="divide-y divide-[#27272a]">
             {isSyncingApi ? (
               // Skeleton loading rows khi đang đồng bộ dữ liệu từ Supercell API
               [
@@ -550,7 +550,7 @@ export function PlayerTable({
                 { wName: 'w-24', wTag: 'w-16', wCups: 'w-12' },
                 { wName: 'w-36', wTag: 'w-22', wCups: 'w-14' },
               ].map((row, i) => (
-                <tr key={`skeleton-${i}`} className="border-b border-[#272226]">
+                <tr key={`skeleton-${i}`} className="border-b border-[#27272a]">
                   <td className="px-2.5 py-3">
                     <div className="flex items-center gap-2">
                       <div className="h-6 w-8 rounded-md skeleton-shimmer" />
@@ -676,7 +676,7 @@ export function PlayerTable({
     </div>
 
       {/* 4. Chú thích biểu tượng & trạng thái - Chuẩn TH19 */}
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-[#272226] bg-[#0c0b0e] px-4 py-2.5 text-xs text-zinc-400">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-[#27272a] bg-[#0d0d0f] px-4 py-2.5 text-xs text-zinc-400">
         <span className="font-semibold text-white">{dict.table.legendTitle}</span>
         <span className="inline-flex items-center gap-1.5">
           <span className="h-2.5 w-2.5 rounded-xs border-l-2 border-l-red-600 bg-red-500/20" />

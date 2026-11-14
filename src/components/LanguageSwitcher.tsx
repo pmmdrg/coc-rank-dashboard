@@ -1,4 +1,4 @@
-import { Globe } from '@phosphor-icons/react'
+﻿import { Globe } from '@phosphor-icons/react'
 import { useI18n } from '../i18n/LanguageContext'
 
 export function LanguageSwitcher() {
@@ -14,7 +14,7 @@ export function LanguageSwitcher() {
     <button
       type="button"
       onClick={handleToggle}
-      className="inline-flex h-9.5 items-center justify-center gap-1.5 rounded-xl border border-[#272226] bg-[#18171b] px-2.5 text-xs font-bold text-zinc-200 shadow-2xs backdrop-blur-md transition-all hover:border-red-500/40 hover:bg-[#221f24] hover:text-white cursor-pointer select-none"
+      className="inline-flex h-9.5 items-center justify-center gap-1.5 rounded-xl border border-[#27272a] bg-[#18181b] px-2.5 text-xs font-bold text-zinc-200 shadow-2xs backdrop-blur-md transition-all hover:border-red-500/40 hover:bg-[#221f24] hover:text-white cursor-pointer select-none"
       title={`${dict.header.langToggle}: ${nextLanguageName}`}
       aria-label="Toggle language"
     >

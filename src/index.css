@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
@@ -13,21 +13,21 @@
 :root {
   overflow-anchor: none;
   --app-bg: #09090b;
-  --panel-bg: #121114;
-  --panel-border: #272226;
-  --header-bg: rgba(18, 17, 20, 0.94);
-  --field-bg: #18171b;
-  --field-border: #322b31;
-  --field-text: #ffffff;
-  --soft-table-head: #0d0c0e;
+  --panel-bg: #111113;
+  --panel-border: #27272a;
+  --header-bg: rgba(17, 17, 19, 0.95);
+  --field-bg: #18181b;
+  --field-border: #27272a;
+  --field-text: #f4f4f5;
+  --soft-table-head: #0d0d0f;
   --table-head-text: #a1a1aa;
-  --row-mine: rgba(220, 38, 38, 0.16);
-  --row-mine-hover: rgba(220, 38, 38, 0.24);
-  --row-risk: rgba(220, 38, 38, 0.2);
-  --row-risk-hover: rgba(220, 38, 38, 0.3);
-  --row-below: rgba(245, 158, 11, 0.16);
-  --row-below-hover: rgba(245, 158, 11, 0.24);
-  --text-main: #ffffff;
+  --row-mine: rgba(220, 38, 38, 0.14);
+  --row-mine-hover: rgba(220, 38, 38, 0.22);
+  --row-risk: rgba(220, 38, 38, 0.16);
+  --row-risk-hover: rgba(220, 38, 38, 0.24);
+  --row-below: rgba(245, 158, 11, 0.12);
+  --row-below-hover: rgba(245, 158, 11, 0.2);
+  --text-main: #f4f4f5;
   --text-muted: #a1a1aa;
   color: #f4f4f5;
   background: #09090b;
@@ -63,28 +63,16 @@ select:focus-visible {
 }
 
 .app-surface {
-  background: transparent;
+  background: #09090b;
   min-height: 100vh;
   position: relative;
 }
 
-.app-surface::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 5%;
-  right: 5%;
-  height: 320px;
-  background: radial-gradient(ellipse at 50% 0%, rgba(220, 38, 38, 0.14) 0%, rgba(245, 158, 11, 0.04) 45%, transparent 70%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Modern Dashboard Card Surface (TH19 Obsidian Black) */
+/* Modern Dashboard Card Surface (Neutral Dark Charcoal) */
 .glass-panel {
   border: 1px solid var(--panel-border);
-  background: rgba(18, 17, 20, 0.95);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
+  background: var(--panel-bg);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -99,12 +87,12 @@ select:focus-visible {
 
 .glass-footer {
   border-top: 1px solid var(--panel-border);
-  background: #121114;
+  background: var(--panel-bg);
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .glass-drawer {
-  background: #121114;
+  background: #111113;
   border-left: 1px solid var(--panel-border);
   box-shadow: -10px 0 35px -5px rgba(0, 0, 0, 0.7);
 }
@@ -166,8 +154,8 @@ select:focus-visible {
   min-height: 36px;
   padding: 3px;
   border-radius: 8px;
-  background: #18171b;
-  border: 1px solid #2e282d;
+  background: #18181b;
+  border: 1px solid #27272a;
   position: relative;
   isolation: isolate;
   box-sizing: border-box;
@@ -233,8 +221,8 @@ select:focus-visible {
 .liquid-collapse-btn {
   min-height: 32px;
   border-radius: 8px;
-  background: #18171b;
-  border: 1px solid #2e282d;
+  background: #18181b;
+  border: 1px solid #27272a;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
   color: #a1a1aa;
   box-sizing: border-box;
@@ -276,13 +264,13 @@ select:focus-visible {
 /* Explicit class .dark override */
 html.dark {
   --app-bg: #09090b;
-  --panel-bg: #121114;
-  --panel-border: #272226;
+  --panel-bg: #111113;
+  --panel-border: #27272a;
   --header-bg: rgba(18, 17, 20, 0.94);
-  --field-bg: #18171b;
-  --field-border: #322b31;
+  --field-bg: #18181b;
+  --field-border: #27272a;
   --field-text: #ffffff;
-  --soft-table-head: #0d0c0e;
+  --soft-table-head: #0d0d0f;
   --table-head-text: #a1a1aa;
   --row-mine: rgba(220, 38, 38, 0.16);
   --row-mine-hover: rgba(220, 38, 38, 0.24);
@@ -325,18 +313,18 @@ html.dark .glass-header {
 
 html.dark .glass-footer {
   border-top: 1px solid var(--panel-border);
-  background: #121114;
+  background: #111113;
 }
 
 html.dark .glass-drawer {
-  background: #121114;
+  background: #111113;
   border-left: 1px solid var(--panel-border);
   box-shadow: -10px 0 35px -5px rgba(0, 0, 0, 0.7);
 }
 
 html.dark .apple-segmented-container {
-  background: #18171b;
-  border: 1px solid #2e282d;
+  background: #18181b;
+  border: 1px solid #27272a;
 }
 
 html.dark .apple-segmented-slider {
@@ -364,8 +352,8 @@ html.dark .apple-segmented-container:not(:has(.apple-segmented-slider)) .apple-s
 }
 
 html.dark .liquid-collapse-btn {
-  background: #18171b;
-  border: 1px solid #2e282d;
+  background: #18181b;
+  border: 1px solid #27272a;
   color: #a1a1aa;
 }
 
@@ -792,8 +780,8 @@ select {
 }
 
 html.dark .hero-stat-card {
-  background: #121114;
-  border: 1px solid #272226;
+  background: #111113;
+  border: 1px solid #27272a;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
 }
 

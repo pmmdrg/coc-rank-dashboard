@@ -1,4 +1,4 @@
-import { ArrowUp, ArrowDown } from '@phosphor-icons/react'
+﻿import { ArrowUp, ArrowDown } from '@phosphor-icons/react'
 
 export interface RankBadgeProps {
   rank: number
@@ -50,7 +50,7 @@ export function RankBadge({ rank, title, className = '', size = 'md' }: RankBadg
 
   return (
     <div
-      className={`inline-flex shrink-0 items-center justify-center rounded-md border border-[#272226] bg-[#18171b] font-mono font-medium text-zinc-400 select-none ${sizeClasses} ${className}`}
+      className={`inline-flex shrink-0 items-center justify-center rounded-md border border-[#27272a] bg-[#18181b] font-mono font-medium text-zinc-400 select-none ${sizeClasses} ${className}`}
       title={title || `#${rank}`}
     >
       #{rank}

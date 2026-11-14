@@ -1,4 +1,4 @@
-import { List, CircleNotch } from '@phosphor-icons/react'
+﻿import { List, CircleNotch } from '@phosphor-icons/react'
 import type { AppRoute } from '../types'
 import { useI18n } from '../i18n/LanguageContext'
 
@@ -27,7 +27,7 @@ export function TopBar({
   const title = routeTitles[currentRoute]
 
   return (
-    <header className="glass-header !sticky top-0 z-20 border-b border-[#272226] bg-[#121114]/90 backdrop-blur-md">
+    <header className="glass-header !sticky top-0 z-20 border-b border-[#27272a] bg-[#111113]/90 backdrop-blur-md">
       <div className="mx-auto flex max-w-[1360px] items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         {/* Nút Hamburger (Mobile) & Tiêu đề Route */}
         <div className="flex items-center gap-3">

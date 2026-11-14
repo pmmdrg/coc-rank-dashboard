@@ -1,4 +1,4 @@
-import type { Season } from '../types'
+﻿import type { Season } from '../types'
 import { formatLeagueName } from '../lib/ranking'
 import { getLeagueIconUrl } from '../lib/leagueIcons'
 import { parseSeasonDateRange } from '../lib/cocApi'
@@ -19,7 +19,7 @@ function SeasonMetaSkeleton({ embedded = false }: { embedded?: boolean }) {
   const content = (
     <div className="grid gap-3 grid-cols-1 md:grid-cols-3">
       {[1, 2, 3].map((i) => (
-        <div key={i} className="rounded-lg border border-[#272226] bg-[#121114] p-4">
+        <div key={i} className="rounded-lg border border-[#27272a] bg-[#111113] p-4">
           <div className="h-3 w-20 rounded skeleton-shimmer" />
           <div className="mt-3 h-6 w-32 rounded skeleton-shimmer" />
         </div>
@@ -28,7 +28,7 @@ function SeasonMetaSkeleton({ embedded = false }: { embedded?: boolean }) {
   )
 
   if (embedded) return <div>{content}</div>
-  return <div className="glass-panel rounded-xl p-4 shadow-xs border border-[#272226]">{content}</div>
+  return <div className="glass-panel rounded-xl p-4 shadow-xs border border-[#27272a]">{content}</div>
 }
 
 export function SeasonMetaForm({
@@ -60,7 +60,7 @@ export function SeasonMetaForm({
   const content = (
     <div className="grid gap-3 grid-cols-1 md:grid-cols-3">
       {/* Cột 1: Giải đấu */}
-      <div className="rounded-lg border border-[#272226] bg-[#121114] p-4 flex flex-col justify-between">
+      <div className="rounded-lg border border-[#27272a] bg-[#111113] p-4 flex flex-col justify-between">
         <div className="flex items-center justify-between gap-2">
           <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
             {dict.seasonMeta.league}
@@ -91,7 +91,7 @@ export function SeasonMetaForm({
       </div>
 
       {/* Cột 2: Thời gian mùa giải & Vạch thăng/xuống hạng */}
-      <div className="rounded-lg border border-[#272226] bg-[#121114] p-4 flex flex-col justify-between">
+      <div className="rounded-lg border border-[#27272a] bg-[#111113] p-4 flex flex-col justify-between">
         <div className="flex items-center justify-between gap-2">
           <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
             {dict.seasonMeta.seasonDuration}
@@ -105,7 +105,7 @@ export function SeasonMetaForm({
                   min="0"
                   value={season.promotionCount ?? 2}
                   onChange={(e) => onUpdateSeasonMeta('promotionCount', Math.max(0, parseInt(e.target.value, 10) || 0))}
-                  className="h-5 w-8 rounded border border-amber-500/40 bg-[#18171b] text-center text-xs font-bold text-amber-300 focus:border-amber-400"
+                  className="h-5 w-8 rounded border border-amber-500/40 bg-[#18181b] text-center text-xs font-bold text-amber-300 focus:border-amber-400"
                 />
               </label>
               <label className="flex items-center gap-1 text-red-400 font-medium">
@@ -115,7 +115,7 @@ export function SeasonMetaForm({
                   min="0"
                   value={season.demotionCount ?? 1}
                   onChange={(e) => onUpdateSeasonMeta('demotionCount', Math.max(0, parseInt(e.target.value, 10) || 0))}
-                  className="h-5 w-8 rounded border border-red-500/40 bg-[#18171b] text-center text-xs font-semibold text-white focus:border-red-400"
+                  className="h-5 w-8 rounded border border-red-500/40 bg-[#18181b] text-center text-xs font-semibold text-white focus:border-red-400"
                 />
               </label>
             </div>
@@ -131,7 +131,7 @@ export function SeasonMetaForm({
       </div>
 
       {/* Cột 3: Chọn mùa giải */}
-      <div className="rounded-lg border border-[#272226] bg-[#121114] p-4 flex flex-col justify-between relative z-30">
+      <div className="rounded-lg border border-[#27272a] bg-[#111113] p-4 flex flex-col justify-between relative z-30">
         <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
           {dict.seasonMeta.selectSeason}
         </span>
@@ -155,7 +155,7 @@ export function SeasonMetaForm({
   }
 
   return (
-    <div className="glass-panel relative z-20 rounded-xl p-4 shadow-xs border border-[#272226]">
+    <div className="glass-panel relative z-20 rounded-xl p-4 shadow-xs border border-[#27272a]">
       {content}
     </div>
   )

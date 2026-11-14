@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef, useState } from 'react'
+﻿import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { Player } from '../types'
 import { useI18n } from '../i18n/LanguageContext'
 import { SegmentedControl, type SegmentedControlOption } from './SegmentedControl'
@@ -15,9 +15,9 @@ function HighlightStatsSkeleton() {
   const { dict } = useI18n()
 
   return (
-    <section className="glass-panel rounded-2xl shadow-sm overflow-hidden border border-[#272226]">
+    <section className="glass-panel rounded-2xl shadow-sm overflow-hidden border border-[#27272a]">
       {/* Header */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 sm:p-5 border-b border-[#272226]">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 sm:p-5 border-b border-[#27272a]">
         <div className="flex items-center gap-2">
           <h2 className="text-base font-bold uppercase tracking-wider text-white">
             {dict.highlights.title}
@@ -37,7 +37,7 @@ function HighlightStatsSkeleton() {
       <div className="p-4 sm:p-5 space-y-4">
 
         {/* 2 Thẻ vị thế năng lực của bạn so với bảng */}
-        <div className="rounded-xl border border-[#272226] bg-[#121114] p-4">
+        <div className="rounded-xl border border-[#27272a] bg-[#111113] p-4">
           <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-3.5">
             <div className="h-4 w-72 rounded-md skeleton-shimmer" />
             <div className="h-3 w-32 rounded-md skeleton-shimmer" />
@@ -66,7 +66,7 @@ function HighlightStatsSkeleton() {
         </div>
 
         {/* Bảng hàng kỷ lục */}
-        <div className="overflow-x-auto rounded-lg border border-[#272226]">
+        <div className="overflow-x-auto rounded-lg border border-[#27272a]">
           <table className="w-full text-sm">
             <thead className="soft-table-head text-xs uppercase tracking-wider">
               <tr>
@@ -81,9 +81,9 @@ function HighlightStatsSkeleton() {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#272226]">
+            <tbody className="divide-y divide-[#27272a]">
               {[1, 2, 3, 4, 5].map((i) => (
-                <tr key={i} className="border-b border-[#272226]">
+                <tr key={i} className="border-b border-[#27272a]">
                   <td className="px-4 py-3">
                     <div className="h-4 w-44 rounded-md skeleton-shimmer" />
                   </td>
@@ -130,7 +130,7 @@ function PlayerBadge({
           ? 'border-red-500/50 bg-red-500/20 text-red-300 ring-1 ring-red-500/40 hover:bg-red-500/30'
           : variant === 'danger'
             ? 'border-red-500/30 bg-red-950/40 text-red-300 hover:bg-red-900/40'
-            : 'border-[#272226] bg-[#18171b] text-zinc-200 hover:border-red-500/40 hover:bg-[#221f24] hover:text-white'
+            : 'border-[#27272a] bg-[#18181b] text-zinc-200 hover:border-red-500/40 hover:bg-[#221f24] hover:text-white'
       }`}
     >
       <span className="font-mono text-[11px] font-bold text-zinc-500">
@@ -374,7 +374,7 @@ export function HighlightStatsTable({
 
   if (activePlayers.length === 0) {
     return (
-      <section className="glass-panel rounded-2xl shadow-sm overflow-hidden border border-[#272226]">
+      <section className="glass-panel rounded-2xl shadow-sm overflow-hidden border border-[#27272a]">
         <div className="p-4 sm:p-5 space-y-4">
           <div className="flex items-center gap-2">
             <h2 className="text-base font-bold uppercase tracking-wider text-white">
@@ -390,11 +390,11 @@ export function HighlightStatsTable({
   }
 
   return (
-    <section className="glass-panel rounded-2xl shadow-sm overflow-hidden border border-[#272226] transition-all duration-300">
+    <section className="glass-panel rounded-2xl shadow-sm overflow-hidden border border-[#27272a] transition-all duration-300">
       {/* Header với Tiêu đề, Bộ lọc nhanh & Nút thu gọn */}
       <div
         className={`flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 sm:p-5 transition-all duration-300 ${
-          !isCollapsed ? 'border-b border-[#272226]' : ''
+          !isCollapsed ? 'border-b border-[#27272a]' : ''
         }`}
       >
         <div className="flex items-center gap-2">
@@ -427,7 +427,7 @@ export function HighlightStatsTable({
 
         {/* ==================== ĐỊNH VỊ NĂNG LỰC CỦA BẠN SO VỚI TOÀN BẢNG ==================== */}
         {myPlayer && myComparisonStats ? (
-          <div className="rounded-xl border border-[#272226] bg-[#121114] p-4">
+          <div className="rounded-xl border border-[#27272a] bg-[#111113] p-4">
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-3.5">
               <h4 className="text-xs font-bold uppercase tracking-wider text-white">
                 {interpolate(dict.highlights.myStandingTitle, { name: myPlayer.name })}
@@ -542,14 +542,14 @@ export function HighlightStatsTable({
             </div>
           </div>
         ) : (
-          <div className="rounded-xl border border-dashed border-[#272226] bg-[#121114] p-3.5 text-xs text-zinc-400">
+          <div className="rounded-xl border border-dashed border-[#27272a] bg-[#111113] p-3.5 text-xs text-zinc-400">
             <span>{dict.highlights.myStandingTooltip}</span>
           </div>
         )}
 
         {/* Khung chuyển động co giãn chiều cao mượt mà khi filter */}
         <div ref={animatedWrapperRef} className="will-change-[height]">
-          <div ref={innerContentRef} className="overflow-x-auto overflow-y-hidden rounded-lg border border-[#272226]">
+          <div ref={innerContentRef} className="overflow-x-auto overflow-y-hidden rounded-lg border border-[#27272a]">
             <table className="w-full text-sm">
               <thead className="soft-table-head text-xs uppercase tracking-wider">
                 <tr>
@@ -564,7 +564,7 @@ export function HighlightStatsTable({
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#272226]">
+              <tbody className="divide-y divide-[#27272a]">
                 {/* ==================== PHẦN 1: HẠNG MỤC TỐT NHẤT ==================== */}
                 {showBest && (
                   <>
@@ -759,7 +759,7 @@ export function HighlightStatsTable({
                       </td>
                       <td className="px-4 py-3 text-center align-middle">
                         {worstMaxCups !== null ? (
-                          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#272226] bg-[#18171b] px-3 py-1 text-sm font-bold text-zinc-300 shadow-2xs">
+                          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#27272a] bg-[#18181b] px-3 py-1 text-sm font-bold text-zinc-300 shadow-2xs">
                             {formatNumber(worstMaxCups.maxCups)} {dict.common.trophies}
                           </span>
                         ) : (

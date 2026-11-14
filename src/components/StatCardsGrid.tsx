@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+﻿import { useMemo, useState } from 'react'
 import type { RankingStats, Season } from '../types'
 import { useI18n } from '../i18n/LanguageContext'
 import { CollapseToggleButton } from './CollapseToggleButton'
@@ -111,8 +111,8 @@ export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSy
 
   if (isSyncingApi) {
     return (
-      <section className="glass-panel rounded-xl shadow-xs overflow-hidden border border-[#272226]">
-        <div className="flex items-center justify-between gap-3 p-4 sm:p-5 border-b border-[#272226]">
+      <section className="glass-panel rounded-xl shadow-xs overflow-hidden border border-[#27272a]">
+        <div className="flex items-center justify-between gap-3 p-4 sm:p-5 border-b border-[#27272a]">
           <div className="h-4 w-40 rounded-md skeleton-shimmer" />
           <div className="h-6 w-16 rounded-md skeleton-shimmer" />
         </div>
@@ -122,7 +122,7 @@ export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSy
             {[1, 2, 3, 4].map((idx) => (
               <div
                 key={idx}
-                className="rounded-lg border border-[#272226] bg-[#121114] p-4"
+                className="rounded-lg border border-[#27272a] bg-[#111113] p-4"
               >
                 <div className="h-3 w-20 rounded skeleton-shimmer" />
                 <div className="mt-3 h-7 w-24 rounded skeleton-shimmer" />
@@ -206,11 +206,11 @@ export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSy
   ]
 
   return (
-    <section className="glass-panel rounded-xl shadow-xs overflow-hidden border border-[#272226] transition-all duration-200">
+    <section className="glass-panel rounded-xl shadow-xs overflow-hidden border border-[#27272a] transition-all duration-200">
       {/* Header: Tinh gọn */}
       <div
         className={`flex items-center justify-between gap-3 px-4 py-3.5 sm:px-5 transition-colors ${
-          !isCollapsed ? 'border-b border-[#272226]' : ''
+          !isCollapsed ? 'border-b border-[#27272a]' : ''
         }`}
       >
         <h2 className="text-xs font-bold uppercase tracking-wider text-white">
@@ -232,7 +232,7 @@ export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSy
               {cards.map((card) => (
                 <div
                   key={card.label}
-                  className={`rounded-lg border border-[#272226] ${card.topBorder} bg-[#121114] p-4 transition-colors shadow-2xs`}
+                  className={`rounded-lg border border-[#27272a] ${card.topBorder} bg-[#111113] p-4 transition-colors shadow-2xs`}
                 >
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 truncate">
@@ -245,7 +245,7 @@ export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSy
                             ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
                             : card.badgeType === 'warning'
                               ? 'bg-red-500/20 text-red-300 border border-red-500/30'
-                              : 'bg-[#18171b] text-zinc-300 border border-[#272226]'
+                              : 'bg-[#18181b] text-zinc-300 border border-[#27272a]'
                         }`}
                       >
                         {card.badge}

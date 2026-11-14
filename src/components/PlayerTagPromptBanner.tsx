@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { CircleNotch } from '@phosphor-icons/react'
 import { useI18n } from '../i18n/LanguageContext'
 
@@ -59,7 +59,7 @@ export function PlayerTagPromptBanner({
               value={inputVal.replace(/^#/, '')}
               onChange={(e) => setInputVal(e.target.value.toUpperCase().trim())}
               placeholder={dict.banner.inputPlaceholder}
-              className="h-12 w-full sm:w-56 rounded-xl border-2 border-red-500/60 bg-[#121114] pl-8 pr-3 text-sm font-mono font-black tracking-wider text-white placeholder:text-zinc-500 placeholder:font-normal caret-red-500 shadow-inner transition-all focus:border-red-500 focus:outline-none focus:ring-4 focus:ring-red-500/25"
+              className="h-12 w-full sm:w-56 rounded-xl border-2 border-red-500/60 bg-[#111113] pl-8 pr-3 text-sm font-mono font-black tracking-wider text-white placeholder:text-zinc-500 placeholder:font-normal caret-red-500 shadow-inner transition-all focus:border-red-500 focus:outline-none focus:ring-4 focus:ring-red-500/25"
             />
           </div>
 

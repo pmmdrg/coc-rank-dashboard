@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef, useState } from 'react'
+﻿import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { RankChangesSnapshot, RankChangeItem } from '../types'
 import { useI18n } from '../i18n/LanguageContext'
 import { SegmentedControl, type SegmentedControlOption } from './SegmentedControl'
@@ -20,8 +20,8 @@ function RankChangesSkeleton() {
   const { dict } = useI18n()
 
   return (
-    <section className="glass-panel rounded-xl shadow-xs overflow-hidden border border-[#272226]">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#272226] p-4 sm:p-5">
+    <section className="glass-panel rounded-xl shadow-xs overflow-hidden border border-[#27272a]">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#27272a] p-4 sm:p-5">
         <div>
           <div className="flex items-center gap-2 flex-wrap">
             <h2 className="text-base font-bold uppercase tracking-wider text-white">
@@ -40,7 +40,7 @@ function RankChangesSkeleton() {
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="flex items-center justify-between rounded-xl border border-[#272226] bg-[#121114] p-3.5 shadow-2xs"
+              className="flex items-center justify-between rounded-xl border border-[#27272a] bg-[#111113] p-3.5 shadow-2xs"
             >
               <div className="space-y-1.5">
                 <div className="h-4 w-28 rounded-md skeleton-shimmer" />
@@ -207,12 +207,12 @@ export function RankChangesSection({
 
   return (
     <section
-      className={`glass-panel animate-rank-section-enter rounded-xl shadow-xs transition-opacity duration-300 overflow-hidden border border-[#272226] ${
+      className={`glass-panel animate-rank-section-enter rounded-xl shadow-xs transition-opacity duration-300 overflow-hidden border border-[#27272a] ${
         isSyncing ? 'opacity-70 pointer-events-none' : 'opacity-100'
       }`}
     >
       {/* HEADER SECTION */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#272226] p-4 sm:p-5">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#27272a] p-4 sm:p-5">
         <div>
           <div className="flex items-center gap-2 flex-wrap">
             <h2 className="text-base font-bold uppercase tracking-wider text-white">
@@ -223,7 +223,7 @@ export function RankChangesSection({
                 {interpolate(dict.rankChanges.changesCount, { count: activeChanges.length })}
               </span>
             ) : isFirstSync ? (
-              <span className="rounded-full bg-[#18171b] px-2.5 py-0.5 text-xs font-medium text-zinc-400 border border-[#272226]">
+              <span className="rounded-full bg-[#18181b] px-2.5 py-0.5 text-xs font-medium text-zinc-400 border border-[#27272a]">
                 {dict.rankChanges.firstSync}
               </span>
             ) : (
@@ -280,7 +280,7 @@ export function RankChangesSection({
                           ? 'border-amber-500/40 bg-amber-950/30 text-amber-200'
                           : myChange.rankDiff < 0
                             ? 'border-red-500/40 bg-red-950/30 text-red-200'
-                            : 'border-[#272226] bg-[#121114] text-zinc-200'
+                            : 'border-[#27272a] bg-[#111113] text-zinc-200'
                       }`}
                     >
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -293,7 +293,7 @@ export function RankChangesSection({
                               ? interpolate(dict.rankChanges.youFell, { diff: Math.abs(myChange.rankDiff) })
                               : dict.rankChanges.yourRankKept}
                         </span>
-                        <span className="font-mono text-xs font-bold px-2 py-0.5 rounded-full bg-[#18171b] border border-[#272226] text-white shadow-2xs">
+                        <span className="font-mono text-xs font-bold px-2 py-0.5 rounded-full bg-[#18181b] border border-[#27272a] text-white shadow-2xs">
                           {myChange.oldRank !== myChange.newRank
                             ? `#${myChange.oldRank} ➔ #${myChange.newRank}`
                             : `#${myChange.newRank}`}
@@ -310,13 +310,13 @@ export function RankChangesSection({
 
                     <div className="flex items-center gap-2 flex-wrap self-end sm:self-center">
                       {myChange.cupsDiff !== 0 && (
-                        <div className="font-mono text-xs font-bold px-2.5 py-1 rounded-lg bg-[#18171b] border border-[#272226] shadow-2xs text-amber-400">
+                        <div className="font-mono text-xs font-bold px-2.5 py-1 rounded-lg bg-[#18181b] border border-[#27272a] shadow-2xs text-amber-400">
                           {interpolate(dict.rankChanges.cupsDiff, { diff: myChange.cupsDiff > 0 ? `+${myChange.cupsDiff}` : myChange.cupsDiff })}
                         </div>
                       )}
                       {(myChange.attacksDiff !== undefined && myChange.attacksDiff !== 0) && (
                         <div
-                          className="font-mono text-xs font-bold px-2.5 py-1 rounded-lg bg-[#18171b] border border-[#272226] shadow-2xs text-amber-400"
+                          className="font-mono text-xs font-bold px-2.5 py-1 rounded-lg bg-[#18181b] border border-[#27272a] shadow-2xs text-amber-400"
                           title={`${dict.common.attacks}: ${myChange.oldAttacks ?? 0} ➔ ${myChange.newAttacks ?? 0}`}
                         >
                           {interpolate(dict.rankChanges.attacksDiff, { diff: (myChange.attacksDiff ?? 0) > 0 ? `+${myChange.attacksDiff}` : (myChange.attacksDiff ?? 0) })}
@@ -329,7 +329,7 @@ export function RankChangesSection({
                       )}
                       {(myChange.defensesDiff !== undefined && myChange.defensesDiff !== 0) && (
                         <div
-                          className="font-mono text-xs font-bold px-2.5 py-1 rounded-lg bg-[#18171b] border border-[#272226] shadow-2xs text-red-400"
+                          className="font-mono text-xs font-bold px-2.5 py-1 rounded-lg bg-[#18181b] border border-[#27272a] shadow-2xs text-red-400"
                           title={`${dict.common.defenses}: ${myChange.oldDefenses ?? 0} ➔ ${myChange.newDefenses ?? 0}`}
                         >
                           {interpolate(dict.rankChanges.defensesDiff, { diff: (myChange.defensesDiff ?? 0) > 0 ? `+${myChange.defensesDiff}` : (myChange.defensesDiff ?? 0) })}
@@ -346,7 +346,7 @@ export function RankChangesSection({
               ) : (
                 <div
                   key={`my-change-stable-${snapshot.updatedAt || 'init'}`}
-                  className="animate-change-card backdrop-blur-md rounded-xl border border-[#272226] bg-[#121114] p-3 text-xs text-zinc-400 flex items-center justify-between gap-2"
+                  className="animate-change-card backdrop-blur-md rounded-xl border border-[#27272a] bg-[#111113] p-3 text-xs text-zinc-400 flex items-center justify-between gap-2"
                 >
                   <div className="flex items-center gap-2">
                     <span className="rounded-md bg-red-500/20 px-1.5 py-0.5 text-[10px] font-bold text-red-400">
@@ -365,7 +365,7 @@ export function RankChangesSection({
           {!hasActiveChanges ? (
             <div
               key={`empty-${snapshot.updatedAt || 'init'}`}
-              className="animate-change-card rounded-xl border border-[#272226] bg-[#121114] py-6 text-center px-4"
+              className="animate-change-card rounded-xl border border-[#27272a] bg-[#111113] py-6 text-center px-4"
             >
               <h3 className="text-sm font-bold text-white">
                 {isFirstSync ? dict.rankChanges.initialTableRecorded : dict.rankChanges.noPlayerChangedCups}
@@ -421,8 +421,8 @@ export function RankChangesSection({
                           isUser
                             ? 'border-red-500/60 bg-red-950/30 ring-1 ring-red-500/40'
                             : isRose
-                              ? 'border-amber-500/40 bg-gradient-to-b from-amber-500/10 to-[#121114]'
-                              : 'border-red-500/30 bg-[#121114]'
+                              ? 'border-amber-500/40 bg-gradient-to-b from-amber-500/10 to-[#111113]'
+                              : 'border-red-500/30 bg-[#111113]'
                         }`}
                       >
                         <div className="flex items-center justify-between gap-2">
@@ -450,7 +450,7 @@ export function RankChangesSection({
                         </div>
 
                         {/* Hàng chuyển đổi thứ hạng và điểm cúp */}
-                        <div className="mt-2 pt-1.5 border-t border-[#272226] flex items-center justify-between text-xs">
+                        <div className="mt-2 pt-1.5 border-t border-[#27272a] flex items-center justify-between text-xs">
                           <div className="flex items-center gap-1.5 font-mono">
                             <span className="text-zinc-500 line-through">#{item.oldRank}</span>
                             <span className="text-zinc-500">➔</span>
@@ -465,7 +465,7 @@ export function RankChangesSection({
                         </div>
 
                         {/* Hàng biến động số lượt đánh và số lượt thủ */}
-                        <div className="mt-1.5 pt-1.5 border-t border-[#272226] flex items-center justify-between text-[11px]">
+                        <div className="mt-1.5 pt-1.5 border-t border-[#27272a] flex items-center justify-between text-[11px]">
                           <span
                             className={`font-semibold ${
                               (item.attacksDiff ?? 0) > 0
