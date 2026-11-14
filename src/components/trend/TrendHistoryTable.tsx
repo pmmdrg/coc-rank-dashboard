@@ -9,9 +9,9 @@ export function TrendHistoryTable({ chronologicalHistory }: TrendHistoryTablePro
   const { dict, interpolate } = useI18n()
 
   return (
-    <div className="overflow-x-auto overflow-y-hidden rounded-xl border border-[#27272a]">
+    <div className="overflow-x-auto overflow-y-hidden rounded-xl border border-amber-500/25">
       <table className="w-full text-left text-xs">
-        <thead className="bg-[#111113] border-b border-[#27272a] text-zinc-400 uppercase tracking-wider text-[11px]">
+        <thead className="bg-[#08080b] border-b border-amber-500/30 text-white font-bold uppercase tracking-wider text-[11px]">
           <tr>
             <th className="px-3.5 py-2.5 font-bold">{dict.performanceTrend.tableColPeriod}</th>
             <th className="px-3 py-2.5 font-bold">{dict.performanceTrend.tableColTier}</th>
@@ -22,14 +22,14 @@ export function TrendHistoryTable({ chronologicalHistory }: TrendHistoryTablePro
             <th className="px-3 py-2.5 font-bold">{dict.performanceTrend.tableColMaxBattles}</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-[#27272a]">
+        <tbody className="divide-y divide-amber-500/15">
           {/* Hiển thị mùa mới nhất lên trên cùng của bảng */}
           {[...chronologicalHistory].reverse().map((item, idx) => {
             const isLatest = idx === 0
             return (
               <tr
                 key={item.seasonId}
-                className={`hover:bg-[#18181b]/60 transition-colors ${
+                className={`hover:bg-[#121216] transition-colors ${
                   isLatest ? 'bg-red-950/20' : ''
                 }`}
               >
@@ -38,7 +38,7 @@ export function TrendHistoryTable({ chronologicalHistory }: TrendHistoryTablePro
                   <div className="flex items-center gap-1.5">
                     <span>{item.displayPeriod}</span>
                     {isLatest && (
-                      <span className="rounded bg-red-500/20 border border-red-500/30 px-1 py-0.2 text-[9px] font-bold text-red-300">
+                      <span className="rounded bg-red-600/30 border border-red-500/50 px-1 py-0.2 text-[9px] font-bold text-red-300">
                         {dict.performanceTrend.latestBadge}
                       </span>
                     )}
@@ -56,7 +56,7 @@ export function TrendHistoryTable({ chronologicalHistory }: TrendHistoryTablePro
                     className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs ${
                       item.placement <= 10
                         ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                        : 'bg-[#18181b] text-zinc-300 border border-[#27272a]'
+                        : 'bg-[#121216] text-white border border-amber-500/25'
                     }`}
                   >
                     #{item.placement}

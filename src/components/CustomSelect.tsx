@@ -59,17 +59,17 @@ export function CustomSelect<T extends string | number>({
         aria-haspopup="listbox"
         aria-label={ariaLabel}
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`group relative flex h-10 w-full items-center justify-between rounded-xl border px-4 text-left text-sm font-bold shadow-2xs backdrop-blur-md transition-all cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-red-500/30 ${
+        className={`group relative flex h-10 w-full items-center justify-between rounded-xl border px-4 text-left text-sm font-bold shadow-2xs backdrop-blur-md transition-all cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-amber-500/30 ${
           isOpen
-            ? 'border-red-500/60 bg-[#111113] ring-2 ring-red-500/30 text-white'
-            : 'border-[#27272a] bg-[#111113] text-white hover:border-red-500/50 hover:bg-[#18181b]'
+            ? 'border-amber-400 bg-[#0e0e12] ring-2 ring-amber-500/30 text-white'
+            : 'border-amber-500/30 bg-[#0e0e12] text-white hover:border-amber-400 hover:bg-[#141418]'
         }`}
       >
         <span className="truncate pr-3">{selectedOption?.label}</span>
         <CaretDown
           weight="bold"
           className={`h-4 w-4 shrink-0 text-zinc-400 transition-transform duration-250 ease-out group-hover:text-white ${
-            isOpen ? 'rotate-180 text-red-400' : ''
+            isOpen ? 'rotate-180 text-amber-400' : ''
           }`}
         />
       </button>
@@ -79,7 +79,7 @@ export function CustomSelect<T extends string | number>({
         <div
           role="listbox"
           aria-label={ariaLabel}
-          className="animate-dropdown-pop absolute left-0 right-0 top-full mt-1.5 z-[100] max-h-60 overflow-y-auto rounded-2xl border border-[#27272a] bg-[#111113]/98 p-1.5 shadow-2xl shadow-black/60 backdrop-blur-xl"
+          className="animate-dropdown-pop absolute left-0 right-0 top-full mt-1.5 z-[100] max-h-60 overflow-y-auto rounded-2xl border border-amber-500/30 bg-[#0c0c0f]/98 p-1.5 shadow-2xl shadow-black/80 backdrop-blur-xl"
         >
           <div className="space-y-0.5">
             {options.map((opt) => {
@@ -96,7 +96,7 @@ export function CustomSelect<T extends string | number>({
                   }}
                   className={`group/opt flex w-full items-center justify-between rounded-xl px-3 py-2 text-xs sm:text-sm font-semibold transition-all cursor-pointer select-none ${
                     isSelected
-                      ? 'bg-red-500/20 text-red-300 font-bold shadow-2xs border border-red-500/30'
+                      ? 'bg-red-600/25 text-white font-bold shadow-2xs border border-red-500/40'
                       : 'text-zinc-300 hover:bg-[#18181b] hover:text-white'
                   }`}
                 >

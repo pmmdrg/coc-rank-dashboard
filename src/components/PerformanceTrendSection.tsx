@@ -20,9 +20,9 @@ function TrendSectionSkeleton() {
   const { dict } = useI18n()
 
   return (
-    <section className="glass-panel rounded-xl shadow-sm transition-all overflow-hidden border border-[#27272a]">
+    <section className="glass-panel rounded-xl shadow-sm transition-all overflow-hidden border border-amber-500/25">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#27272a] p-4 sm:p-5">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-amber-500/20 p-4 sm:p-5">
         <div>
           <div className="flex items-center gap-2">
             <h2 className="text-base font-bold uppercase tracking-wider text-white">
@@ -58,7 +58,7 @@ function TrendSectionSkeleton() {
         </div>
 
         {/* Khung Biểu đồ Skeleton */}
-        <div className="rounded-xl border border-[#27272a] bg-[#111113] p-4">
+        <div className="rounded-xl border border-amber-500/25 bg-[#0e0e12] p-4">
           <div className="flex items-center justify-between gap-3 mb-4">
             <div className="flex gap-2">
               <div className="h-7 w-28 rounded-lg skeleton-shimmer" />
@@ -211,8 +211,8 @@ export function PerformanceTrendSection({
 
   if (chronologicalHistory.length === 0) {
     return (
-      <section className="glass-panel rounded-xl shadow-sm transition-all border border-[#27272a]">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#27272a] p-4 sm:p-5">
+      <section className="glass-panel rounded-xl shadow-sm transition-all border border-amber-500/25">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-amber-500/20 p-4 sm:p-5">
           <div>
             <h2 className="text-base font-bold uppercase tracking-wider text-white">
               {dict.performanceTrend.title}
@@ -401,9 +401,9 @@ export function PerformanceTrendSection({
   }
 
   return (
-    <section className="glass-panel rounded-xl shadow-sm transition-all border border-[#27272a]">
+    <section className="glass-panel rounded-xl shadow-sm transition-all border border-amber-500/25">
       {/* Header & Toggle */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#27272a] p-4 sm:p-5">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-amber-500/20 p-4 sm:p-5">
         <div>
           <div className="flex items-center gap-2">
             <h2 className="text-base font-bold uppercase tracking-wider text-white">
@@ -450,9 +450,9 @@ export function PerformanceTrendSection({
               />
 
           {/* KHU VỰC BIỂU ĐỒ SVG TƯƠNG TÁC */}
-          <div className="rounded-xl border border-[#27272a] bg-[#111113] p-4">
+          <div className="rounded-xl border border-amber-500/25 bg-[#0e0e12] p-4">
             {/* Chuyển đổi tab đo lường */}
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-[#27272a]">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-amber-500/15">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold text-zinc-300">
                   {dict.performanceTrend.chartMetric}
@@ -524,7 +524,7 @@ export function PerformanceTrendSection({
                       x2={chartWidth - paddingX}
                       y2={y}
                       stroke="currentColor"
-                      className="text-[#27272a]"
+                      className="text-amber-500/15"
                       strokeDasharray="4 4"
                       strokeWidth="1"
                     />
@@ -587,7 +587,7 @@ export function PerformanceTrendSection({
                       className={
                         hoveredIndex === i
                           ? 'text-red-500 stroke-[1.5]'
-                          : 'text-[#27272a]'
+                          : 'text-amber-500/15'
                       }
                       strokeDasharray={hoveredIndex === i ? undefined : '2 2'}
                     />

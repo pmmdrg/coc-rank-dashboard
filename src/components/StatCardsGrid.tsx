@@ -111,8 +111,8 @@ export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSy
 
   if (isSyncingApi) {
     return (
-      <section className="glass-panel rounded-xl shadow-xs overflow-hidden border border-[#27272a]">
-        <div className="flex items-center justify-between gap-3 p-4 sm:p-5 border-b border-[#27272a]">
+      <section className="glass-panel rounded-xl shadow-xs overflow-hidden border border-amber-500/25">
+        <div className="flex items-center justify-between gap-3 p-4 sm:p-5 border-b border-amber-500/20">
           <div className="h-4 w-40 rounded-md skeleton-shimmer" />
           <div className="h-6 w-16 rounded-md skeleton-shimmer" />
         </div>
@@ -122,7 +122,7 @@ export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSy
             {[1, 2, 3, 4].map((idx) => (
               <div
                 key={idx}
-                className="rounded-lg border border-[#27272a] bg-[#111113] p-4"
+                className="rounded-lg border border-amber-500/25 bg-[#0e0e12] p-4"
               >
                 <div className="h-3 w-20 rounded skeleton-shimmer" />
                 <div className="mt-3 h-7 w-24 rounded skeleton-shimmer" />
@@ -165,7 +165,7 @@ export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSy
         : null,
       badgeType: hasMyPlayer && stats.playersWhoCanPassMe === 0 ? 'success' : 'warning',
       topBorder: 'border-t-2 border-t-red-600/70',
-      valueColor: 'text-white font-bold',
+      valueColor: 'text-red-400 font-black',
     },
     {
       label: dict.statCards.attackPerformance,
@@ -206,14 +206,14 @@ export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSy
   ]
 
   return (
-    <section className="glass-panel rounded-xl shadow-xs overflow-hidden border border-[#27272a] transition-all duration-200">
+    <section className="glass-panel rounded-xl shadow-xs overflow-hidden border border-amber-500/25 transition-all duration-200">
       {/* Header: Tinh gọn */}
       <div
         className={`flex items-center justify-between gap-3 px-4 py-3.5 sm:px-5 transition-colors ${
-          !isCollapsed ? 'border-b border-[#27272a]' : ''
+          !isCollapsed ? 'border-b border-amber-500/20' : ''
         }`}
       >
-        <h2 className="text-xs font-bold uppercase tracking-wider text-white">
+        <h2 className="text-xs font-black uppercase tracking-wider text-white">
           {dict.statCards.overviewTitle}
         </h2>
 
@@ -232,20 +232,20 @@ export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSy
               {cards.map((card) => (
                 <div
                   key={card.label}
-                  className={`rounded-lg border border-[#27272a] ${card.topBorder} bg-[#111113] p-4 transition-colors shadow-2xs`}
+                  className={`rounded-lg border border-amber-500/30 ${card.topBorder} bg-[#0e0e12] p-4 transition-colors shadow-2xs`}
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 truncate">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-white truncate">
                       {card.label}
                     </span>
                     {card.badge && (
                       <span
-                        className={`inline-flex shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold ${
+                        className={`inline-flex shrink-0 rounded px-1.5 py-0.5 text-[10px] font-bold ${
                           card.badgeType === 'gold' || card.badgeType === 'success'
-                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
                             : card.badgeType === 'warning'
-                              ? 'bg-red-500/20 text-red-300 border border-red-500/30'
-                              : 'bg-[#18181b] text-zinc-300 border border-[#27272a]'
+                              ? 'bg-red-600 text-white border border-red-500/50'
+                              : 'bg-[#141418] text-white border border-amber-500/30'
                         }`}
                       >
                         {card.badge}
@@ -259,7 +259,7 @@ export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSy
                     </span>
                   </div>
 
-                  <div className="mt-1 text-xs text-zinc-400 truncate">
+                  <div className="mt-1 text-xs text-zinc-300 truncate">
                     {card.subtext}
                   </div>
                 </div>

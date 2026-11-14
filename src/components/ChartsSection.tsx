@@ -17,10 +17,10 @@ export interface ChartsSectionProps {
 
 function SkeletonPieChart() {
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-lg border border-[#27272a] bg-[#111113] p-4">
+    <div className="flex h-full flex-col overflow-hidden rounded-lg border border-amber-500/25 bg-[#0e0e12] p-4">
       <div className="h-3 w-32 rounded skeleton-shimmer" />
       <div className="my-auto flex items-center justify-center pt-4">
-        <div className="h-28 w-28 rounded-full border-8 border-[#27272a] skeleton-shimmer" />
+        <div className="h-28 w-28 rounded-full border-8 border-amber-500/20 skeleton-shimmer" />
       </div>
     </div>
   )
@@ -62,7 +62,7 @@ function PercentagePieChart({
     new Intl.NumberFormat(language === 'vi' ? 'vi-VN' : 'en-US').format(val)
 
   return (
-    <div className="flex h-full flex-col justify-between overflow-hidden rounded-lg border border-[#27272a] bg-[#111113] p-4">
+    <div className="flex h-full flex-col justify-between overflow-hidden rounded-lg border border-amber-500/25 bg-[#0e0e12] p-4">
       <div className="flex items-center justify-between gap-2">
         <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
           {title}
@@ -80,7 +80,7 @@ function PercentagePieChart({
               cx="18"
               cy="18"
               r="14"
-              className="stroke-[#1f1d22]"
+              className="stroke-[#18181e]"
               strokeWidth="4"
               fill="transparent"
             />
@@ -104,7 +104,7 @@ function PercentagePieChart({
                 cx="18"
                 cy="18"
                 r="14"
-                className="stroke-[#27272a]"
+                className="stroke-[#18181e]"
                 strokeWidth="4"
                 strokeDasharray="100 0"
                 fill="transparent"

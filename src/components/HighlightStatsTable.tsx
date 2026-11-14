@@ -15,9 +15,9 @@ function HighlightStatsSkeleton() {
   const { dict } = useI18n()
 
   return (
-    <section className="glass-panel rounded-2xl shadow-sm overflow-hidden border border-[#27272a]">
+    <section className="glass-panel rounded-2xl shadow-sm overflow-hidden border border-amber-500/25">
       {/* Header */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 sm:p-5 border-b border-[#27272a]">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 sm:p-5 border-b border-amber-500/20">
         <div className="flex items-center gap-2">
           <h2 className="text-base font-bold uppercase tracking-wider text-white">
             {dict.highlights.title}
@@ -37,7 +37,7 @@ function HighlightStatsSkeleton() {
       <div className="p-4 sm:p-5 space-y-4">
 
         {/* 2 Thẻ vị thế năng lực của bạn so với bảng */}
-        <div className="rounded-xl border border-[#27272a] bg-[#111113] p-4">
+        <div className="rounded-xl border border-amber-500/30 bg-[#0e0e12] p-4">
           <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-3.5">
             <div className="h-4 w-72 rounded-md skeleton-shimmer" />
             <div className="h-3 w-32 rounded-md skeleton-shimmer" />
@@ -66,9 +66,9 @@ function HighlightStatsSkeleton() {
         </div>
 
         {/* Bảng hàng kỷ lục */}
-        <div className="overflow-x-auto rounded-lg border border-[#27272a]">
+        <div className="overflow-x-auto rounded-lg border border-amber-500/25">
           <table className="w-full text-sm">
-            <thead className="soft-table-head text-xs uppercase tracking-wider">
+            <thead className="bg-[#08080b] border-b border-amber-500/30 text-xs font-bold uppercase tracking-wider text-white">
               <tr>
                 <th className="w-64 min-w-[200px] px-4 py-2.5 text-left font-semibold">
                   {dict.highlights.category}
@@ -81,9 +81,9 @@ function HighlightStatsSkeleton() {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#27272a]">
+            <tbody className="divide-y divide-amber-500/15">
               {[1, 2, 3, 4, 5].map((i) => (
-                <tr key={i} className="border-b border-[#27272a]">
+                <tr key={i} className="border-b border-amber-500/15">
                   <td className="px-4 py-3">
                     <div className="h-4 w-44 rounded-md skeleton-shimmer" />
                   </td>
@@ -127,10 +127,10 @@ function PlayerBadge({
       title={`#${player.rank} - ${player.name}`}
       className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-semibold shadow-2xs transition-all cursor-pointer select-none hover:scale-[1.03] active:scale-[0.98] ${
         isMe
-          ? 'border-red-500/50 bg-red-500/20 text-red-300 ring-1 ring-red-500/40 hover:bg-red-500/30'
+          ? 'border-red-500/50 bg-red-600/30 text-white ring-1 ring-red-500/50 hover:bg-red-600/40'
           : variant === 'danger'
-            ? 'border-red-500/30 bg-red-950/40 text-red-300 hover:bg-red-900/40'
-            : 'border-[#27272a] bg-[#18181b] text-zinc-200 hover:border-red-500/40 hover:bg-[#221f24] hover:text-white'
+            ? 'border-red-500/40 bg-red-950/40 text-red-300 hover:bg-red-900/40'
+            : 'border-amber-500/30 bg-[#121216] text-white hover:border-red-500 hover:bg-red-600/20'
       }`}
     >
       <span className="font-mono text-[11px] font-bold text-zinc-500">
@@ -374,7 +374,7 @@ export function HighlightStatsTable({
 
   if (activePlayers.length === 0) {
     return (
-      <section className="glass-panel rounded-2xl shadow-sm overflow-hidden border border-[#27272a]">
+      <section className="glass-panel rounded-2xl shadow-sm overflow-hidden border border-amber-500/25">
         <div className="p-4 sm:p-5 space-y-4">
           <div className="flex items-center gap-2">
             <h2 className="text-base font-bold uppercase tracking-wider text-white">
@@ -390,11 +390,11 @@ export function HighlightStatsTable({
   }
 
   return (
-    <section className="glass-panel rounded-2xl shadow-sm overflow-hidden border border-[#27272a] transition-all duration-300">
+    <section className="glass-panel rounded-2xl shadow-sm overflow-hidden border border-amber-500/25 transition-all duration-300">
       {/* Header với Tiêu đề, Bộ lọc nhanh & Nút thu gọn */}
       <div
         className={`flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 sm:p-5 transition-all duration-300 ${
-          !isCollapsed ? 'border-b border-[#27272a]' : ''
+          !isCollapsed ? 'border-b border-amber-500/20' : ''
         }`}
       >
         <div className="flex items-center gap-2">
@@ -427,7 +427,7 @@ export function HighlightStatsTable({
 
         {/* ==================== ĐỊNH VỊ NĂNG LỰC CỦA BẠN SO VỚI TOÀN BẢNG ==================== */}
         {myPlayer && myComparisonStats ? (
-          <div className="rounded-xl border border-[#27272a] bg-[#111113] p-4">
+          <div className="rounded-xl border border-amber-500/30 bg-[#0e0e12] p-4">
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-3.5">
               <h4 className="text-xs font-bold uppercase tracking-wider text-white">
                 {interpolate(dict.highlights.myStandingTitle, { name: myPlayer.name })}
@@ -542,16 +542,16 @@ export function HighlightStatsTable({
             </div>
           </div>
         ) : (
-          <div className="rounded-xl border border-dashed border-[#27272a] bg-[#111113] p-3.5 text-xs text-zinc-400">
+          <div className="rounded-xl border border-dashed border-amber-500/25 bg-[#0e0e12] p-3.5 text-xs text-zinc-400">
             <span>{dict.highlights.myStandingTooltip}</span>
           </div>
         )}
 
         {/* Khung chuyển động co giãn chiều cao mượt mà khi filter */}
         <div ref={animatedWrapperRef} className="will-change-[height]">
-          <div ref={innerContentRef} className="overflow-x-auto overflow-y-hidden rounded-lg border border-[#27272a]">
+          <div ref={innerContentRef} className="overflow-x-auto overflow-y-hidden rounded-lg border border-amber-500/25">
             <table className="w-full text-sm">
-              <thead className="soft-table-head text-xs uppercase tracking-wider">
+              <thead className="bg-[#08080b] border-b border-amber-500/30 text-xs font-bold uppercase tracking-wider text-white">
                 <tr>
                   <th className="w-64 min-w-[200px] px-4 py-2.5 text-left font-semibold">
                     {dict.highlights.category}
@@ -564,7 +564,7 @@ export function HighlightStatsTable({
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#27272a]">
+              <tbody className="divide-y divide-amber-500/15">
                 {/* ==================== PHẦN 1: HẠNG MỤC TỐT NHẤT ==================== */}
                 {showBest && (
                   <>
@@ -759,7 +759,7 @@ export function HighlightStatsTable({
                       </td>
                       <td className="px-4 py-3 text-center align-middle">
                         {worstMaxCups !== null ? (
-                          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#27272a] bg-[#18181b] px-3 py-1 text-sm font-bold text-zinc-300 shadow-2xs">
+                          <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-[#121216] px-3 py-1 text-sm font-bold text-white shadow-2xs">
                             {formatNumber(worstMaxCups.maxCups)} {dict.common.trophies}
                           </span>
                         ) : (

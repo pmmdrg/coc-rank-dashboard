@@ -57,12 +57,12 @@ export function PlayerRow({
   )
 
   const borderClass = isMyPlayer
-    ? 'border-l-[4px] border-l-red-600 bg-red-950/20 hover:bg-red-950/30'
+    ? 'border-l-[4px] border-l-red-600 bg-red-950/25 hover:bg-red-950/35'
     : isPromotionZone
-      ? 'border-l-[4px] border-l-amber-500 bg-amber-950/10 hover:bg-zinc-900/60'
+      ? 'border-l-[4px] border-l-amber-500 bg-amber-950/10 hover:bg-[#121216]'
       : isDemotionZone
-        ? 'border-l-[4px] border-l-red-600 bg-red-950/10 hover:bg-zinc-900/60'
-        : 'border-l-[4px] border-l-transparent hover:bg-zinc-900/40'
+        ? 'border-l-[4px] border-l-red-600 bg-red-950/10 hover:bg-[#121216]'
+        : 'border-l-[4px] border-l-transparent hover:bg-[#121216]'
 
   const hasAttackedByMe = Boolean(player.attackedByMe && player.attackedByMe.length > 0)
   const hasDefendedAgainstMe = Boolean(player.defendedAgainstMe && player.defendedAgainstMe.length > 0)
@@ -162,23 +162,23 @@ export function PlayerRow({
             <div className="flex items-center gap-1.5 truncate">
               <span
                 onClick={() => onOpenBattleLog?.(player)}
-                className={`truncate font-bold text-sm cursor-pointer hover:underline hover:text-red-600 dark:hover:text-red-400 transition-colors ${
+                className={`truncate text-sm cursor-pointer hover:underline hover:text-red-400 transition-colors ${
                   isMyPlayer
-                    ? 'text-red-600 dark:text-red-400 font-black'
-                    : 'text-zinc-900 dark:text-white'
+                    ? 'text-red-400 font-black'
+                    : 'text-white font-bold'
                 }`}
                 title={player.name}
               >
                 {player.name}
               </span>
               {isMyPlayer && (
-                <span className="shrink-0 rounded bg-red-500/15 border border-red-500/30 px-1.5 py-0.2 text-[9px] font-bold text-red-600 dark:text-red-400 uppercase tracking-wider">
+                <span className="shrink-0 rounded bg-red-600/30 border border-red-500/50 px-1.5 py-0.2 text-[9px] font-black text-red-300 uppercase tracking-wider">
                   {dict.common.me}
                 </span>
               )}
             </div>
 
-            <div className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400 truncate mt-0.5">
+            <div className="flex items-center gap-1.5 text-xs text-zinc-400 truncate mt-0.5">
               <span
                 className="truncate cursor-default font-normal"
                 title={`Clan: ${player.clanName || dict.table.noClan}`}
@@ -188,11 +188,11 @@ export function PlayerRow({
 
               {player.playerTag && (
                 <>
-                  <span className="text-zinc-300 dark:text-zinc-700 select-none shrink-0">•</span>
+                  <span className="text-zinc-600 select-none shrink-0">•</span>
                   <button
                     type="button"
                     onClick={handleCopyTag}
-                    className="group/tag inline-flex items-center gap-1 shrink-0 font-mono text-[10px] text-zinc-400 hover:text-amber-500 dark:text-zinc-500 dark:hover:text-amber-400 cursor-pointer select-none transition-colors"
+                    className="group/tag inline-flex items-center gap-1 shrink-0 font-mono text-[10px] text-zinc-400 hover:text-amber-400 cursor-pointer select-none transition-colors"
                     title={dict.header.copyTagTooltip}
                   >
                     <span>{player.playerTag}</span>
@@ -245,7 +245,7 @@ export function PlayerRow({
                 e.stopPropagation()
                 onOpenBattleLog?.(player)
               }}
-              className="inline-flex items-center rounded-md border border-[#27272a] bg-[#18181b] px-2 py-0.5 text-[11px] font-medium text-zinc-300 hover:border-red-500/50 hover:bg-[#202023] hover:text-white transition-colors cursor-pointer select-none shadow-2xs"
+              className="inline-flex items-center rounded-md border border-red-500/60 bg-red-950/40 px-2.5 py-0.5 text-[11px] font-bold text-white hover:bg-red-600 hover:border-red-500 transition-all cursor-pointer select-none shadow-xs"
               title={dict.battleLog.viewLogTooltip}
             >
               <span>{dict.battleLog.actionLog}</span>
@@ -319,7 +319,7 @@ export function PlayerRow({
             className={
               isMyPlayer
                 ? 'text-red-400 font-black'
-                : 'text-zinc-300'
+                : 'text-white font-bold'
             }
           >
             {formatNumber(player.maxPossibleCups)}

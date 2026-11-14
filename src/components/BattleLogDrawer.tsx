@@ -192,7 +192,7 @@ export function BattleLogDrawer({
           <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-red-600 via-amber-400 to-red-600 shadow-[0_0_12px_rgba(245,158,11,0.5)]" />
 
           {/* Header Drawer: Thông tin người chơi & nút đóng */}
-          <div className="p-4 sm:p-5 border-b border-[#27272a] bg-[#111113] space-y-3.5">
+          <div className="p-4 sm:p-5 border-b border-amber-500/25 bg-[#0c0c0f] space-y-3.5">
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3 min-w-0">
                 <RankBadge rank={player.rank} className="shrink-0 scale-105" />
@@ -209,7 +209,7 @@ export function BattleLogDrawer({
                       {player.name}
                     </h2>
                     {isCurrentPlayerMe && (
-                      <span className="shrink-0 rounded bg-red-500/15 border border-red-500/30 px-1.5 py-0.5 text-[9px] font-bold text-red-400 uppercase tracking-wider">
+                      <span className="shrink-0 rounded bg-red-600/30 border border-red-500/50 px-1.5 py-0.5 text-[9px] font-black text-red-300 uppercase tracking-wider">
                         {dict.common.me}
                       </span>
                     )}
@@ -245,7 +245,7 @@ export function BattleLogDrawer({
               <button
                 type="button"
                 onClick={handleClose}
-                className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[#27272a] bg-[#18181b] text-zinc-400 shadow-2xs hover:bg-[#202023] hover:text-white transition-colors cursor-pointer"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-amber-500/30 bg-[#121216] text-white shadow-2xs hover:bg-red-600 hover:border-red-500 transition-colors cursor-pointer"
                 title={dict.common.close}
               >
                 <X weight="bold" className="h-4 w-4" />
@@ -270,7 +270,7 @@ export function BattleLogDrawer({
             </div>
 
             {/* Bộ chuyển đổi Tab: Tấn công (Đỏ) & Phòng thủ (Vàng) */}
-            <div className="grid grid-cols-2 gap-1.5 rounded-lg border border-[#27272a] bg-[#18181b] p-1">
+            <div className="grid grid-cols-2 gap-1.5 rounded-lg border border-amber-500/30 bg-[#121216] p-1">
               <button
                 type="button"
                 onClick={() => setActiveTab('attacks')}
@@ -285,7 +285,7 @@ export function BattleLogDrawer({
                 <span className={`rounded px-1.5 py-0.2 text-[10px] font-bold ${
                   activeTab === 'attacks'
                     ? 'bg-red-800/80 text-white'
-                    : 'bg-[#27272a] text-zinc-400'
+                    : 'bg-[#18181e] text-zinc-400'
                 }`}>
                   {attackLogs.length}
                 </span>
@@ -305,7 +305,7 @@ export function BattleLogDrawer({
                 <span className={`rounded px-1.5 py-0.2 text-[10px] font-bold ${
                   activeTab === 'defenses'
                     ? 'bg-amber-600/30 text-black font-black'
-                    : 'bg-[#27272a] text-zinc-400'
+                    : 'bg-[#18181e] text-zinc-400'
                 }`}>
                   {defenseLogs.length}
                 </span>
@@ -315,9 +315,9 @@ export function BattleLogDrawer({
 
           {/* Dải tổng hợp thông số hiệu suất (Summary Strip) */}
           {!isLoading && !error && currentLogs.length > 0 && (
-            <div className="px-4 sm:px-5 py-2.5 border-b border-[#27272a] bg-[#0d0d0f]">
+            <div className="px-4 sm:px-5 py-2.5 border-b border-amber-500/20 bg-[#08080b]">
               <div className="grid grid-cols-4 gap-2 text-center">
-                <div className="p-2 rounded-md border border-[#27272a] bg-[#111113] shadow-2xs">
+                <div className="p-2 rounded-md border border-amber-500/25 bg-[#0e0e12] shadow-2xs">
                   <span className="block text-[10px] text-zinc-400 uppercase tracking-wider font-semibold">
                     {dict.battleLog.totalBattles}
                   </span>
@@ -325,7 +325,7 @@ export function BattleLogDrawer({
                     {summary.total}
                   </span>
                 </div>
-                <div className="p-2 rounded-md border border-[#27272a] bg-[#111113] shadow-2xs">
+                <div className="p-2 rounded-md border border-amber-500/25 bg-[#0e0e12] shadow-2xs">
                   <span className="block text-[10px] text-zinc-400 uppercase tracking-wider font-semibold">
                     {dict.battleLog.avgStars}
                   </span>
@@ -333,7 +333,7 @@ export function BattleLogDrawer({
                     {summary.avgStars}★
                   </span>
                 </div>
-                <div className="p-2 rounded-md border border-[#27272a] bg-[#111113] shadow-2xs">
+                <div className="p-2 rounded-md border border-amber-500/25 bg-[#0e0e12] shadow-2xs">
                   <span className="block text-[10px] text-zinc-400 uppercase tracking-wider font-semibold">
                     {dict.battleLog.avgDestruction}
                   </span>
@@ -341,7 +341,7 @@ export function BattleLogDrawer({
                     {summary.avgDestruction}
                   </span>
                 </div>
-                <div className="p-2 rounded-md border border-[#27272a] bg-[#111113] shadow-2xs">
+                <div className="p-2 rounded-md border border-amber-500/25 bg-[#0e0e12] shadow-2xs">
                   <span className="block text-[10px] text-zinc-400 uppercase tracking-wider font-semibold">
                     {activeTab === 'attacks' ? dict.battleLog.totalCupsWon : dict.battleLog.totalCupsDefense}
                   </span>
@@ -399,8 +399,8 @@ export function BattleLogDrawer({
 
             {/* 3. Trạng thái Không có trận nào (Empty) */}
             {!isLoading && !error && currentLogs.length === 0 && (
-              <div className="rounded-xl border border-[#27272a] bg-[#111113] p-8 text-center space-y-2">
-                <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-lg border border-[#27272a] bg-[#18181b] text-zinc-400 shadow-2xs">
+              <div className="rounded-xl border border-amber-500/25 bg-[#0e0e12] p-8 text-center space-y-2">
+                <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-lg border border-amber-500/30 bg-[#121216] text-zinc-400 shadow-2xs">
                   {activeTab === 'attacks' ? (
                     <Sword weight="bold" className="h-5 w-5 text-red-400" />
                   ) : (
@@ -423,7 +423,7 @@ export function BattleLogDrawer({
                   return (
                     <div
                       key={`${log.opponentPlayerTag}-${log.creationTime || index}`}
-                      className="group relative rounded-lg border border-[#27272a] bg-[#111113] p-3 shadow-2xs transition-colors hover:border-[#3f3f46]"
+                      className="group relative rounded-lg border border-amber-500/25 bg-[#0e0e12] p-3 shadow-2xs transition-colors hover:border-amber-500/45"
                     >
                       {/* Dòng trên: Tên & Tag đối thủ, Huy hiệu đặc biệt, Thời gian */}
                       <div className="flex items-start justify-between gap-2">
@@ -433,7 +433,7 @@ export function BattleLogDrawer({
                               {log.opponentName || log.opponentPlayerTag}
                             </span>
                             {isOpponentMe && (
-                              <span className="rounded bg-red-500/15 border border-red-500/30 px-1.5 py-0.2 text-[9px] font-bold text-red-400 uppercase tracking-wider">
+                              <span className="rounded bg-red-600/30 border border-red-500/50 px-1.5 py-0.2 text-[9px] font-black text-red-300 uppercase tracking-wider">
                                 {dict.battleLog.versusYou}
                               </span>
                             )}
@@ -451,7 +451,7 @@ export function BattleLogDrawer({
                       </div>
 
                       {/* Dòng dưới: 3 Sao (Stars), % Phá hủy, Cúp */}
-                      <div className="mt-2.5 flex items-center justify-between border-t border-[#27272a] pt-2">
+                      <div className="mt-2.5 flex items-center justify-between border-t border-amber-500/15 pt-2">
                         {/* Biểu tượng 3 ngôi sao */}
                         <div className="flex items-center gap-0.5">
                           {[1, 2, 3].map((starIdx) => (
@@ -478,7 +478,7 @@ export function BattleLogDrawer({
                                 ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
                                 : log.destructionPercentage >= 70
                                   ? 'bg-red-500/15 text-red-300 border border-red-500/30'
-                                  : 'bg-[#18181b] text-zinc-300 border border-[#27272a]'
+                                  : 'bg-[#121216] text-white border border-amber-500/25'
                             }`}
                           >
                             {log.destructionPercentage}%

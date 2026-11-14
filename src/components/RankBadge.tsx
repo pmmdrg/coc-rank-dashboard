@@ -50,7 +50,7 @@ export function RankBadge({ rank, title, className = '', size = 'md' }: RankBadg
 
   return (
     <div
-      className={`inline-flex shrink-0 items-center justify-center rounded-md border border-[#27272a] bg-[#18181b] font-mono font-medium text-zinc-400 select-none ${sizeClasses} ${className}`}
+      className={`inline-flex shrink-0 items-center justify-center rounded-md border border-amber-500/25 bg-[#121216] font-mono font-bold text-white select-none ${sizeClasses} ${className}`}
       title={title || `#${rank}`}
     >
       #{rank}

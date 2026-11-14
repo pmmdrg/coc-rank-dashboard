@@ -12,25 +12,25 @@
 
 :root {
   overflow-anchor: none;
-  --app-bg: #09090b;
-  --panel-bg: #111113;
-  --panel-border: #27272a;
-  --header-bg: rgba(17, 17, 19, 0.95);
-  --field-bg: #18181b;
-  --field-border: #27272a;
-  --field-text: #f4f4f5;
-  --soft-table-head: #0d0d0f;
-  --table-head-text: #a1a1aa;
-  --row-mine: rgba(220, 38, 38, 0.14);
-  --row-mine-hover: rgba(220, 38, 38, 0.22);
-  --row-risk: rgba(220, 38, 38, 0.16);
-  --row-risk-hover: rgba(220, 38, 38, 0.24);
-  --row-below: rgba(245, 158, 11, 0.12);
-  --row-below-hover: rgba(245, 158, 11, 0.2);
-  --text-main: #f4f4f5;
-  --text-muted: #a1a1aa;
-  color: #f4f4f5;
-  background: #09090b;
+  --app-bg: #060608;
+  --panel-bg: #0c0c0f;
+  --panel-border: rgba(245, 158, 11, 0.25);
+  --header-bg: rgba(10, 10, 13, 0.96);
+  --field-bg: #121216;
+  --field-border: rgba(245, 158, 11, 0.3);
+  --field-text: #ffffff;
+  --soft-table-head: #08080a;
+  --table-head-text: #ffffff;
+  --row-mine: rgba(220, 38, 38, 0.18);
+  --row-mine-hover: rgba(220, 38, 38, 0.26);
+  --row-risk: rgba(220, 38, 38, 0.18);
+  --row-risk-hover: rgba(220, 38, 38, 0.26);
+  --row-below: rgba(245, 158, 11, 0.14);
+  --row-below-hover: rgba(245, 158, 11, 0.22);
+  --text-main: #ffffff;
+  --text-muted: #e4e4e7;
+  color: #ffffff;
+  background: #060608;
   color-scheme: dark;
   font-family: var(--font-sans);
   font-synthesis: none;
@@ -42,8 +42,8 @@
 body {
   margin: 0;
   min-width: 320px;
-  background: #09090b;
-  color: #f4f4f5;
+  background: #060608;
+  color: #ffffff;
   min-height: 100vh;
 }
 
@@ -63,16 +63,16 @@ select:focus-visible {
 }
 
 .app-surface {
-  background: #09090b;
+  background: #060608;
   min-height: 100vh;
   position: relative;
 }
 
-/* Modern Dashboard Card Surface (Neutral Dark Charcoal) */
+/* Modern Dashboard Card Surface (Deep Black with Gold Border) */
 .glass-panel {
   border: 1px solid var(--panel-border);
   background: var(--panel-bg);
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.6);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -81,7 +81,7 @@ select:focus-visible {
   background: var(--header-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 
@@ -92,9 +92,9 @@ select:focus-visible {
 }
 
 .glass-drawer {
-  background: #111113;
+  background: #0a0a0d;
   border-left: 1px solid var(--panel-border);
-  box-shadow: -10px 0 35px -5px rgba(0, 0, 0, 0.7);
+  box-shadow: -10px 0 40px -5px rgba(0, 0, 0, 0.85);
 }
 
 .soft-field {
@@ -154,8 +154,8 @@ select:focus-visible {
   min-height: 36px;
   padding: 3px;
   border-radius: 8px;
-  background: #18181b;
-  border: 1px solid #27272a;
+  background: #121216;
+  border: 1px solid var(--panel-border);
   position: relative;
   isolation: isolate;
   box-sizing: border-box;
@@ -167,9 +167,9 @@ select:focus-visible {
   top: 0;
   left: 0;
   border-radius: 6px;
-  background: #272228;
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.6);
+  background: #1c1c22;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.7);
   box-sizing: border-box;
   pointer-events: none;
   z-index: 1;
@@ -188,7 +188,7 @@ select:focus-visible {
   font-weight: 500;
   border-radius: 6px;
   min-height: 28px;
-  color: #a1a1aa;
+  color: #d4d4d8;
   transition: color 0.15s ease;
   cursor: pointer;
   user-select: none;
@@ -208,25 +208,31 @@ select:focus-visible {
 
 .apple-segmented-item.is-active {
   color: #ffffff;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 /* Fallback khi không có sliding indicator */
 .apple-segmented-container:not(:has(.apple-segmented-slider)) .apple-segmented-item.is-active {
-  background: #272228;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  background: #1c1c22;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.6);
 }
 
 /* Nút thu gọn / mở rộng tiêu chuẩn */
 .liquid-collapse-btn {
   min-height: 32px;
   border-radius: 8px;
-  background: #18181b;
-  border: 1px solid #27272a;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-  color: #a1a1aa;
+  background: #121216;
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  color: #ffffff;
   box-sizing: border-box;
   transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.liquid-collapse-btn:hover {
+  background: #1c1c22;
+  border-color: rgba(245, 158, 11, 0.45);
+  color: #ffffff;
 }
 
 .liquid-collapse-btn:hover {
@@ -263,44 +269,36 @@ select:focus-visible {
 
 /* Explicit class .dark override */
 html.dark {
-  --app-bg: #09090b;
-  --panel-bg: #111113;
-  --panel-border: #27272a;
-  --header-bg: rgba(18, 17, 20, 0.94);
-  --field-bg: #18181b;
-  --field-border: #27272a;
+  --app-bg: #060608;
+  --panel-bg: #0c0c0f;
+  --panel-border: rgba(245, 158, 11, 0.25);
+  --header-bg: rgba(10, 10, 13, 0.96);
+  --field-bg: #121216;
+  --field-border: rgba(245, 158, 11, 0.3);
   --field-text: #ffffff;
-  --soft-table-head: #0d0d0f;
-  --table-head-text: #a1a1aa;
-  --row-mine: rgba(220, 38, 38, 0.16);
-  --row-mine-hover: rgba(220, 38, 38, 0.24);
-  --row-risk: rgba(220, 38, 38, 0.2);
-  --row-risk-hover: rgba(220, 38, 38, 0.3);
-  --row-below: rgba(245, 158, 11, 0.16);
-  --row-below-hover: rgba(245, 158, 11, 0.24);
+  --soft-table-head: #08080a;
+  --table-head-text: #ffffff;
+  --row-mine: rgba(220, 38, 38, 0.18);
+  --row-mine-hover: rgba(220, 38, 38, 0.26);
+  --row-risk: rgba(220, 38, 38, 0.18);
+  --row-risk-hover: rgba(220, 38, 38, 0.26);
+  --row-below: rgba(245, 158, 11, 0.14);
+  --row-below-hover: rgba(245, 158, 11, 0.22);
   --text-main: #ffffff;
-  --text-muted: #a1a1aa;
-  color: #f4f4f5;
-  background: #09090b;
+  --text-muted: #e4e4e7;
+  color: #ffffff;
+  background: #060608;
   color-scheme: dark;
 }
 
-html.dark .app-surface::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 5%;
-  right: 5%;
-  height: 320px;
-  background: radial-gradient(ellipse at 50% 0%, rgba(220, 38, 38, 0.14) 0%, rgba(245, 158, 11, 0.04) 45%, transparent 70%);
-  pointer-events: none;
-  z-index: 0;
+html.dark .app-surface {
+  background: #060608;
 }
 
 html.dark .glass-panel {
   border: 1px solid var(--panel-border);
-  background: rgba(18, 17, 20, 0.95);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
+  background: var(--panel-bg);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.6);
 }
 
 html.dark .glass-header {
@@ -308,59 +306,65 @@ html.dark .glass-header {
   background: var(--header-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
 }
 
 html.dark .glass-footer {
   border-top: 1px solid var(--panel-border);
-  background: #111113;
+  background: var(--panel-bg);
 }
 
 html.dark .glass-drawer {
-  background: #111113;
+  background: #0a0a0d;
   border-left: 1px solid var(--panel-border);
-  box-shadow: -10px 0 35px -5px rgba(0, 0, 0, 0.7);
+  box-shadow: -10px 0 40px -5px rgba(0, 0, 0, 0.85);
 }
 
 html.dark .apple-segmented-container {
-  background: #18181b;
-  border: 1px solid #27272a;
+  background: #121216;
+  border: 1px solid var(--panel-border);
 }
 
 html.dark .apple-segmented-slider {
-  background: #272228;
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.6);
+  background: #1c1c22;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.7);
 }
 
 html.dark .apple-segmented-item {
-  color: #a1a1aa;
+  color: #d4d4d8;
 }
 
 html.dark .apple-segmented-item:hover {
   color: #ffffff;
-  background: transparent;
 }
 
 html.dark .apple-segmented-item.is-active {
   color: #ffffff;
+  font-weight: 700;
 }
 
 html.dark .apple-segmented-container:not(:has(.apple-segmented-slider)) .apple-segmented-item.is-active {
-  background: #272228;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  background: #1c1c22;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.6);
 }
 
 html.dark .liquid-collapse-btn {
-  background: #18181b;
-  border: 1px solid #27272a;
-  color: #a1a1aa;
+  background: #121216;
+  border: 1px solid var(--panel-border);
+  color: #ffffff;
 }
 
 html.dark .liquid-collapse-btn:hover {
-  background: #272228;
-  border-color: rgba(239, 68, 68, 0.4);
+  background: #1c1c22;
+  border-color: rgba(245, 158, 11, 0.45);
   color: #ffffff;
+}
+
+html.dark .hero-stat-card {
+  background: #0e0e12;
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.6);
 }
 
 @keyframes modal-backdrop-in {

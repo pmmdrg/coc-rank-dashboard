@@ -109,7 +109,7 @@ export function Sidebar({
         </div>
 
         {/* Thẻ tóm tắt người chơi & Ô đổi Player Tag */}
-        <div className="rounded-xl border border-[#27272a] border-t-2 border-t-amber-500/50 bg-[#111113] p-3 shadow-xs">
+        <div className="rounded-xl border border-amber-500/30 bg-[#0e0e12] p-3 shadow-xs">
           <div className="flex items-center gap-3">
             <div className="relative shrink-0">
               <img
@@ -121,7 +121,7 @@ export function Sidebar({
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center justify-between gap-1">
-                <span className="truncate text-xs font-semibold text-white">
+                <span className="truncate text-xs font-bold text-white">
                   {myPlayerName && myPlayerName !== '--' ? myPlayerName : dict.header.noAccount}
                 </span>
                 <span className="shrink-0 text-[10px] text-amber-400 font-bold">
@@ -134,7 +134,7 @@ export function Sidebar({
           {/* Ô nhập Player Tag đổi nhanh với nút copy bên trong & icon Sync */}
           <div className="mt-2.5 flex items-center gap-1.5">
             <div className="group relative flex-1">
-              <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 font-mono text-[11px] font-bold text-amber-500">
+              <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 font-mono text-[11px] font-bold text-amber-400">
                 #
               </span>
               <input
@@ -147,7 +147,7 @@ export function Sidebar({
                   }
                 }}
                 placeholder={dict.header.tagPlaceholder}
-                className="h-8 w-full rounded-lg border border-[#27272a] bg-[#111113] pl-5 pr-7 font-mono text-[11px] font-semibold tracking-wider text-white placeholder:text-zinc-500 placeholder:font-normal focus:border-red-500 focus:outline-none"
+                className="h-8 w-full rounded-lg border border-amber-500/30 bg-[#141418] pl-5 pr-7 font-mono text-[11px] font-bold tracking-wider text-white placeholder:text-zinc-500 placeholder:font-normal focus:border-amber-400 focus:outline-none"
               />
               {playerTag ? (
                 <button
@@ -169,12 +169,12 @@ export function Sidebar({
                 type="button"
                 disabled={isSyncingApi || playerTag.trim().length < 3}
                 onClick={() => onSyncCocApi(playerTag)}
-                className="apple-btn inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[#27272a] bg-[#18181b] text-zinc-300 hover:border-amber-500/50 hover:bg-[#202023] hover:text-amber-400 disabled:opacity-40 cursor-pointer transition-colors"
+                className="apple-btn inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-red-500/60 bg-red-600 text-white hover:bg-red-500 disabled:opacity-40 cursor-pointer shadow-xs transition-colors"
                 title={dict.header.syncApi}
               >
                 <ArrowsClockwise
                   weight="bold"
-                  className={`h-3.5 w-3.5 ${isSyncingApi ? 'animate-spin text-red-500' : ''}`}
+                  className={`h-3.5 w-3.5 ${isSyncingApi ? 'animate-spin' : ''}`}
                 />
               </button>
             )}
@@ -196,10 +196,10 @@ export function Sidebar({
                 key={item.id}
                 type="button"
                 onClick={() => handleSelectNav(item.id)}
-                className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-xs font-medium transition-colors cursor-pointer select-none ${
+                className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-xs font-semibold transition-colors cursor-pointer select-none ${
                   isActive
-                    ? 'bg-red-600 text-white font-semibold shadow-xs shadow-red-950/40'
-                    : 'text-zinc-400 hover:bg-[#18181b] hover:text-white'
+                    ? 'bg-red-600 text-white font-bold shadow-md shadow-red-950/60'
+                    : 'text-zinc-200 hover:bg-[#141418] hover:text-white'
                 }`}
               >
                 <Icon
@@ -214,33 +214,33 @@ export function Sidebar({
       </div>
 
       {/* PHẦN DƯỚI: NÚT CHIA SẺ, XUẤT FILE, CÀI ĐẶT */}
-      <div className="space-y-3 pt-4 border-t border-[#27272a]">
-        {/* Nút Chia sẻ thẻ thành tích - Phong cách TH19 Vàng ánh kim */}
+      <div className="space-y-3 pt-4 border-t border-amber-500/25">
+        {/* Nút Chia sẻ thẻ thành tích - Màu Đỏ nổi bật, viền Vàng ánh kim */}
         {onOpenShareCard && (
           <button
             type="button"
             onClick={onOpenShareCard}
-            className="flex w-full items-center justify-center gap-2 rounded-lg border border-amber-500/40 bg-gradient-to-r from-amber-500/10 to-amber-500/5 py-2 text-xs font-semibold text-amber-300 shadow-2xs hover:border-amber-400/70 hover:bg-amber-500/20 hover:text-amber-200 transition-colors cursor-pointer select-none"
+            className="flex w-full items-center justify-center gap-2 rounded-lg border border-amber-500/40 bg-red-600 hover:bg-red-500 py-2 text-xs font-bold text-white shadow-md shadow-red-950/40 transition-colors cursor-pointer select-none"
           >
-            <ShareNetwork weight="bold" className="h-3.5 w-3.5 text-amber-400" />
+            <ShareNetwork weight="bold" className="h-3.5 w-3.5 text-white" />
             <span>{dict.header.shareCard}</span>
           </button>
         )}
 
         {/* Nút Xuất JSON / CSV */}
-        <div className="flex items-center gap-1 rounded-lg border border-zinc-800 bg-zinc-900/60 p-0.5">
+        <div className="flex items-center gap-1 rounded-lg border border-amber-500/25 bg-[#0e0e12] p-0.5">
           <button
             type="button"
             onClick={() => onExport('json')}
-            className="apple-btn flex-1 rounded-md py-1 text-center text-[11px] font-medium text-zinc-400 hover:bg-zinc-800 hover:text-white transition-colors cursor-pointer"
+            className="apple-btn flex-1 rounded-md py-1 text-center text-[11px] font-semibold text-white hover:bg-red-600 hover:text-white transition-colors cursor-pointer"
           >
             JSON
           </button>
-          <span className="h-3 w-px bg-zinc-800" />
+          <span className="h-3 w-px bg-amber-500/30" />
           <button
             type="button"
             onClick={() => onExport('csv')}
-            className="apple-btn flex-1 rounded-md py-1 text-center text-[11px] font-medium text-zinc-400 hover:bg-zinc-800 hover:text-white transition-colors cursor-pointer"
+            className="apple-btn flex-1 rounded-md py-1 text-center text-[11px] font-semibold text-white hover:bg-red-600 hover:text-white transition-colors cursor-pointer"
           >
             CSV
           </button>
@@ -249,7 +249,7 @@ export function Sidebar({
         {/* Nút Ngôn ngữ */}
         <div className="flex items-center justify-between px-1">
           <LanguageSwitcher />
-          <span className="text-[10px] text-amber-400/80 font-mono font-bold">
+          <span className="text-[10px] text-amber-400 font-mono font-bold">
             v{APP_VERSION}
           </span>
         </div>
@@ -260,7 +260,7 @@ export function Sidebar({
   return (
     <>
       {/* 1. DESKTOP SIDEBAR: Cố định bên trái màn hình */}
-      <aside className="!fixed inset-y-0 left-0 hidden h-screen w-64 shrink-0 flex-col border-r border-[#27272a] bg-[#111113]/95 backdrop-blur-md lg:flex z-30">
+      <aside className="!fixed inset-y-0 left-0 hidden h-screen w-64 shrink-0 flex-col border-r border-amber-500/25 bg-[#0a0a0d] lg:flex z-30">
         {sidebarContent}
       </aside>
 
@@ -268,10 +268,10 @@ export function Sidebar({
       {isMobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div
-            className="fixed inset-0 bg-black/70 backdrop-blur-xs animate-fade-in"
+            className="fixed inset-0 bg-black/75 backdrop-blur-xs animate-fade-in"
             onClick={onCloseMobile}
           />
-          <aside className="relative flex h-full w-64 flex-col border-r border-[#27272a] bg-[#111113] shadow-2xl animate-slide-right">
+          <aside className="relative flex h-full w-64 flex-col border-r border-amber-500/25 bg-[#0a0a0d] shadow-2xl animate-slide-right">
             {sidebarContent}
           </aside>
         </div>
