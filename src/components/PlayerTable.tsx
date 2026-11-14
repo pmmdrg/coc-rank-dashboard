@@ -293,8 +293,8 @@ export function PlayerTable({
       opts.push({
         value: 'promotion',
         label: <span>{interpolate(dict.table.filterPromotion, { count: Math.min(promotionCount, rankedPlayers.length) })}</span>,
-        activeColorClass: 'text-emerald-700 dark:text-emerald-300',
-        hoverColorClass: 'hover:text-emerald-600 dark:hover:text-emerald-400',
+        activeColorClass: 'text-amber-700 dark:text-amber-300',
+        hoverColorClass: 'hover:text-amber-600 dark:hover:text-amber-400',
       })
     }
 
@@ -302,8 +302,8 @@ export function PlayerTable({
       opts.push({
         value: 'demotion',
         label: <span>{interpolate(dict.table.filterDemotion, { count: Math.min(demotionCount, rankedPlayers.length) })}</span>,
-        activeColorClass: 'text-rose-700 dark:text-rose-300',
-        hoverColorClass: 'hover:text-rose-600 dark:hover:text-rose-400',
+        activeColorClass: 'text-red-700 dark:text-red-300',
+        hoverColorClass: 'hover:text-red-600 dark:hover:text-red-400',
       })
     }
 
@@ -311,8 +311,8 @@ export function PlayerTable({
       opts.push({
         value: 'matchup',
         label: <span>{interpolate(dict.table.filterMatchup, { count: matchupPlayerIds.size })}</span>,
-        activeColorClass: 'text-indigo-700 dark:text-indigo-300',
-        hoverColorClass: 'hover:text-indigo-600 dark:hover:text-indigo-400',
+        activeColorClass: 'text-red-700 dark:text-red-300',
+        hoverColorClass: 'hover:text-red-600 dark:hover:text-red-400',
       })
     }
 
@@ -320,8 +320,8 @@ export function PlayerTable({
       opts.push({
         value: 'canPass',
         label: <span>{interpolate(dict.table.filterCanPass, { count: canPassPlayerIds.size })}</span>,
-        activeColorClass: 'text-amber-700 dark:text-amber-300',
-        hoverColorClass: 'hover:text-amber-600 dark:hover:text-amber-400',
+        activeColorClass: 'text-red-700 dark:text-red-300',
+        hoverColorClass: 'hover:text-red-600 dark:hover:text-red-400',
       })
     }
 
@@ -376,18 +376,18 @@ export function PlayerTable({
             {/* Trạng thái cập nhật */}
             {isSyncingApi ? (
               <span
-                className="inline-flex h-6 items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 px-2.5 text-[11px] font-bold leading-none text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 shadow-2xs"
+                className="inline-flex h-6 items-center gap-1.5 rounded-full border border-red-500/30 bg-red-500/10 px-2.5 text-[11px] font-bold leading-none text-red-700 dark:bg-red-950/60 dark:text-red-300 shadow-2xs"
                 title={dict.table.syncingApi}
               >
-                <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 animate-ping" />
+                <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-red-500 animate-ping" />
                 <span>{dict.table.syncingApi}</span>
               </span>
             ) : (
               <span
-                className="inline-flex h-6 items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 text-[11px] font-bold leading-none text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 shadow-2xs"
+                className="inline-flex h-6 items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 text-[11px] font-bold leading-none text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 shadow-2xs"
                 title={season.lastSyncedAt ? interpolate(dict.table.syncedApi, { time: season.lastSyncedAt }) : dict.table.syncedApiNoTime}
               >
-                <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 animate-pulse" />
                 <span>
                   {season.lastSyncedAt
                     ? interpolate(dict.table.syncedApi, { time: season.lastSyncedAt })
@@ -397,7 +397,7 @@ export function PlayerTable({
             )}
 
             {isFiltered && (
-              <span className="inline-flex h-6 items-center rounded-full bg-sky-500/10 px-2.5 text-[11px] font-bold leading-none text-sky-700 dark:bg-sky-400/15 dark:text-sky-300 border border-sky-500/30 shadow-2xs">
+              <span className="inline-flex h-6 items-center rounded-full bg-red-500/10 px-2.5 text-[11px] font-bold leading-none text-red-700 dark:bg-red-400/15 dark:text-red-300 border border-red-500/30 shadow-2xs">
                 {interpolate(dict.table.showingCount, { shown: effectivePlayers.length, total: rankedPlayers.length })}
               </span>
             )}
@@ -577,7 +577,7 @@ export function PlayerTable({
                           setFilterTab('all')
                           setSearchQuery('')
                         }}
-                        className="mt-2 inline-flex h-8 items-center rounded-lg bg-sky-600 px-3.5 text-xs font-semibold text-white hover:bg-sky-500 cursor-pointer shadow-xs transition-all"
+                        className="mt-2 inline-flex h-8 items-center rounded-lg bg-red-600 px-3.5 text-xs font-semibold text-white hover:bg-red-500 cursor-pointer shadow-xs transition-all"
                       >
                         {dict.table.backToAll}
                       </button>
@@ -625,16 +625,16 @@ export function PlayerTable({
                       style={{ animationDelay: `${Math.min(index * 18, 180)}ms` }}
                     />
 
-                    {/* Vạch Phân Cách Thăng Hạng */}
+                    {/* Vạch Phân Cách Thăng Hạng - Vàng Ánh Kim TH19 */}
                     {isAfterPromotionLine && (
                       <tr key="divider-promotion" className="select-none animate-fade-in">
                         <td colSpan={7} className="p-0 laser-line-emerald">
-                          <div className="flex items-center justify-between px-5 py-2 text-xs font-black text-emerald-800 dark:text-emerald-300">
+                          <div className="flex items-center justify-between px-5 py-2 text-xs font-black text-amber-800 dark:text-amber-300">
                             <span className="flex items-center gap-2 tracking-wider uppercase">
-                              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-white text-[10px] font-black shadow-xs">▲</span>
+                              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-500 text-black text-[10px] font-black shadow-xs">▲</span>
                               <span>{interpolate(dict.table.laserPromotionTitle, { count: promotionCount })}</span>
                             </span>
-                            <span className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">
+                            <span className="text-[11px] font-semibold text-amber-700 dark:text-amber-400">
                               {dict.table.laserPromotionSub}
                             </span>
                           </div>
@@ -642,16 +642,16 @@ export function PlayerTable({
                       </tr>
                     )}
 
-                    {/* Vạch Phân Cách Xuống Hạng */}
+                    {/* Vạch Phân Cách Xuống Hạng - Đỏ Thẫm TH19 */}
                     {isBeforeDemotionLine && (
                       <tr key="divider-demotion" className="select-none animate-fade-in">
                         <td colSpan={7} className="p-0 laser-line-rose">
-                          <div className="flex items-center justify-between px-5 py-2 text-xs font-black text-rose-800 dark:text-rose-300">
+                          <div className="flex items-center justify-between px-5 py-2 text-xs font-black text-red-800 dark:text-red-300">
                             <span className="flex items-center gap-2 tracking-wider uppercase">
-                              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-rose-500 text-white text-[10px] font-black shadow-xs">▼</span>
+                              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-white text-[10px] font-black shadow-xs">▼</span>
                               <span>{interpolate(dict.table.laserDemotionTitle, { count: demotionCount })}</span>
                             </span>
-                            <span className="text-[11px] font-semibold text-rose-700 dark:text-rose-400">
+                            <span className="text-[11px] font-semibold text-red-700 dark:text-red-400">
                               {dict.table.laserDemotionSub}
                             </span>
                           </div>
@@ -667,11 +667,11 @@ export function PlayerTable({
       </div>
     </div>
 
-      {/* 4. Chú thích biểu tượng & trạng thái */}
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-slate-200/80 bg-slate-50/50 px-4 py-2.5 text-xs text-slate-500 dark:border-slate-800/80 dark:bg-slate-900/30 dark:text-slate-400">
-        <span className="font-semibold text-slate-700 dark:text-slate-300">{dict.table.legendTitle}</span>
+      {/* 4. Chú thích biểu tượng & trạng thái - Chuẩn TH19 */}
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-zinc-200/80 bg-zinc-50/50 px-4 py-2.5 text-xs text-zinc-500 dark:border-zinc-800/80 dark:bg-zinc-900/40 dark:text-zinc-400">
+        <span className="font-semibold text-zinc-700 dark:text-zinc-300">{dict.table.legendTitle}</span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-xs border-l-2 border-l-sky-500 bg-sky-400/20" />
+          <span className="h-2.5 w-2.5 rounded-xs border-l-2 border-l-red-600 bg-red-500/20" />
           {dict.table.legendMine}
         </span>
         <span className="inline-flex items-center gap-1">
@@ -679,25 +679,25 @@ export function PlayerTable({
           {dict.table.legendCanPass}
         </span>
         {promotionCount > 0 && (
-          <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          <span className="inline-flex items-center gap-1 text-amber-600 dark:text-amber-400 font-medium">
+            <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
             {interpolate(dict.table.legendPromotion, { count: promotionCount })}
           </span>
         )}
         {demotionCount > 0 && (
-          <span className="inline-flex items-center gap-1 text-rose-600 dark:text-rose-400 font-medium">
-            <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
+          <span className="inline-flex items-center gap-1 text-red-600 dark:text-red-400 font-medium">
+            <span className="h-1.5 w-1.5 rounded-full bg-red-600" />
             {interpolate(dict.table.legendDemotion, { count: demotionCount })}
           </span>
         )}
         <span className="inline-flex items-center gap-1.5">
-          <span className="inline-block px-1.5 py-0.2 rounded text-[9px] font-bold bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
+          <span className="inline-block px-1.5 py-0.2 rounded text-[9px] font-bold bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30">
             {dict.table.attackedByMe}
           </span>
           {dict.table.legendYouAttacked}
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="inline-block px-1.5 py-0.2 rounded text-[9px] font-bold bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30">
+          <span className="inline-block px-1.5 py-0.2 rounded text-[9px] font-bold bg-red-500/15 text-red-700 dark:text-red-300 border border-red-500/30">
             {dict.table.attackedMe}
           </span>
           {dict.table.legendOpponentAttacked}

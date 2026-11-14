@@ -12,21 +12,21 @@
 
 :root {
   overflow-anchor: none;
-  --app-bg: #f8fafc;
+  --app-bg: #fafafa;
   --panel-bg: #ffffff;
-  --panel-border: #e2e8f0;
-  --header-bg: rgba(255, 255, 255, 0.92);
+  --panel-border: #e4e4e7;
+  --header-bg: rgba(255, 255, 255, 0.94);
   --field-bg: #ffffff;
-  --field-border: #cbd5e1;
-  --field-text: #0f172a;
-  --soft-table-head: #f8fafc;
-  --table-head-text: #64748b;
-  --row-mine: rgba(14, 165, 233, 0.08);
-  --row-mine-hover: rgba(14, 165, 233, 0.14);
-  --text-main: #0f172a;
-  --text-muted: #64748b;
-  color: #0f172a;
-  background: #f8fafc;
+  --field-border: #d4d4d8;
+  --field-text: #09090b;
+  --soft-table-head: #f4f4f5;
+  --table-head-text: #71717a;
+  --row-mine: rgba(220, 38, 38, 0.08);
+  --row-mine-hover: rgba(220, 38, 38, 0.14);
+  --text-main: #09090b;
+  --text-muted: #71717a;
+  color: #09090b;
+  background: #fafafa;
   font-family: var(--font-sans);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -53,7 +53,7 @@ body {
 button:focus-visible,
 input:focus-visible,
 select:focus-visible {
-  outline: 2px solid #38bdf8;
+  outline: 2px solid #ef4444;
   outline-offset: 2px;
 }
 
@@ -254,36 +254,48 @@ select:focus-visible {
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
 }
 
-/* Dark theme variables: Midnight Obsidian Tone */
+/* Dark theme variables: TH19 Obsidian Black, Crimson Red, White & Metallic Gold */
 
 /* Explicit class .dark override */
 html.dark {
-  --app-bg: #0b0f19;
-  --panel-bg: #0f172a;
-  --panel-border: #1e293b;
-  --header-bg: rgba(15, 23, 42, 0.90);
-  --field-bg: #1e293b;
-  --field-border: #334155;
-  --field-text: #f8fafc;
-  --soft-table-head: #0b1120;
-  --table-head-text: #94a3b8;
-  --row-mine: rgba(14, 165, 233, 0.16);
-  --row-mine-hover: rgba(14, 165, 233, 0.24);
-  --row-risk: rgba(244, 63, 94, 0.2);
-  --row-risk-hover: rgba(244, 63, 94, 0.3);
-  --row-below: rgba(16, 185, 129, 0.18);
-  --row-below-hover: rgba(16, 185, 129, 0.28);
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  color: #e2e8f0;
-  background: #0b0f19;
+  --app-bg: #09090b;
+  --panel-bg: #121114;
+  --panel-border: #272226;
+  --header-bg: rgba(18, 17, 20, 0.94);
+  --field-bg: #18171b;
+  --field-border: #322b31;
+  --field-text: #ffffff;
+  --soft-table-head: #0d0c0e;
+  --table-head-text: #a1a1aa;
+  --row-mine: rgba(220, 38, 38, 0.16);
+  --row-mine-hover: rgba(220, 38, 38, 0.24);
+  --row-risk: rgba(220, 38, 38, 0.2);
+  --row-risk-hover: rgba(220, 38, 38, 0.3);
+  --row-below: rgba(245, 158, 11, 0.16);
+  --row-below-hover: rgba(245, 158, 11, 0.24);
+  --text-main: #ffffff;
+  --text-muted: #a1a1aa;
+  color: #f4f4f5;
+  background: #09090b;
   color-scheme: dark;
+}
+
+html.dark .app-surface::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 5%;
+  right: 5%;
+  height: 320px;
+  background: radial-gradient(ellipse at 50% 0%, rgba(220, 38, 38, 0.14) 0%, rgba(245, 158, 11, 0.04) 45%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
 }
 
 html.dark .glass-panel {
   border: 1px solid var(--panel-border);
-  background: rgba(15, 23, 42, 0.85);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+  background: rgba(18, 17, 20, 0.95);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
 }
 
 html.dark .glass-header {
@@ -291,37 +303,37 @@ html.dark .glass-header {
   background: var(--header-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
 }
 
 html.dark .glass-footer {
   border-top: 1px solid var(--panel-border);
-  background: rgba(15, 23, 42, 0.85);
+  background: #121114;
 }
 
 html.dark .glass-drawer {
-  background: #0f172a;
+  background: #121114;
   border-left: 1px solid var(--panel-border);
-  box-shadow: -10px 0 30px -5px rgba(0, 0, 0, 0.5);
+  box-shadow: -10px 0 35px -5px rgba(0, 0, 0, 0.7);
 }
 
 html.dark .apple-segmented-container {
-  background: rgba(30, 41, 59, 0.6);
-  border: 1px solid #334155;
+  background: #18171b;
+  border: 1px solid #2e282d;
 }
 
 html.dark .apple-segmented-slider {
-  background: #1e293b;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  background: #272228;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.6);
 }
 
 html.dark .apple-segmented-item {
-  color: #94a3b8;
+  color: #a1a1aa;
 }
 
 html.dark .apple-segmented-item:hover {
-  color: #f8fafc;
+  color: #ffffff;
   background: transparent;
 }
 
@@ -330,20 +342,20 @@ html.dark .apple-segmented-item.is-active {
 }
 
 html.dark .apple-segmented-container:not(:has(.apple-segmented-slider)) .apple-segmented-item.is-active {
-  background: #1e293b;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  background: #272228;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
 }
 
 html.dark .liquid-collapse-btn {
-  background: rgba(30, 41, 59, 0.6);
-  border: 1px solid #334155;
-  color: #94a3b8;
+  background: #18171b;
+  border: 1px solid #2e282d;
+  color: #a1a1aa;
 }
 
 html.dark .liquid-collapse-btn:hover {
-  background: rgba(51, 65, 85, 0.7);
-  border-color: #475569;
-  color: #f8fafc;
+  background: #272228;
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ffffff;
 }
 
 @keyframes modal-backdrop-in {
@@ -721,17 +733,19 @@ select {
   will-change: transform, opacity;
 }
 
-/* Vạch phân chia khu vực thăng hạng / xuống hạng (Chuẩn bảng xếp hạng giải đấu) */
-.laser-line-emerald {
-  background: rgba(16, 185, 129, 0.08);
-  border-top: 1px solid rgba(16, 185, 129, 0.3);
-  border-bottom: 1px solid rgba(16, 185, 129, 0.3);
+/* Vạch phân chia khu vực thăng hạng / xuống hạng (Chuẩn TH19: Vàng ánh kim & Đỏ thẫm) */
+.laser-line-emerald,
+.zone-line-gold {
+  background: rgba(245, 158, 11, 0.08);
+  border-top: 1px solid rgba(245, 158, 11, 0.35);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.35);
 }
 
-.laser-line-rose {
-  background: rgba(244, 63, 94, 0.08);
-  border-top: 1px solid rgba(244, 63, 94, 0.3);
-  border-bottom: 1px solid rgba(244, 63, 94, 0.3);
+.laser-line-rose,
+.zone-line-crimson {
+  background: rgba(220, 38, 38, 0.08);
+  border-top: 1px solid rgba(220, 38, 38, 0.35);
+  border-bottom: 1px solid rgba(220, 38, 38, 0.35);
 }
 
 /* Thẻ chỉ số năng lực (.hero-stat-card) */
@@ -739,8 +753,8 @@ select {
   position: relative;
   border-radius: 12px;
   background: #ffffff;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+  border: 1px solid #e4e4e7;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   overflow: hidden;
 }
@@ -751,8 +765,8 @@ select {
 
 .hero-stat-card:hover {
   transform: translateY(-2px);
-  border-color: #cbd5e1;
-  box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.08);
+  border-color: #d4d4d8;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08);
 }
 
 .hero-stat-card:active {
@@ -760,9 +774,9 @@ select {
 }
 
 html.dark .hero-stat-card {
-  background: #0f172a;
-  border: 1px solid #1e293b;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+  background: #121114;
+  border: 1px solid #272226;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
 }
 
 html.dark .hero-stat-card::after {
@@ -770,8 +784,8 @@ html.dark .hero-stat-card::after {
 }
 
 html.dark .hero-stat-card:hover {
-  border-color: #334155;
-  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.5);
+  border-color: rgba(239, 68, 68, 0.4);
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.7);
 }
 
 @keyframes liquid-sheen-sweep {
@@ -783,7 +797,7 @@ html.dark .hero-stat-card:hover {
   }
 }
 
-/* Rating Chips (Huy hiệu trạng thái tiêu chuẩn phong cách Dashboard: Vercel, Linear, Stripe) */
+/* Rating Chips (Huy hiệu trạng thái tiêu chuẩn concept TH19: Đen, Đỏ, Trắng, Vàng ánh kim) */
 .liquid-rating-chip {
   position: relative;
   display: inline-flex;
@@ -816,104 +830,104 @@ html.dark .hero-stat-card:hover {
   display: none;
 }
 
-/* 1. DOMINANT (Áp đảo - Thạch Anh Tím) */
+/* 1. DOMINANT (Vàng ánh kim TH19 - Metallic Gold) */
 .liquid-rating-chip-dominant {
-  background: rgba(168, 85, 247, 0.12);
-  border: 1px solid rgba(168, 85, 247, 0.35);
-  color: #7e22ce;
-  box-shadow: 0 1px 2px rgba(168, 85, 247, 0.08);
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #b45309;
+  box-shadow: 0 1px 2px rgba(245, 158, 11, 0.08);
 }
 
 .liquid-rating-chip-dominant:hover {
-  border-color: rgba(168, 85, 247, 0.55);
-  background: rgba(168, 85, 247, 0.18);
+  border-color: rgba(245, 158, 11, 0.6);
+  background: rgba(245, 158, 11, 0.18);
 }
 
 html.dark .liquid-rating-chip-dominant {
-  background: rgba(168, 85, 247, 0.18);
-  border: 1px solid rgba(192, 132, 252, 0.35);
-  color: #d8b4fe;
+  background: rgba(245, 158, 11, 0.16);
+  border: 1px solid rgba(251, 191, 36, 0.45);
+  color: #fbbf24;
   box-shadow: none;
 }
 
 html.dark .liquid-rating-chip-dominant:hover {
-  border-color: rgba(192, 132, 252, 0.6);
-  background: rgba(168, 85, 247, 0.25);
+  border-color: rgba(251, 191, 36, 0.7);
+  background: rgba(245, 158, 11, 0.25);
 }
 
-/* 2. SUPERIOR (Vượt trội - Lục Bảo Emerald) */
+/* 2. SUPERIOR (Đỏ thắm TH19 - Crimson Red) */
 .liquid-rating-chip-superior {
-  background: rgba(16, 185, 129, 0.12);
-  border: 1px solid rgba(16, 185, 129, 0.35);
-  color: #047857;
-  box-shadow: 0 1px 2px rgba(16, 185, 129, 0.08);
+  background: rgba(220, 38, 38, 0.12);
+  border: 1px solid rgba(220, 38, 38, 0.4);
+  color: #b91c1c;
+  box-shadow: 0 1px 2px rgba(220, 38, 38, 0.08);
 }
 
 .liquid-rating-chip-superior:hover {
-  border-color: rgba(16, 185, 129, 0.55);
-  background: rgba(16, 185, 129, 0.18);
+  border-color: rgba(220, 38, 38, 0.6);
+  background: rgba(220, 38, 38, 0.18);
 }
 
 html.dark .liquid-rating-chip-superior {
-  background: rgba(16, 185, 129, 0.18);
-  border: 1px solid rgba(52, 211, 153, 0.35);
-  color: #6ee7b7;
+  background: rgba(220, 38, 38, 0.16);
+  border: 1px solid rgba(248, 113, 113, 0.45);
+  color: #f87171;
   box-shadow: none;
 }
 
 html.dark .liquid-rating-chip-superior:hover {
-  border-color: rgba(52, 211, 153, 0.6);
-  background: rgba(16, 185, 129, 0.25);
+  border-color: rgba(248, 113, 113, 0.7);
+  background: rgba(220, 38, 38, 0.25);
 }
 
-/* 3. POTENTIAL (Tiềm năng - Lam Biển Sky) */
+/* 3. POTENTIAL (Trắng / Bạc TH19 - Crisp Silver White) */
 .liquid-rating-chip-potential {
-  background: rgba(14, 165, 233, 0.12);
-  border: 1px solid rgba(14, 165, 233, 0.35);
-  color: #0369a1;
-  box-shadow: 0 1px 2px rgba(14, 165, 233, 0.08);
+  background: rgba(244, 244, 245, 0.9);
+  border: 1px solid rgba(161, 161, 170, 0.4);
+  color: #3f3f46;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .liquid-rating-chip-potential:hover {
-  border-color: rgba(14, 165, 233, 0.55);
-  background: rgba(14, 165, 233, 0.18);
+  border-color: rgba(161, 161, 170, 0.6);
+  background: #ffffff;
 }
 
 html.dark .liquid-rating-chip-potential {
-  background: rgba(14, 165, 233, 0.18);
-  border: 1px solid rgba(56, 189, 248, 0.35);
-  color: #7dd3fc;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
   box-shadow: none;
 }
 
 html.dark .liquid-rating-chip-potential:hover {
-  border-color: rgba(56, 189, 248, 0.6);
-  background: rgba(14, 165, 233, 0.25);
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.16);
 }
 
-/* 4. ALARM (Báo động - San Hô Rose) */
+/* 4. ALARM (Đỏ sẫm huyết đen TH19 - Obsidian Blood Red) */
 .liquid-rating-chip-alarm {
-  background: rgba(244, 63, 94, 0.12);
-  border: 1px solid rgba(244, 63, 94, 0.35);
-  color: #be123c;
-  box-shadow: 0 1px 2px rgba(244, 63, 94, 0.08);
+  background: rgba(153, 27, 27, 0.12);
+  border: 1px solid rgba(153, 27, 27, 0.4);
+  color: #991b1b;
+  box-shadow: 0 1px 2px rgba(153, 27, 27, 0.08);
 }
 
 .liquid-rating-chip-alarm:hover {
-  border-color: rgba(244, 63, 94, 0.55);
-  background: rgba(244, 63, 94, 0.18);
+  border-color: rgba(153, 27, 27, 0.6);
+  background: rgba(153, 27, 27, 0.18);
 }
 
 html.dark .liquid-rating-chip-alarm {
-  background: rgba(244, 63, 94, 0.18);
-  border: 1px solid rgba(251, 113, 133, 0.35);
-  color: #fda4af;
+  background: rgba(153, 27, 27, 0.22);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
   box-shadow: none;
 }
 
 html.dark .liquid-rating-chip-alarm:hover {
-  border-color: rgba(251, 113, 133, 0.6);
-  background: rgba(244, 63, 94, 0.25);
+  border-color: rgba(239, 68, 68, 0.65);
+  background: rgba(153, 27, 27, 0.32);
 }
 
 /* Skeleton Shimmer Wave Effect - Tinh tế, không chói mắt, chuẩn phong cách glassmorphism */

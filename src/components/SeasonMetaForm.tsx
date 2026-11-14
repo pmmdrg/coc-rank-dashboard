@@ -98,7 +98,7 @@ export function SeasonMetaForm({
           </span>
           {season.players.length > 0 && onUpdateSeasonMeta ? (
             <div className="flex items-center gap-2 text-xs">
-              <label className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
+              <label className="flex items-center gap-1 text-amber-600 dark:text-amber-400 font-medium">
                 <span>{dict.seasonMeta.promote}</span>
                 <input
                   type="number"
@@ -108,7 +108,7 @@ export function SeasonMetaForm({
                   className="h-5 w-8 rounded border border-slate-200 bg-white text-center text-xs font-semibold dark:border-slate-700 dark:bg-slate-800"
                 />
               </label>
-              <label className="flex items-center gap-1 text-rose-600 dark:text-rose-400 font-medium">
+              <label className="flex items-center gap-1 text-red-600 dark:text-red-400 font-medium">
                 <span>{dict.seasonMeta.demote}</span>
                 <input
                   type="number"

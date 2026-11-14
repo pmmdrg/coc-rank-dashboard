@@ -68,8 +68,8 @@ const emptySeason: Season = {
 }
 
 const comparisonColors = {
-  canPass: '#f59e0b',
-  below: '#10b981',
+  canPass: '#dc2626', // Đỏ thắm (Nguy cơ bị vượt qua)
+  below: '#f59e0b',   // Vàng ánh kim (Chắc chắn xếp dưới)
 }
 
 const ratingOptions: RatingCategory[] = [

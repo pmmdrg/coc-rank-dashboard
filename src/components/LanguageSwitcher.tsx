@@ -18,7 +18,7 @@ export function LanguageSwitcher() {
       title={`${dict.header.langToggle}: ${nextLanguageName}`}
       aria-label="Toggle language"
     >
-      <Globe weight="duotone" className="h-4 w-4 text-sky-500 dark:text-sky-400 shrink-0 transition-transform duration-300 hover:rotate-180" />
+      <Globe weight="duotone" className="h-4 w-4 text-amber-500 dark:text-amber-400 shrink-0 transition-transform duration-300 hover:rotate-180" />
       <span className="font-mono tracking-wider font-extrabold text-[11px]">
         {language === 'vi' ? 'VIE' : 'ENG'}
       </span>

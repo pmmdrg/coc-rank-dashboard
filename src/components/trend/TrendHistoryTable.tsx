@@ -30,7 +30,7 @@ export function TrendHistoryTable({ chronologicalHistory }: TrendHistoryTablePro
               <tr
                 key={item.seasonId}
                 className={`hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors ${
-                  isLatest ? 'bg-sky-500/[0.04] dark:bg-sky-500/[0.08]' : ''
+                  isLatest ? 'bg-red-500/[0.04] dark:bg-red-500/[0.08]' : ''
                 }`}
               >
                 {/* Thời gian */}
@@ -38,7 +38,7 @@ export function TrendHistoryTable({ chronologicalHistory }: TrendHistoryTablePro
                   <div className="flex items-center gap-1.5">
                     <span>{item.displayPeriod}</span>
                     {isLatest && (
-                      <span className="rounded bg-sky-500/20 px-1 py-0.2 text-[9px] font-bold text-sky-700 dark:text-sky-300">
+                      <span className="rounded bg-red-500/20 px-1 py-0.2 text-[9px] font-bold text-red-700 dark:text-red-300">
                         {dict.performanceTrend.latestBadge}
                       </span>
                     )}
@@ -55,7 +55,7 @@ export function TrendHistoryTable({ chronologicalHistory }: TrendHistoryTablePro
                   <span
                     className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs ${
                       item.placement <= 10
-                        ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30'
+                        ? 'bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30'
                         : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
                     }`}
                   >

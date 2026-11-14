@@ -28,8 +28,8 @@ function TrendSectionSkeleton() {
             <h2 className="text-base font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
               {dict.performanceTrend.title}
             </h2>
-            <span className="inline-flex h-5 items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 px-2 text-[10px] font-bold text-sky-700 dark:bg-sky-950/60 dark:text-sky-300">
-              <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 animate-ping" />
+            <span className="inline-flex h-5 items-center gap-1.5 rounded-full border border-red-500/30 bg-red-500/10 px-2 text-[10px] font-bold text-red-700 dark:bg-red-950/60 dark:text-red-300">
+              <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-red-500 animate-ping" />
               {dict.common.loading}
             </span>
           </div>
@@ -409,7 +409,7 @@ export function PerformanceTrendSection({
             <h2 className="text-base font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
               {dict.performanceTrend.title}
             </h2>
-            <span className="rounded-full bg-sky-500/15 px-2 py-0.5 text-[10px] font-bold text-sky-700 dark:text-sky-300">
+            <span className="rounded-full bg-red-500/15 px-2 py-0.5 text-[10px] font-bold text-red-700 dark:text-red-300">
               {interpolate(dict.performanceTrend.seasonsCount, { count: chronologicalHistory.length })}
             </span>
           </div>
@@ -424,7 +424,7 @@ export function PerformanceTrendSection({
             type="button"
             onClick={() => setShowTable((prev) => !prev)}
             className={`liquid-collapse-btn group shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs sm:text-[13px] font-bold rounded-full select-none cursor-pointer transition-all active:scale-98 ${
-              showTable ? '!text-sky-600 dark:!text-sky-400 font-extrabold' : ''
+              showTable ? '!text-red-600 dark:!text-red-400 font-extrabold' : ''
             }`}
           >
             {showTable ? dict.performanceTrend.hideHistoryTable : dict.performanceTrend.showHistoryTable}
@@ -473,19 +473,19 @@ export function PerformanceTrendSection({
                       <span className="h-2 w-2 rounded-full bg-amber-500" />
                       {interpolate(dict.performanceTrend.cupsLegend, { min: minCups, max: maxCups })}
                     </span>
-                    <span className="inline-flex items-center gap-1.5 text-sky-600 dark:text-sky-400">
-                      <span className="h-2 w-2 rounded-full bg-sky-500" />
+                    <span className="inline-flex items-center gap-1.5 text-red-600 dark:text-red-400">
+                      <span className="h-2 w-2 rounded-full bg-red-500" />
                       {dict.performanceTrend.rankTierLegend}
                     </span>
                   </>
                 ) : (
                   <>
-                    <span className="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
-                      <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                    <span className="inline-flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
+                      <span className="h-2 w-2 rounded-full bg-amber-500" />
                       {dict.performanceTrend.attackWinRateLegend}
                     </span>
-                    <span className="inline-flex items-center gap-1.5 text-rose-600 dark:text-rose-400">
-                      <span className="h-2 w-2 rounded-full bg-rose-500" />
+                    <span className="inline-flex items-center gap-1.5 text-red-600 dark:text-red-400">
+                      <span className="h-2 w-2 rounded-full bg-red-500" />
                       {dict.performanceTrend.defenseStarsLegend}
                     </span>
                   </>
@@ -545,7 +545,7 @@ export function PerformanceTrendSection({
                         y1={boundaryY}
                         x2={chartWidth - paddingX}
                         y2={boundaryY}
-                        stroke="#0284c7"
+                        stroke="#dc2626"
                         strokeDasharray="6 3"
                         strokeWidth="1.2"
                         className="opacity-30 dark:opacity-40"
@@ -566,7 +566,7 @@ export function PerformanceTrendSection({
                         key={`tier-label-${t}`}
                         x={paddingX + 8}
                         y={centerY - 4}
-                        className="fill-sky-700/50 text-[10px] font-bold select-none dark:fill-sky-300/50 pointer-events-none"
+                        className="fill-red-700/60 text-[10px] font-bold select-none dark:fill-red-400/60 pointer-events-none"
                       >
                         {label}
                       </text>
@@ -586,7 +586,7 @@ export function PerformanceTrendSection({
                       stroke="currentColor"
                       className={
                         hoveredIndex === i
-                          ? 'text-sky-400 dark:text-sky-500 stroke-[1.5]'
+                          ? 'text-red-400 dark:text-red-500 stroke-[1.5]'
                           : 'text-slate-200/50 dark:text-slate-800'
                       }
                       strokeDasharray={hoveredIndex === i ? undefined : '2 2'}
@@ -612,7 +612,7 @@ export function PerformanceTrendSection({
                         <path
                           d={rankPath}
                           fill="none"
-                          stroke="#0284c7"
+                          stroke="#ef4444"
                           strokeWidth="2.5"
                           strokeLinecap="round"
                           strokeLinejoin="round"
@@ -624,7 +624,7 @@ export function PerformanceTrendSection({
                         <path
                           d={ratePath}
                           fill="none"
-                          stroke="#10b981"
+                          stroke="#fbbf24"
                           strokeWidth="2.5"
                           strokeLinecap="round"
                           strokeLinejoin="round"
@@ -633,7 +633,7 @@ export function PerformanceTrendSection({
                         <path
                           d={starsPath}
                           fill="none"
-                          stroke="#f43f5e"
+                          stroke="#dc2626"
                           strokeWidth="2.5"
                           strokeLinecap="round"
                           strokeLinejoin="round"
@@ -668,7 +668,7 @@ export function PerformanceTrendSection({
                           cx={x}
                           cy={yRank}
                           r={isHovered ? 6 : 4.5}
-                          fill="#0284c7"
+                          fill="#ef4444"
                           stroke="#ffffff"
                           strokeWidth="2"
                           className="transition-all duration-150"
@@ -685,7 +685,7 @@ export function PerformanceTrendSection({
                           cx={x}
                           cy={yRate}
                           r={isHovered ? 6 : 4.5}
-                          fill="#10b981"
+                          fill="#fbbf24"
                           stroke="#ffffff"
                           strokeWidth="2"
                           className="transition-all duration-150"
@@ -695,7 +695,7 @@ export function PerformanceTrendSection({
                           cx={x}
                           cy={yStars}
                           r={isHovered ? 6 : 4.5}
-                          fill="#f43f5e"
+                          fill="#dc2626"
                           stroke="#ffffff"
                           strokeWidth="2"
                           className="transition-all duration-150"
@@ -716,7 +716,7 @@ export function PerformanceTrendSection({
                       textAnchor="middle"
                       className={`text-[10px] font-semibold transition-colors ${
                         hoveredIndex === i
-                          ? 'fill-sky-600 font-bold dark:fill-sky-400'
+                          ? 'fill-red-600 font-bold dark:fill-red-400'
                           : 'fill-slate-500 dark:fill-slate-400'
                       }`}
                     >
@@ -727,7 +727,7 @@ export function PerformanceTrendSection({
 
               </svg>
 
-              {/* Tooltip khi hover điểm mốc (Kích thước đồng nhất 260px, trượt mượt mà theo từng điểm mốc) */}
+              {/* Tooltip khi hover điểm mốc */}
               {tooltipPos && hoveredIndex !== null && (
                 <div
                   className="pointer-events-none absolute z-20 w-[260px] min-w-[260px] max-w-[260px] transition-[left,top,transform] duration-200 ease-out"
@@ -737,20 +737,20 @@ export function PerformanceTrendSection({
                     transform: tooltipPos.isOnRight ? 'translateX(0)' : 'translateX(-100%)',
                   }}
                 >
-                  <div className="relative w-full rounded-xl border border-slate-700/50 bg-slate-900/95 p-3.5 text-xs text-white shadow-2xl backdrop-blur-md dark:border-slate-600/60 dark:bg-slate-950/95">
-                    {/* Mũi tên định hướng (pointer arrow) */}
+                  <div className="relative w-full rounded-xl border border-zinc-700/60 bg-zinc-950/95 p-3.5 text-xs text-white shadow-2xl backdrop-blur-md">
+                    {/* Mũi tên định hướng */}
                     <div
-                      className={`absolute top-4 h-2.5 w-2.5 rotate-45 border-slate-700/60 bg-slate-900/95 dark:border-slate-600 dark:bg-slate-950/95 transition-all duration-200 ${
+                      className={`absolute top-4 h-2.5 w-2.5 rotate-45 border-zinc-700/60 bg-zinc-950/95 transition-all duration-200 ${
                         tooltipPos.isOnRight
                           ? '-left-[5px] border-b border-l'
                           : '-right-[5px] border-t border-r'
                       }`}
                       aria-hidden="true"
                     />
-                    <div className="font-bold text-sky-300 truncate">
+                    <div className="font-bold text-zinc-100 truncate">
                       {chronologicalHistory[hoveredIndex].displayPeriod}
                     </div>
-                    <div className="mt-0.5 text-[11px] text-slate-300 truncate">
+                    <div className="mt-0.5 text-[11px] text-zinc-400 truncate">
                       {chronologicalHistory[hoveredIndex].tierName}
                     </div>
                     <div className="mt-2.5 space-y-1.5 text-[11px]">
@@ -761,19 +761,19 @@ export function PerformanceTrendSection({
                         </span>
                       </div>
                       <div className="flex items-center justify-between gap-3">
-                        <span className="text-sky-400 font-medium shrink-0">{dict.common.rank}:</span>
+                        <span className="text-red-400 font-medium shrink-0">{dict.common.rank}:</span>
                         <span className="font-mono font-bold whitespace-nowrap">
                           #{chronologicalHistory[hoveredIndex].placement} {dict.performanceTrend.outOfHundred}
                         </span>
                       </div>
                       <div className="flex items-center justify-between gap-3">
-                        <span className="text-emerald-400 font-medium shrink-0">{dict.common.attacks}:</span>
+                        <span className="text-amber-400 font-medium shrink-0">{dict.common.attacks}:</span>
                         <span className="font-mono font-bold whitespace-nowrap">
                           {chronologicalHistory[hoveredIndex].attackWins}W - {chronologicalHistory[hoveredIndex].attackLosses}L ({chronologicalHistory[hoveredIndex].attackWinRate}%)
                         </span>
                       </div>
                       <div className="flex items-center justify-between gap-3">
-                        <span className="text-rose-400 font-medium shrink-0">{dict.common.defenses}:</span>
+                        <span className="text-red-400 font-medium shrink-0">{dict.common.defenses}:</span>
                         <span className="font-mono font-bold whitespace-nowrap">
                           {interpolate(dict.performanceTrend.lostStars, { stars: chronologicalHistory[hoveredIndex].defenseStars })}
                         </span>

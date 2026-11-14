@@ -59,17 +59,17 @@ export function CustomSelect<T extends string | number>({
         aria-haspopup="listbox"
         aria-label={ariaLabel}
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`group relative flex h-10 w-full items-center justify-between rounded-xl border px-4 text-left text-sm font-bold shadow-2xs backdrop-blur-md transition-all cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-sky-500/30 ${
+        className={`group relative flex h-10 w-full items-center justify-between rounded-xl border px-4 text-left text-sm font-bold shadow-2xs backdrop-blur-md transition-all cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-red-500/30 ${
           isOpen
-            ? 'border-sky-500/60 bg-white ring-2 ring-sky-500/30 text-sky-900 dark:border-sky-400/60 dark:bg-slate-800 dark:text-sky-100'
-            : 'border-slate-200/80 bg-white/70 text-slate-800 hover:border-sky-500/50 hover:bg-white dark:border-white/10 dark:bg-slate-800/70 dark:text-slate-100 dark:hover:border-sky-400/50 dark:hover:bg-slate-800'
+            ? 'border-red-500/60 bg-white ring-2 ring-red-500/30 text-red-900 dark:border-red-500/60 dark:bg-zinc-900 dark:text-red-100'
+            : 'border-zinc-200/80 bg-white/70 text-zinc-800 hover:border-red-500/50 hover:bg-white dark:border-zinc-800 dark:bg-zinc-900/70 dark:text-zinc-100 dark:hover:border-red-500/50 dark:hover:bg-zinc-900'
         }`}
       >
         <span className="truncate pr-3">{selectedOption?.label}</span>
         <CaretDown
           weight="bold"
-          className={`h-4 w-4 shrink-0 text-slate-400 transition-transform duration-250 ease-out group-hover:text-slate-600 dark:text-slate-400 dark:group-hover:text-slate-200 ${
-            isOpen ? 'rotate-180 text-sky-500 dark:text-sky-400' : ''
+          className={`h-4 w-4 shrink-0 text-zinc-400 transition-transform duration-250 ease-out group-hover:text-zinc-600 dark:text-zinc-400 dark:group-hover:text-zinc-200 ${
+            isOpen ? 'rotate-180 text-red-600 dark:text-red-400' : ''
           }`}
         />
       </button>
@@ -79,7 +79,7 @@ export function CustomSelect<T extends string | number>({
         <div
           role="listbox"
           aria-label={ariaLabel}
-          className="animate-dropdown-pop absolute left-0 right-0 top-full mt-1.5 z-[100] max-h-60 overflow-y-auto rounded-2xl border border-slate-200/90 bg-white/98 p-1.5 shadow-xl shadow-slate-900/10 backdrop-blur-xl dark:border-slate-700/80 dark:bg-slate-900/98 dark:shadow-2xl dark:shadow-black/60"
+          className="animate-dropdown-pop absolute left-0 right-0 top-full mt-1.5 z-[100] max-h-60 overflow-y-auto rounded-2xl border border-zinc-200/90 bg-white/98 p-1.5 shadow-xl shadow-black/10 backdrop-blur-xl dark:border-zinc-700/80 dark:bg-zinc-950/98 dark:shadow-2xl dark:shadow-black/60"
         >
           <div className="space-y-0.5">
             {options.map((opt) => {
@@ -96,15 +96,15 @@ export function CustomSelect<T extends string | number>({
                   }}
                   className={`group/opt flex w-full items-center justify-between rounded-xl px-3 py-2 text-xs sm:text-sm font-semibold transition-all cursor-pointer select-none ${
                     isSelected
-                      ? 'bg-sky-500/15 text-sky-800 dark:bg-sky-500/25 dark:text-sky-200 font-bold shadow-2xs'
-                      : 'text-slate-700 hover:bg-slate-100/80 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/80 dark:hover:text-white'
+                      ? 'bg-red-500/15 text-red-800 dark:bg-red-500/25 dark:text-red-200 font-bold shadow-2xs'
+                      : 'text-zinc-700 hover:bg-zinc-100/80 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800/80 dark:hover:text-white'
                   }`}
                 >
                   <span className="truncate">{opt.label}</span>
                   {isSelected && (
                     <Check
                       weight="bold"
-                      className="h-3.5 w-3.5 shrink-0 text-sky-600 dark:text-sky-400 ml-2"
+                      className="h-3.5 w-3.5 shrink-0 text-red-600 dark:text-red-400 ml-2"
                     />
                   )}
                 </button>

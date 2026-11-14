@@ -90,8 +90,8 @@ export function RankDiffBadge({
     <span
       className={`inline-flex shrink-0 items-center gap-0.5 rounded-full px-1.5 py-0.2 font-mono text-[10px] font-black leading-none select-none ${
         isUp
-          ? 'bg-emerald-500/15 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300'
-          : 'bg-rose-500/15 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300'
+          ? 'bg-amber-500/15 text-amber-800 dark:bg-amber-500/20 dark:text-amber-300'
+          : 'bg-red-500/15 text-red-700 dark:bg-red-500/20 dark:text-red-300'
       } ${className}`}
       title={title}
     >

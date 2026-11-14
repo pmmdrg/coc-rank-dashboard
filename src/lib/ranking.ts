@@ -16,10 +16,10 @@ export const ratingLabels: Record<RatingCategory, string> = {
 }
 
 export const ratingColors: Record<RatingCategory, string> = {
-  dominant: '#8b5cf6', // Tím (Áp đảo - >= 60% cúp tối đa ban đầu)
-  superior: '#10b981', // Xanh lục (Vượt trội - 55% đến < 60% cúp tối đa ban đầu)
-  potential: '#0284c7', // Xanh lam (Tiềm năng - 50% đến < 55% cúp tối đa ban đầu)
-  alarm: '#e11d48',    // Đỏ hồng (Báo động - < 50% cúp tối đa ban đầu)
+  dominant: '#f59e0b', // Vàng ánh kim (Áp đảo - Top tier TH19)
+  superior: '#dc2626', // Đỏ thắm (Vượt trội - Heroic Crimson TH19)
+  potential: '#e2e8f0', // Trắng bạc (Tiềm năng - Silver White TH19)
+  alarm: '#991b1b',    // Đỏ sẫm huyết đen (Báo động - Dark Blood Red TH19)
 }
 
 export const attackStatusLabels: Record<AttackStatusCategory, string> = {
@@ -34,9 +34,9 @@ export function formatDestruction(val?: number): string {
 }
 
 export const attackStatusColors: Record<AttackStatusCategory, string> = {
-  finished: '#10b981',
-  inProgress: '#f59e0b',
-  notStarted: '#64748b',
+  finished: '#f59e0b',  // Vàng ánh kim (Vinh quang hoàn thành)
+  inProgress: '#dc2626', // Đỏ thắm (Chiến sự đang tiếp diễn)
+  notStarted: '#52525b', // Đen / Xám than (Chưa bắt đầu)
 }
 
 export function calculateMaxPossibleCups(

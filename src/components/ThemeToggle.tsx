@@ -36,7 +36,7 @@ export function ThemeToggle() {
       {theme === 'dark' ? (
         <Sun weight="duotone" className="h-4.5 w-4.5 text-amber-400 transition-transform duration-300 hover:rotate-45" aria-hidden="true" />
       ) : (
-        <Moon weight="duotone" className="h-4.5 w-4.5 text-indigo-500 transition-transform duration-300 hover:-rotate-12" aria-hidden="true" />
+        <Moon weight="duotone" className="h-4.5 w-4.5 text-zinc-700 transition-transform duration-300 hover:-rotate-12" aria-hidden="true" />
       )}
     </button>
   )

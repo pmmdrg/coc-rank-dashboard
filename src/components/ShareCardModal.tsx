@@ -35,18 +35,18 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
     canvas.width = width
     canvas.height = height
 
-    // 1. Nền Gradient cao cấp
+    // 1. Nền Gradient cao cấp theo concept TH19 (Obsidian Black & Dark Crimson)
     const bgGradient = ctx.createLinearGradient(0, 0, width, height)
-    bgGradient.addColorStop(0, '#090d16')
-    bgGradient.addColorStop(0.5, '#0f172a')
-    bgGradient.addColorStop(1, '#080c14')
+    bgGradient.addColorStop(0, '#09090b')
+    bgGradient.addColorStop(0.5, '#141113')
+    bgGradient.addColorStop(1, '#09090b')
     ctx.fillStyle = bgGradient
     ctx.fillRect(0, 0, width, height)
 
-    // Ánh sáng tỏa huyền ảo (Glow Orbs)
+    // Ánh sáng tỏa huyền ảo (Crimson & Metallic Gold Glow)
     const glow1 = ctx.createRadialGradient(200, 150, 20, 200, 150, 450)
-    glow1.addColorStop(0, 'rgba(14, 165, 233, 0.22)')
-    glow1.addColorStop(1, 'rgba(14, 165, 233, 0)')
+    glow1.addColorStop(0, 'rgba(220, 38, 38, 0.22)')
+    glow1.addColorStop(1, 'rgba(220, 38, 38, 0)')
     ctx.fillStyle = glow1
     ctx.fillRect(0, 0, width, height)
 
@@ -57,16 +57,16 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
     ctx.fillRect(0, 0, width, height)
 
     // Viền khung ngoài sang trọng
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)'
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.10)'
     ctx.lineWidth = 2
     ctx.strokeRect(20, 20, width - 40, height - 40)
 
-    ctx.strokeStyle = 'rgba(14, 165, 233, 0.4)'
+    ctx.strokeStyle = 'rgba(220, 38, 38, 0.4)'
     ctx.lineWidth = 1
     ctx.strokeRect(24, 24, width - 48, height - 48)
 
     // 2. Header: Logo & Tên giải đấu
-    ctx.fillStyle = '#94a3b8'
+    ctx.fillStyle = '#a1a1aa'
     ctx.font = '600 16px Roboto, sans-serif'
     ctx.fillText(dict.shareModal.cardHeader, 60, 75)
 
@@ -75,14 +75,14 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
     ctx.fillText(displayLeague !== '--' ? displayLeague : dict.shareModal.cardDefaultLeague, 60, 115)
 
     if (season.seasonName) {
-      ctx.fillStyle = '#64748b'
+      ctx.fillStyle = '#71717a'
       ctx.font = '400 16px Roboto, sans-serif'
       ctx.fillText(season.seasonName, 60, 142)
     }
 
     // 3. Thông tin người chơi (Profile Card)
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.05)'
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)'
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.04)'
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)'
     ctx.lineWidth = 1.5
     roundRect(ctx, 60, 175, 1080, 130, 16, true, true)
 
@@ -95,21 +95,21 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
     // Tag & Clan
     const playerTagText = myPlayer?.playerTag || season.myPlayerId || ''
     const clanText = myPlayer?.clanName ? `Clan: ${myPlayer.clanName}` : dict.shareModal.cardNoClan
-    ctx.fillStyle = '#38bdf8'
+    ctx.fillStyle = '#fbbf24'
     ctx.font = '700 18px "Roboto Mono", monospace'
     ctx.fillText(playerTagText, 90, 275)
 
-    ctx.fillStyle = '#94a3b8'
+    ctx.fillStyle = '#a1a1aa'
     ctx.font = '500 18px Roboto, sans-serif'
     ctx.fillText(`•   ${clanText}`, 90 + ctx.measureText(playerTagText).width + 20, 275)
 
     // Huy hiệu Rating góc phải
     if (myPlayer) {
       const ratingColors: Record<string, { bg: string; text: string; label: string }> = {
-        dominant: { bg: 'rgba(168, 85, 247, 0.25)', text: '#c084fc', label: dict.shareModal.cardRatingDominant },
-        superior: { bg: 'rgba(16, 185, 129, 0.25)', text: '#34d399', label: dict.shareModal.cardRatingSuperior },
-        potential: { bg: 'rgba(14, 165, 233, 0.25)', text: '#38bdf8', label: dict.shareModal.cardRatingPotential },
-        alarm: { bg: 'rgba(244, 63, 94, 0.25)', text: '#fb7185', label: dict.shareModal.cardRatingAlarm },
+        dominant: { bg: 'rgba(245, 158, 11, 0.22)', text: '#fbbf24', label: dict.shareModal.cardRatingDominant },
+        superior: { bg: 'rgba(220, 38, 38, 0.22)', text: '#ef4444', label: dict.shareModal.cardRatingSuperior },
+        potential: { bg: 'rgba(255, 255, 255, 0.12)', text: '#f4f4f5', label: dict.shareModal.cardRatingPotential },
+        alarm: { bg: 'rgba(153, 27, 27, 0.35)', text: '#f87171', label: dict.shareModal.cardRatingAlarm },
       }
       const rInfo = ratingColors[myPlayer.rating] || ratingColors.potential
       ctx.fillStyle = rInfo.bg
@@ -137,7 +137,7 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
         label: dict.shareModal.cardRank,
         value: myPlayer ? `#${myPlayer.rank}` : '--',
         sub: interpolate(dict.shareModal.cardRankSub, { total: season.players.length }),
-        color: '#38bdf8',
+        color: '#ef4444',
       },
       {
         label: dict.shareModal.cardCurrentCups,
@@ -156,7 +156,7 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
               percent: Math.round(((myPlayer.attackWinCount || 0) / Math.max(1, myPlayer.attacks)) * 100),
             })
           : dict.shareModal.cardPerformanceSubDefault,
-        color: '#34d399',
+        color: '#f59e0b',
       },
       {
         label: dict.shareModal.cardCeilingTitle,
@@ -164,7 +164,7 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
         sub: stats.playersWhoCanPassMe === 0
           ? dict.shareModal.cardCeilingGuaranteed
           : interpolate(dict.shareModal.cardCeilingThreats, { count: stats.playersWhoCanPassMe }),
-        color: '#818cf8',
+        color: '#ef4444',
       },
     ]
 
@@ -175,7 +175,7 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
       ctx.lineWidth = 1
       roundRect(ctx, x, startY, cardWidth, cardHeight, 14, true, true)
 
-      ctx.fillStyle = '#94a3b8'
+      ctx.fillStyle = '#a1a1aa'
       ctx.font = '700 12px Roboto, sans-serif'
       ctx.fillText(item.label, x + 20, startY + 32)
 
@@ -183,7 +183,7 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
       ctx.font = '800 28px Roboto, sans-serif'
       ctx.fillText(item.value, x + 20, startY + 80)
 
-      ctx.fillStyle = '#64748b'
+      ctx.fillStyle = '#71717a'
       ctx.font = '400 13px Roboto, sans-serif'
       ctx.fillText(item.sub, x + 20, startY + 118)
     })
@@ -198,7 +198,7 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
       : 0
     const betterPercent = otherCount > 0 ? ((betterCount / otherCount) * 100).toFixed(1) : '100'
 
-    ctx.fillStyle = '#38bdf8'
+    ctx.fillStyle = '#fbbf24'
     ctx.font = '700 15px Roboto, sans-serif'
     ctx.fillText(
       interpolate(dict.shareModal.cardComparisonBanner, {
@@ -212,7 +212,7 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
 
     // Watermark dưới cùng
     const nowStr = new Date().toLocaleDateString(localeCode, { day: '2-digit', month: '2-digit', year: 'numeric' })
-    ctx.fillStyle = '#475569'
+    ctx.fillStyle = '#52525b'
     ctx.font = '500 13px Roboto, sans-serif'
     ctx.fillText(interpolate(dict.shareModal.cardWatermark, { date: nowStr }), 60, 615)
 
@@ -272,18 +272,18 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm animate-fade-in">
-      <div className="relative w-full max-w-4xl overflow-hidden rounded-2xl border border-slate-700/80 bg-slate-900 shadow-2xl flex flex-col max-h-[92vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+      <div className="relative w-full max-w-4xl overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950 shadow-2xl flex flex-col max-h-[92vh]">
         {/* Modal Header */}
-        <div className="flex items-center justify-between border-b border-slate-800 px-6 py-4">
+        <div className="flex items-center justify-between border-b border-zinc-800 px-6 py-4">
           <div>
-            <h3 className="text-base font-bold text-slate-100">{dict.shareModal.modalTitle}</h3>
-            <p className="text-xs text-slate-400">{dict.shareModal.modalSubtitle}</p>
+            <h3 className="text-base font-bold text-zinc-100">{dict.shareModal.modalTitle}</h3>
+            <p className="text-xs text-zinc-400">{dict.shareModal.modalSubtitle}</p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="apple-btn rounded-xl p-2 text-slate-400 hover:bg-slate-800/80 hover:text-slate-100 transition-colors cursor-pointer"
+            className="apple-btn rounded-xl p-2 text-zinc-400 hover:bg-zinc-850 hover:text-zinc-100 transition-colors cursor-pointer"
             title={dict.shareModal.closeBtn}
           >
             <X weight="bold" className="h-5 w-5" />
@@ -291,37 +291,37 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
         </div>
 
         {/* Modal Body: Canvas Preview */}
-        <div className="overflow-y-auto p-6 flex flex-col items-center justify-center bg-slate-950/50">
+        <div className="overflow-y-auto p-6 flex flex-col items-center justify-center bg-zinc-950">
           <canvas ref={canvasRef} className="hidden" />
           {previewUrl ? (
             <img
               src={previewUrl}
               alt={dict.shareModal.modalTitle}
-              className="w-full max-h-[60vh] object-contain rounded-xl border border-slate-800/80 shadow-2xl"
+              className="w-full max-h-[60vh] object-contain rounded-xl border border-zinc-800 shadow-2xl"
             />
           ) : (
-            <div className="h-64 flex items-center justify-center text-sm text-slate-400">
+            <div className="h-64 flex items-center justify-center text-sm text-zinc-400">
               {dict.shareModal.modalGenerating}
             </div>
           )}
         </div>
 
         {/* Modal Footer: Action Buttons */}
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-800/80 px-6 py-4 bg-slate-900/90 backdrop-blur-md">
-          <span className="text-xs text-slate-400">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-zinc-800 px-6 py-4 bg-zinc-900/90 backdrop-blur-md">
+          <span className="text-xs text-zinc-400">
             {dict.shareModal.modalDimensions}
           </span>
           <div className="flex items-center gap-2.5">
             <button
               type="button"
               onClick={handleCopyImage}
-              className="apple-btn inline-flex items-center gap-1.5 rounded-xl border border-slate-700/80 bg-slate-800/90 px-4 py-2 text-xs font-semibold text-slate-200 hover:bg-slate-700 hover:text-white shadow-sm cursor-pointer"
+              className="apple-btn inline-flex items-center gap-1.5 rounded-xl border border-zinc-700/80 bg-zinc-800/90 px-4 py-2 text-xs font-semibold text-zinc-200 hover:bg-zinc-700 hover:text-white shadow-xs cursor-pointer"
               title={dict.shareModal.copyBtn}
             >
               {isCopied ? (
                 <>
-                  <Check weight="bold" className="h-4 w-4 text-emerald-400" />
-                  <span className="text-emerald-300">{dict.shareModal.copiedToast}</span>
+                  <Check weight="bold" className="h-4 w-4 text-amber-400" />
+                  <span className="text-amber-300">{dict.shareModal.copiedToast}</span>
                 </>
               ) : (
                 <>
@@ -334,7 +334,7 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
             <button
               type="button"
               onClick={handleDownload}
-              className="apple-btn inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-sky-600/30 hover:from-sky-400 hover:to-blue-500 cursor-pointer"
+              className="apple-btn inline-flex items-center gap-1.5 rounded-xl bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-xs shadow-red-950/40 hover:bg-red-500 cursor-pointer"
               title={dict.shareModal.downloadBtn}
             >
               <DownloadSimple weight="bold" className="h-4 w-4" />

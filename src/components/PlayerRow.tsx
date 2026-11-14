@@ -57,12 +57,12 @@ export function PlayerRow({
   )
 
   const borderClass = isMyPlayer
-    ? 'border-l-[4px] border-l-sky-500 bg-sky-500/[0.08] dark:bg-sky-500/[0.14] hover:bg-sky-500/[0.12] dark:hover:bg-sky-500/[0.20]'
+    ? 'border-l-[4px] border-l-red-600 bg-red-500/[0.08] dark:bg-red-500/[0.14] hover:bg-red-500/[0.12] dark:hover:bg-red-500/[0.20]'
     : isPromotionZone
-      ? 'border-l-[4px] border-l-emerald-500 bg-emerald-500/[0.02] dark:bg-emerald-500/[0.04] hover:bg-slate-100/70 dark:hover:bg-slate-800/50'
+      ? 'border-l-[4px] border-l-amber-500 bg-amber-500/[0.03] dark:bg-amber-500/[0.05] hover:bg-zinc-100/70 dark:hover:bg-zinc-800/50'
       : isDemotionZone
-        ? 'border-l-[4px] border-l-rose-500 bg-rose-500/[0.02] dark:bg-rose-500/[0.04] hover:bg-slate-100/70 dark:hover:bg-slate-800/50'
-        : 'border-l-[4px] border-l-transparent hover:bg-slate-100/70 dark:hover:bg-slate-800/50'
+        ? 'border-l-[4px] border-l-red-600 bg-red-500/[0.03] dark:bg-red-500/[0.05] hover:bg-zinc-100/70 dark:hover:bg-zinc-800/50'
+        : 'border-l-[4px] border-l-transparent hover:bg-zinc-100/70 dark:hover:bg-zinc-800/50'
 
   const hasAttackedByMe = Boolean(player.attackedByMe && player.attackedByMe.length > 0)
   const hasDefendedAgainstMe = Boolean(player.defendedAgainstMe && player.defendedAgainstMe.length > 0)
@@ -136,17 +136,17 @@ export function PlayerRow({
             toRank={player.rank}
           />
 
-          {/* Badge Vùng Thăng Hạng / Xuống Hạng */}
+          {/* Badge Vùng Thăng Hạng / Xuống Hạng - Chuẩn TH19 */}
           {isPromotionZone ? (
             <span
-              className="inline-flex shrink-0 items-center rounded-sm bg-emerald-500/15 border border-emerald-500/30 px-1 py-0.5 text-[9px] font-black uppercase tracking-tight text-emerald-700 dark:text-emerald-300 select-none shadow-2xs"
+              className="inline-flex shrink-0 items-center rounded-sm bg-amber-500/15 border border-amber-500/35 px-1 py-0.5 text-[9px] font-black uppercase tracking-tight text-amber-700 dark:text-amber-300 select-none shadow-2xs"
               title={dict.table.badgePromotionTooltip}
             >
               {dict.table.badgePromotion}
             </span>
           ) : isDemotionZone ? (
             <span
-              className="inline-flex shrink-0 items-center rounded-sm bg-rose-500/15 border border-rose-500/30 px-1 py-0.5 text-[9px] font-black uppercase tracking-tight text-rose-700 dark:text-rose-300 select-none shadow-2xs"
+              className="inline-flex shrink-0 items-center rounded-sm bg-red-500/15 border border-red-500/35 px-1 py-0.5 text-[9px] font-black uppercase tracking-tight text-red-700 dark:text-red-300 select-none shadow-2xs"
               title={dict.table.badgeDemotionTooltip}
             >
               {dict.table.badgeDemotion}
@@ -162,23 +162,23 @@ export function PlayerRow({
             <div className="flex items-center gap-1.5 truncate">
               <span
                 onClick={() => onOpenBattleLog?.(player)}
-                className={`truncate font-bold text-sm cursor-pointer hover:underline hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors ${
+                className={`truncate font-bold text-sm cursor-pointer hover:underline hover:text-red-600 dark:hover:text-red-400 transition-colors ${
                   isMyPlayer
-                    ? 'text-sky-600 dark:text-sky-400 font-black'
-                    : 'text-slate-900 dark:text-slate-100'
+                    ? 'text-red-600 dark:text-red-400 font-black'
+                    : 'text-zinc-900 dark:text-white'
                 }`}
                 title={player.name}
               >
                 {player.name}
               </span>
               {isMyPlayer && (
-                <span className="shrink-0 rounded bg-sky-500/15 border border-sky-500/30 px-1.5 py-0.2 text-[9px] font-bold text-sky-700 dark:text-sky-300 uppercase tracking-wider">
+                <span className="shrink-0 rounded bg-red-500/15 border border-red-500/30 px-1.5 py-0.2 text-[9px] font-bold text-red-600 dark:text-red-400 uppercase tracking-wider">
                   {dict.common.me}
                 </span>
               )}
             </div>
 
-            <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">
+            <div className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400 truncate mt-0.5">
               <span
                 className="truncate cursor-default font-normal"
                 title={`Clan: ${player.clanName || dict.table.noClan}`}
@@ -188,16 +188,16 @@ export function PlayerRow({
 
               {player.playerTag && (
                 <>
-                  <span className="text-slate-300 dark:text-slate-700 select-none shrink-0">•</span>
+                  <span className="text-zinc-300 dark:text-zinc-700 select-none shrink-0">•</span>
                   <button
                     type="button"
                     onClick={handleCopyTag}
-                    className="group/tag inline-flex items-center gap-1 shrink-0 font-mono text-[10px] text-slate-400 hover:text-emerald-600 dark:text-slate-500 dark:hover:text-emerald-400 cursor-pointer select-none transition-colors"
+                    className="group/tag inline-flex items-center gap-1 shrink-0 font-mono text-[10px] text-zinc-400 hover:text-amber-500 dark:text-zinc-500 dark:hover:text-amber-400 cursor-pointer select-none transition-colors"
                     title={dict.header.copyTagTooltip}
                   >
                     <span>{player.playerTag}</span>
                     {isTagCopied ? (
-                      <Check weight="bold" className="h-2.5 w-2.5 text-emerald-600 dark:text-emerald-400 animate-bounce" />
+                      <Check weight="bold" className="h-2.5 w-2.5 text-amber-500 animate-bounce" />
                     ) : (
                       <Copy weight="duotone" className="h-2.5 w-2.5 opacity-0 group-hover/tag:opacity-100 transition-opacity" />
                     )}
@@ -211,7 +211,7 @@ export function PlayerRow({
               <div className="mt-1 flex flex-wrap items-center gap-1 select-none">
                 {hasAttackedByMe && (
                   <span
-                    className="inline-flex items-center rounded px-1.5 py-0.2 text-[9px] font-bold bg-emerald-500/15 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-300 border border-emerald-500/30 whitespace-nowrap shadow-2xs"
+                    className="inline-flex items-center rounded px-1.5 py-0.2 text-[9px] font-bold bg-amber-500/15 text-amber-800 dark:bg-amber-500/20 dark:text-amber-300 border border-amber-500/30 whitespace-nowrap shadow-2xs"
                     title={attackedTooltip}
                   >
                     {dict.table.attackedByMe}{attackSummaryText}
@@ -219,7 +219,7 @@ export function PlayerRow({
                 )}
                 {hasDefendedAgainstMe && (
                   <span
-                    className="inline-flex items-center rounded px-1.5 py-0.2 text-[9px] font-bold bg-amber-500/15 text-amber-800 dark:bg-amber-500/20 dark:text-amber-300 border border-amber-500/30 whitespace-nowrap shadow-2xs"
+                    className="inline-flex items-center rounded px-1.5 py-0.2 text-[9px] font-bold bg-red-500/15 text-red-800 dark:bg-red-500/20 dark:text-red-300 border border-red-500/30 whitespace-nowrap shadow-2xs"
                     title={defendedTooltip}
                   >
                     {dict.table.attackedMe}{defenseSummaryText}
@@ -245,7 +245,7 @@ export function PlayerRow({
                 e.stopPropagation()
                 onOpenBattleLog?.(player)
               }}
-              className="inline-flex items-center rounded-md border border-slate-200/80 bg-white/80 px-2 py-0.5 text-[11px] font-medium text-slate-600 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 dark:border-slate-700/80 dark:bg-slate-800/80 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:bg-slate-700 dark:hover:text-slate-100 transition-colors cursor-pointer select-none shadow-2xs"
+              className="inline-flex items-center rounded-md border border-zinc-200/80 bg-white/80 px-2 py-0.5 text-[11px] font-medium text-zinc-600 hover:border-red-400 hover:bg-red-50 hover:text-red-600 dark:border-zinc-800 dark:bg-zinc-900/80 dark:text-zinc-300 dark:hover:border-red-500/50 dark:hover:bg-red-950/40 dark:hover:text-red-300 transition-colors cursor-pointer select-none shadow-2xs"
               title={dict.battleLog.viewLogTooltip}
             >
               <span>{dict.battleLog.actionLog}</span>
@@ -263,11 +263,11 @@ export function PlayerRow({
           </div>
           <div className="text-[10px] text-slate-400 dark:text-slate-500">
             {player.attackWinCount !== undefined ? (
-              <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
+              <span className="text-amber-600 dark:text-amber-400 font-semibold">
                 {player.attackWinCount}W{player.attackLoseCount ? `-${player.attackLoseCount}L` : ''}
               </span>
             ) : (
-              <span className={remainingAttacks === 0 ? 'text-emerald-600 dark:text-emerald-400 font-medium' : ''}>
+              <span className={remainingAttacks === 0 ? 'text-amber-600 dark:text-amber-400 font-medium' : ''}>
                 {remainingAttacks === 0 ? dict.table.completedAttacks : `${remainingAttacks} left`}
               </span>
             )}
@@ -288,7 +288,7 @@ export function PlayerRow({
                 {player.defenseWinCount ? `${player.defenseWinCount}W-` : ''}{player.defenseLoseCount}L
               </span>
             ) : (
-              <span className={remainingDefenses === 0 ? 'text-emerald-600 dark:text-emerald-400 font-medium' : ''}>
+              <span className={remainingDefenses === 0 ? 'text-amber-600 dark:text-amber-400 font-medium' : ''}>
                 {remainingDefenses === 0 ? dict.table.completedAttacks : `${remainingDefenses} left`}
               </span>
             )}
@@ -317,8 +317,8 @@ export function PlayerRow({
           <span
             className={
               isMyPlayer
-                ? 'text-sky-600 dark:text-sky-400 font-black'
-                : 'text-slate-600 dark:text-slate-300'
+                ? 'text-red-600 dark:text-red-400 font-black'
+                : 'text-zinc-600 dark:text-zinc-300'
             }
           >
             {formatNumber(player.maxPossibleCups)}

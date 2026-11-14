@@ -22,8 +22,8 @@ function HighlightStatsSkeleton() {
           <h2 className="text-base font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
             {dict.highlights.title}
           </h2>
-          <span className="inline-flex h-5 items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 px-2 text-[10px] font-bold text-sky-700 dark:bg-sky-950/60 dark:text-sky-300">
-            <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 animate-ping" />
+          <span className="inline-flex h-5 items-center gap-1.5 rounded-full border border-red-500/30 bg-red-500/10 px-2 text-[10px] font-bold text-red-600 dark:bg-red-950/60 dark:text-red-400">
+            <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-red-500 animate-ping" />
             {dict.highlights.analyzing}
           </span>
         </div>
@@ -127,9 +127,9 @@ function PlayerBadge({
       title={`#${player.rank} - ${player.name}`}
       className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-semibold shadow-2xs transition-all cursor-pointer select-none hover:scale-[1.03] active:scale-[0.98] ${
         isMe
-          ? 'border-sky-500/50 bg-sky-500/15 text-sky-800 dark:text-sky-200 ring-1 ring-sky-500/30 hover:bg-sky-500/25'
+          ? 'border-red-500/50 bg-red-500/15 text-red-700 dark:text-red-300 ring-1 ring-red-500/30 hover:bg-red-500/25'
           : variant === 'danger'
-            ? 'border-rose-200/80 bg-rose-50/70 text-rose-800 dark:border-rose-900/60 dark:bg-rose-950/30 dark:text-rose-200 hover:bg-rose-100/80 dark:hover:bg-rose-900/40'
+            ? 'border-red-200/80 bg-red-50/70 text-red-800 dark:border-red-900/60 dark:bg-red-950/30 dark:text-red-200 hover:bg-red-100/80 dark:hover:bg-red-900/40'
             : 'border-slate-200/80 bg-white/80 text-slate-800 dark:border-slate-700/80 dark:bg-slate-800/80 dark:text-slate-200 hover:bg-slate-100/80 dark:hover:bg-slate-700/80'
       }`}
     >
@@ -138,7 +138,7 @@ function PlayerBadge({
       </span>
       <span className="font-semibold underline-offset-2 hover:underline">{player.name}</span>
       {isMe && (
-        <span className="rounded bg-sky-500/25 px-1 py-0.2 text-[9px] font-extrabold tracking-wide text-sky-700 dark:text-sky-300">
+        <span className="rounded bg-red-500/25 px-1 py-0.2 text-[9px] font-extrabold tracking-wide text-red-700 dark:text-red-300">
           {dict.common.you}
         </span>
       )}
@@ -266,14 +266,14 @@ export function HighlightStatsTable({
     {
       value: 'best',
       label: <span>{interpolate(dict.highlights.filterBest, { count: 2 })}</span>,
-      activeColorClass: 'text-emerald-700 dark:text-emerald-300',
-      hoverColorClass: 'hover:text-emerald-600 dark:hover:text-emerald-400',
+      activeColorClass: 'text-amber-700 dark:text-amber-300',
+      hoverColorClass: 'hover:text-amber-600 dark:hover:text-amber-400',
     },
     {
       value: 'worst',
       label: <span>{interpolate(dict.highlights.filterWorst, { count: 2 })}</span>,
-      activeColorClass: 'text-rose-700 dark:text-rose-300',
-      hoverColorClass: 'hover:text-rose-600 dark:hover:text-rose-400',
+      activeColorClass: 'text-red-700 dark:text-red-300',
+      hoverColorClass: 'hover:text-red-600 dark:hover:text-red-400',
     },
   ], [dict.highlights, interpolate])
 
@@ -489,21 +489,21 @@ export function HighlightStatsTable({
                 </div>
               </div>
 
-              {/* Thẻ 2: Cúp tối đa có thể đạt */}
-              <div className="hero-stat-card group relative overflow-hidden rounded-xl p-4 shadow-2xs backdrop-blur-md transition-all cursor-default flex flex-col justify-between border-t-2 border-t-indigo-500/50">
+              {/* Thẻ 2: Cúp tối đa có thể đạt - Phong cách TH19 Đỏ thắm */}
+              <div className="hero-stat-card group relative overflow-hidden rounded-xl p-4 shadow-2xs backdrop-blur-md transition-all cursor-default flex flex-col justify-between border-t-2 border-t-red-600">
                 <div className="relative z-10">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                       {dict.highlights.maxCups}
                     </span>
-                    <span className="rounded-md border border-indigo-500/30 bg-indigo-500/10 px-2 py-0.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300">
+                    <span className="rounded-md border border-red-500/30 bg-red-500/10 px-2 py-0.5 text-xs font-semibold text-red-600 dark:text-red-400">
                       {formatNumber(myComparisonStats.myMaxCups)} {dict.common.trophies}
                     </span>
                   </div>
 
                   <div className="mt-2.5">
                     <div className="flex items-baseline gap-1">
-                      <span className="text-xl font-black text-indigo-600 dark:text-indigo-400">
+                      <span className="text-xl font-black text-red-600 dark:text-red-400">
                         {myComparisonStats.cupsTiedCount === myComparisonStats.totalOpponents
                           ? dict.highlights.tiedMaxTrophies
                           : interpolate(dict.highlights.betterThan, { percent: myComparisonStats.cupsPercentBetter.toFixed(1) })}
@@ -520,7 +520,7 @@ export function HighlightStatsTable({
                 <div className="relative z-10 mt-3">
                   <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-200/80 dark:bg-slate-700/80">
                     <div
-                      className="h-full rounded-full bg-indigo-500 dark:bg-indigo-400 transition-all duration-500"
+                      className="h-full rounded-full bg-red-600 dark:bg-red-500 transition-all duration-500"
                       style={{
                         width: `${
                           myComparisonStats.cupsTiedCount === myComparisonStats.totalOpponents
@@ -572,7 +572,7 @@ export function HighlightStatsTable({
                       <tr className="animate-filter-row bg-slate-100/80 dark:bg-slate-800/50 border-t border-b border-slate-200/60 dark:border-slate-800/60">
                         <td
                           colSpan={3}
-                          className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400"
+                          className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400"
                         >
                           {dict.highlights.bestSection}
                         </td>
@@ -637,7 +637,7 @@ export function HighlightStatsTable({
                       </td>
                       <td className="px-4 py-3 text-center align-middle">
                         {topMaxCups !== null ? (
-                          <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/15 px-3 py-1 text-sm font-bold text-indigo-700 dark:text-indigo-300 shadow-2xs">
+                          <span className="inline-flex items-center gap-1.5 rounded-full border border-red-500/30 bg-red-500/15 px-3 py-1 text-sm font-bold text-red-700 dark:text-red-300 shadow-2xs">
                             {formatNumber(topMaxCups.maxCups)} {dict.common.trophies}
                           </span>
                         ) : (
@@ -693,7 +693,7 @@ export function HighlightStatsTable({
                       <tr className="animate-filter-row bg-slate-100/80 dark:bg-slate-800/50 border-t border-b border-slate-200/60 dark:border-slate-800/60">
                         <td
                           colSpan={3}
-                          className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-rose-700 dark:text-rose-400"
+                          className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-red-700 dark:text-red-400"
                         >
                           {dict.highlights.worstSection}
                         </td>
@@ -714,7 +714,7 @@ export function HighlightStatsTable({
                       </td>
                       <td className="px-4 py-3 text-center align-middle">
                         {worstCurrentCups !== null ? (
-                          <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-500/30 bg-rose-500/15 px-3 py-1 text-sm font-bold text-rose-700 dark:text-rose-300 shadow-2xs">
+                          <span className="inline-flex items-center gap-1.5 rounded-full border border-red-500/30 bg-red-500/15 px-3 py-1 text-sm font-bold text-red-700 dark:text-red-300 shadow-2xs">
                             {formatNumber(worstCurrentCups.cups)} {dict.common.trophies}
                           </span>
                         ) : (

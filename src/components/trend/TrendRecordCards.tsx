@@ -58,7 +58,7 @@ export function TrendRecordCards({ overallStats, historyCount }: TrendRecordCard
           </div>
         </div>
         <div
-          className="mt-2.5 text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold truncate"
+          className="mt-2.5 text-[11px] text-amber-600 dark:text-amber-400 font-semibold truncate"
           title={recordRankText}
         >
           {recordRankText}
@@ -99,7 +99,7 @@ export function TrendRecordCards({ overallStats, historyCount }: TrendRecordCard
             {dict.performanceTrend.attackWinRate}
           </span>
           <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="font-mono text-2xl font-black text-rose-600 dark:text-rose-400">
+            <span className="font-mono text-2xl font-black text-red-600 dark:text-red-400">
               {overallStats.overallWinRate.toFixed(1)}%
             </span>
           </div>
@@ -124,7 +124,7 @@ export function TrendRecordCards({ overallStats, historyCount }: TrendRecordCard
           >
             {overallStats.latest.tierName}
           </div>
-          <div className="mt-1 text-[11px] text-sky-600 dark:text-sky-400 font-semibold">
+          <div className="mt-1 text-[11px] text-red-600 dark:text-red-400 font-semibold">
             {maxBattlesText}
           </div>
         </div>

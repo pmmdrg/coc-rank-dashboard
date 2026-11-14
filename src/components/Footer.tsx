@@ -17,7 +17,7 @@ export function Footer() {
               <span className="rounded-full border border-slate-300/60 bg-slate-200/50 px-2 py-0.5 text-[11px] font-semibold text-slate-700 shadow-2xs backdrop-blur-md dark:border-slate-700/60 dark:bg-slate-800/60 dark:text-slate-300">
                 v{APP_VERSION}
               </span>
-              <span className="rounded-full border border-sky-400/40 bg-sky-400/15 px-2 py-0.5 text-[11px] font-semibold text-sky-700 shadow-2xs backdrop-blur-md dark:border-sky-500/30 dark:bg-sky-500/20 dark:text-sky-300">
+              <span className="rounded-full border border-red-500/40 bg-red-500/15 px-2 py-0.5 text-[11px] font-semibold text-red-700 shadow-2xs backdrop-blur-md dark:border-red-500/30 dark:bg-red-500/20 dark:text-red-300">
                 Fan Tool
               </span>
             </div>

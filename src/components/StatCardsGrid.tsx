@@ -234,10 +234,10 @@ export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSy
                       <span
                         className={`inline-flex shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold ${
                           card.badgeType === 'success'
-                            ? 'bg-emerald-500/10 text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-300'
+                            ? 'bg-amber-500/10 text-amber-700 dark:bg-amber-400/10 dark:text-amber-300'
                             : card.badgeType === 'warning'
-                              ? 'bg-amber-500/10 text-amber-700 dark:bg-amber-400/10 dark:text-amber-300'
-                              : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300'
+                              ? 'bg-red-500/10 text-red-700 dark:bg-red-400/10 dark:text-red-300'
+                              : 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300'
                         }`}
                       >
                         {card.badge}
