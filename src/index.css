@@ -12,25 +12,25 @@
 
 :root {
   overflow-anchor: none;
-  --app-bg: #060608;
-  --panel-bg: #0c0c0f;
-  --panel-border: rgba(245, 158, 11, 0.25);
-  --header-bg: rgba(10, 10, 13, 0.96);
-  --field-bg: #121216;
-  --field-border: rgba(245, 158, 11, 0.3);
+  --app-bg: #070506;
+  --panel-bg: linear-gradient(180deg, rgba(28, 8, 9, 0.55) 0%, rgba(13, 7, 8, 0.95) 100%);
+  --panel-border: rgba(245, 158, 11, 0.28);
+  --header-bg: rgba(22, 8, 9, 0.96);
+  --field-bg: #140809;
+  --field-border: rgba(139, 21, 21, 0.45);
   --field-text: #ffffff;
-  --soft-table-head: #08080a;
+  --soft-table-head: #180809;
   --table-head-text: #ffffff;
-  --row-mine: rgba(122, 19, 19, 0.22);
-  --row-mine-hover: rgba(143, 23, 23, 0.32);
-  --row-risk: rgba(122, 19, 19, 0.22);
-  --row-risk-hover: rgba(143, 23, 23, 0.32);
+  --row-mine: rgba(139, 21, 21, 0.35);
+  --row-mine-hover: rgba(160, 24, 24, 0.45);
+  --row-risk: rgba(122, 19, 19, 0.28);
+  --row-risk-hover: rgba(143, 23, 23, 0.38);
   --row-below: rgba(245, 158, 11, 0.14);
   --row-below-hover: rgba(245, 158, 11, 0.22);
   --text-main: #ffffff;
   --text-muted: #e4e4e7;
   color: #ffffff;
-  background: #060608;
+  background: #070506;
   color-scheme: dark;
   font-family: var(--font-sans);
   font-synthesis: none;
@@ -42,7 +42,12 @@
 body {
   margin: 0;
   min-width: 320px;
-  background: #060608;
+  background: #070506;
+  background-image: 
+    radial-gradient(circle at 50% -20%, rgba(122, 19, 19, 0.28) 0%, transparent 60%),
+    radial-gradient(circle at 0% 40%, rgba(95, 14, 14, 0.16) 0%, transparent 50%),
+    radial-gradient(circle at 100% 70%, rgba(95, 14, 14, 0.16) 0%, transparent 50%);
+  background-attachment: fixed;
   color: #ffffff;
   min-height: 100vh;
 }
@@ -263,30 +268,30 @@ select:focus-visible {
 
 /* Explicit class .dark override */
 html.dark {
-  --app-bg: #060608;
-  --panel-bg: #0c0c0f;
-  --panel-border: rgba(245, 158, 11, 0.25);
-  --header-bg: rgba(10, 10, 13, 0.96);
-  --field-bg: #121216;
-  --field-border: rgba(245, 158, 11, 0.3);
+  --app-bg: #070506;
+  --panel-bg: linear-gradient(180deg, rgba(28, 8, 9, 0.55) 0%, rgba(13, 7, 8, 0.95) 100%);
+  --panel-border: rgba(245, 158, 11, 0.28);
+  --header-bg: rgba(22, 8, 9, 0.96);
+  --field-bg: #140809;
+  --field-border: rgba(139, 21, 21, 0.45);
   --field-text: #ffffff;
-  --soft-table-head: #08080a;
+  --soft-table-head: #180809;
   --table-head-text: #ffffff;
-  --row-mine: rgba(122, 19, 19, 0.22);
-  --row-mine-hover: rgba(143, 23, 23, 0.32);
-  --row-risk: rgba(122, 19, 19, 0.22);
-  --row-risk-hover: rgba(143, 23, 23, 0.32);
+  --row-mine: rgba(139, 21, 21, 0.35);
+  --row-mine-hover: rgba(160, 24, 24, 0.45);
+  --row-risk: rgba(122, 19, 19, 0.28);
+  --row-risk-hover: rgba(143, 23, 23, 0.38);
   --row-below: rgba(245, 158, 11, 0.14);
   --row-below-hover: rgba(245, 158, 11, 0.22);
   --text-main: #ffffff;
   --text-muted: #e4e4e7;
   color: #ffffff;
-  background: #060608;
+  background: #070506;
   color-scheme: dark;
 }
 
 html.dark .app-surface {
-  background: #060608;
+  background: #070506;
 }
 
 html.dark .glass-panel {
@@ -296,33 +301,33 @@ html.dark .glass-panel {
 }
 
 html.dark .glass-header {
-  border-bottom: 1px solid var(--panel-border);
+  border-bottom: 1px solid rgba(139, 21, 21, 0.4);
   background: var(--header-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.6);
 }
 
 html.dark .glass-footer {
-  border-top: 1px solid var(--panel-border);
+  border-top: 1px solid rgba(139, 21, 21, 0.4);
   background: var(--panel-bg);
 }
 
 html.dark .glass-drawer {
-  background: #0a0a0d;
-  border-left: 1px solid var(--panel-border);
+  background: linear-gradient(180deg, #180708 0%, #0c0607 100%);
+  border-left: 1px solid rgba(139, 21, 21, 0.45);
   box-shadow: -10px 0 40px -5px rgba(0, 0, 0, 0.85);
 }
 
 html.dark .apple-segmented-container {
-  background: #121216;
-  border: 1px solid var(--panel-border);
+  background: #180809;
+  border: 1px solid rgba(139, 21, 21, 0.45);
 }
 
 html.dark .apple-segmented-slider {
-  background: #1c1c22;
-  border: 1px solid rgba(245, 158, 11, 0.35);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.7);
+  background: #7a1313;
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.7);
 }
 
 html.dark .apple-segmented-item {
@@ -339,25 +344,25 @@ html.dark .apple-segmented-item.is-active {
 }
 
 html.dark .apple-segmented-container:not(:has(.apple-segmented-slider)) .apple-segmented-item.is-active {
-  background: #1c1c22;
+  background: #7a1313;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.6);
 }
 
 html.dark .liquid-collapse-btn {
-  background: #121216;
-  border: 1px solid var(--panel-border);
+  background: #1a0809;
+  border: 1px solid rgba(139, 21, 21, 0.45);
   color: #ffffff;
 }
 
 html.dark .liquid-collapse-btn:hover {
-  background: #1c1c22;
+  background: #7a1313;
   border-color: rgba(245, 158, 11, 0.45);
   color: #ffffff;
 }
 
 html.dark .hero-stat-card {
-  background: #0e0e12;
-  border: 1px solid var(--panel-border);
+  background: linear-gradient(145deg, #1a0809 0%, #0d0708 100%);
+  border: 1px solid rgba(139, 21, 21, 0.4);
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.6);
 }
 
@@ -983,22 +988,22 @@ html.dark .hero-stat-card:hover {
 
 /* TH19 Atmosphere Blobs (Chỉ gồm Đỏ thẫm Crimson & Vàng ánh kim) */
 .aurora-blob-inner-1 {
-  background: radial-gradient(circle at 40% 40%, rgba(139, 21, 21, 0.16) 0%, rgba(95, 12, 12, 0.08) 48%, transparent 75%);
+  background: radial-gradient(circle at 40% 40%, rgba(139, 21, 21, 0.28) 0%, rgba(95, 12, 12, 0.16) 48%, transparent 75%);
   animation: aurora-morph-1 12s ease-in-out infinite alternate;
 }
 
 .aurora-blob-inner-2 {
-  background: radial-gradient(circle at 60% 40%, rgba(245, 158, 11, 0.14) 0%, rgba(139, 21, 21, 0.06) 48%, transparent 75%);
+  background: radial-gradient(circle at 60% 40%, rgba(245, 158, 11, 0.14) 0%, rgba(139, 21, 21, 0.16) 48%, transparent 75%);
   animation: aurora-morph-2 14s ease-in-out infinite alternate;
 }
 
 .aurora-blob-inner-3 {
-  background: radial-gradient(circle at 50% 50%, rgba(139, 21, 21, 0.14) 0%, rgba(95, 12, 12, 0.06) 42%, transparent 85%);
+  background: radial-gradient(circle at 50% 50%, rgba(139, 21, 21, 0.26) 0%, rgba(95, 12, 12, 0.14) 42%, transparent 85%);
   animation: aurora-morph-3 15s ease-in-out infinite alternate;
 }
 
 .aurora-blob-inner-4 {
-  background: radial-gradient(circle at 50% 60%, rgba(245, 158, 11, 0.12) 0%, rgba(139, 21, 21, 0.06) 48%, transparent 85%);
+  background: radial-gradient(circle at 50% 60%, rgba(245, 158, 11, 0.12) 0%, rgba(139, 21, 21, 0.14) 48%, transparent 85%);
   animation: aurora-morph-4 13s ease-in-out infinite alternate;
 }
 

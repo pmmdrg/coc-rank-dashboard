@@ -60,7 +60,7 @@ export function SeasonMetaForm({
   const content = (
     <div className="grid gap-3 grid-cols-1 md:grid-cols-3">
       {/* Cột 1: Giải đấu */}
-      <div className="rounded-lg border border-amber-500/30 bg-[#0e0e12] p-4 flex flex-col justify-between shadow-2xs">
+      <div className="rounded-lg border border-red-900/40 bg-gradient-to-br from-[#1a0809] to-[#0e0708] p-4 flex flex-col justify-between shadow-2xs">
         <div className="flex items-center justify-between gap-2">
           <span className="text-[11px] font-bold uppercase tracking-wider text-white">
             {dict.seasonMeta.league}
@@ -91,7 +91,7 @@ export function SeasonMetaForm({
       </div>
 
       {/* Cột 2: Thời gian mùa giải & Vạch thăng/xuống hạng */}
-      <div className="rounded-lg border border-amber-500/30 bg-[#0e0e12] p-4 flex flex-col justify-between shadow-2xs">
+      <div className="rounded-lg border border-red-900/40 bg-gradient-to-br from-[#1a0809] to-[#0e0708] p-4 flex flex-col justify-between shadow-2xs">
         <div className="flex items-center justify-between gap-2">
           <span className="text-[11px] font-bold uppercase tracking-wider text-white">
             {dict.seasonMeta.seasonDuration}
@@ -105,7 +105,7 @@ export function SeasonMetaForm({
                   min="0"
                   value={season.promotionCount ?? 2}
                   onChange={(e) => onUpdateSeasonMeta('promotionCount', Math.max(0, parseInt(e.target.value, 10) || 0))}
-                  className="h-5 w-8 rounded border border-amber-500/50 bg-[#141418] text-center text-xs font-bold text-white focus:border-amber-400"
+                  className="h-5 w-8 rounded border border-amber-500/50 bg-[#160809] text-center text-xs font-bold text-white focus:border-amber-400"
                 />
               </label>
               <label className="flex items-center gap-1 text-red-300 font-bold">
@@ -115,7 +115,7 @@ export function SeasonMetaForm({
                   min="0"
                   value={season.demotionCount ?? 1}
                   onChange={(e) => onUpdateSeasonMeta('demotionCount', Math.max(0, parseInt(e.target.value, 10) || 0))}
-                  className="h-5 w-8 rounded border border-red-800/60 bg-[#141418] text-center text-xs font-bold text-white focus:border-red-600"
+                  className="h-5 w-8 rounded border border-red-800/60 bg-[#160809] text-center text-xs font-bold text-white focus:border-red-600"
                 />
               </label>
             </div>
@@ -131,7 +131,7 @@ export function SeasonMetaForm({
       </div>
 
       {/* Cột 3: Chọn mùa giải */}
-      <div className="rounded-lg border border-amber-500/30 bg-[#0e0e12] p-4 flex flex-col justify-between relative z-30 shadow-2xs">
+      <div className="rounded-lg border border-red-900/40 bg-gradient-to-br from-[#1a0809] to-[#0e0708] p-4 flex flex-col justify-between relative z-30 shadow-2xs">
         <span className="text-[11px] font-bold uppercase tracking-wider text-white">
           {dict.seasonMeta.selectSeason}
         </span>

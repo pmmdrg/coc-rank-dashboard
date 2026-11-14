@@ -62,7 +62,7 @@ function PercentagePieChart({
     new Intl.NumberFormat(language === 'vi' ? 'vi-VN' : 'en-US').format(val)
 
   return (
-    <div className="flex h-full flex-col justify-between overflow-hidden rounded-lg border border-amber-500/25 bg-[#0e0e12] p-4">
+    <div className="flex h-full flex-col justify-between overflow-hidden rounded-lg border border-red-900/40 bg-gradient-to-br from-[#1a0809] to-[#0e0708] p-4 shadow-2xs">
       <div className="flex items-center justify-between gap-2">
         <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
           {title}
@@ -80,7 +80,7 @@ function PercentagePieChart({
               cx="18"
               cy="18"
               r="14"
-              className="stroke-[#18181e]"
+              className="stroke-[#240a0c]"
               strokeWidth="4"
               fill="transparent"
             />

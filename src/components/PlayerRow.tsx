@@ -57,12 +57,12 @@ export function PlayerRow({
   )
 
   const borderClass = isMyPlayer
-    ? 'border-l-[4px] border-l-[#8f1717] bg-[#220707]/60 hover:bg-[#2e0b0b]/70'
+    ? 'border-l-[4px] border-l-[#8f1717] bg-[#2a0809]/70 hover:bg-[#380e0f]/80'
     : isPromotionZone
-      ? 'border-l-[4px] border-l-amber-500 bg-amber-950/10 hover:bg-[#121216]'
+      ? 'border-l-[4px] border-l-amber-500 bg-amber-950/10 hover:bg-[#200708]/60'
       : isDemotionZone
-        ? 'border-l-[4px] border-l-[#7a1313] bg-[#1a0505]/40 hover:bg-[#121216]'
-        : 'border-l-[4px] border-l-transparent hover:bg-[#121216]'
+        ? 'border-l-[4px] border-l-[#7a1313] bg-[#220707]/50 hover:bg-[#2e0909]/70'
+        : 'border-l-[4px] border-l-transparent hover:bg-[#200708]/60'
 
   const hasAttackedByMe = Boolean(player.attackedByMe && player.attackedByMe.length > 0)
   const hasDefendedAgainstMe = Boolean(player.defendedAgainstMe && player.defendedAgainstMe.length > 0)

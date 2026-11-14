@@ -364,14 +364,17 @@ export function PlayerTable({
   }
 
   return (
-    <section className="glass-panel relative rounded-xl shadow-sm">
+    <section className="glass-panel relative rounded-xl shadow-sm border border-amber-500/25 border-t-2 border-t-[#8f1717]">
       {/* 1. Header tiêu đề & trạng thái */}
-      <div className="flex flex-col gap-3 border-b border-amber-500/20 p-5 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 border-b border-red-900/40 bg-gradient-to-r from-[#200708] via-[#140708] to-[#0e0708] p-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="flex flex-wrap items-center gap-2.5">
-            <h2 className="text-base font-bold uppercase tracking-wider text-white">
-              {dict.table.title}
-            </h2>
+            <div className="flex items-center gap-2">
+              <span className="h-3.5 w-1 rounded-full bg-[#8f1717]" />
+              <h2 className="text-base font-bold uppercase tracking-wider text-white">
+                {dict.table.title}
+              </h2>
+            </div>
 
             {/* Trạng thái cập nhật */}
             {isSyncingApi ? (
@@ -411,7 +414,7 @@ export function PlayerTable({
       </div>
 
       {/* 2. Thanh Tìm kiếm & Bộ lọc nhanh */}
-      <div className="flex flex-col gap-3 border-b border-amber-500/20 p-3 sm:px-4 sm:flex-row sm:items-center sm:justify-between bg-[#08080b]">
+      <div className="flex flex-col gap-3 border-b border-red-900/40 p-3 sm:px-4 sm:flex-row sm:items-center sm:justify-between bg-[#120708]">
         {/* Ô Tìm kiếm người chơi / Clan (Apple Spotlight Style) */}
         <SearchInput
           value={searchQuery}
@@ -676,7 +679,7 @@ export function PlayerTable({
     </div>
 
       {/* 4. Chú thích biểu tượng & trạng thái - Chuẩn TH19 */}
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-amber-500/20 bg-[#08080b] px-4 py-2.5 text-xs text-zinc-300">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-red-900/40 bg-[#120708] px-4 py-2.5 text-xs text-zinc-300">
         <span className="font-semibold text-white">{dict.table.legendTitle}</span>
         <span className="inline-flex items-center gap-1.5">
           <span className="h-2.5 w-2.5 rounded-xs border-l-2 border-l-[#8f1717] bg-[#220707]" />

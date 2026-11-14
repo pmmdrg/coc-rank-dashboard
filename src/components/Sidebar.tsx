@@ -109,7 +109,7 @@ export function Sidebar({
         </div>
 
         {/* Thẻ tóm tắt người chơi & Ô đổi Player Tag */}
-        <div className="rounded-xl border border-amber-500/30 bg-[#0e0e12] p-3 shadow-xs">
+        <div className="rounded-xl border border-red-900/50 bg-gradient-to-br from-[#240a0b] to-[#120708] p-3 shadow-xs">
           <div className="flex items-center gap-3">
             <div className="relative shrink-0">
               <img
@@ -147,7 +147,7 @@ export function Sidebar({
                   }
                 }}
                 placeholder={dict.header.tagPlaceholder}
-                className="h-8 w-full rounded-lg border border-amber-500/30 bg-[#141418] pl-5 pr-7 font-mono text-[11px] font-bold tracking-wider text-white placeholder:text-zinc-500 placeholder:font-normal focus:border-amber-400 focus:outline-none"
+                className="h-8 w-full rounded-lg border border-red-900/50 bg-[#160708] pl-5 pr-7 font-mono text-[11px] font-bold tracking-wider text-white placeholder:text-zinc-500 placeholder:font-normal focus:border-red-600 focus:outline-none"
               />
               {playerTag ? (
                 <button
@@ -199,7 +199,7 @@ export function Sidebar({
                 className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-xs font-semibold transition-colors cursor-pointer select-none ${
                   isActive
                     ? 'bg-[#7a1313] border border-red-800/50 text-white font-bold shadow-md shadow-black/60'
-                    : 'text-zinc-200 hover:bg-[#141418] hover:text-white'
+                    : 'text-zinc-200 hover:bg-[#28090a]/60 hover:text-white'
                 }`}
               >
                 <Icon
@@ -214,7 +214,7 @@ export function Sidebar({
       </div>
 
       {/* PHẦN DƯỚI: NÚT CHIA SẺ, XUẤT FILE, CÀI ĐẶT */}
-      <div className="space-y-3 pt-4 border-t border-amber-500/25">
+      <div className="space-y-3 pt-4 border-t border-red-900/40">
         {/* Nút Chia sẻ thẻ thành tích - Màu Đỏ nổi bật, viền Vàng ánh kim */}
         {onOpenShareCard && (
           <button
@@ -228,7 +228,7 @@ export function Sidebar({
         )}
 
         {/* Nút Xuất JSON / CSV */}
-        <div className="flex items-center gap-1 rounded-lg border border-amber-500/25 bg-[#0e0e12] p-0.5">
+        <div className="flex items-center gap-1 rounded-lg border border-red-900/40 bg-[#160708] p-0.5">
           <button
             type="button"
             onClick={() => onExport('json')}
@@ -236,7 +236,7 @@ export function Sidebar({
           >
             JSON
           </button>
-          <span className="h-3 w-px bg-amber-500/30" />
+          <span className="h-3 w-px bg-red-900/40" />
           <button
             type="button"
             onClick={() => onExport('csv')}
@@ -260,7 +260,7 @@ export function Sidebar({
   return (
     <>
       {/* 1. DESKTOP SIDEBAR: Cố định bên trái màn hình */}
-      <aside className="!fixed inset-y-0 left-0 hidden h-screen w-64 shrink-0 flex-col border-r border-amber-500/25 bg-[#0a0a0d] lg:flex z-30">
+      <aside className="!fixed inset-y-0 left-0 hidden h-screen w-64 shrink-0 flex-col border-r border-red-900/40 bg-gradient-to-b from-[#180708] via-[#0d0607] to-[#070405] lg:flex z-30">
         {sidebarContent}
       </aside>
 
@@ -271,7 +271,7 @@ export function Sidebar({
             className="fixed inset-0 bg-black/75 backdrop-blur-xs animate-fade-in"
             onClick={onCloseMobile}
           />
-          <aside className="relative flex h-full w-64 flex-col border-r border-amber-500/25 bg-[#0a0a0d] shadow-2xl animate-slide-right">
+          <aside className="relative flex h-full w-64 flex-col border-r border-red-900/40 bg-gradient-to-b from-[#180708] via-[#0d0607] to-[#070405] shadow-2xl animate-slide-right">
             {sidebarContent}
           </aside>
         </div>

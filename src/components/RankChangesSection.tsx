@@ -207,14 +207,15 @@ export function RankChangesSection({
 
   return (
     <section
-      className={`glass-panel animate-rank-section-enter rounded-xl shadow-xs transition-opacity duration-300 overflow-hidden border border-amber-500/25 ${
+      className={`glass-panel animate-rank-section-enter rounded-xl shadow-xs transition-opacity duration-300 overflow-hidden border border-amber-500/25 border-t-2 border-t-[#8f1717] ${
         isSyncing ? 'opacity-70 pointer-events-none' : 'opacity-100'
       }`}
     >
       {/* HEADER SECTION */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-amber-500/20 p-4 sm:p-5">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-red-900/40 bg-gradient-to-r from-[#200708] via-[#140708] to-[#0e0708] p-4 sm:p-5">
         <div>
           <div className="flex items-center gap-2 flex-wrap">
+            <span className="h-3.5 w-1 rounded-full bg-[#8f1717]" />
             <h2 className="text-base font-bold uppercase tracking-wider text-white">
               {dict.rankChanges.title}
             </h2>

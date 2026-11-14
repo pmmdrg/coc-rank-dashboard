@@ -289,7 +289,7 @@ export function ClanMembersSection({
   return (
     <div className="space-y-6 animate-fade-in">
       {/* 1. HERO BANNER: THÔNG TIN CLAN (Đã bỏ nút copy tag, ô nhập tag và nút sync clan) */}
-      <section className="glass-panel relative overflow-hidden rounded-2xl border border-amber-500/30 p-5 shadow-sm backdrop-blur-xl sm:p-6">
+      <section className="glass-panel relative overflow-hidden rounded-2xl border border-amber-500/30 border-t-2 border-t-[#8f1717] bg-gradient-to-br from-[#240809] via-[#140708] to-[#0d0708] p-5 shadow-sm backdrop-blur-xl sm:p-6">
         {/* Họa tiết ánh sáng nền */}
         <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-gradient-to-br from-red-600/15 via-red-950/20 to-transparent blur-3xl" />
         <div className="pointer-events-none absolute -left-16 -bottom-16 h-64 w-64 rounded-full bg-gradient-to-tr from-amber-500/10 via-red-500/5 to-transparent blur-3xl" />
@@ -375,7 +375,7 @@ export function ClanMembersSection({
       </section>
 
       {/* 2. TOOLBAR TÌM KIẾM, LỌC & SẮP XẾP */}
-      <section className="glass-panel relative z-20 flex flex-col gap-3 rounded-2xl border border-amber-500/25 p-4 shadow-2xs backdrop-blur-md sm:flex-row sm:items-center sm:justify-between">
+      <section className="glass-panel relative z-20 flex flex-col gap-3 rounded-2xl border border-amber-500/25 bg-gradient-to-r from-[#1c0809] to-[#0e0708] p-4 shadow-2xs backdrop-blur-md sm:flex-row sm:items-center sm:justify-between">
         {/* Ô tìm kiếm */}
         <div className="flex-1 sm:max-w-xs">
           <SearchInput
@@ -411,7 +411,7 @@ export function ClanMembersSection({
             <button
               type="button"
               onClick={() => setSortOrder((curr) => (curr === 'asc' ? 'desc' : 'asc'))}
-              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-amber-500/30 bg-[#121216] text-white hover:border-red-800 hover:bg-[#7a1313] active:scale-95 transition-all shadow-2xs backdrop-blur-md cursor-pointer"
+              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-red-900/50 bg-[#180708] text-white hover:border-amber-500/50 hover:bg-[#7a1313] active:scale-95 transition-all shadow-2xs backdrop-blur-md cursor-pointer"
               title={sortOrder === 'asc' ? 'Tăng dần (Nhấn để đổi giảm dần)' : 'Giảm dần (Nhấn để đổi tăng dần)'}
             >
               <ArrowsDownUp weight="bold" className={`h-4 w-4 ${sortOrder === 'desc' ? 'rotate-180' : ''} transition-transform duration-200`} />
@@ -451,11 +451,11 @@ export function ClanMembersSection({
       </section>
 
       {/* 3. BẢNG DANH SÁCH THÀNH VIÊN CLAN */}
-      <section className="glass-panel overflow-hidden rounded-2xl border border-amber-500/25 shadow-sm backdrop-blur-xl">
+      <section className="glass-panel overflow-hidden rounded-2xl border border-amber-500/25 border-t-2 border-t-[#8f1717] shadow-sm backdrop-blur-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-amber-500/30 bg-[#08080b] text-[11px] font-bold uppercase tracking-wider text-white">
+              <tr className="border-b border-red-900/50 bg-gradient-to-r from-[#200708] via-[#140708] to-[#0e0708] text-[11px] font-bold uppercase tracking-wider text-white">
                 <th className="py-3 pl-4 pr-2 text-center w-14 sm:w-16">
                   {dict.clan.thRank}
                 </th>
@@ -501,8 +501,8 @@ export function ClanMembersSection({
                       key={member.tag}
                       className={`group transition-colors ${
                         isMe
-                          ? 'bg-[#220707]/60 font-semibold'
-                          : 'hover:bg-[#121216]'
+                          ? 'border-l-[4px] border-l-[#8f1717] bg-[#2a0809]/70 font-semibold hover:bg-[#380e0f]/80'
+                          : 'hover:bg-[#200708]/60'
                       }`}
                     >
                       {/* Cột 1: Hạng trong clan & Biến động */}

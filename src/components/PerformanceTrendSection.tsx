@@ -401,11 +401,12 @@ export function PerformanceTrendSection({
   }
 
   return (
-    <section className="glass-panel rounded-xl shadow-sm transition-all border border-amber-500/25">
+    <section className="glass-panel rounded-xl shadow-sm transition-all border border-amber-500/25 border-t-2 border-t-[#8f1717]">
       {/* Header & Toggle */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-amber-500/20 p-4 sm:p-5">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-red-900/40 bg-gradient-to-r from-[#200708] via-[#140708] to-[#0e0708] p-4 sm:p-5">
         <div>
           <div className="flex items-center gap-2">
+            <span className="h-3.5 w-1 rounded-full bg-[#8f1717]" />
             <h2 className="text-base font-bold uppercase tracking-wider text-white">
               {dict.performanceTrend.title}
             </h2>

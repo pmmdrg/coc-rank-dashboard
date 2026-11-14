@@ -390,14 +390,15 @@ export function HighlightStatsTable({
   }
 
   return (
-    <section className="glass-panel rounded-2xl shadow-sm overflow-hidden border border-amber-500/25 transition-all duration-300">
+    <section className="glass-panel rounded-2xl shadow-sm overflow-hidden border border-amber-500/25 border-t-2 border-t-[#8f1717] transition-all duration-300">
       {/* Header với Tiêu đề, Bộ lọc nhanh & Nút thu gọn */}
       <div
-        className={`flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 sm:p-5 transition-all duration-300 ${
-          !isCollapsed ? 'border-b border-amber-500/20' : ''
+        className={`flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 sm:p-5 bg-gradient-to-r from-[#200708] via-[#140708] to-[#0e0708] transition-all duration-300 ${
+          !isCollapsed ? 'border-b border-red-900/40' : ''
         }`}
       >
         <div className="flex items-center gap-2">
+          <span className="h-3.5 w-1 rounded-full bg-[#8f1717]" />
           <h2 className="text-base font-bold uppercase tracking-wider text-white">
             {dict.highlights.title}
           </h2>
@@ -427,7 +428,7 @@ export function HighlightStatsTable({
 
         {/* ==================== ĐỊNH VỊ NĂNG LỰC CỦA BẠN SO VỚI TOÀN BẢNG ==================== */}
         {myPlayer && myComparisonStats ? (
-          <div className="rounded-xl border border-amber-500/30 bg-[#0e0e12] p-4">
+          <div className="rounded-xl border border-red-900/40 bg-gradient-to-br from-[#1c0809] to-[#0e0708] p-4">
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between mb-3.5">
               <h4 className="text-xs font-bold uppercase tracking-wider text-white">
                 {interpolate(dict.highlights.myStandingTitle, { name: myPlayer.name })}
@@ -439,7 +440,7 @@ export function HighlightStatsTable({
 
             <div className="grid gap-3 sm:grid-cols-2">
               {/* Thẻ 1: Cúp hiện tại */}
-              <div className="hero-stat-card group relative overflow-hidden rounded-xl p-4 shadow-2xs backdrop-blur-md transition-all cursor-default flex flex-col justify-between border-t-2 border-t-amber-500/50">
+              <div className="hero-stat-card group relative overflow-hidden rounded-xl p-4 shadow-2xs backdrop-blur-md transition-all cursor-default flex flex-col justify-between border-t-2 border-t-amber-500/50 bg-gradient-to-br from-[#20090a] to-[#120708]">
                 <div className="relative z-10">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold uppercase tracking-wider text-zinc-300">
@@ -490,7 +491,7 @@ export function HighlightStatsTable({
               </div>
 
               {/* Thẻ 2: Cúp tối đa có thể đạt - Phong cách TH19 Đỏ sẫm */}
-              <div className="hero-stat-card group relative overflow-hidden rounded-xl p-4 shadow-2xs backdrop-blur-md transition-all cursor-default flex flex-col justify-between border-t-2 border-t-[#8f1717]">
+              <div className="hero-stat-card group relative overflow-hidden rounded-xl p-4 shadow-2xs backdrop-blur-md transition-all cursor-default flex flex-col justify-between border-t-2 border-t-[#8f1717] bg-gradient-to-br from-[#20090a] to-[#120708]">
                 <div className="relative z-10">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold uppercase tracking-wider text-zinc-300">
@@ -551,7 +552,7 @@ export function HighlightStatsTable({
         <div ref={animatedWrapperRef} className="will-change-[height]">
           <div ref={innerContentRef} className="overflow-x-auto overflow-y-hidden rounded-lg border border-amber-500/25">
             <table className="w-full text-sm">
-              <thead className="bg-[#08080b] border-b border-amber-500/30 text-xs font-bold uppercase tracking-wider text-white">
+              <thead className="bg-gradient-to-r from-[#200708] via-[#140708] to-[#0e0708] border-b border-red-900/50 text-xs font-bold uppercase tracking-wider text-white">
                 <tr>
                   <th className="w-64 min-w-[200px] px-4 py-2.5 text-left font-semibold">
                     {dict.highlights.category}

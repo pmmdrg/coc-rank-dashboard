@@ -52,16 +52,19 @@ export function SeasonOverviewSection({
   }
 
   return (
-    <section className="glass-panel rounded-xl shadow-xs overflow-hidden border border-amber-500/25 transition-all duration-200">
+    <section className="glass-panel rounded-xl shadow-xs overflow-hidden border border-amber-500/25 border-t-2 border-t-[#8f1717] transition-all duration-200">
       {/* Header: Tinh gọn */}
       <div
-        className={`flex items-center justify-between gap-3 px-4 py-3.5 sm:px-5 transition-colors ${
-          !isCollapsed ? 'border-b border-amber-500/20' : ''
+        className={`flex items-center justify-between gap-3 px-4 py-3.5 sm:px-5 bg-gradient-to-r from-[#200708] via-[#140708] to-[#0e0708] transition-colors ${
+          !isCollapsed ? 'border-b border-red-900/40' : ''
         }`}
       >
-        <h2 className="text-xs font-black uppercase tracking-wider text-white">
-          {dict.seasonMeta.seasonOverviewTitle}
-        </h2>
+        <div className="flex items-center gap-2">
+          <span className="h-3 w-1 rounded-full bg-[#8f1717]" />
+          <h2 className="text-xs font-black uppercase tracking-wider text-white">
+            {dict.seasonMeta.seasonOverviewTitle}
+          </h2>
+        </div>
 
         <CollapseToggleButton
           isCollapsed={isCollapsed}
