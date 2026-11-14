@@ -533,7 +533,7 @@ function App() {
       />
 
       {/* Khu vực Nội dung chính bên phải */}
-      <div className="relative z-10 flex flex-1 flex-col min-w-0 lg:pl-72">
+      <div className="relative z-10 flex flex-1 flex-col min-w-0 lg:pl-64">
         {/* Top Contextual Bar */}
         <TopBar
           currentRoute={currentRoute}

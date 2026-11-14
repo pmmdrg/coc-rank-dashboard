@@ -1,4 +1,4 @@
-import { Crown, ArrowUp, ArrowDown } from '@phosphor-icons/react'
+import { ArrowUp, ArrowDown } from '@phosphor-icons/react'
 
 export interface RankBadgeProps {
   rank: number
@@ -9,24 +9,19 @@ export interface RankBadgeProps {
 
 /**
  * Huy hiệu thứ hạng chuẩn hóa (Podium Top 1-2-3 & Hạng thường):
- * - Top 1: Huy hiệu vàng óng + icon vương miện
- * - Top 2: Huy hiệu ánh bạc
- * - Top 3: Huy hiệu đồng
- * - Top 4+: Khung monospaced tối giản
+ * Thiết kế tối giản, tinh tế, sử dụng font mono nhất quán
  */
 export function RankBadge({ rank, title, className = '', size = 'md' }: RankBadgeProps) {
   const isSm = size === 'sm'
+  const sizeClasses = isSm ? 'h-6 min-w-6 px-1.5 text-xs' : 'h-6.5 min-w-[32px] px-1.5 text-xs'
 
   if (rank === 1) {
     return (
       <div
-        className={`inline-flex shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-amber-300 via-yellow-400 to-amber-500 font-mono font-black text-amber-950 shadow-xs shadow-amber-500/35 select-none ${
-          isSm ? 'h-6.5 min-w-6.5 px-1.5 text-xs' : 'h-7 min-w-8 px-2 text-xs'
-        } ${className}`}
+        className={`inline-flex shrink-0 items-center justify-center rounded-md border border-amber-500/30 bg-amber-500/15 font-mono font-bold text-amber-800 dark:bg-amber-500/20 dark:text-amber-300 select-none shadow-2xs ${sizeClasses} ${className}`}
         title={title || 'Top 1'}
       >
-        <Crown weight="fill" className="mr-0.5 h-3.5 w-3.5 fill-amber-950 text-amber-950 drop-shadow-xs" />
-        <span>1</span>
+        #1
       </div>
     )
   }
@@ -34,12 +29,10 @@ export function RankBadge({ rank, title, className = '', size = 'md' }: RankBadg
   if (rank === 2) {
     return (
       <div
-        className={`inline-flex shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-slate-100 via-slate-200 to-slate-400 font-mono font-black text-slate-900 shadow-2xs select-none ${
-          isSm ? 'h-6.5 min-w-6.5 px-1.5 text-xs' : 'h-7 min-w-8 px-2 text-xs'
-        } ${className}`}
+        className={`inline-flex shrink-0 items-center justify-center rounded-md border border-slate-300/80 bg-slate-200/60 font-mono font-bold text-slate-800 dark:border-slate-600/70 dark:bg-slate-700/50 dark:text-slate-200 select-none shadow-2xs ${sizeClasses} ${className}`}
         title={title || 'Top 2'}
       >
-        <span>2</span>
+        #2
       </div>
     )
   }
@@ -47,21 +40,17 @@ export function RankBadge({ rank, title, className = '', size = 'md' }: RankBadg
   if (rank === 3) {
     return (
       <div
-        className={`inline-flex shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-amber-600 via-orange-600 to-amber-700 font-mono font-black text-white shadow-2xs select-none ${
-          isSm ? 'h-6.5 min-w-6.5 px-1.5 text-xs' : 'h-7 min-w-8 px-2 text-xs'
-        } ${className}`}
+        className={`inline-flex shrink-0 items-center justify-center rounded-md border border-amber-700/25 bg-amber-700/10 font-mono font-bold text-amber-900 dark:border-amber-700/30 dark:bg-amber-700/20 dark:text-amber-400 select-none shadow-2xs ${sizeClasses} ${className}`}
         title={title || 'Top 3'}
       >
-        <span>3</span>
+        #3
       </div>
     )
   }
 
   return (
     <div
-      className={`inline-flex shrink-0 items-center justify-center rounded-lg border border-slate-200/80 bg-slate-100/80 font-mono font-bold text-slate-700 dark:border-slate-800 dark:bg-slate-800/80 dark:text-slate-300 select-none ${
-        isSm ? 'h-6.5 min-w-6.5 px-1 text-xs' : 'h-7 min-w-[32px] px-1.5 text-xs'
-      } ${className}`}
+      className={`inline-flex shrink-0 items-center justify-center rounded-md border border-slate-200/70 bg-slate-100/60 font-mono font-medium text-slate-600 dark:border-slate-800/80 dark:bg-slate-800/50 dark:text-slate-400 select-none ${sizeClasses} ${className}`}
       title={title || `#${rank}`}
     >
       #{rank}

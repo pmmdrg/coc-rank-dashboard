@@ -52,18 +52,17 @@ export function SeasonOverviewSection({
   }
 
   return (
-    <section className="glass-panel rounded-2xl shadow-sm overflow-hidden transition-all duration-300">
-      {/* Header Thẻ lớn: Tổng quan mùa giải - Tinh gọn, không icon ở tiêu đề, không lặp lại thông tin */}
+    <section className="glass-panel rounded-xl shadow-xs overflow-hidden border border-slate-200/80 dark:border-slate-800/80 transition-all duration-200">
+      {/* Header: Tinh gọn */}
       <div
-        className={`flex items-center justify-between gap-3 p-4 sm:p-5 transition-all duration-300 ${
+        className={`flex items-center justify-between gap-3 px-4 py-3.5 sm:px-5 transition-colors ${
           !isCollapsed ? 'border-b border-slate-200/60 dark:border-slate-800/60' : ''
         }`}
       >
-        <h2 className="text-base font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
+        <h2 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
           {dict.seasonMeta.seasonOverviewTitle}
         </h2>
 
-        {/* Nút thu gọn / mở rộng toàn bộ Thẻ lớn đồng bộ style với filter */}
         <CollapseToggleButton
           isCollapsed={isCollapsed}
           onToggle={handleToggleCollapse}
@@ -71,37 +70,30 @@ export function SeasonOverviewSection({
         />
       </div>
 
-      {/* Body Thẻ lớn với animation collapsible-grid */}
+      {/* Body Thẻ lớn */}
       <div className={`collapsible-grid ${!isCollapsed ? 'is-expanded' : ''}`}>
         <div className="collapsible-inner">
-          <div className="p-4 sm:p-5 space-y-6">
-            {/* Phân mục 1: Thông tin & Quy tắc mùa giải */}
-            <div className="relative z-20">
-              <SeasonMetaForm
-                season={season}
-                seasons={seasons}
-                activeSeasonIndex={activeSeasonIndex}
-                onSelectSeasonIndex={onSelectSeasonIndex}
-                onUpdateSeasonMeta={onUpdateSeasonMeta}
-                isSyncingApi={isSyncingApi}
-                embedded={true}
-              />
-            </div>
+          <div className="p-4 sm:p-5 space-y-4">
+            {/* Phân mục 1: Thông tin mùa giải */}
+            <SeasonMetaForm
+              season={season}
+              seasons={seasons}
+              activeSeasonIndex={activeSeasonIndex}
+              onSelectSeasonIndex={onSelectSeasonIndex}
+              onUpdateSeasonMeta={onUpdateSeasonMeta}
+              isSyncingApi={isSyncingApi}
+              embedded={true}
+            />
 
-            {/* Đường phân cách giữa 2 khối thông tin */}
-            <div className="border-t border-slate-200/60 dark:border-slate-800/60" />
-
-            {/* Phân mục 2: Biểu đồ phân bổ mùa giải */}
-            <div className="relative z-10">
-              <ChartsSection
-                comparisonData={comparisonData}
-                attackStatusData={attackStatusData}
-                ratingData={ratingData}
-                myPlayerName={myPlayerName}
-                isSyncingApi={isSyncingApi}
-                embedded={true}
-              />
-            </div>
+            {/* Phân mục 2: Biểu đồ phân bổ */}
+            <ChartsSection
+              comparisonData={comparisonData}
+              attackStatusData={attackStatusData}
+              ratingData={ratingData}
+              myPlayerName={myPlayerName}
+              isSyncingApi={isSyncingApi}
+              embedded={true}
+            />
           </div>
         </div>
       </div>

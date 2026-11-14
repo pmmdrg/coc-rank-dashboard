@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Warning, Trophy, Check, Copy, Sword } from '@phosphor-icons/react'
+import { Warning, Check, Copy } from '@phosphor-icons/react'
 import type { Player } from '../types'
 import { validatePlayer } from '../lib/validation'
 import { useI18n } from '../i18n/LanguageContext'
@@ -172,7 +172,7 @@ export function PlayerRow({
                 {player.name}
               </span>
               {isMyPlayer && (
-                <span className="shrink-0 rounded-full bg-gradient-to-r from-sky-500 to-blue-600 px-2 py-0.2 text-[9px] font-black text-white shadow-xs shadow-sky-500/30 uppercase tracking-wider">
+                <span className="shrink-0 rounded bg-sky-500/15 border border-sky-500/30 px-1.5 py-0.2 text-[9px] font-bold text-sky-700 dark:text-sky-300 uppercase tracking-wider">
                   {dict.common.me}
                 </span>
               )}
@@ -245,94 +245,62 @@ export function PlayerRow({
                 e.stopPropagation()
                 onOpenBattleLog?.(player)
               }}
-              className="apple-btn inline-flex items-center gap-1 rounded-lg border border-slate-200/90 bg-white/70 px-2 py-1 text-[11px] font-bold text-slate-700 shadow-2xs backdrop-blur-md hover:border-indigo-400 hover:bg-indigo-50/90 hover:text-indigo-600 dark:border-white/10 dark:bg-slate-800/70 dark:text-slate-300 dark:hover:border-indigo-400/50 dark:hover:bg-indigo-950/60 dark:hover:text-indigo-300 transition-all cursor-pointer select-none"
+              className="inline-flex items-center rounded-md border border-slate-200/80 bg-white/80 px-2 py-0.5 text-[11px] font-medium text-slate-600 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 dark:border-slate-700/80 dark:bg-slate-800/80 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:bg-slate-700 dark:hover:text-slate-100 transition-colors cursor-pointer select-none shadow-2xs"
               title={dict.battleLog.viewLogTooltip}
             >
-              <Sword weight="bold" className="h-3.5 w-3.5 text-indigo-500 dark:text-indigo-400" />
-              <span className="hidden xl:inline text-[10px]">{dict.battleLog.actionLog}</span>
+              <span>{dict.battleLog.actionLog}</span>
             </button>
           </div>
         </div>
       </td>
 
       {/* 3. Số Lượt Đánh */}
-      <td className="px-2 py-2.5 align-middle">
-        <div className="flex h-9 items-center gap-2">
-          <div className="flex flex-col items-center justify-center min-w-[34px] rounded-md border border-slate-200/80 bg-slate-100/90 px-1.5 py-0.5 dark:border-slate-800 dark:bg-slate-800/90 shadow-2xs">
-            <span className="font-mono text-sm font-bold text-slate-900 dark:text-slate-100 leading-none">
-              {player.attacks}
-            </span>
-            {player.attackWinCount !== undefined && (
-              <span
-                className="mt-0.5 text-[9px] font-bold text-emerald-600 dark:text-emerald-400 leading-none"
-                title={`${player.attackWinCount}W${player.attackLoseCount ? `-${player.attackLoseCount}L` : ''}`}
-              >
+      <td className="px-2.5 py-2.5 align-middle">
+        <div className="flex flex-col justify-center leading-tight">
+          <div className="flex items-baseline gap-0.5 font-mono text-sm">
+            <span className="font-bold text-slate-900 dark:text-slate-100">{player.attacks}</span>
+            <span className="text-xs text-slate-400 dark:text-slate-500">/{maxAttacks}</span>
+          </div>
+          <div className="text-[10px] text-slate-400 dark:text-slate-500">
+            {player.attackWinCount !== undefined ? (
+              <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
                 {player.attackWinCount}W{player.attackLoseCount ? `-${player.attackLoseCount}L` : ''}
               </span>
+            ) : (
+              <span className={remainingAttacks === 0 ? 'text-emerald-600 dark:text-emerald-400 font-medium' : ''}>
+                {remainingAttacks === 0 ? dict.table.completedAttacks : `${remainingAttacks} left`}
+              </span>
             )}
-          </div>
-          <div className="flex flex-col justify-center leading-none">
-            <span className="select-none text-xs font-bold text-slate-400 dark:text-slate-500">
-              /{maxAttacks}
-            </span>
-            <span
-              className={`mt-1 select-none text-[10px] whitespace-nowrap ${
-                remainingAttacks === 0
-                  ? 'font-bold text-emerald-600 dark:text-emerald-400'
-                  : 'font-medium text-slate-500 dark:text-slate-400'
-              }`}
-            >
-              {remainingAttacks === 0
-                ? dict.table.completedAttacks
-                : interpolate(dict.table.remainingAttacks, { count: remainingAttacks })}
-            </span>
           </div>
         </div>
       </td>
 
       {/* 4. Số Lượt Thủ */}
-      <td className="px-2 py-2.5 align-middle">
-        <div className="flex h-9 items-center gap-2">
-          <div className="flex flex-col items-center justify-center min-w-[34px] rounded-md border border-slate-200/80 bg-slate-100/90 px-1.5 py-0.5 dark:border-slate-800 dark:bg-slate-800/90 shadow-2xs">
-            <span className="font-mono text-sm font-bold text-slate-900 dark:text-slate-100 leading-none">
-              {player.defenses}
-            </span>
-            {player.defenseLoseCount !== undefined && (
-              <span
-                className="mt-0.5 text-[9px] font-bold text-slate-500 dark:text-slate-400 leading-none"
-                title={`${player.defenseWinCount ? `${player.defenseWinCount}W-` : ''}${player.defenseLoseCount}L`}
-              >
+      <td className="px-2.5 py-2.5 align-middle">
+        <div className="flex flex-col justify-center leading-tight">
+          <div className="flex items-baseline gap-0.5 font-mono text-sm">
+            <span className="font-bold text-slate-900 dark:text-slate-100">{player.defenses}</span>
+            <span className="text-xs text-slate-400 dark:text-slate-500">/{maxDefenses}</span>
+          </div>
+          <div className="text-[10px] text-slate-400 dark:text-slate-500">
+            {player.defenseLoseCount !== undefined ? (
+              <span>
                 {player.defenseWinCount ? `${player.defenseWinCount}W-` : ''}{player.defenseLoseCount}L
               </span>
+            ) : (
+              <span className={remainingDefenses === 0 ? 'text-emerald-600 dark:text-emerald-400 font-medium' : ''}>
+                {remainingDefenses === 0 ? dict.table.completedAttacks : `${remainingDefenses} left`}
+              </span>
             )}
-          </div>
-          <div className="flex flex-col justify-center leading-none">
-            <span className="select-none text-xs font-bold text-slate-400 dark:text-slate-500">
-              /{maxDefenses}
-            </span>
-            <span
-              className={`mt-1 select-none text-[10px] whitespace-nowrap ${
-                remainingDefenses === 0
-                  ? 'font-bold text-emerald-600 dark:text-emerald-400'
-                  : 'font-medium text-slate-500 dark:text-slate-400'
-              }`}
-            >
-              {remainingDefenses === 0
-                ? dict.table.completedAttacks
-                : interpolate(dict.table.remainingAttacks, { count: remainingDefenses })}
-            </span>
           </div>
         </div>
       </td>
 
       {/* 5. Cúp Hiện Tại */}
       <td className="w-24 min-w-[88px] px-2 py-2.5 align-middle">
-        <div className="flex items-center gap-1.5">
-          <Trophy weight="duotone" className="h-3.5 w-3.5 text-amber-500 shrink-0 drop-shadow-xs" />
-          <span className="font-mono text-sm font-black text-amber-600 dark:text-amber-400">
-            {formatNumber(player.currentCups)}
-          </span>
-        </div>
+        <span className="font-mono text-sm font-bold text-slate-900 dark:text-slate-100">
+          {formatNumber(player.currentCups)}
+        </span>
       </td>
 
       {/* 6. Cúp Tối Đa Có Thể Đạt */}

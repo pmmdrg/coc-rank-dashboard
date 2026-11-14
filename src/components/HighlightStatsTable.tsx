@@ -1,5 +1,4 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { Trophy, TrendUp } from '@phosphor-icons/react'
 import type { Player } from '../types'
 import { useI18n } from '../i18n/LanguageContext'
 import { SegmentedControl, type SegmentedControlOption } from './SegmentedControl'
@@ -440,30 +439,13 @@ export function HighlightStatsTable({
 
             <div className="grid gap-3 sm:grid-cols-2">
               {/* Thẻ 1: Cúp hiện tại */}
-              <div className="hero-stat-card group relative overflow-hidden rounded-xl p-4 shadow-2xs backdrop-blur-md transition-all cursor-default flex flex-col justify-between">
-                {/* Tonal radial glow */}
-                <div
-                  className="pointer-events-none absolute inset-0 opacity-80"
-                  style={{
-                    background: 'radial-gradient(circle at 100% 100%, rgba(245, 158, 11, 0.08), transparent 70%)',
-                  }}
-                />
-
-                {/* Vạch Accent Glow ở mép trên kiểu Apple Specular Bar */}
-                <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-amber-400 via-orange-500 to-yellow-500 opacity-85 group-hover:h-[4px] group-hover:opacity-100 transition-all" />
-
-                {/* Icon lớn mờ chìm nghệ thuật ở góc thẻ */}
-                <Trophy
-                  weight="duotone"
-                  className="pointer-events-none absolute -bottom-3 -right-3 h-24 w-24 opacity-15 dark:opacity-[0.10] text-amber-500 transition-transform duration-300 group-hover:scale-115"
-                />
-
+              <div className="hero-stat-card group relative overflow-hidden rounded-xl p-4 shadow-2xs backdrop-blur-md transition-all cursor-default flex flex-col justify-between border-t-2 border-t-amber-500/50">
                 <div className="relative z-10">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                       {dict.highlights.currentCups}
                     </span>
-                    <span className="rounded-md border border-amber-500/30 bg-amber-500/15 px-2 py-0.5 text-xs font-bold text-amber-700 dark:text-amber-300">
+                    <span className="rounded-md border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-xs font-semibold text-amber-700 dark:text-amber-300">
                       {formatNumber(myComparisonStats.myCurrentCups)} {dict.common.trophies}
                     </span>
                   </div>
@@ -485,9 +467,9 @@ export function HighlightStatsTable({
                 </div>
 
                 <div className="relative z-10 mt-3">
-                  <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200/80 dark:bg-slate-700/80">
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-200/80 dark:bg-slate-700/80">
                     <div
-                      className="h-full rounded-full bg-gradient-to-r from-amber-500 to-amber-400 transition-all duration-600"
+                      className="h-full rounded-full bg-amber-500 dark:bg-amber-400 transition-all duration-500"
                       style={{
                         width: `${
                           myComparisonStats.currentCupsTiedCount === myComparisonStats.totalOpponents
@@ -508,30 +490,13 @@ export function HighlightStatsTable({
               </div>
 
               {/* Thẻ 2: Cúp tối đa có thể đạt */}
-              <div className="hero-stat-card group relative overflow-hidden rounded-xl p-4 shadow-2xs backdrop-blur-md transition-all cursor-default flex flex-col justify-between">
-                {/* Tonal radial glow */}
-                <div
-                  className="pointer-events-none absolute inset-0 opacity-80"
-                  style={{
-                    background: 'radial-gradient(circle at 100% 100%, rgba(99, 102, 241, 0.08), transparent 70%)',
-                  }}
-                />
-
-                {/* Vạch Accent Glow ở mép trên kiểu Apple Specular Bar */}
-                <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 opacity-85 group-hover:h-[4px] group-hover:opacity-100 transition-all" />
-
-                {/* Icon lớn mờ chìm nghệ thuật ở góc thẻ */}
-                <TrendUp
-                  weight="duotone"
-                  className="pointer-events-none absolute -bottom-3 -right-3 h-24 w-24 opacity-15 dark:opacity-[0.10] text-indigo-500 transition-transform duration-300 group-hover:scale-115"
-                />
-
+              <div className="hero-stat-card group relative overflow-hidden rounded-xl p-4 shadow-2xs backdrop-blur-md transition-all cursor-default flex flex-col justify-between border-t-2 border-t-indigo-500/50">
                 <div className="relative z-10">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                       {dict.highlights.maxCups}
                     </span>
-                    <span className="rounded-md border border-indigo-500/30 bg-indigo-500/15 px-2 py-0.5 text-xs font-bold text-indigo-700 dark:text-indigo-300">
+                    <span className="rounded-md border border-indigo-500/30 bg-indigo-500/10 px-2 py-0.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300">
                       {formatNumber(myComparisonStats.myMaxCups)} {dict.common.trophies}
                     </span>
                   </div>
@@ -553,9 +518,9 @@ export function HighlightStatsTable({
                 </div>
 
                 <div className="relative z-10 mt-3">
-                  <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200/80 dark:bg-slate-700/80">
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-200/80 dark:bg-slate-700/80">
                     <div
-                      className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-400 transition-all duration-600"
+                      className="h-full rounded-full bg-indigo-500 dark:bg-indigo-400 transition-all duration-500"
                       style={{
                         width: `${
                           myComparisonStats.cupsTiedCount === myComparisonStats.totalOpponents
@@ -604,10 +569,10 @@ export function HighlightStatsTable({
                 {showBest && (
                   <>
                     {filterMode === 'all' && (
-                      <tr className="animate-filter-row bg-emerald-500/10 dark:bg-emerald-500/15">
+                      <tr className="animate-filter-row bg-slate-100/80 dark:bg-slate-800/50 border-t border-b border-slate-200/60 dark:border-slate-800/60">
                         <td
                           colSpan={3}
-                          className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-300"
+                          className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400"
                         >
                           {dict.highlights.bestSection}
                         </td>
@@ -725,10 +690,10 @@ export function HighlightStatsTable({
                 {showWorst && (
                   <>
                     {filterMode === 'all' && (
-                      <tr className="animate-filter-row bg-rose-500/10 dark:bg-rose-500/15">
+                      <tr className="animate-filter-row bg-slate-100/80 dark:bg-slate-800/50 border-t border-b border-slate-200/60 dark:border-slate-800/60">
                         <td
                           colSpan={3}
-                          className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-rose-700 dark:text-rose-300"
+                          className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-rose-700 dark:text-rose-400"
                         >
                           {dict.highlights.worstSection}
                         </td>

@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react'
-import { Trophy, Sword, ShieldWarning, ShieldCheck } from '@phosphor-icons/react'
 import type { RankingStats, Season } from '../types'
 import { useI18n } from '../i18n/LanguageContext'
 import { CollapseToggleButton } from './CollapseToggleButton'
@@ -11,8 +10,8 @@ interface StatCardsGridProps {
   isSyncingApi?: boolean
 }
 
-export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = false }: StatCardsGridProps) {
-  const { dict, interpolate, language } = useI18n()
+export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSyncingApi = false }: StatCardsGridProps) {
+  const { dict, language } = useI18n()
   const locale = language === 'vi' ? 'vi-VN' : 'en-US'
   const hasMyPlayer = Boolean(stats.myPlayer)
 
@@ -43,7 +42,6 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
   const attackStats = useMemo(() => {
     if (!hasMyPlayer) return null
 
-    // 1. Logs trực tiếp từ season.attackLogs hoặc attackedByMe
     const logs =
       season.attackLogs && season.attackLogs.length > 0
         ? season.attackLogs
@@ -61,7 +59,6 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
       }
     }
 
-    // 2. Dữ liệu từ stats.myPlayer nếu không có battle logs
     const myPlayer = stats.myPlayer!
     const attacks = myPlayer.attacks || 0
     if (attacks > 0 || (myPlayer.attackDestruction !== undefined && myPlayer.attackDestruction > 0)) {
@@ -80,7 +77,6 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
   const defenseStats = useMemo(() => {
     if (!hasMyPlayer) return null
 
-    // 1. Logs trực tiếp từ season.defenseLogs hoặc defendedAgainstMe
     const logs =
       season.defenseLogs && season.defenseLogs.length > 0
         ? season.defenseLogs
@@ -98,7 +94,6 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
       }
     }
 
-    // 2. Dữ liệu từ stats.myPlayer nếu không có battle logs
     const myPlayer = stats.myPlayer!
     const defenses = myPlayer.defenses || 0
     if (defenses > 0 || (myPlayer.defenseDestruction !== undefined && myPlayer.defenseDestruction > 0)) {
@@ -115,79 +110,25 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
   }, [hasMyPlayer, season.defenseLogs, season.players, stats.myPlayer])
 
   if (isSyncingApi) {
-    const skeletonStatCards = [
-      {
-        accentGradient: 'from-sky-400 via-blue-500 to-indigo-500',
-        tonalGlow: 'rgba(14, 165, 233, 0.08)',
-        icon: Trophy,
-        iconColor: 'text-sky-500',
-      },
-      {
-        accentGradient: 'from-amber-400 via-orange-500 to-yellow-500',
-        tonalGlow: 'rgba(245, 158, 11, 0.08)',
-        icon: ShieldWarning,
-        iconColor: 'text-amber-500',
-      },
-      {
-        accentGradient: 'from-rose-400 via-red-500 to-orange-500',
-        tonalGlow: 'rgba(244, 63, 94, 0.08)',
-        icon: Sword,
-        iconColor: 'text-rose-500',
-      },
-      {
-        accentGradient: 'from-teal-400 via-emerald-500 to-cyan-500',
-        tonalGlow: 'rgba(20, 184, 166, 0.08)',
-        icon: ShieldCheck,
-        iconColor: 'text-teal-500',
-      },
-    ]
-
     return (
-      <section className="glass-panel rounded-2xl shadow-sm overflow-hidden">
+      <section className="glass-panel rounded-xl shadow-xs overflow-hidden border border-slate-200/80 dark:border-slate-800/80">
         <div className="flex items-center justify-between gap-3 p-4 sm:p-5 border-b border-slate-200/60 dark:border-slate-800/60">
-          <div className="h-5 w-48 rounded-md skeleton-shimmer" />
-          <div className="h-7 w-20 rounded-lg skeleton-shimmer" />
+          <div className="h-4 w-40 rounded-md skeleton-shimmer" />
+          <div className="h-6 w-16 rounded-md skeleton-shimmer" />
         </div>
 
         <div className="p-4 sm:p-5">
-          <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
-            {skeletonStatCards.map((card, idx) => {
-              const IconComponent = card.icon
-              return (
-                <div
-                  key={idx}
-                  className="hero-stat-card group relative overflow-hidden rounded-xl p-4 sm:p-4.5 shadow-2xs backdrop-blur-md transition-all cursor-default"
-                >
-                  {/* Tonal radial glow */}
-                  <div
-                    className="pointer-events-none absolute inset-0 opacity-80"
-                    style={{
-                      background: `radial-gradient(circle at 100% 100%, ${card.tonalGlow}, transparent 70%)`,
-                    }}
-                  />
-
-                  {/* Vạch Accent Glow ở mép trên kiểu Apple Specular Bar */}
-                  <div
-                    className={`absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r ${card.accentGradient} opacity-60 transition-all`}
-                  />
-
-                  {/* Icon lớn mờ chìm nghệ thuật ở góc thẻ */}
-                  <IconComponent
-                    weight="duotone"
-                    className={`pointer-events-none absolute -bottom-3 -right-3 h-24 w-24 opacity-15 dark:opacity-[0.10] transition-transform duration-300 ${card.iconColor}`}
-                  />
-
-                  <div className="relative z-10">
-                    <div className="flex items-center justify-between">
-                      <div className="h-3.5 w-24 rounded-md skeleton-shimmer" />
-                      <div className="h-4 w-12 rounded-full skeleton-shimmer" />
-                    </div>
-                    <div className="mt-3.5 h-8 w-20 rounded-lg skeleton-shimmer" />
-                    <div className="mt-2.5 h-3 w-32 rounded-md skeleton-shimmer" />
-                  </div>
-                </div>
-              )
-            })}
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {[1, 2, 3, 4].map((idx) => (
+              <div
+                key={idx}
+                className="rounded-lg border border-slate-200/70 bg-white/60 p-4 dark:border-slate-800 dark:bg-slate-900/50"
+              >
+                <div className="h-3 w-20 rounded skeleton-shimmer" />
+                <div className="mt-3 h-7 w-24 rounded skeleton-shimmer" />
+                <div className="mt-2 h-3 w-32 rounded skeleton-shimmer" />
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -203,46 +144,24 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
     {
       label: dict.statCards.myRank,
       value: hasMyPlayer ? `#${stats.myPlayer!.rank}` : '--',
-      detail: hasMyPlayer
-        ? `${stats.myPlayer!.name} • ${numberFormatter(stats.myPlayer!.currentCups)} ${dict.common.trophies}`
+      subtext: hasMyPlayer
+        ? `${numberFormatter(stats.myPlayer!.currentCups)} ${dict.common.trophies}`
         : dict.common.noData,
-      badge: myRankPercentage ? interpolate(dict.statCards.topPercentage, { percent: myRankPercentage }) : null,
-      badgeColor: 'bg-sky-500/10 text-sky-700 dark:bg-sky-400/15 dark:text-sky-300 border-sky-500/30',
-      accentGradient: 'from-sky-400 via-blue-500 to-indigo-500',
-      tonalGlow: 'rgba(14, 165, 233, 0.08)',
-      valueColor: 'text-sky-600 dark:text-sky-400',
-      icon: Trophy,
-      iconColor: 'text-sky-500',
+      badge: myRankPercentage ? `Top ${myRankPercentage}%` : null,
+      badgeType: 'neutral',
     },
     {
       label: dict.statCards.opponentsCanPass,
-      value: hasMyPlayer ? stats.playersWhoCanPassMe : '--',
-      detail: hasMyPlayer
-        ? interpolate(dict.statCards.ceilingText, { name: myPlayerName, cups: numberFormatter(stats.myPlayer!.maxPossibleCups) })
+      value: hasMyPlayer ? String(stats.playersWhoCanPassMe) : '--',
+      subtext: hasMyPlayer
+        ? `Trần: ${numberFormatter(stats.myPlayer!.maxPossibleCups)}`
         : dict.common.noData,
       badge: hasMyPlayer
         ? stats.playersWhoCanPassMe === 0
           ? dict.statCards.safe
-          : interpolate(dict.statCards.threats, { count: stats.playersWhoCanPassMe })
+          : `${stats.playersWhoCanPassMe} đối thủ`
         : null,
-      badgeColor:
-        hasMyPlayer && stats.playersWhoCanPassMe === 0
-          ? 'bg-emerald-500/10 text-emerald-700 dark:bg-emerald-400/15 dark:text-emerald-300 border-emerald-500/30'
-          : 'bg-amber-500/10 text-amber-700 dark:bg-amber-400/15 dark:text-amber-300 border-amber-500/30',
-      accentGradient:
-        hasMyPlayer && stats.playersWhoCanPassMe === 0
-          ? 'from-emerald-400 via-teal-500 to-cyan-500'
-          : 'from-amber-400 via-orange-500 to-red-500',
-      tonalGlow:
-        hasMyPlayer && stats.playersWhoCanPassMe === 0
-          ? 'rgba(16, 185, 129, 0.08)'
-          : 'rgba(245, 158, 11, 0.08)',
-      valueColor:
-        hasMyPlayer && stats.playersWhoCanPassMe === 0
-          ? 'text-emerald-600 dark:text-emerald-400'
-          : 'text-amber-600 dark:text-amber-400',
-      icon: ShieldWarning,
-      iconColor: stats.playersWhoCanPassMe === 0 ? 'text-emerald-500' : 'text-amber-500',
+      badgeType: hasMyPlayer && stats.playersWhoCanPassMe === 0 ? 'success' : 'warning',
     },
     {
       label: dict.statCards.attackPerformance,
@@ -250,24 +169,15 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
         attackStats && attackStats.count > 0
           ? `${(Math.round(attackStats.avgDestruction * 10) / 10).toFixed(1)}%`
           : '--',
-      detail:
+      subtext:
         attackStats && attackStats.count > 0
-          ? interpolate(dict.statCards.attackBattlesDetail, {
-              count: attackStats.count,
-            })
+          ? `${attackStats.count} trận đánh`
           : dict.common.noData,
       badge:
         attackStats && attackStats.count > 0
-          ? interpolate(dict.statCards.avgStarsBadge, {
-              stars: (Math.round(attackStats.avgStars * 10) / 10).toFixed(1),
-            })
+          ? `${(Math.round(attackStats.avgStars * 10) / 10).toFixed(1)}★ TB`
           : null,
-      badgeColor: 'bg-amber-500/10 text-amber-700 dark:bg-amber-400/15 dark:text-amber-300 border-amber-500/30',
-      accentGradient: 'from-amber-400 via-orange-500 to-red-500',
-      tonalGlow: 'rgba(245, 158, 11, 0.08)',
-      valueColor: 'text-amber-600 dark:text-amber-400',
-      icon: Sword,
-      iconColor: 'text-amber-500',
+      badgeType: 'neutral',
     },
     {
       label: dict.statCards.defensePerformance,
@@ -275,40 +185,30 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
         defenseStats && defenseStats.count > 0
           ? `${(Math.round(defenseStats.avgDestruction * 10) / 10).toFixed(1)}%`
           : '--',
-      detail:
+      subtext:
         defenseStats && defenseStats.count > 0
-          ? interpolate(dict.statCards.defenseBattlesDetail, {
-              count: defenseStats.count,
-            })
+          ? `${defenseStats.count} trận thủ`
           : dict.common.noData,
       badge:
         defenseStats && defenseStats.count > 0
-          ? interpolate(dict.statCards.avgStarsBadge, {
-              stars: (Math.round(defenseStats.avgStars * 10) / 10).toFixed(1),
-            })
+          ? `${(Math.round(defenseStats.avgStars * 10) / 10).toFixed(1)}★ TB`
           : null,
-      badgeColor: 'bg-teal-500/10 text-teal-700 dark:bg-teal-400/15 dark:text-teal-300 border-teal-500/30',
-      accentGradient: 'from-teal-400 via-emerald-500 to-cyan-500',
-      tonalGlow: 'rgba(20, 184, 166, 0.08)',
-      valueColor: 'text-teal-600 dark:text-teal-400',
-      icon: ShieldCheck,
-      iconColor: 'text-teal-500',
+      badgeType: 'neutral',
     },
   ]
 
   return (
-    <section className="glass-panel rounded-2xl shadow-sm overflow-hidden transition-all duration-300">
-      {/* Header Thẻ lớn: Chỉ số tổng quan cá nhân - Tinh gọn, không icon ở tiêu đề, không lặp lại thông tin */}
+    <section className="glass-panel rounded-xl shadow-xs overflow-hidden border border-slate-200/80 dark:border-slate-800/80 transition-all duration-200">
+      {/* Header: Tinh gọn */}
       <div
-        className={`flex items-center justify-between gap-3 p-4 sm:p-5 transition-all duration-300 ${
+        className={`flex items-center justify-between gap-3 px-4 py-3.5 sm:px-5 transition-colors ${
           !isCollapsed ? 'border-b border-slate-200/60 dark:border-slate-800/60' : ''
         }`}
       >
-        <h2 className="text-base font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
+        <h2 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
           {dict.statCards.overviewTitle}
         </h2>
 
-        {/* Nút thu gọn / mở rộng đồng bộ style với filter segmented control */}
         <CollapseToggleButton
           isCollapsed={isCollapsed}
           onToggle={handleToggleCollapse}
@@ -316,60 +216,46 @@ export function StatCardsGrid({ stats, season, myPlayerName, isSyncingApi = fals
         />
       </div>
 
-      {/* Lưới 4 thẻ chỉ số con bên trong với animation collapsible-grid */}
+      {/* Lưới 4 thẻ chỉ số - Tinh giản, sạch sẽ */}
       <div className={`collapsible-grid ${!isCollapsed ? 'is-expanded' : ''}`}>
         <div className="collapsible-inner">
           <div className="p-4 sm:p-5">
-            <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
-              {cards.map((card) => {
-                const IconComponent = card.icon
-                return (
-                  <div
-                    key={card.label}
-                    className="hero-stat-card group relative overflow-hidden rounded-xl p-4 sm:p-4.5 shadow-2xs backdrop-blur-md transition-all cursor-default"
-                  >
-                    {/* Tonal radial glow */}
-                    <div
-                      className="pointer-events-none absolute inset-0 opacity-80"
-                      style={{
-                        background: `radial-gradient(circle at 100% 100%, ${card.tonalGlow}, transparent 70%)`,
-                      }}
-                    />
-
-                    {/* Vạch Accent Glow ở mép trên kiểu Apple Specular Bar */}
-                    <div
-                      className={`absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r ${card.accentGradient} opacity-85 group-hover:h-[4px] group-hover:opacity-100 transition-all`}
-                    />
-
-                    {/* Icon lớn mờ chìm nghệ thuật ở góc thẻ */}
-                    <IconComponent
-                      weight="duotone"
-                      className={`pointer-events-none absolute -bottom-3 -right-3 h-24 w-24 opacity-20 dark:opacity-[0.14] transition-transform duration-300 group-hover:scale-115 ${card.iconColor}`}
-                    />
-
-                    <div className="relative z-10 flex items-center justify-between">
-                      <p className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                        {card.label}
-                      </p>
-                      {card.badge && (
-                        <span
-                          className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-bold tracking-tight select-none shadow-2xs ${card.badgeColor}`}
-                        >
-                          {card.badge}
-                        </span>
-                      )}
-                    </div>
-
-                    <p className={`relative z-10 mt-2 font-mono text-3xl font-black tracking-tight ${card.valueColor}`}>
-                      {card.value}
-                    </p>
-
-                    <p className="relative z-10 mt-1.5 text-xs text-slate-600 dark:text-slate-400 truncate font-semibold">
-                      {card.detail}
-                    </p>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {cards.map((card) => (
+                <div
+                  key={card.label}
+                  className="rounded-lg border border-slate-200/80 bg-white/70 p-4 dark:border-slate-800 dark:bg-slate-900/60 transition-colors"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 truncate">
+                      {card.label}
+                    </span>
+                    {card.badge && (
+                      <span
+                        className={`inline-flex shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold ${
+                          card.badgeType === 'success'
+                            ? 'bg-emerald-500/10 text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-300'
+                            : card.badgeType === 'warning'
+                              ? 'bg-amber-500/10 text-amber-700 dark:bg-amber-400/10 dark:text-amber-300'
+                              : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300'
+                        }`}
+                      >
+                        {card.badge}
+                      </span>
+                    )}
                   </div>
-                )
-              })}
+
+                  <div className="mt-2 flex items-baseline gap-2">
+                    <span className="font-mono text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+                      {card.value}
+                    </span>
+                  </div>
+
+                  <div className="mt-1 text-xs text-slate-500 dark:text-slate-400 truncate">
+                    {card.subtext}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

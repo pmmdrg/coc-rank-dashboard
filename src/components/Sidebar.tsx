@@ -3,11 +3,11 @@ import {
   User,
   Trophy,
   Shield,
-  Sparkle,
   Copy,
   Check,
   ArrowsClockwise,
   X,
+  ShareNetwork,
 } from '@phosphor-icons/react'
 import type { AppRoute } from '../types'
 import { getLeagueIconUrl } from '../lib/leagueIcons'
@@ -70,19 +70,16 @@ export function Sidebar({
       id: 'personal' as AppRoute,
       icon: User,
       label: dict.navigation.personal,
-      desc: dict.navigation.personalDesc,
     },
     {
       id: 'season' as AppRoute,
       icon: Trophy,
       label: dict.navigation.season,
-      desc: dict.navigation.seasonDesc,
     },
     {
       id: 'clan' as AppRoute,
       icon: Shield,
       label: dict.navigation.clan,
-      desc: dict.navigation.clanDesc,
     },
   ]
 
@@ -92,11 +89,9 @@ export function Sidebar({
       <div className="space-y-5">
         {/* Brand Header */}
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="aurora-text text-xl sm:text-[22px] font-black tracking-tight select-none">
-              Coc Rank Dashboard
-            </h1>
-          </div>
+          <h1 className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 select-none">
+            CoC Rank
+          </h1>
 
           {/* Nút đóng trên mobile */}
           {onCloseMobile && (
@@ -105,26 +100,26 @@ export function Sidebar({
               onClick={onCloseMobile}
               className="lg:hidden inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
             >
-              <X weight="bold" className="h-5 w-5" />
+              <X weight="bold" className="h-4.5 w-4.5" />
             </button>
           )}
         </div>
 
         {/* Thẻ tóm tắt người chơi & Ô đổi Player Tag */}
-        <div className="rounded-xl border border-white/60 bg-white/35 p-3 shadow-2xs backdrop-blur-md dark:border-slate-800/80 dark:bg-slate-900/60">
+        <div className="rounded-xl border border-slate-200/80 bg-slate-50/60 p-3 dark:border-slate-800 dark:bg-slate-900/50">
           <div className="flex items-center gap-3">
             <img
               src={leagueIconUrl || getLeagueIconUrl(league)}
               alt={displayLeague}
               referrerPolicy="no-referrer"
-              className="h-10 w-10 shrink-0 object-contain drop-shadow-sm"
+              className="h-9 w-9 shrink-0 object-contain"
             />
             <div className="min-w-0 flex-1">
               <div className="flex items-center justify-between gap-1">
-                <span className="truncate text-xs font-bold text-slate-900 dark:text-slate-100">
+                <span className="truncate text-xs font-semibold text-slate-900 dark:text-slate-100">
                   {myPlayerName && myPlayerName !== '--' ? myPlayerName : dict.header.noAccount}
                 </span>
-                <span className="shrink-0 text-[10px] font-semibold text-slate-500 dark:text-slate-400">
+                <span className="shrink-0 text-[10px] text-slate-500 dark:text-slate-400">
                   {displayLeague}
                 </span>
               </div>
@@ -134,7 +129,7 @@ export function Sidebar({
           {/* Ô nhập Player Tag đổi nhanh với nút copy bên trong & icon Sync */}
           <div className="mt-2.5 flex items-center gap-1.5">
             <div className="group relative flex-1">
-              <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 font-mono text-[11px] font-black text-slate-400 group-focus-within:text-sky-500">
+              <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 font-mono text-[11px] font-semibold text-slate-400 group-focus-within:text-sky-500">
                 #
               </span>
               <input
@@ -147,17 +142,17 @@ export function Sidebar({
                   }
                 }}
                 placeholder={dict.header.tagPlaceholder}
-                className="h-8 w-full rounded-lg border border-slate-300 bg-slate-100/95 pl-5 pr-7 font-mono text-[11px] font-black tracking-wider text-slate-950 placeholder:text-slate-400 placeholder:font-normal focus:border-sky-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900/90 dark:text-white"
+                className="h-8 w-full rounded-lg border border-slate-200 bg-white pl-5 pr-7 font-mono text-[11px] font-semibold tracking-wider text-slate-900 placeholder:text-slate-400 placeholder:font-normal focus:border-slate-400 focus:outline-none dark:border-slate-700 dark:bg-slate-800/80 dark:text-white dark:focus:border-slate-500"
               />
               {playerTag ? (
                 <button
                   type="button"
                   onClick={handleCopyTag}
-                  className="absolute right-1.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-emerald-500 dark:text-slate-500 dark:hover:text-emerald-400 transition-colors cursor-pointer"
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors cursor-pointer"
                   title={dict.header.copyTagTooltip}
                 >
                   {isTagCopied ? (
-                    <Check className="h-3.5 w-3.5 text-emerald-500 animate-bounce" />
+                    <Check className="h-3.5 w-3.5 text-emerald-500" />
                   ) : (
                     <Copy className="h-3.5 w-3.5" />
                   )}
@@ -169,21 +164,21 @@ export function Sidebar({
                 type="button"
                 disabled={isSyncingApi || playerTag.trim().length < 3}
                 onClick={() => onSyncCocApi(playerTag)}
-                className="apple-btn inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-sky-600 text-white shadow-2xs hover:bg-sky-500 disabled:opacity-50 cursor-pointer transition-all"
+                className="apple-btn inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-40 cursor-pointer transition-colors dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
                 title={dict.header.syncApi}
               >
                 <ArrowsClockwise
                   weight="bold"
-                  className={`h-4 w-4 ${isSyncingApi ? 'animate-spin' : ''}`}
+                  className={`h-3.5 w-3.5 ${isSyncingApi ? 'animate-spin' : ''}`}
                 />
               </button>
             )}
           </div>
         </div>
 
-        {/* 3 MỤC ĐIỀU HƯỚNG CHÍNH (NAVIGATION ITEMS) */}
-        <nav className="space-y-1.5" aria-label="Sidebar Navigation">
-          <div className="px-1 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+        {/* 3 MỤC ĐIỀU HƯỚNG CHÍNH - TINH GỌN, KHÔNG DÒNG PHỤ THỪA */}
+        <nav className="space-y-1" aria-label="Sidebar Navigation">
+          <div className="px-1 pb-1 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
             {dict.navigation.menu}
           </div>
 
@@ -196,29 +191,17 @@ export function Sidebar({
                 key={item.id}
                 type="button"
                 onClick={() => handleSelectNav(item.id)}
-                className={`group flex w-full items-center justify-between rounded-xl px-3.5 py-3 text-left transition-all cursor-pointer select-none ${
+                className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-xs font-medium transition-colors cursor-pointer select-none ${
                   isActive
-                    ? 'border border-sky-500/30 bg-gradient-to-r from-sky-500/15 to-indigo-500/15 text-sky-950 shadow-xs dark:border-sky-400/30 dark:from-sky-500/20 dark:to-indigo-500/20 dark:text-white'
-                    : 'border border-transparent text-slate-600 hover:bg-slate-100/70 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-slate-200'
+                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950 font-semibold'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-slate-200'
                 }`}
               >
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-all ${
-                      isActive
-                        ? 'bg-gradient-to-br from-sky-500 to-indigo-600 text-white shadow-xs shadow-sky-500/30'
-                        : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:group-hover:bg-slate-700'
-                    }`}
-                  >
-                    <Icon weight={isActive ? 'fill' : 'bold'} className="h-4.5 w-4.5" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold leading-tight">{item.label}</div>
-                    <div className="mt-0.5 text-[10px] text-slate-400 dark:text-slate-500 leading-tight">
-                      {item.desc}
-                    </div>
-                  </div>
-                </div>
+                <Icon
+                  weight={isActive ? 'fill' : 'regular'}
+                  className="h-4 w-4 shrink-0"
+                />
+                <span className="truncate">{item.label}</span>
               </button>
             )
           })}
@@ -226,33 +209,33 @@ export function Sidebar({
       </div>
 
       {/* PHẦN DƯỚI: NÚT CHIA SẺ, XUẤT FILE, CÀI ĐẶT */}
-      <div className="space-y-3 pt-5 border-t border-slate-200/80 dark:border-slate-800/80">
-        {/* Nút Chia sẻ thẻ thành tích */}
+      <div className="space-y-3 pt-4 border-t border-slate-200/80 dark:border-slate-800/80">
+        {/* Nút Chia sẻ thẻ thành tích - Thanh lịch, không lòe loẹt */}
         {onOpenShareCard && (
           <button
             type="button"
             onClick={onOpenShareCard}
-            className="apple-btn flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 via-sky-600 to-cyan-500 py-2.5 text-xs font-bold text-white shadow-xs shadow-sky-500/25 hover:shadow-md hover:shadow-sky-500/35 hover:brightness-105 active:scale-98 transition-all cursor-pointer select-none"
+            className="apple-btn flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white py-2 text-xs font-semibold text-slate-800 shadow-2xs hover:bg-slate-50 transition-colors cursor-pointer select-none dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
           >
-            <Sparkle weight="fill" className="h-4 w-4" />
+            <ShareNetwork weight="bold" className="h-3.5 w-3.5 text-slate-500 dark:text-slate-400" />
             <span>{dict.header.shareCard}</span>
           </button>
         )}
 
         {/* Nút Xuất JSON / CSV */}
-        <div className="flex items-center gap-1.5 rounded-xl border border-white/60 bg-white/35 p-1 dark:border-slate-800/80 dark:bg-slate-900/60">
+        <div className="flex items-center gap-1 rounded-lg border border-slate-200/80 bg-slate-50/60 p-0.5 dark:border-slate-800 dark:bg-slate-900/50">
           <button
             type="button"
             onClick={() => onExport('json')}
-            className="apple-btn flex-1 rounded-lg py-1.5 text-center text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white transition-all cursor-pointer"
+            className="apple-btn flex-1 rounded-md py-1 text-center text-[11px] font-medium text-slate-600 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white transition-colors cursor-pointer"
           >
             JSON
           </button>
-          <span className="h-4 w-px bg-slate-300 dark:bg-slate-700" />
+          <span className="h-3 w-px bg-slate-200 dark:bg-slate-700" />
           <button
             type="button"
             onClick={() => onExport('csv')}
-            className="apple-btn flex-1 rounded-lg py-1.5 text-center text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white transition-all cursor-pointer"
+            className="apple-btn flex-1 rounded-md py-1 text-center text-[11px] font-medium text-slate-600 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white transition-colors cursor-pointer"
           >
             CSV
           </button>
@@ -264,8 +247,8 @@ export function Sidebar({
             <LanguageSwitcher />
             <ThemeToggle />
           </div>
-          <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500">
-            v{APP_VERSION} • CoC Fan Tool
+          <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">
+            v{APP_VERSION}
           </span>
         </div>
       </div>
@@ -275,20 +258,18 @@ export function Sidebar({
   return (
     <>
       {/* 1. DESKTOP SIDEBAR: Cố định bên trái màn hình */}
-      <aside className="glass-panel !fixed inset-y-0 left-0 hidden h-screen w-72 shrink-0 flex-col border-r border-white/60 backdrop-blur-xl lg:flex dark:border-white/10 z-30">
+      <aside className="!fixed inset-y-0 left-0 hidden h-screen w-64 shrink-0 flex-col border-r border-slate-200/80 bg-white/90 backdrop-blur-md lg:flex dark:border-slate-800/80 dark:bg-slate-950/90 z-30">
         {sidebarContent}
       </aside>
 
-      {/* 2. MOBILE DRAWER: Thanh trượt xuất hiện khi mở trên điện thoại */}
+      {/* 2. MOBILE DRAWER */}
       {isMobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          {/* Backdrop tối mờ */}
           <div
-            className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm animate-fade-in"
+            className="fixed inset-0 bg-slate-950/50 backdrop-blur-xs animate-fade-in"
             onClick={onCloseMobile}
           />
-          {/* Panel trượt */}
-          <aside className="glass-panel relative flex h-full w-72 flex-col border-r border-white/60 bg-white/95 backdrop-blur-2xl shadow-2xl animate-slide-right dark:border-white/10 dark:bg-slate-950/95">
+          <aside className="relative flex h-full w-64 flex-col border-r border-slate-200 bg-white shadow-xl animate-slide-right dark:border-slate-800 dark:bg-slate-950">
             {sidebarContent}
           </aside>
         </div>

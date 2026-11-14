@@ -1,4 +1,3 @@
-import { UsersThree, Sword, Star } from '@phosphor-icons/react'
 import { useI18n } from '../i18n/LanguageContext'
 
 export interface ChartDataItem {
@@ -16,31 +15,12 @@ export interface ChartsSectionProps {
   embedded?: boolean
 }
 
-function SkeletonPieChart({ embedded = false }: { embedded?: boolean } = {}) {
-  void embedded
+function SkeletonPieChart() {
   return (
-    <div className="hero-stat-card flex h-full flex-col overflow-hidden rounded-2xl p-4 sm:p-5 shadow-2xs">
-      <div className="flex items-center justify-between gap-2 shrink-0">
-        <div className="h-4 w-40 rounded-md skeleton-shimmer" />
-        <div className="h-3 w-16 rounded-md skeleton-shimmer" />
-      </div>
-      <div className="my-auto flex flex-col sm:flex-row items-center gap-3.5 sm:gap-4 pt-3 sm:pt-4">
-        <div className="relative flex shrink-0 items-center justify-center">
-          <div className="h-32 w-32 sm:h-34 sm:w-34 rounded-full border-[8.5px] border-slate-200/90 dark:border-slate-800/90 skeleton-shimmer flex items-center justify-center">
-            <div className="h-3.5 w-9 rounded-md skeleton-shimmer" />
-          </div>
-        </div>
-        <div className="w-full min-w-0 flex-1 space-y-2.5">
-          {[1, 2, 3].map((idx) => (
-            <div key={idx} className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <div className="h-2.5 w-2.5 rounded-full skeleton-shimmer shrink-0" />
-                <div className="h-3.5 w-24 rounded-md skeleton-shimmer" />
-              </div>
-              <div className="h-3.5 w-12 rounded-md skeleton-shimmer shrink-0" />
-            </div>
-          ))}
-        </div>
+    <div className="flex h-full flex-col overflow-hidden rounded-lg border border-slate-200/70 bg-white/60 p-4 dark:border-slate-800 dark:bg-slate-900/50">
+      <div className="h-3 w-32 rounded skeleton-shimmer" />
+      <div className="my-auto flex items-center justify-center pt-4">
+        <div className="h-28 w-28 rounded-full border-8 border-slate-200 skeleton-shimmer dark:border-slate-800" />
       </div>
     </div>
   )
@@ -68,21 +48,12 @@ function PercentagePieChart({
   title,
   values,
   showPercentage = true,
-  embedded = false,
-  accentGradient,
-  tonalGlow,
-  icon: IconComponent,
 }: {
   title: string
   values: ChartDataItem[]
   showPercentage?: boolean
-  embedded?: boolean
-  accentGradient?: string
-  tonalGlow?: string
-  icon?: any
 }) {
-  void embedded
-  const { dict, interpolate, language } = useI18n()
+  const { dict, language } = useI18n()
   const slices = getPieSlices(values)
   const total = values.reduce((sum, item) => sum + item.value, 0)
   const hasData = total > 0
@@ -91,113 +62,102 @@ function PercentagePieChart({
     new Intl.NumberFormat(language === 'vi' ? 'vi-VN' : 'en-US').format(val)
 
   return (
-    <div className="hero-stat-card group relative flex h-full flex-col overflow-hidden rounded-2xl p-4 sm:p-5 shadow-2xs backdrop-blur-md transition-all duration-300">
-      {/* Tonal radial glow */}
-      {tonalGlow && (
-        <div
-          className="pointer-events-none absolute inset-0 opacity-80"
-          style={{
-            background: `radial-gradient(circle at 100% 100%, ${tonalGlow}, transparent 70%)`,
-          }}
-        />
-      )}
-
-      {/* Vạch Accent Glow ở mép trên kiểu Apple Specular Bar */}
-      {accentGradient && (
-        <div
-          className={`absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r ${accentGradient} opacity-85 group-hover:h-[4px] group-hover:opacity-100 transition-all`}
-        />
-      )}
-
-      {/* Icon lớn mờ chìm nghệ thuật ở góc thẻ */}
-      {IconComponent && (
-        <IconComponent
-          weight="duotone"
-          className="pointer-events-none absolute -bottom-3 -right-3 h-24 w-24 opacity-15 dark:opacity-[0.10] transition-transform duration-300 group-hover:scale-115 text-slate-400 dark:text-slate-500"
-        />
-      )}
-
-      <div className="relative z-10 flex items-center justify-between gap-2 shrink-0">
-        <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 truncate" title={title}>
+    <div className="flex h-full flex-col justify-between overflow-hidden rounded-lg border border-slate-200/80 bg-white/70 p-4 dark:border-slate-800 dark:bg-slate-900/60">
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
           {title}
-        </h3>
-        <span className="text-xs text-slate-500 dark:text-slate-400 shrink-0 font-semibold">
-          {hasData ? interpolate(dict.charts.total, { total: formatNumber(total) }) : '--'}
+        </span>
+        <span className="text-[11px] text-slate-400 font-mono">
+          {total}
         </span>
       </div>
 
-      {!hasData ? (
-        <div className="relative z-10 my-auto flex flex-col items-center justify-center py-10 text-center text-sm font-medium text-slate-400 dark:text-slate-500">
-          {dict.common.noData}
-        </div>
-      ) : (
-        <div className="relative z-10 my-auto flex flex-col sm:flex-row items-center gap-3.5 sm:gap-4 pt-3 sm:pt-4">
-          <div className="relative flex shrink-0 items-center justify-center">
-            <svg viewBox="0 0 42 42" className="h-32 w-32 sm:h-34 sm:w-34 -rotate-90 drop-shadow-sm">
-              <circle
-                cx="21"
-                cy="21"
-                r="15.9"
-                fill="transparent"
-                stroke="currentColor"
-                className="text-slate-200/80 dark:text-slate-800"
-                strokeWidth="8.5"
-              />
-              {slices.map((slice) => (
+      <div className="my-auto flex flex-col sm:flex-row items-center gap-3.5 pt-3">
+        {/* Vòng Donut Chart */}
+        <div className="relative flex shrink-0 items-center justify-center">
+          <svg className="h-28 w-28 -rotate-90 transform" viewBox="0 0 36 36">
+            <circle
+              cx="18"
+              cy="18"
+              r="14"
+              className="stroke-slate-100 dark:stroke-slate-800/80"
+              strokeWidth="4"
+              fill="transparent"
+            />
+            {hasData ? (
+              slices.map((slice, index) => (
                 <circle
-                  key={slice.label}
-                  cx="21"
-                  cy="21"
-                  r="15.9"
-                  fill="transparent"
+                  key={index}
+                  cx="18"
+                  cy="18"
+                  r="14"
                   stroke={slice.color}
-                  strokeWidth="8.5"
+                  strokeWidth="4"
                   strokeDasharray={slice.dashArray}
                   strokeDashoffset={slice.dashOffset}
-                  style={{
-                    transition:
-                      'stroke-dasharray 450ms ease, stroke-dashoffset 450ms ease, stroke 300ms ease',
-                  }}
+                  fill="transparent"
+                  className="transition-all duration-300"
                 />
-              ))}
-            </svg>
-            {/* Tâm Donut */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
-              <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500">{dict.charts.ratioCenter}</span>
-              <span className="text-sm sm:text-base font-extrabold text-slate-800 dark:text-slate-100">
-                100%
-              </span>
-            </div>
+              ))
+            ) : (
+              <circle
+                cx="18"
+                cy="18"
+                r="14"
+                className="stroke-slate-200 dark:stroke-slate-700"
+                strokeWidth="4"
+                strokeDasharray="100 0"
+                fill="transparent"
+              />
+            )}
+          </svg>
+          <div className="pointer-events-none absolute flex flex-col items-center justify-center text-center">
+            <span className="text-[10px] text-slate-400">
+              {dict.charts.ratioCenter}
+            </span>
+            <span className="font-mono text-xs font-bold text-slate-800 dark:text-slate-200">
+              {hasData ? '100%' : '0%'}
+            </span>
           </div>
+        </div>
 
-          <div className="w-full min-w-0 flex-1 space-y-2">
-            {values.map((item) => {
-              const percent = ((item.value / total) * 100).toFixed(1)
-
+        {/* Legend chú thích */}
+        <div className="w-full min-w-0 flex-1 space-y-1.5">
+          {hasData ? (
+            values.map((item, index) => {
+              const percent = total > 0 ? Math.round((item.value / total) * 1000) / 10 : 0
               return (
-                <div key={item.label} className="flex items-center justify-between gap-1.5 text-xs sm:text-[13px]">
-                  <span className="flex min-w-0 items-center gap-1.5 text-slate-700 dark:text-slate-300">
+                <div
+                  key={index}
+                  className="flex items-center justify-between text-xs"
+                >
+                  <div className="flex items-center gap-1.5 truncate pr-1">
                     <span
-                      className="h-2.5 w-2.5 shrink-0 rounded-full ring-2 ring-white/50 dark:ring-slate-900/50"
+                      className="h-2 w-2 shrink-0 rounded-xs"
                       style={{ backgroundColor: item.color }}
-                      aria-hidden="true"
                     />
-                    <span className="truncate font-semibold" title={item.label}>{item.label}</span>
-                  </span>
-                  <span className="font-mono font-bold text-slate-900 dark:text-slate-50 shrink-0 whitespace-nowrap pl-1">
+                    <span className="truncate text-slate-600 dark:text-slate-300">
+                      {item.label}
+                    </span>
+                  </div>
+                  <span className="font-mono font-medium text-slate-700 dark:text-slate-300 shrink-0">
                     {formatNumber(item.value)}
                     {showPercentage && (
-                      <span className="ml-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                      <span className="text-[10px] text-slate-400 ml-1">
                         ({percent}%)
                       </span>
                     )}
                   </span>
                 </div>
               )
-            })}
-          </div>
+            })
+          ) : (
+            <div className="py-2 text-center text-xs text-slate-400">
+              {dict.common.noData}
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   )
 }
@@ -212,51 +172,44 @@ export function ChartsSection({
 }: ChartsSectionProps) {
   const { dict, interpolate } = useI18n()
 
-  const comparisonTitle =
-    myPlayerName && myPlayerName !== '--'
-      ? interpolate(dict.charts.opponentRatioWithMe, { name: myPlayerName })
-      : dict.charts.opponentRatioMe
-
   if (isSyncingApi) {
     return (
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <SkeletonPieChart embedded={embedded} />
-        <SkeletonPieChart embedded={embedded} />
-        <div className="md:col-span-2 lg:col-span-1">
-          <SkeletonPieChart embedded={embedded} />
-        </div>
+      <div className="grid gap-3 grid-cols-1 md:grid-cols-3">
+        <SkeletonPieChart />
+        <SkeletonPieChart />
+        <SkeletonPieChart />
       </div>
     )
   }
 
-  return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+  const content = (
+    <div className="grid gap-3 grid-cols-1 md:grid-cols-3">
       <PercentagePieChart
-        title={comparisonTitle}
+        title={
+          myPlayerName && myPlayerName !== '--'
+            ? interpolate(dict.charts.opponentRatioWithMe, { name: myPlayerName })
+            : dict.charts.opponentRatioMe
+        }
         values={comparisonData}
-        embedded={embedded}
-        accentGradient="from-emerald-400 via-teal-500 to-cyan-500"
-        tonalGlow="rgba(16, 185, 129, 0.08)"
-        icon={UsersThree}
       />
       <PercentagePieChart
         title={dict.charts.attackCompletion}
         values={attackStatusData}
-        embedded={embedded}
-        accentGradient="from-amber-400 via-orange-500 to-red-500"
-        tonalGlow="rgba(245, 158, 11, 0.08)"
-        icon={Sword}
       />
-      <div className="md:col-span-2 lg:col-span-1">
-        <PercentagePieChart
-          title={dict.charts.skillRating}
-          values={ratingData}
-          embedded={embedded}
-          accentGradient="from-indigo-400 via-purple-500 to-pink-500"
-          tonalGlow="rgba(99, 102, 241, 0.08)"
-          icon={Star}
-        />
-      </div>
+      <PercentagePieChart
+        title={dict.charts.skillRating}
+        values={ratingData}
+      />
+    </div>
+  )
+
+  if (embedded) {
+    return <div className="relative z-10">{content}</div>
+  }
+
+  return (
+    <div className="glass-panel relative z-10 rounded-xl p-4 shadow-xs">
+      {content}
     </div>
   )
 }

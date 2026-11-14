@@ -2,7 +2,6 @@ import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState } from 
 import { Warning } from '@phosphor-icons/react'
 import type { Player, RankingStats, Season } from '../types'
 import { PlayerRow } from './PlayerRow'
-import { RatingChip } from './RatingChip'
 import { validatePlayer } from '../lib/validation'
 import { useI18n } from '../i18n/LanguageContext'
 import { SegmentedControl, type SegmentedControlOption } from './SegmentedControl'
@@ -403,11 +402,11 @@ export function PlayerTable({
               </span>
             )}
           </div>
-          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-            {season.players.length === 0
-              ? dict.table.tableSubtitleNoPlayers
-              : dict.table.tableSubtitleWithPlayers}
-          </p>
+          {season.players.length === 0 && (
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+              {dict.table.tableSubtitleNoPlayers}
+            </p>
+          )}
         </div>
       </div>
 
@@ -669,46 +668,40 @@ export function PlayerTable({
     </div>
 
       {/* 4. Chú thích biểu tượng & trạng thái */}
-      <div className="flex flex-wrap items-center gap-4 border-t border-white/60 bg-white/20 backdrop-blur-md px-5 py-3 text-xs text-slate-600 dark:border-white/10 dark:bg-slate-900/30 dark:text-slate-400">
-        <span className="font-bold text-slate-700 dark:text-slate-200">{dict.table.legendTitle}</span>
-        <span className="inline-flex items-center gap-1.5 font-medium">
-          <span className="h-3 w-3 rounded-xs border-l-[3px] border-l-sky-500 bg-sky-400/20" />
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-slate-200/80 bg-slate-50/50 px-4 py-2.5 text-xs text-slate-500 dark:border-slate-800/80 dark:bg-slate-900/30 dark:text-slate-400">
+        <span className="font-semibold text-slate-700 dark:text-slate-300">{dict.table.legendTitle}</span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-xs border-l-2 border-l-sky-500 bg-sky-400/20" />
           {dict.table.legendMine}
         </span>
-        <span className="inline-flex items-center gap-1.5 font-medium">
-          <Warning weight="fill" className="h-3.5 w-3.5 text-amber-500" />
+        <span className="inline-flex items-center gap-1">
+          <Warning weight="fill" className="h-3 w-3 text-amber-500" />
           {dict.table.legendCanPass}
         </span>
         {promotionCount > 0 && (
-          <span className="inline-flex items-center gap-1.5 font-bold text-emerald-600 dark:text-emerald-400">
-            <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-xs shadow-emerald-500/50" />
+          <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
             {interpolate(dict.table.legendPromotion, { count: promotionCount })}
           </span>
         )}
         {demotionCount > 0 && (
-          <span className="inline-flex items-center gap-1.5 font-bold text-rose-600 dark:text-rose-400">
-            <span className="h-2 w-2 rounded-full bg-rose-500 shadow-xs shadow-rose-500/50" />
+          <span className="inline-flex items-center gap-1 text-rose-600 dark:text-rose-400 font-medium">
+            <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
             {interpolate(dict.table.legendDemotion, { count: demotionCount })}
           </span>
         )}
-        <span className="inline-flex items-center gap-1.5 font-semibold text-emerald-700 dark:text-emerald-300">
-          <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 border border-emerald-500/30">
+        <span className="inline-flex items-center gap-1.5">
+          <span className="inline-block px-1.5 py-0.2 rounded text-[9px] font-bold bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
             {dict.table.attackedByMe}
           </span>
           {dict.table.legendYouAttacked}
         </span>
-        <span className="inline-flex items-center gap-1.5 font-semibold text-amber-700 dark:text-amber-300">
-          <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 border border-amber-500/30">
+        <span className="inline-flex items-center gap-1.5">
+          <span className="inline-block px-1.5 py-0.2 rounded text-[9px] font-bold bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30">
             {dict.table.attackedMe}
           </span>
           {dict.table.legendOpponentAttacked}
         </span>
-        <div className="hidden xl:flex items-center gap-1.5 border-l border-white/60 dark:border-white/10 pl-3">
-          <span className="font-bold text-slate-700 dark:text-slate-200 mr-1">{dict.common.rating}:</span>
-          {(['dominant', 'superior', 'potential', 'alarm'] as const).map((r) => (
-            <RatingChip key={r} rating={r} className="!h-6 !text-[10.5px] !px-2.5 !w-auto" />
-          ))}
-        </div>
       </div>
     </section>
   )
