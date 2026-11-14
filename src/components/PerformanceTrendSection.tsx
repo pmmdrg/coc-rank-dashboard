@@ -20,20 +20,20 @@ function TrendSectionSkeleton() {
   const { dict } = useI18n()
 
   return (
-    <section className="glass-panel rounded-xl shadow-sm transition-all overflow-hidden">
+    <section className="glass-panel rounded-xl shadow-sm transition-all overflow-hidden border border-[#272226]">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/60 p-4 sm:p-5 dark:border-slate-700/60">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#272226] p-4 sm:p-5">
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="text-base font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
+            <h2 className="text-base font-bold uppercase tracking-wider text-white">
               {dict.performanceTrend.title}
             </h2>
-            <span className="inline-flex h-5 items-center gap-1.5 rounded-full border border-red-500/30 bg-red-500/10 px-2 text-[10px] font-bold text-red-700 dark:bg-red-950/60 dark:text-red-300">
+            <span className="inline-flex h-5 items-center gap-1.5 rounded-full border border-red-500/30 bg-red-950/60 px-2 text-[10px] font-bold text-red-300">
               <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-red-500 animate-ping" />
               {dict.common.loading}
             </span>
           </div>
-          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+          <p className="mt-1 text-xs text-zinc-400">
             {dict.performanceTrend.subtitle}
           </p>
         </div>
@@ -58,7 +58,7 @@ function TrendSectionSkeleton() {
         </div>
 
         {/* Khung Biểu đồ Skeleton */}
-        <div className="rounded-xl border border-white/60 bg-white/25 p-4 dark:border-slate-700/70 dark:bg-slate-900/40">
+        <div className="rounded-xl border border-[#272226] bg-[#121114] p-4">
           <div className="flex items-center justify-between gap-3 mb-4">
             <div className="flex gap-2">
               <div className="h-7 w-28 rounded-lg skeleton-shimmer" />
@@ -211,22 +211,22 @@ export function PerformanceTrendSection({
 
   if (chronologicalHistory.length === 0) {
     return (
-      <section className="glass-panel rounded-xl shadow-sm transition-all">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/60 p-4 sm:p-5 dark:border-slate-700/60">
+      <section className="glass-panel rounded-xl shadow-sm transition-all border border-[#272226]">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#272226] p-4 sm:p-5">
           <div>
-            <h2 className="text-base font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
+            <h2 className="text-base font-bold uppercase tracking-wider text-white">
               {dict.performanceTrend.title}
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-zinc-400">
               {dict.performanceTrend.subtitle}
             </p>
           </div>
         </div>
         <div className="py-10 text-center px-4">
-          <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+          <p className="text-sm font-semibold text-zinc-200">
             {dict.performanceTrend.emptyTitle}
           </p>
-          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">
+          <p className="mt-1 text-xs text-zinc-400 max-w-md mx-auto">
             {playerTag
               ? dict.performanceTrend.emptyDescWithTag
               : dict.performanceTrend.emptyDescNoTag}
@@ -401,19 +401,19 @@ export function PerformanceTrendSection({
   }
 
   return (
-    <section className="glass-panel rounded-xl shadow-sm transition-all">
+    <section className="glass-panel rounded-xl shadow-sm transition-all border border-[#272226]">
       {/* Header & Toggle */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/60 p-4 sm:p-5 dark:border-slate-700/60">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#272226] p-4 sm:p-5">
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="text-base font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
+            <h2 className="text-base font-bold uppercase tracking-wider text-white">
               {dict.performanceTrend.title}
             </h2>
-            <span className="rounded-full bg-red-500/15 px-2 py-0.5 text-[10px] font-bold text-red-700 dark:text-red-300">
+            <span className="rounded-full bg-red-500/15 border border-red-500/30 px-2 py-0.5 text-[10px] font-bold text-red-300">
               {interpolate(dict.performanceTrend.seasonsCount, { count: chronologicalHistory.length })}
             </span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
+          <p className="text-xs text-zinc-400">
             {interpolate(dict.performanceTrend.officialDataNotice, { name: myPlayerName || playerTag || dict.common.you })}
           </p>
         </div>
@@ -424,7 +424,7 @@ export function PerformanceTrendSection({
             type="button"
             onClick={() => setShowTable((prev) => !prev)}
             className={`liquid-collapse-btn group shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs sm:text-[13px] font-bold rounded-full select-none cursor-pointer transition-all active:scale-98 ${
-              showTable ? '!text-red-600 dark:!text-red-400 font-extrabold' : ''
+              showTable ? '!text-red-400 font-extrabold' : ''
             }`}
           >
             {showTable ? dict.performanceTrend.hideHistoryTable : dict.performanceTrend.showHistoryTable}
@@ -450,11 +450,11 @@ export function PerformanceTrendSection({
               />
 
           {/* KHU VỰC BIỂU ĐỒ SVG TƯƠNG TÁC */}
-          <div className="rounded-xl border border-white/60 bg-white/25 p-4 dark:border-slate-700/70 dark:bg-slate-900/40">
+          <div className="rounded-xl border border-[#272226] bg-[#121114] p-4">
             {/* Chuyển đổi tab đo lường */}
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-slate-200/60 dark:border-slate-700/60">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-[#272226]">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                <span className="text-xs font-bold text-zinc-300">
                   {dict.performanceTrend.chartMetric}
                 </span>
                 <SegmentedControl<'cups_rank' | 'battles_stars'>
@@ -524,7 +524,7 @@ export function PerformanceTrendSection({
                       x2={chartWidth - paddingX}
                       y2={y}
                       stroke="currentColor"
-                      className="text-slate-200/80 dark:text-slate-800"
+                      className="text-[#272226]"
                       strokeDasharray="4 4"
                       strokeWidth="1"
                     />
@@ -548,7 +548,7 @@ export function PerformanceTrendSection({
                         stroke="#dc2626"
                         strokeDasharray="6 3"
                         strokeWidth="1.2"
-                        className="opacity-30 dark:opacity-40"
+                        className="opacity-40"
                       />
                     )
                   })}
@@ -566,7 +566,7 @@ export function PerformanceTrendSection({
                         key={`tier-label-${t}`}
                         x={paddingX + 8}
                         y={centerY - 4}
-                        className="fill-red-700/60 text-[10px] font-bold select-none dark:fill-red-400/60 pointer-events-none"
+                        className="fill-red-400/60 text-[10px] font-bold select-none pointer-events-none"
                       >
                         {label}
                       </text>
@@ -586,8 +586,8 @@ export function PerformanceTrendSection({
                       stroke="currentColor"
                       className={
                         hoveredIndex === i
-                          ? 'text-red-400 dark:text-red-500 stroke-[1.5]'
-                          : 'text-slate-200/50 dark:text-slate-800'
+                          ? 'text-red-500 stroke-[1.5]'
+                          : 'text-[#272226]'
                       }
                       strokeDasharray={hoveredIndex === i ? undefined : '2 2'}
                     />
@@ -716,8 +716,8 @@ export function PerformanceTrendSection({
                       textAnchor="middle"
                       className={`text-[10px] font-semibold transition-colors ${
                         hoveredIndex === i
-                          ? 'fill-red-600 font-bold dark:fill-red-400'
-                          : 'fill-slate-500 dark:fill-slate-400'
+                          ? 'fill-red-400 font-bold'
+                          : 'fill-zinc-400'
                       }`}
                     >
                       {d.displayPeriod.split(' - ')[0]}

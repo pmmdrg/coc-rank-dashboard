@@ -52,14 +52,14 @@ export function SeasonOverviewSection({
   }
 
   return (
-    <section className="glass-panel rounded-xl shadow-xs overflow-hidden border border-slate-200/80 dark:border-slate-800/80 transition-all duration-200">
+    <section className="glass-panel rounded-xl shadow-xs overflow-hidden border border-[#272226] transition-all duration-200">
       {/* Header: Tinh gọn */}
       <div
         className={`flex items-center justify-between gap-3 px-4 py-3.5 sm:px-5 transition-colors ${
-          !isCollapsed ? 'border-b border-slate-200/60 dark:border-slate-800/60' : ''
+          !isCollapsed ? 'border-b border-[#272226]' : ''
         }`}
       >
-        <h2 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+        <h2 className="text-xs font-bold uppercase tracking-wider text-white">
           {dict.seasonMeta.seasonOverviewTitle}
         </h2>
 

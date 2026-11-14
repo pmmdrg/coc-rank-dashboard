@@ -5,26 +5,26 @@ export function Footer() {
   const { dict } = useI18n()
 
   return (
-    <footer className="glass-footer relative mt-12 overflow-hidden border-t border-slate-200/80 dark:border-slate-800/80">
+    <footer className="glass-footer relative mt-12 overflow-hidden border-t border-[#272226]">
       <div className="mx-auto max-w-[1360px] px-4 pt-8 pb-20 sm:px-6 sm:pb-24 lg:px-8">
         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           {/* Brand & Project Info */}
           <div className="space-y-1.5">
             <div className="flex items-center gap-2">
-              <span className="text-slate-900 dark:text-slate-100 font-bold tracking-tight">
+              <span className="text-white font-bold tracking-tight">
                 CoC Rank Dashboard
               </span>
-              <span className="rounded-full border border-slate-300/60 bg-slate-200/50 px-2 py-0.5 text-[11px] font-semibold text-slate-700 shadow-2xs backdrop-blur-md dark:border-slate-700/60 dark:bg-slate-800/60 dark:text-slate-300">
+              <span className="rounded-full border border-[#272226] bg-[#18171b] px-2 py-0.5 text-[11px] font-semibold text-zinc-300 shadow-2xs">
                 v{APP_VERSION}
               </span>
-              <span className="rounded-full border border-red-500/40 bg-red-500/15 px-2 py-0.5 text-[11px] font-semibold text-red-700 shadow-2xs backdrop-blur-md dark:border-red-500/30 dark:bg-red-500/20 dark:text-red-300">
+              <span className="rounded-full border border-red-500/40 bg-red-500/15 px-2 py-0.5 text-[11px] font-semibold text-red-300 shadow-2xs">
                 Fan Tool
               </span>
             </div>
-            <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
-              {dict.footer.author} <span className="font-semibold text-slate-900 dark:text-slate-100">Man Pham (Manax)</span>.
+            <p className="text-sm font-medium text-zinc-300">
+              {dict.footer.author} <span className="font-semibold text-white">Man Pham (Manax)</span>.
             </p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-zinc-400">
               {dict.footer.subtitle}
             </p>
           </div>
@@ -35,14 +35,14 @@ export function Footer() {
               href="https://github.com/pmmdrg/coc-rank-dashboard"
               target="_blank"
               rel="noopener noreferrer"
-              className="apple-btn inline-flex items-center rounded-xl border border-slate-200/80 bg-white/70 px-3.5 py-2 font-semibold text-slate-700 shadow-2xs backdrop-blur-md transition hover:border-slate-300 hover:bg-white hover:text-slate-950 dark:border-slate-700/80 dark:bg-slate-800/60 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-700 dark:hover:text-white"
+              className="inline-flex items-center rounded-xl border border-[#272226] bg-[#18171b] px-3.5 py-2 font-semibold text-zinc-200 shadow-2xs transition hover:border-red-500/40 hover:bg-[#221f24] hover:text-white"
             >
               <span>GitHub</span>
             </a>
 
             <a
               href="mailto:pmmdrg2605@gmail.com"
-              className="apple-btn inline-flex items-center rounded-xl border border-slate-200/80 bg-white/70 px-3.5 py-2 font-semibold text-slate-700 shadow-2xs backdrop-blur-md transition hover:border-slate-300 hover:bg-white hover:text-slate-950 dark:border-slate-700/80 dark:bg-slate-800/60 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-700 dark:hover:text-white"
+              className="inline-flex items-center rounded-xl border border-[#272226] bg-[#18171b] px-3.5 py-2 font-semibold text-zinc-200 shadow-2xs transition hover:border-red-500/40 hover:bg-[#221f24] hover:text-white"
             >
               <span>{dict.footer.contactFeedback}</span>
             </a>
@@ -50,9 +50,9 @@ export function Footer() {
         </div>
 
         {/* Divider & Disclaimer */}
-        <div className="mt-6 flex flex-col gap-3 border-t border-slate-200/60 pt-4 text-[11px] text-slate-500 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800/60 dark:text-slate-400">
+        <div className="mt-6 flex flex-col gap-3 border-t border-[#272226] pt-4 text-[11px] text-zinc-400 sm:flex-row sm:items-center sm:justify-between">
           <p>
-            {dict.footer.designAndDev} <span className="font-medium text-slate-700 dark:text-slate-300">Man Pham</span>
+            {dict.footer.designAndDev} <span className="font-medium text-zinc-200">Man Pham</span>
           </p>
           <p className="max-w-2xl text-center sm:text-right leading-relaxed">
             {dict.footer.fanPolicyNotice}{' '}
@@ -60,7 +60,7 @@ export function Footer() {
               href="https://supercell.com/en/fan-content-policy/vi/"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-medium text-slate-600 underline underline-offset-2 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
+              className="font-medium text-zinc-300 underline underline-offset-2 hover:text-red-400"
             >
               www.supercell.com/fan-content-policy
             </a>

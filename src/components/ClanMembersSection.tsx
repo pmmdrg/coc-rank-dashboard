@@ -253,14 +253,14 @@ export function ClanMembersSection({
   // Khi đang tải dữ liệu Clan
   if (isLoading && !clanData) {
     return (
-      <div className="glass-panel rounded-2xl border border-slate-200/80 p-8 text-center backdrop-blur-xl dark:border-slate-800/80 animate-fade-in space-y-3">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500/10 text-red-600 dark:bg-red-950/40 dark:text-red-400 shadow-inner">
+      <div className="glass-panel rounded-2xl border border-[#272226] bg-[#121114] p-8 text-center backdrop-blur-xl animate-fade-in space-y-3">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500/10 text-red-400 shadow-inner">
           <CircleNotch weight="bold" className="h-7 w-7 animate-spin" />
         </div>
-        <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
+        <h3 className="text-base font-bold text-white">
           {dict.clan.syncingBtn || 'Đang tải thông tin Clan...'}
         </h3>
-        <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
+        <p className="text-xs text-zinc-400 max-w-md mx-auto leading-relaxed">
           Đang đồng bộ dữ liệu thành viên từ Supercell API.
         </p>
       </div>
@@ -270,14 +270,14 @@ export function ClanMembersSection({
   // Khi chưa có dữ liệu Clan (chưa nhập Player Tag hoặc người chơi không ở trong Clan)
   if (!clanData) {
     return (
-      <div className="glass-panel rounded-2xl border border-slate-200/80 p-8 text-center backdrop-blur-xl dark:border-slate-800/80 animate-fade-in space-y-3">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500 shadow-inner">
+      <div className="glass-panel rounded-2xl border border-[#272226] bg-[#121114] p-8 text-center backdrop-blur-xl animate-fade-in space-y-3">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#18171b] text-zinc-500 shadow-inner">
           <Shield weight="duotone" className="h-7 w-7" />
         </div>
-        <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
+        <h3 className="text-base font-bold text-white">
           {myPlayerTag ? 'Không tìm thấy thông tin Clan' : 'Chưa chọn người chơi'}
         </h3>
-        <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
+        <p className="text-xs text-zinc-400 max-w-md mx-auto leading-relaxed">
           {myPlayerTag
             ? 'Người chơi này hiện chưa gia nhập Clan nào hoặc Supercell API chưa cập nhật thông tin Clan.'
             : 'Vui lòng nhập Player Tag ở mục Thông tin cá nhân để xem thông tin Clan của người chơi này.'}
@@ -289,7 +289,7 @@ export function ClanMembersSection({
   return (
     <div className="space-y-6 animate-fade-in">
       {/* 1. HERO BANNER: THÔNG TIN CLAN (Đã bỏ nút copy tag, ô nhập tag và nút sync clan) */}
-      <section className="glass-panel relative overflow-hidden rounded-2xl border border-slate-200/80 p-5 shadow-sm backdrop-blur-xl sm:p-6 dark:border-slate-800/80">
+      <section className="glass-panel relative overflow-hidden rounded-2xl border border-[#272226] p-5 shadow-sm backdrop-blur-xl sm:p-6">
         {/* Họa tiết ánh sáng nền */}
         <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-gradient-to-br from-red-600/15 via-red-950/20 to-transparent blur-3xl" />
         <div className="pointer-events-none absolute -left-16 -bottom-16 h-64 w-64 rounded-full bg-gradient-to-tr from-amber-500/10 via-red-500/5 to-transparent blur-3xl" />
@@ -322,22 +322,22 @@ export function ClanMembersSection({
                   <CircleNotch weight="bold" className="h-4 w-4 animate-spin text-red-500" />
                 )}
                 {clanData.clanLevel ? (
-                  <span className="inline-flex items-center gap-1 rounded-lg border border-red-500/30 bg-red-500/15 px-2.5 py-0.5 text-xs font-black text-red-700 dark:border-red-400/30 dark:bg-red-400/15 dark:text-red-300">
+                  <span className="inline-flex items-center gap-1 rounded-lg border border-red-400/30 bg-red-400/15 px-2.5 py-0.5 text-xs font-black text-red-300">
                     <Shield weight="fill" className="h-3.5 w-3.5" />
                     {dict.clan.level} {clanData.clanLevel}
                   </span>
                 ) : null}
               </div>
 
-              <div className="mt-1.5 flex flex-wrap items-center gap-2.5 text-xs text-slate-500 dark:text-slate-400">
-                <span className="font-mono font-bold text-slate-600 dark:text-slate-400">
+              <div className="mt-1.5 flex flex-wrap items-center gap-2.5 text-xs text-zinc-400">
+                <span className="font-mono font-bold text-zinc-400">
                   {clanData.tag}
                 </span>
 
                 {clanData.warLeague?.name ? (
                   <>
-                    <span className="text-slate-300 dark:text-slate-700">•</span>
-                    <span className="inline-flex items-center gap-1 font-semibold text-slate-700 dark:text-slate-200">
+                    <span className="text-zinc-600">•</span>
+                    <span className="inline-flex items-center gap-1 font-semibold text-zinc-200">
                       <Sword weight="bold" className="h-3.5 w-3.5 text-red-500" />
                       {clanData.warLeague.name}
                     </span>
@@ -346,8 +346,8 @@ export function ClanMembersSection({
 
                 {clanData.members ? (
                   <>
-                    <span className="text-slate-300 dark:text-slate-700">•</span>
-                    <span className="inline-flex items-center gap-1 font-semibold text-slate-700 dark:text-slate-200">
+                    <span className="text-zinc-600">•</span>
+                    <span className="inline-flex items-center gap-1 font-semibold text-zinc-200">
                       <Users weight="bold" className="h-3.5 w-3.5 text-amber-500" />
                       {clanData.members} / 50 {dict.clan.membersCount}
                     </span>
@@ -356,8 +356,8 @@ export function ClanMembersSection({
 
                 {clanData.lastSyncedAt ? (
                   <>
-                    <span className="text-slate-300 dark:text-slate-700">•</span>
-                    <span className="text-[11px] text-slate-400">
+                    <span className="text-zinc-600">•</span>
+                    <span className="text-[11px] text-zinc-400">
                       Đồng bộ: {clanData.lastSyncedAt}
                     </span>
                   </>
@@ -365,7 +365,7 @@ export function ClanMembersSection({
               </div>
 
               {clanData.description ? (
-                <p className="mt-2 line-clamp-2 max-w-2xl text-xs italic text-slate-600 dark:text-slate-300">
+                <p className="mt-2 line-clamp-2 max-w-2xl text-xs italic text-zinc-300">
                   &ldquo;{clanData.description}&rdquo;
                 </p>
               ) : null}
@@ -375,7 +375,7 @@ export function ClanMembersSection({
       </section>
 
       {/* 2. TOOLBAR TÌM KIẾM, LỌC & SẮP XẾP */}
-      <section className="glass-panel relative z-20 flex flex-col gap-3 rounded-2xl border border-slate-200/80 p-4 shadow-2xs backdrop-blur-md sm:flex-row sm:items-center sm:justify-between dark:border-slate-800/80">
+      <section className="glass-panel relative z-20 flex flex-col gap-3 rounded-2xl border border-[#272226] p-4 shadow-2xs backdrop-blur-md sm:flex-row sm:items-center sm:justify-between">
         {/* Ô tìm kiếm */}
         <div className="flex-1 sm:max-w-xs">
           <SearchInput
@@ -411,7 +411,7 @@ export function ClanMembersSection({
             <button
               type="button"
               onClick={() => setSortOrder((curr) => (curr === 'asc' ? 'desc' : 'asc'))}
-              className="apple-btn inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200/80 bg-white/70 text-slate-600 hover:border-red-500/50 hover:bg-white hover:text-slate-900 active:scale-95 transition-all shadow-2xs backdrop-blur-md dark:border-white/10 dark:bg-slate-800/70 dark:text-slate-300 dark:hover:border-red-400/50 dark:hover:bg-slate-800 dark:hover:text-white cursor-pointer"
+              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#272226] bg-[#18171b] text-zinc-300 hover:border-red-500/50 hover:bg-[#201d22] hover:text-white active:scale-95 transition-all shadow-2xs backdrop-blur-md cursor-pointer"
               title={sortOrder === 'asc' ? 'Tăng dần (Nhấn để đổi giảm dần)' : 'Giảm dần (Nhấn để đổi tăng dần)'}
             >
               <ArrowsDownUp weight="bold" className={`h-4 w-4 ${sortOrder === 'desc' ? 'rotate-180' : ''} transition-transform duration-200`} />
@@ -423,7 +423,7 @@ export function ClanMembersSection({
             type="button"
             onClick={() => handleFetchAllRanks(true)}
             disabled={isFetchingAll}
-            className="apple-btn inline-flex h-10 items-center gap-1.5 rounded-xl border border-red-500/30 bg-red-500/10 px-3.5 text-xs font-bold text-red-600 hover:bg-red-500/20 active:scale-95 disabled:opacity-50 transition-all dark:border-red-400/30 dark:bg-red-400/10 dark:text-red-400 cursor-pointer shadow-2xs"
+            className="inline-flex h-10 items-center gap-1.5 rounded-xl border border-red-500/40 bg-red-950/40 px-3.5 text-xs font-bold text-red-300 hover:bg-red-900/40 active:scale-95 disabled:opacity-50 transition-all cursor-pointer shadow-2xs"
             title={
               isAllRanksFetched
                 ? 'Gọi lại API Supercell để cập nhật thứ hạng mới nhất cho tất cả thành viên'
@@ -451,11 +451,11 @@ export function ClanMembersSection({
       </section>
 
       {/* 3. BẢNG DANH SÁCH THÀNH VIÊN CLAN */}
-      <section className="glass-panel overflow-hidden rounded-2xl border border-slate-200/80 shadow-sm backdrop-blur-xl dark:border-slate-800/80">
+      <section className="glass-panel overflow-hidden rounded-2xl border border-[#272226] shadow-sm backdrop-blur-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-slate-200/80 bg-slate-50/60 dark:border-slate-800/80 dark:bg-slate-900/40 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              <tr className="border-b border-[#272226] bg-[#121114] text-[11px] font-bold uppercase tracking-wider text-zinc-400">
                 <th className="py-3 pl-4 pr-2 text-center w-14 sm:w-16">
                   {dict.clan.thRank}
                 </th>
@@ -472,7 +472,7 @@ export function ClanMembersSection({
                   <div className="inline-flex items-center justify-center gap-1">
                     <span>{dict.clan.thTournamentRank}</span>
                     <span
-                      className="inline-flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-help"
+                      className="inline-flex items-center text-zinc-500 hover:text-white cursor-help"
                       title="Thứ hạng trong bảng đấu 100 người riêng của mỗi thành viên theo giải đấu của họ"
                     >
                       <Info weight="bold" className="h-3 w-3" />
@@ -481,7 +481,7 @@ export function ClanMembersSection({
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200/60 dark:divide-slate-800/60">
+            <tbody className="divide-y divide-[#272226]">
               {filteredMembers.length > 0 ? (
                 filteredMembers.map((member) => {
                   const cleanMemberTag = member.tag.toUpperCase().replace(/^#/, '')
@@ -501,8 +501,8 @@ export function ClanMembersSection({
                       key={member.tag}
                       className={`group transition-colors ${
                         isMe
-                          ? 'bg-red-500/[0.08] font-semibold dark:bg-red-500/[0.14]'
-                          : 'hover:bg-slate-50/80 dark:hover:bg-slate-800/40'
+                          ? 'bg-red-950/20 font-semibold'
+                          : 'hover:bg-[#18171b]/60'
                       }`}
                     >
                       {/* Cột 1: Hạng trong clan & Biến động */}
@@ -520,28 +520,28 @@ export function ClanMembersSection({
                       <td className="py-3 px-3">
                         <div className="flex flex-col gap-1">
                           <div className="flex flex-wrap items-center gap-1.5">
-                            <span className="font-bold text-slate-900 dark:text-slate-100 sm:text-sm">
+                            <span className="font-bold text-white sm:text-sm">
                               {member.name}
                             </span>
 
                             {isMe && (
-                              <span className="inline-flex items-center rounded-full bg-red-500/15 px-2 py-0.2 text-[9px] font-black uppercase tracking-wider text-red-700 dark:text-red-300">
+                              <span className="inline-flex items-center rounded-full bg-red-500/20 border border-red-500/30 px-2 py-0.2 text-[9px] font-black uppercase tracking-wider text-red-300">
                                 {dict.clan.you}
                               </span>
                             )}
 
                             {/* Badge Cấp Town Hall */}
-                            <span className="inline-flex items-center gap-1 rounded-md border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.2 text-[10px] font-bold text-amber-700 dark:text-amber-300">
+                            <span className="inline-flex items-center gap-1 rounded-md border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.2 text-[10px] font-bold text-amber-300">
                               <Building weight="bold" className="h-2.5 w-2.5" />
                               TH{member.townHallLevel}
                             </span>
                           </div>
 
                           <div className="flex flex-wrap items-center gap-2">
-                            <span className="font-mono text-[11px] text-slate-400 dark:text-slate-500">
+                            <span className="font-mono text-[11px] text-zinc-500">
                               {member.tag}
                             </span>
-                            <span className="text-slate-300 dark:text-slate-700">•</span>
+                            <span className="text-zinc-600">•</span>
                             {getRoleBadge(member.role)}
                           </div>
                         </div>
@@ -556,7 +556,7 @@ export function ClanMembersSection({
                             referrerPolicy="no-referrer"
                             className="h-6 w-6 shrink-0 object-contain drop-shadow-xs"
                           />
-                          <span className="font-semibold text-slate-800 dark:text-slate-200">
+                          <span className="font-semibold text-zinc-200">
                             {tierName}
                           </span>
                         </div>
@@ -565,7 +565,7 @@ export function ClanMembersSection({
                       {/* Cột 4: Số Cúp (Trophies) */}
                       <td className="py-3 px-3 text-right">
                         <div className="inline-flex items-center justify-end gap-1.5">
-                          <span className="font-mono text-sm font-black text-amber-600 dark:text-amber-400">
+                          <span className="font-mono text-sm font-black text-amber-400">
                             {member.trophies.toLocaleString()}
                           </span>
                           <Trophy weight="fill" className="h-3.5 w-3.5 text-amber-500 shrink-0" />
@@ -597,7 +597,7 @@ export function ClanMembersSection({
                             // 2. Nếu đang gọi API tra cứu thứ hạng cho thành viên này
                             if (fetchingTags.has(cleanMemberTag)) {
                               return (
-                                <span className="inline-flex h-6.5 items-center justify-center gap-1 rounded-lg border border-red-500/20 bg-red-50/70 px-2 text-[10px] font-semibold text-red-600 dark:border-red-400/20 dark:bg-red-950/40 dark:text-red-400">
+                                <span className="inline-flex h-6.5 items-center justify-center gap-1 rounded-lg border border-red-500/30 bg-red-950/40 px-2 text-[10px] font-semibold text-red-300">
                                   <CircleNotch weight="bold" className="h-2.5 w-2.5 animate-spin" />
                                   <span>{dict.clan.fetchingRank}</span>
                                 </span>
@@ -621,7 +621,7 @@ export function ClanMembersSection({
                                     <button
                                       type="button"
                                       onClick={() => handleFetchRank(member.tag)}
-                                      className="absolute -right-5.5 opacity-0 group-hover/rank:opacity-100 transition-opacity p-0.5 text-slate-400 hover:text-red-600 dark:hover:text-red-300 cursor-pointer"
+                                      className="absolute -right-5.5 opacity-0 group-hover/rank:opacity-100 transition-opacity p-0.5 text-zinc-500 hover:text-red-400 cursor-pointer"
                                       title="Tra cứu lại thứ hạng"
                                     >
                                       <ArrowClockwise weight="bold" className="h-3 w-3" />
@@ -634,7 +634,7 @@ export function ClanMembersSection({
                                 return (
                                   <div className="relative inline-flex items-center justify-center group/rank">
                                     <span
-                                      className="inline-flex h-6.5 items-center justify-center rounded-lg border border-slate-200 bg-slate-100/70 px-2 font-mono text-[10px] font-semibold text-slate-500 dark:border-slate-800 dark:bg-slate-800/70 dark:text-slate-400 select-none"
+                                      className="inline-flex h-6.5 items-center justify-center rounded-lg border border-[#272226] bg-[#18171b] px-2 font-mono text-[10px] font-semibold text-zinc-400 select-none"
                                       title="Chưa tham gia bảng đấu giải mùa này"
                                     >
                                       {dict.clan.unrankedBadge}
@@ -642,7 +642,7 @@ export function ClanMembersSection({
                                     <button
                                       type="button"
                                       onClick={() => handleFetchRank(member.tag)}
-                                      className="absolute -right-5.5 opacity-0 group-hover/rank:opacity-100 transition-opacity p-0.5 text-slate-400 hover:text-red-600 dark:hover:text-red-300 cursor-pointer"
+                                      className="absolute -right-5.5 opacity-0 group-hover/rank:opacity-100 transition-opacity p-0.5 text-zinc-500 hover:text-red-400 cursor-pointer"
                                       title="Tra cứu lại"
                                     >
                                       <ArrowClockwise weight="bold" className="h-3 w-3" />
@@ -656,7 +656,7 @@ export function ClanMembersSection({
                                   <button
                                     type="button"
                                     onClick={() => handleFetchRank(member.tag)}
-                                    className="inline-flex h-6.5 items-center gap-1 rounded-lg border border-rose-300/80 bg-rose-50 px-2 text-[10px] font-semibold text-rose-600 hover:bg-rose-100 dark:border-rose-800 dark:bg-rose-950/40 dark:text-rose-400 cursor-pointer"
+                                    className="inline-flex h-6.5 items-center gap-1 rounded-lg border border-red-500/40 bg-red-950/40 px-2 text-[10px] font-semibold text-red-300 hover:bg-red-900/40 cursor-pointer"
                                     title={`${fetchedInfo.error} - Nhấn để thử lại`}
                                   >
                                     <span>Lỗi</span>
@@ -671,7 +671,7 @@ export function ClanMembersSection({
                               <button
                                 type="button"
                                 onClick={() => handleFetchRank(member.tag)}
-                                className="apple-btn inline-flex h-6.5 items-center justify-center gap-1 rounded-lg border border-zinc-700/80 bg-zinc-800/80 px-2 text-[10px] font-semibold text-zinc-300 hover:border-red-500/60 hover:text-white active:scale-95 transition-all dark:border-zinc-750 dark:bg-zinc-850 dark:text-zinc-300 dark:hover:border-red-500 cursor-pointer shadow-2xs"
+                                className="inline-flex h-6.5 items-center justify-center gap-1 rounded-lg border border-[#272226] bg-[#18171b] px-2 text-[10px] font-semibold text-zinc-300 hover:border-red-500/60 hover:text-white active:scale-95 transition-all cursor-pointer shadow-2xs"
                                 title="Gọi API Supercell để tra cứu thứ hạng bảng đấu 100 người của người chơi này"
                               >
                                 <MagnifyingGlass weight="bold" className="h-2.5 w-2.5" />
@@ -686,9 +686,9 @@ export function ClanMembersSection({
                 })
               ) : (
                 <tr>
-                  <td colSpan={5} className="py-12 text-center text-slate-400 dark:text-slate-500">
+                  <td colSpan={5} className="py-12 text-center text-zinc-500">
                     <div className="flex flex-col items-center justify-center gap-2">
-                      <Users weight="duotone" className="h-8 w-8 text-slate-400/80" />
+                      <Users weight="duotone" className="h-8 w-8 text-zinc-500" />
                       <p className="text-sm font-medium">
                         Không tìm thấy thành viên nào khớp với bộ lọc.
                       </p>

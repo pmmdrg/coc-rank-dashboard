@@ -12,7 +12,6 @@ import {
 import type { AppRoute } from '../types'
 import { getLeagueIconUrl } from '../lib/leagueIcons'
 import { formatLeagueName } from '../lib/ranking'
-import { ThemeToggle } from './ThemeToggle'
 import { LanguageSwitcher } from './LanguageSwitcher'
 import { useI18n } from '../i18n/LanguageContext'
 import { APP_VERSION } from '../version'
@@ -146,13 +145,13 @@ export function Sidebar({
                   }
                 }}
                 placeholder={dict.header.tagPlaceholder}
-                className="h-8 w-full rounded-lg border border-zinc-200 bg-white pl-5 pr-7 font-mono text-[11px] font-semibold tracking-wider text-zinc-900 placeholder:text-zinc-400 placeholder:font-normal focus:border-red-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-white dark:focus:border-red-500"
+                className="h-8 w-full rounded-lg border border-[#272226] bg-[#121114] pl-5 pr-7 font-mono text-[11px] font-semibold tracking-wider text-white placeholder:text-zinc-500 placeholder:font-normal focus:border-red-500 focus:outline-none"
               />
               {playerTag ? (
                 <button
                   type="button"
                   onClick={handleCopyTag}
-                  className="absolute right-1.5 top-1/2 -translate-y-1/2 p-1 text-zinc-400 hover:text-amber-500 dark:text-zinc-500 dark:hover:text-amber-400 transition-colors cursor-pointer"
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2 p-1 text-zinc-400 hover:text-amber-400 transition-colors cursor-pointer"
                   title={dict.header.copyTagTooltip}
                 >
                   {isTagCopied ? (
@@ -213,45 +212,42 @@ export function Sidebar({
       </div>
 
       {/* PHẦN DƯỚI: NÚT CHIA SẺ, XUẤT FILE, CÀI ĐẶT */}
-      <div className="space-y-3 pt-4 border-t border-zinc-200/80 dark:border-zinc-800/80">
+      <div className="space-y-3 pt-4 border-t border-[#272226]">
         {/* Nút Chia sẻ thẻ thành tích - Phong cách TH19 */}
         {onOpenShareCard && (
           <button
             type="button"
             onClick={onOpenShareCard}
-            className="apple-btn flex w-full items-center justify-center gap-2 rounded-lg border border-zinc-200 bg-white py-2 text-xs font-semibold text-zinc-800 shadow-2xs hover:border-red-400 hover:text-red-600 transition-colors cursor-pointer select-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:border-red-500/50 dark:hover:text-white"
+            className="flex w-full items-center justify-center gap-2 rounded-lg border border-[#272226] bg-[#18171b] py-2 text-xs font-semibold text-zinc-200 shadow-2xs hover:border-red-500/50 hover:bg-[#201d22] hover:text-white transition-colors cursor-pointer select-none"
           >
-            <ShareNetwork weight="bold" className="h-3.5 w-3.5 text-amber-500" />
+            <ShareNetwork weight="bold" className="h-3.5 w-3.5 text-amber-400" />
             <span>{dict.header.shareCard}</span>
           </button>
         )}
 
         {/* Nút Xuất JSON / CSV */}
-        <div className="flex items-center gap-1 rounded-lg border border-zinc-200/80 bg-zinc-50/60 p-0.5 dark:border-zinc-800 dark:bg-zinc-900/50">
+        <div className="flex items-center gap-1 rounded-lg border border-zinc-800 bg-zinc-900/60 p-0.5">
           <button
             type="button"
             onClick={() => onExport('json')}
-            className="apple-btn flex-1 rounded-md py-1 text-center text-[11px] font-medium text-zinc-600 hover:bg-white hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white transition-colors cursor-pointer"
+            className="apple-btn flex-1 rounded-md py-1 text-center text-[11px] font-medium text-zinc-400 hover:bg-zinc-800 hover:text-white transition-colors cursor-pointer"
           >
             JSON
           </button>
-          <span className="h-3 w-px bg-slate-200 dark:bg-slate-700" />
+          <span className="h-3 w-px bg-zinc-800" />
           <button
             type="button"
             onClick={() => onExport('csv')}
-            className="apple-btn flex-1 rounded-md py-1 text-center text-[11px] font-medium text-slate-600 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white transition-colors cursor-pointer"
+            className="apple-btn flex-1 rounded-md py-1 text-center text-[11px] font-medium text-zinc-400 hover:bg-zinc-800 hover:text-white transition-colors cursor-pointer"
           >
             CSV
           </button>
         </div>
 
-        {/* Nút Ngôn ngữ & Theme */}
+        {/* Nút Ngôn ngữ */}
         <div className="flex items-center justify-between px-1">
-          <div className="flex items-center gap-2">
-            <LanguageSwitcher />
-            <ThemeToggle />
-          </div>
-          <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">
+          <LanguageSwitcher />
+          <span className="text-[10px] text-zinc-500 font-mono">
             v{APP_VERSION}
           </span>
         </div>
@@ -262,7 +258,7 @@ export function Sidebar({
   return (
     <>
       {/* 1. DESKTOP SIDEBAR: Cố định bên trái màn hình */}
-      <aside className="!fixed inset-y-0 left-0 hidden h-screen w-64 shrink-0 flex-col border-r border-slate-200/80 bg-white/90 backdrop-blur-md lg:flex dark:border-slate-800/80 dark:bg-slate-950/90 z-30">
+      <aside className="!fixed inset-y-0 left-0 hidden h-screen w-64 shrink-0 flex-col border-r border-[#272226] bg-[#121114]/95 backdrop-blur-md lg:flex z-30">
         {sidebarContent}
       </aside>
 
@@ -270,10 +266,10 @@ export function Sidebar({
       {isMobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div
-            className="fixed inset-0 bg-slate-950/50 backdrop-blur-xs animate-fade-in"
+            className="fixed inset-0 bg-black/70 backdrop-blur-xs animate-fade-in"
             onClick={onCloseMobile}
           />
-          <aside className="relative flex h-full w-64 flex-col border-r border-slate-200 bg-white shadow-xl animate-slide-right dark:border-slate-800 dark:bg-slate-950">
+          <aside className="relative flex h-full w-64 flex-col border-r border-[#272226] bg-[#121114] shadow-2xl animate-slide-right">
             {sidebarContent}
           </aside>
         </div>

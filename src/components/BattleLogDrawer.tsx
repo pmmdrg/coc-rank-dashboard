@@ -174,7 +174,7 @@ export function BattleLogDrawer({
     <div className="fixed inset-0 z-50 overflow-hidden">
       {/* 1. Backdrop làm tối & mờ nhẹ nền */}
       <div
-        className={`fixed inset-0 bg-slate-950/50 backdrop-blur-xs transition-opacity ${
+        className={`fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity ${
           isClosing ? 'animate-drawer-backdrop-out pointer-events-none' : 'animate-drawer-backdrop-in'
         }`}
         onClick={handleClose}
@@ -399,15 +399,15 @@ export function BattleLogDrawer({
 
             {/* 3. Trạng thái Không có trận nào (Empty) */}
             {!isLoading && !error && currentLogs.length === 0 && (
-              <div className="rounded-xl border border-slate-200 bg-white p-8 text-center dark:border-slate-800 dark:bg-slate-900/40 space-y-2">
-                <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-400 dark:border-slate-800 dark:bg-slate-800 dark:text-slate-500 shadow-2xs">
+              <div className="rounded-xl border border-[#272226] bg-[#121114] p-8 text-center space-y-2">
+                <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-lg border border-[#272226] bg-[#18171b] text-zinc-400 shadow-2xs">
                   {activeTab === 'attacks' ? (
-                    <Sword weight="bold" className="h-5 w-5" />
+                    <Sword weight="bold" className="h-5 w-5 text-red-400" />
                   ) : (
-                    <Shield weight="bold" className="h-5 w-5" />
+                    <Shield weight="bold" className="h-5 w-5 text-amber-400" />
                   )}
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-zinc-400">
                   {activeTab === 'attacks' ? dict.battleLog.noAttacks : dict.battleLog.noDefenses}
                 </p>
               </div>

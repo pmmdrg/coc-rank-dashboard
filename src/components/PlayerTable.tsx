@@ -366,17 +366,17 @@ export function PlayerTable({
   return (
     <section className="glass-panel relative rounded-xl shadow-sm">
       {/* 1. Header tiêu đề & trạng thái */}
-      <div className="flex flex-col gap-3 border-b border-slate-200/80 p-5 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800/80">
+      <div className="flex flex-col gap-3 border-b border-[#272226] p-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="flex flex-wrap items-center gap-2.5">
-            <h2 className="text-base font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
+            <h2 className="text-base font-bold uppercase tracking-wider text-white">
               {dict.table.title}
             </h2>
 
             {/* Trạng thái cập nhật */}
             {isSyncingApi ? (
               <span
-                className="inline-flex h-6 items-center gap-1.5 rounded-full border border-red-500/30 bg-red-500/10 px-2.5 text-[11px] font-bold leading-none text-red-700 dark:bg-red-950/60 dark:text-red-300 shadow-2xs"
+                className="inline-flex h-6 items-center gap-1.5 rounded-full border border-red-500/30 bg-red-950/60 px-2.5 text-[11px] font-bold leading-none text-red-300 shadow-2xs"
                 title={dict.table.syncingApi}
               >
                 <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-red-500 animate-ping" />
@@ -384,7 +384,7 @@ export function PlayerTable({
               </span>
             ) : (
               <span
-                className="inline-flex h-6 items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 text-[11px] font-bold leading-none text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 shadow-2xs"
+                className="inline-flex h-6 items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-950/60 px-2.5 text-[11px] font-bold leading-none text-amber-300 shadow-2xs"
                 title={season.lastSyncedAt ? interpolate(dict.table.syncedApi, { time: season.lastSyncedAt }) : dict.table.syncedApiNoTime}
               >
                 <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 animate-pulse" />
@@ -397,21 +397,21 @@ export function PlayerTable({
             )}
 
             {isFiltered && (
-              <span className="inline-flex h-6 items-center rounded-full bg-red-500/10 px-2.5 text-[11px] font-bold leading-none text-red-700 dark:bg-red-400/15 dark:text-red-300 border border-red-500/30 shadow-2xs">
+              <span className="inline-flex h-6 items-center rounded-full bg-red-400/15 px-2.5 text-[11px] font-bold leading-none text-red-300 border border-red-500/30 shadow-2xs">
                 {interpolate(dict.table.showingCount, { shown: effectivePlayers.length, total: rankedPlayers.length })}
               </span>
             )}
           </div>
           {season.players.length === 0 && (
-            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-xs text-zinc-400">
               {dict.table.tableSubtitleNoPlayers}
             </p>
           )}
         </div>
       </div>
 
-      {/* 2. Thanh Tìm kiếm & Bộ lọc nhanh (Standard Dashboard Filter Bar) */}
-      <div className="flex flex-col gap-3 border-b border-slate-200 p-3 sm:px-4 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+      {/* 2. Thanh Tìm kiếm & Bộ lọc nhanh */}
+      <div className="flex flex-col gap-3 border-b border-[#272226] p-3 sm:px-4 sm:flex-row sm:items-center sm:justify-between bg-[#0c0b0e]">
         {/* Ô Tìm kiếm người chơi / Clan (Apple Spotlight Style) */}
         <SearchInput
           value={searchQuery}
@@ -459,7 +459,7 @@ export function PlayerTable({
             }}
           >
             <table className="w-full min-w-[1080px] border-separate border-spacing-0 text-left text-sm">
-              <thead className="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              <thead className="bg-[#121114] border-b border-[#272226] text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
                 <tr>
                   <th
                     className="px-2.5 py-2.5 whitespace-nowrap bg-inherit"
@@ -518,7 +518,7 @@ export function PlayerTable({
           className="overflow-x-auto overflow-y-hidden"
         >
           <table ref={tableRef} className="relative w-full min-w-[1080px] border-separate border-spacing-0 text-left text-sm">
-            <thead ref={theadRef} className="bg-slate-50/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <thead ref={theadRef} className="bg-[#121114] border-b border-[#272226] text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
               <tr>
                 <th className="w-[136px] min-w-[136px] max-w-[136px] px-2.5 py-2.5 whitespace-nowrap bg-inherit">{dict.table.colRank}</th>
                 <th className="w-56 min-w-[170px] max-w-[240px] px-2 py-2.5 bg-inherit">{dict.table.colName}</th>
@@ -529,7 +529,7 @@ export function PlayerTable({
                 <th className="w-24 min-w-[92px] px-2 py-2.5 whitespace-nowrap text-center bg-inherit">{dict.table.colRating}</th>
               </tr>
             </thead>
-            <tbody key={filterTab} className="divide-y divide-slate-200/50 dark:divide-slate-800/60">
+            <tbody key={filterTab} className="divide-y divide-[#272226]">
             {isSyncingApi ? (
               // Skeleton loading rows khi đang đồng bộ dữ liệu từ Supercell API
               [
@@ -542,7 +542,7 @@ export function PlayerTable({
                 { wName: 'w-24', wTag: 'w-16', wCups: 'w-12' },
                 { wName: 'w-36', wTag: 'w-22', wCups: 'w-14' },
               ].map((row, i) => (
-                <tr key={`skeleton-${i}`} className="border-b border-slate-200/40 dark:border-slate-800/40">
+                <tr key={`skeleton-${i}`} className="border-b border-[#272226]">
                   <td className="px-2.5 py-3">
                     <div className="flex items-center gap-2">
                       <div className="h-6 w-8 rounded-md skeleton-shimmer" />
@@ -562,13 +562,13 @@ export function PlayerTable({
               ))
             ) : effectivePlayers.length === 0 ? (
               <tr>
-                <td colSpan={7} className="py-12 text-center text-sm font-medium text-slate-400 dark:text-slate-500">
+                <td colSpan={7} className="py-12 text-center text-sm font-medium text-zinc-500">
                   {isFiltered ? (
                     <div className="flex flex-col items-center justify-center gap-1.5">
-                      <span className="text-base font-semibold text-slate-700 dark:text-slate-200">
+                      <span className="text-base font-semibold text-zinc-200">
                         {dict.table.noResultsTitle}
                       </span>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                      <p className="text-xs text-zinc-400">
                         {searchQuery ? interpolate(dict.table.noResultsKeyword, { keyword: searchQuery }) : dict.table.noResultsEmpty}
                       </p>
                       <button
@@ -668,8 +668,8 @@ export function PlayerTable({
     </div>
 
       {/* 4. Chú thích biểu tượng & trạng thái - Chuẩn TH19 */}
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-zinc-200/80 bg-zinc-50/50 px-4 py-2.5 text-xs text-zinc-500 dark:border-zinc-800/80 dark:bg-zinc-900/40 dark:text-zinc-400">
-        <span className="font-semibold text-zinc-700 dark:text-zinc-300">{dict.table.legendTitle}</span>
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-[#272226] bg-[#0c0b0e] px-4 py-2.5 text-xs text-zinc-400">
+        <span className="font-semibold text-white">{dict.table.legendTitle}</span>
         <span className="inline-flex items-center gap-1.5">
           <span className="h-2.5 w-2.5 rounded-xs border-l-2 border-l-red-600 bg-red-500/20" />
           {dict.table.legendMine}
@@ -679,25 +679,25 @@ export function PlayerTable({
           {dict.table.legendCanPass}
         </span>
         {promotionCount > 0 && (
-          <span className="inline-flex items-center gap-1 text-amber-600 dark:text-amber-400 font-medium">
+          <span className="inline-flex items-center gap-1 text-amber-400 font-medium">
             <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
             {interpolate(dict.table.legendPromotion, { count: promotionCount })}
           </span>
         )}
         {demotionCount > 0 && (
-          <span className="inline-flex items-center gap-1 text-red-600 dark:text-red-400 font-medium">
+          <span className="inline-flex items-center gap-1 text-red-400 font-medium">
             <span className="h-1.5 w-1.5 rounded-full bg-red-600" />
             {interpolate(dict.table.legendDemotion, { count: demotionCount })}
           </span>
         )}
         <span className="inline-flex items-center gap-1.5">
-          <span className="inline-block px-1.5 py-0.2 rounded text-[9px] font-bold bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30">
+          <span className="inline-block px-1.5 py-0.2 rounded text-[9px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30">
             {dict.table.attackedByMe}
           </span>
           {dict.table.legendYouAttacked}
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="inline-block px-1.5 py-0.2 rounded text-[9px] font-bold bg-red-500/15 text-red-700 dark:text-red-300 border border-red-500/30">
+          <span className="inline-block px-1.5 py-0.2 rounded text-[9px] font-bold bg-red-500/15 text-red-300 border border-red-500/30">
             {dict.table.attackedMe}
           </span>
           {dict.table.legendOpponentAttacked}

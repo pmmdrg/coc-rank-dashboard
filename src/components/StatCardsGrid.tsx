@@ -111,8 +111,8 @@ export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSy
 
   if (isSyncingApi) {
     return (
-      <section className="glass-panel rounded-xl shadow-xs overflow-hidden border border-slate-200/80 dark:border-slate-800/80">
-        <div className="flex items-center justify-between gap-3 p-4 sm:p-5 border-b border-slate-200/60 dark:border-slate-800/60">
+      <section className="glass-panel rounded-xl shadow-xs overflow-hidden border border-[#272226]">
+        <div className="flex items-center justify-between gap-3 p-4 sm:p-5 border-b border-[#272226]">
           <div className="h-4 w-40 rounded-md skeleton-shimmer" />
           <div className="h-6 w-16 rounded-md skeleton-shimmer" />
         </div>
@@ -122,7 +122,7 @@ export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSy
             {[1, 2, 3, 4].map((idx) => (
               <div
                 key={idx}
-                className="rounded-lg border border-slate-200/70 bg-white/60 p-4 dark:border-slate-800 dark:bg-slate-900/50"
+                className="rounded-lg border border-[#272226] bg-[#121114] p-4"
               >
                 <div className="h-3 w-20 rounded skeleton-shimmer" />
                 <div className="mt-3 h-7 w-24 rounded skeleton-shimmer" />
@@ -198,14 +198,14 @@ export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSy
   ]
 
   return (
-    <section className="glass-panel rounded-xl shadow-xs overflow-hidden border border-slate-200/80 dark:border-slate-800/80 transition-all duration-200">
+    <section className="glass-panel rounded-xl shadow-xs overflow-hidden border border-[#272226] transition-all duration-200">
       {/* Header: Tinh gọn */}
       <div
         className={`flex items-center justify-between gap-3 px-4 py-3.5 sm:px-5 transition-colors ${
-          !isCollapsed ? 'border-b border-slate-200/60 dark:border-slate-800/60' : ''
+          !isCollapsed ? 'border-b border-[#272226]' : ''
         }`}
       >
-        <h2 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+        <h2 className="text-xs font-bold uppercase tracking-wider text-white">
           {dict.statCards.overviewTitle}
         </h2>
 
@@ -224,20 +224,20 @@ export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSy
               {cards.map((card) => (
                 <div
                   key={card.label}
-                  className="rounded-lg border border-slate-200/80 bg-white/70 p-4 dark:border-slate-800 dark:bg-slate-900/60 transition-colors"
+                  className="rounded-lg border border-[#272226] bg-[#121114] p-4 transition-colors"
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 truncate">
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 truncate">
                       {card.label}
                     </span>
                     {card.badge && (
                       <span
                         className={`inline-flex shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold ${
                           card.badgeType === 'success'
-                            ? 'bg-amber-500/10 text-amber-700 dark:bg-amber-400/10 dark:text-amber-300'
+                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
                             : card.badgeType === 'warning'
-                              ? 'bg-red-500/10 text-red-700 dark:bg-red-400/10 dark:text-red-300'
-                              : 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300'
+                              ? 'bg-red-500/20 text-red-300 border border-red-500/30'
+                              : 'bg-[#18171b] text-zinc-300 border border-[#272226]'
                         }`}
                       >
                         {card.badge}
@@ -246,12 +246,12 @@ export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSy
                   </div>
 
                   <div className="mt-2 flex items-baseline gap-2">
-                    <span className="font-mono text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+                    <span className="font-mono text-2xl font-bold tracking-tight text-white">
                       {card.value}
                     </span>
                   </div>
 
-                  <div className="mt-1 text-xs text-slate-500 dark:text-slate-400 truncate">
+                  <div className="mt-1 text-xs text-zinc-400 truncate">
                     {card.subtext}
                   </div>
                 </div>

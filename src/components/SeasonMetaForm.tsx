@@ -19,7 +19,7 @@ function SeasonMetaSkeleton({ embedded = false }: { embedded?: boolean }) {
   const content = (
     <div className="grid gap-3 grid-cols-1 md:grid-cols-3">
       {[1, 2, 3].map((i) => (
-        <div key={i} className="rounded-lg border border-slate-200/70 bg-white/60 p-4 dark:border-slate-800 dark:bg-slate-900/50">
+        <div key={i} className="rounded-lg border border-[#272226] bg-[#121114] p-4">
           <div className="h-3 w-20 rounded skeleton-shimmer" />
           <div className="mt-3 h-6 w-32 rounded skeleton-shimmer" />
         </div>
@@ -28,7 +28,7 @@ function SeasonMetaSkeleton({ embedded = false }: { embedded?: boolean }) {
   )
 
   if (embedded) return <div>{content}</div>
-  return <div className="glass-panel rounded-xl p-4 shadow-xs">{content}</div>
+  return <div className="glass-panel rounded-xl p-4 shadow-xs border border-[#272226]">{content}</div>
 }
 
 export function SeasonMetaForm({
@@ -60,18 +60,18 @@ export function SeasonMetaForm({
   const content = (
     <div className="grid gap-3 grid-cols-1 md:grid-cols-3">
       {/* Cột 1: Giải đấu */}
-      <div className="rounded-lg border border-slate-200/80 bg-white/70 p-4 dark:border-slate-800 dark:bg-slate-900/60 flex flex-col justify-between">
+      <div className="rounded-lg border border-[#272226] bg-[#121114] p-4 flex flex-col justify-between">
         <div className="flex items-center justify-between gap-2">
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
             {dict.seasonMeta.league}
           </span>
           {season.leagueGroupTag && (
-            <span className="rounded font-mono px-1.5 py-0.5 text-[10px] font-semibold bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">
+            <span className="rounded font-mono px-1.5 py-0.5 text-[10px] font-semibold bg-[#18171b] text-zinc-400 border border-[#272226]">
               {season.leagueGroupTag}
             </span>
           )}
         </div>
-        <div className="mt-2.5 flex items-center gap-2.5 text-slate-900 dark:text-slate-100">
+        <div className="mt-2.5 flex items-center gap-2.5 text-white">
           {season.league && season.league !== '--' ? (
             <>
               <img
@@ -80,59 +80,59 @@ export function SeasonMetaForm({
                 referrerPolicy="no-referrer"
                 className="h-8 w-8 shrink-0 object-contain"
               />
-              <span className="truncate text-base font-bold tracking-tight text-slate-900 dark:text-slate-100">
+              <span className="truncate text-base font-bold tracking-tight text-white">
                 {formatLeagueName(season.league) || '--'}
               </span>
             </>
           ) : (
-            <span className="text-base font-bold text-slate-400">--</span>
+            <span className="text-base font-bold text-zinc-500">--</span>
           )}
         </div>
       </div>
 
       {/* Cột 2: Thời gian mùa giải & Vạch thăng/xuống hạng */}
-      <div className="rounded-lg border border-slate-200/80 bg-white/70 p-4 dark:border-slate-800 dark:bg-slate-900/60 flex flex-col justify-between">
+      <div className="rounded-lg border border-[#272226] bg-[#121114] p-4 flex flex-col justify-between">
         <div className="flex items-center justify-between gap-2">
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
             {dict.seasonMeta.seasonDuration}
           </span>
           {season.players.length > 0 && onUpdateSeasonMeta ? (
             <div className="flex items-center gap-2 text-xs">
-              <label className="flex items-center gap-1 text-amber-600 dark:text-amber-400 font-medium">
+              <label className="flex items-center gap-1 text-amber-400 font-medium">
                 <span>{dict.seasonMeta.promote}</span>
                 <input
                   type="number"
                   min="0"
                   value={season.promotionCount ?? 2}
                   onChange={(e) => onUpdateSeasonMeta('promotionCount', Math.max(0, parseInt(e.target.value, 10) || 0))}
-                  className="h-5 w-8 rounded border border-slate-200 bg-white text-center text-xs font-semibold dark:border-slate-700 dark:bg-slate-800"
+                  className="h-5 w-8 rounded border border-[#272226] bg-[#18171b] text-center text-xs font-semibold text-white"
                 />
               </label>
-              <label className="flex items-center gap-1 text-red-600 dark:text-red-400 font-medium">
+              <label className="flex items-center gap-1 text-red-400 font-medium">
                 <span>{dict.seasonMeta.demote}</span>
                 <input
                   type="number"
                   min="0"
                   value={season.demotionCount ?? 1}
                   onChange={(e) => onUpdateSeasonMeta('demotionCount', Math.max(0, parseInt(e.target.value, 10) || 0))}
-                  className="h-5 w-8 rounded border border-slate-200 bg-white text-center text-xs font-semibold dark:border-slate-700 dark:bg-slate-800"
+                  className="h-5 w-8 rounded border border-[#272226] bg-[#18171b] text-center text-xs font-semibold text-white"
                 />
               </label>
             </div>
           ) : (
-            <span className="text-xs text-slate-500">
+            <span className="text-xs text-zinc-400">
               {dict.seasonMeta.promote} {season.promotionCount ?? 2} • {dict.seasonMeta.demote} {season.demotionCount ?? 1}
             </span>
           )}
         </div>
-        <div className="mt-2.5 text-sm sm:text-base font-bold font-mono text-slate-900 dark:text-slate-100">
+        <div className="mt-2.5 text-sm sm:text-base font-bold font-mono text-white">
           {currentPeriodInfo.displayPeriod || '--'}
         </div>
       </div>
 
       {/* Cột 3: Chọn mùa giải */}
-      <div className="rounded-lg border border-slate-200/80 bg-white/70 p-4 dark:border-slate-800 dark:bg-slate-900/60 flex flex-col justify-between relative z-30">
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+      <div className="rounded-lg border border-[#272226] bg-[#121114] p-4 flex flex-col justify-between relative z-30">
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
           {dict.seasonMeta.selectSeason}
         </span>
         <div className="mt-2.5">
@@ -155,7 +155,7 @@ export function SeasonMetaForm({
   }
 
   return (
-    <div className="glass-panel relative z-20 rounded-xl p-4 shadow-xs">
+    <div className="glass-panel relative z-20 rounded-xl p-4 shadow-xs border border-[#272226]">
       {content}
     </div>
   )

@@ -546,7 +546,7 @@ function App() {
         <main className="mx-auto w-full max-w-[1360px] flex-1 px-4 py-6 sm:px-6 lg:px-8 space-y-6">
           {/* Thông báo lỗi */}
           {(error || (currentRoute === 'clan' && clanError)) && (
-            <div className="animate-fade-in rounded-xl border border-rose-300/60 bg-rose-50/80 px-4 py-3 text-sm text-rose-700 backdrop-blur dark:border-rose-500/30 dark:bg-rose-950/40 dark:text-rose-200">
+            <div className="animate-fade-in rounded-xl border border-red-500/40 bg-red-950/40 px-4 py-3 text-sm text-red-200 backdrop-blur">
               {currentRoute === 'clan' && clanError ? clanError : error}
             </div>
           )}

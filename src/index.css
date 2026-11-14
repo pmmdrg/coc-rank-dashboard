@@ -12,21 +12,26 @@
 
 :root {
   overflow-anchor: none;
-  --app-bg: #fafafa;
-  --panel-bg: #ffffff;
-  --panel-border: #e4e4e7;
-  --header-bg: rgba(255, 255, 255, 0.94);
-  --field-bg: #ffffff;
-  --field-border: #d4d4d8;
-  --field-text: #09090b;
-  --soft-table-head: #f4f4f5;
-  --table-head-text: #71717a;
-  --row-mine: rgba(220, 38, 38, 0.08);
-  --row-mine-hover: rgba(220, 38, 38, 0.14);
-  --text-main: #09090b;
-  --text-muted: #71717a;
-  color: #09090b;
-  background: #fafafa;
+  --app-bg: #09090b;
+  --panel-bg: #121114;
+  --panel-border: #272226;
+  --header-bg: rgba(18, 17, 20, 0.94);
+  --field-bg: #18171b;
+  --field-border: #322b31;
+  --field-text: #ffffff;
+  --soft-table-head: #0d0c0e;
+  --table-head-text: #a1a1aa;
+  --row-mine: rgba(220, 38, 38, 0.16);
+  --row-mine-hover: rgba(220, 38, 38, 0.24);
+  --row-risk: rgba(220, 38, 38, 0.2);
+  --row-risk-hover: rgba(220, 38, 38, 0.3);
+  --row-below: rgba(245, 158, 11, 0.16);
+  --row-below-hover: rgba(245, 158, 11, 0.24);
+  --text-main: #ffffff;
+  --text-muted: #a1a1aa;
+  color: #f4f4f5;
+  background: #09090b;
+  color-scheme: dark;
   font-family: var(--font-sans);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -37,8 +42,8 @@
 body {
   margin: 0;
   min-width: 320px;
-  background: var(--app-bg);
-  color: var(--text-main);
+  background: #09090b;
+  color: #f4f4f5;
   min-height: 100vh;
 }
 
@@ -63,11 +68,23 @@ select:focus-visible {
   position: relative;
 }
 
-/* Modern Dashboard Card Surface (Chuẩn phong cách Dashboard/SaaS: Vercel, Linear, Stripe) */
+.app-surface::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 5%;
+  right: 5%;
+  height: 320px;
+  background: radial-gradient(ellipse at 50% 0%, rgba(220, 38, 38, 0.14) 0%, rgba(245, 158, 11, 0.04) 45%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Modern Dashboard Card Surface (TH19 Obsidian Black) */
 .glass-panel {
   border: 1px solid var(--panel-border);
-  background: var(--panel-bg);
-  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+  background: rgba(18, 17, 20, 0.95);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -76,20 +93,20 @@ select:focus-visible {
   background: var(--header-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.03);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .glass-footer {
   border-top: 1px solid var(--panel-border);
-  background: var(--panel-bg);
+  background: #121114;
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .glass-drawer {
-  background: var(--panel-bg);
+  background: #121114;
   border-left: 1px solid var(--panel-border);
-  box-shadow: -10px 0 25px -5px rgba(15, 23, 42, 0.08);
+  box-shadow: -10px 0 35px -5px rgba(0, 0, 0, 0.7);
 }
 
 .soft-field {
@@ -100,8 +117,8 @@ select:focus-visible {
 }
 
 .soft-field:focus {
-  border-color: #38bdf8;
-  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+  border-color: #ef4444;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25);
 }
 
 .soft-table-head {
@@ -129,7 +146,7 @@ select:focus-visible {
 }
 
 .row-neutral:hover {
-  background: rgba(148, 163, 184, 0.08) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
 }
 
 /* Liquid Fluid Haptic Micro-Interactions */
@@ -142,15 +159,15 @@ select:focus-visible {
   transition-duration: 0.08s;
 }
 
-/* Dashboard Segmented Pill Control (Tabs lọc tiêu chuẩn: Vercel, Linear, Stripe) */
+/* Dashboard Segmented Pill Control (TH19 Carbon Style) */
 .apple-segmented-container {
   display: inline-flex;
   align-items: center;
   min-height: 36px;
   padding: 3px;
   border-radius: 8px;
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
+  background: #18171b;
+  border: 1px solid #2e282d;
   position: relative;
   isolation: isolate;
   box-sizing: border-box;
@@ -162,9 +179,9 @@ select:focus-visible {
   top: 0;
   left: 0;
   border-radius: 6px;
-  background: #ffffff;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  background: #272228;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.6);
   box-sizing: border-box;
   pointer-events: none;
   z-index: 1;
@@ -183,7 +200,7 @@ select:focus-visible {
   font-weight: 500;
   border-radius: 6px;
   min-height: 28px;
-  color: #64748b;
+  color: #a1a1aa;
   transition: color 0.15s ease;
   cursor: pointer;
   user-select: none;
@@ -194,7 +211,7 @@ select:focus-visible {
 }
 
 .apple-segmented-item:hover {
-  color: #0f172a;
+  color: #ffffff;
 }
 
 .apple-segmented-item:active {
@@ -202,32 +219,32 @@ select:focus-visible {
 }
 
 .apple-segmented-item.is-active {
-  color: #0f172a;
+  color: #ffffff;
   font-weight: 600;
 }
 
 /* Fallback khi không có sliding indicator */
 .apple-segmented-container:not(:has(.apple-segmented-slider)) .apple-segmented-item.is-active {
-  background: #ffffff;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  background: #272228;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
 }
 
 /* Nút thu gọn / mở rộng tiêu chuẩn */
 .liquid-collapse-btn {
   min-height: 32px;
   border-radius: 8px;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
-  color: #64748b;
+  background: #18171b;
+  border: 1px solid #2e282d;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  color: #a1a1aa;
   box-sizing: border-box;
   transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
 }
 
 .liquid-collapse-btn:hover {
-  background: #f8fafc;
-  border-color: #cbd5e1;
-  color: #0f172a;
+  background: #272228;
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ffffff;
 }
 
 .liquid-collapse-btn:active {
@@ -832,105 +849,57 @@ html.dark .hero-stat-card:hover {
 
 /* 1. DOMINANT (Vàng ánh kim TH19 - Metallic Gold) */
 .liquid-rating-chip-dominant {
-  background: rgba(245, 158, 11, 0.12);
-  border: 1px solid rgba(245, 158, 11, 0.4);
-  color: #b45309;
-  box-shadow: 0 1px 2px rgba(245, 158, 11, 0.08);
-}
-
-.liquid-rating-chip-dominant:hover {
-  border-color: rgba(245, 158, 11, 0.6);
-  background: rgba(245, 158, 11, 0.18);
-}
-
-html.dark .liquid-rating-chip-dominant {
   background: rgba(245, 158, 11, 0.16);
   border: 1px solid rgba(251, 191, 36, 0.45);
   color: #fbbf24;
   box-shadow: none;
 }
 
-html.dark .liquid-rating-chip-dominant:hover {
+.liquid-rating-chip-dominant:hover {
   border-color: rgba(251, 191, 36, 0.7);
   background: rgba(245, 158, 11, 0.25);
 }
 
 /* 2. SUPERIOR (Đỏ thắm TH19 - Crimson Red) */
 .liquid-rating-chip-superior {
-  background: rgba(220, 38, 38, 0.12);
-  border: 1px solid rgba(220, 38, 38, 0.4);
-  color: #b91c1c;
-  box-shadow: 0 1px 2px rgba(220, 38, 38, 0.08);
-}
-
-.liquid-rating-chip-superior:hover {
-  border-color: rgba(220, 38, 38, 0.6);
-  background: rgba(220, 38, 38, 0.18);
-}
-
-html.dark .liquid-rating-chip-superior {
   background: rgba(220, 38, 38, 0.16);
   border: 1px solid rgba(248, 113, 113, 0.45);
   color: #f87171;
   box-shadow: none;
 }
 
-html.dark .liquid-rating-chip-superior:hover {
+.liquid-rating-chip-superior:hover {
   border-color: rgba(248, 113, 113, 0.7);
   background: rgba(220, 38, 38, 0.25);
 }
 
 /* 3. POTENTIAL (Trắng / Bạc TH19 - Crisp Silver White) */
 .liquid-rating-chip-potential {
-  background: rgba(244, 244, 245, 0.9);
-  border: 1px solid rgba(161, 161, 170, 0.4);
-  color: #3f3f46;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-}
-
-.liquid-rating-chip-potential:hover {
-  border-color: rgba(161, 161, 170, 0.6);
-  background: #ffffff;
-}
-
-html.dark .liquid-rating-chip-potential {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.25);
   color: #ffffff;
   box-shadow: none;
 }
 
-html.dark .liquid-rating-chip-potential:hover {
+.liquid-rating-chip-potential:hover {
   border-color: rgba(255, 255, 255, 0.45);
   background: rgba(255, 255, 255, 0.16);
 }
 
 /* 4. ALARM (Đỏ sẫm huyết đen TH19 - Obsidian Blood Red) */
 .liquid-rating-chip-alarm {
-  background: rgba(153, 27, 27, 0.12);
-  border: 1px solid rgba(153, 27, 27, 0.4);
-  color: #991b1b;
-  box-shadow: 0 1px 2px rgba(153, 27, 27, 0.08);
-}
-
-.liquid-rating-chip-alarm:hover {
-  border-color: rgba(153, 27, 27, 0.6);
-  background: rgba(153, 27, 27, 0.18);
-}
-
-html.dark .liquid-rating-chip-alarm {
-  background: rgba(153, 27, 27, 0.22);
-  border: 1px solid rgba(239, 68, 68, 0.4);
+  background: rgba(153, 27, 27, 0.25);
+  border: 1px solid rgba(239, 68, 68, 0.45);
   color: #fca5a5;
   box-shadow: none;
 }
 
-html.dark .liquid-rating-chip-alarm:hover {
+.liquid-rating-chip-alarm:hover {
   border-color: rgba(239, 68, 68, 0.65);
-  background: rgba(153, 27, 27, 0.32);
+  background: rgba(153, 27, 27, 0.35);
 }
 
-/* Skeleton Shimmer Wave Effect - Tinh tế, không chói mắt, chuẩn phong cách glassmorphism */
+/* Skeleton Shimmer Wave Effect - Tinh tế chuẩn TH19 Obsidian Carbon */
 @keyframes shimmer-wave {
   0% {
     transform: translateX(-100%);
@@ -943,11 +912,7 @@ html.dark .liquid-rating-chip-alarm:hover {
 .skeleton-shimmer {
   position: relative;
   overflow: hidden;
-  background-color: rgba(226, 232, 240, 0.7);
-}
-
-html.dark .skeleton-shimmer {
-  background-color: rgba(30, 41, 59, 0.65);
+  background-color: #1e1b1e;
 }
 
 .skeleton-shimmer::after {
@@ -960,35 +925,21 @@ html.dark .skeleton-shimmer {
   background-image: linear-gradient(
     90deg,
     rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.4) 30%,
-    rgba(255, 255, 255, 0.75) 50%,
-    rgba(255, 255, 255, 0.4) 70%,
+    rgba(220, 38, 38, 0.05) 30%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(220, 38, 38, 0.05) 70%,
     rgba(255, 255, 255, 0) 100%
   );
   animation: shimmer-wave 1.6s ease-in-out infinite;
   content: '';
 }
 
-html.dark .skeleton-shimmer::after {
-  background-image: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.03) 30%,
-    rgba(255, 255, 255, 0.09) 50%,
-    rgba(255, 255, 255, 0.03) 70%,
-    rgba(255, 255, 255, 0) 100%
-  );
-}
-
 /* ==========================================================================
-   AURORA BOREALIS AMBIENT BACKGROUND & DYNAMIC TEXT SHIMMER
-   Hiệu ứng cực quang Bắc Cực chuyển màu êm dịu và chuyển động sống động
+   TH19 AMBIENT BACKGROUND & DYNAMIC TEXT
    ========================================================================== */
 
 .aurora-ambient-canvas {
-  filter: hue-rotate(var(--aurora-hue, 0deg));
   contain: strict;
-  will-change: filter;
 }
 
 .aurora-blob-wrapper {
@@ -1038,68 +989,37 @@ html.dark .skeleton-shimmer::after {
   width: 100%;
   height: 100%;
   border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
-  filter: blur(72px);
+  filter: blur(80px);
   will-change: transform, border-radius;
   pointer-events: none;
 }
 
-/* Khối cực quang tự nhiên với phổ màu lạnh 100% (Cool-toned Aurora: Emerald, Mint, Cyan, Ice Blue, Sapphire, Violet) */
-
-/* Inner 1: Emerald & Mint Cyan Wave */
+/* TH19 Atmosphere Blobs (Chỉ gồm Đỏ thẫm Crimson & Vàng ánh kim) */
 .aurora-blob-inner-1 {
-  background: radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.22) 0%, rgba(6, 182, 212, 0.16) 48%, transparent 75%);
+  background: radial-gradient(circle at 40% 40%, rgba(220, 38, 38, 0.22) 0%, rgba(153, 27, 27, 0.12) 48%, transparent 75%);
   animation: aurora-morph-1 12s ease-in-out infinite alternate;
 }
 
-/* Inner 2: Deep Violet & Sky Ice Blue Ribbon */
 .aurora-blob-inner-2 {
-  background: radial-gradient(circle at 60% 40%, rgba(124, 58, 237, 0.18) 0%, rgba(56, 189, 248, 0.15) 48%, transparent 75%);
+  background: radial-gradient(circle at 60% 40%, rgba(245, 158, 11, 0.16) 0%, rgba(220, 38, 38, 0.08) 48%, transparent 75%);
   animation: aurora-morph-2 14s ease-in-out infinite alternate;
 }
 
-/* Inner 3: Electric Cyan & Royal Sapphire Ribbon */
 .aurora-blob-inner-3 {
-  background: radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.20) 0%, rgba(59, 130, 246, 0.15) 42%, rgba(99, 102, 241, 0.10) 68%, transparent 85%);
+  background: radial-gradient(circle at 50% 50%, rgba(220, 38, 38, 0.18) 0%, rgba(185, 28, 28, 0.10) 42%, transparent 85%);
   animation: aurora-morph-3 15s ease-in-out infinite alternate;
 }
 
-/* Inner 4: Deep Teal & Ocean Cobalt Nebula Wave */
 .aurora-blob-inner-4 {
-  background: radial-gradient(circle at 50% 60%, rgba(13, 148, 136, 0.18) 0%, rgba(14, 165, 233, 0.14) 48%, rgba(79, 70, 229, 0.10) 70%, transparent 85%);
+  background: radial-gradient(circle at 50% 60%, rgba(245, 158, 11, 0.14) 0%, rgba(220, 38, 38, 0.08) 48%, transparent 85%);
   animation: aurora-morph-4 13s ease-in-out infinite alternate;
 }
 
-/* Lớp vignette tinh tế */
 .aurora-overlay-vignette {
-  background: radial-gradient(circle at 50% 50%, transparent 60%, rgba(0, 0, 0, 0.04) 100%);
+  background: radial-gradient(circle at 50% 50%, transparent 50%, rgba(9, 9, 11, 0.6) 100%);
 }
 
-html.dark .aurora-overlay-vignette {
-  background: radial-gradient(circle at 50% 50%, transparent 50%, rgba(6, 9, 19, 0.45) 100%);
-}
-
-/* Chế độ Dark Theme: Tăng cường phát sáng cực quang lộng lẫy qua mix-blend-mode screen */
-html.dark .aurora-blob-inner {
-  mix-blend-mode: screen;
-}
-
-html.dark .aurora-blob-inner-1 {
-  background: radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.54) 0%, rgba(6, 182, 212, 0.38) 48%, transparent 75%);
-}
-
-html.dark .aurora-blob-inner-2 {
-  background: radial-gradient(circle at 60% 40%, rgba(139, 92, 246, 0.48) 0%, rgba(56, 189, 248, 0.34) 48%, transparent 75%);
-}
-
-html.dark .aurora-blob-inner-3 {
-  background: radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.46) 0%, rgba(59, 130, 246, 0.34) 42%, rgba(99, 102, 241, 0.24) 68%, transparent 85%);
-}
-
-html.dark .aurora-blob-inner-4 {
-  background: radial-gradient(circle at 50% 60%, rgba(20, 184, 166, 0.44) 0%, rgba(14, 165, 233, 0.32) 48%, rgba(99, 102, 241, 0.22) 70%, transparent 85%);
-}
-
-/* Animation biến hình (Morphing) mềm mại tự nhiên như dòng cực quang lơ lửng */
+/* Animation biến hình (Morphing) */
 @keyframes aurora-morph-1 {
   0% {
     border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
@@ -1160,7 +1080,7 @@ html.dark .aurora-blob-inner-4 {
   }
 }
 
-/* Chữ tiêu đề tối giản và sắc nét */
+/* Chữ tiêu đề gradient phong cách TH19: Trắng sang Đỏ thắm sang Vàng ánh kim */
 .aurora-text {
   -webkit-background-clip: text;
   background-clip: text;
@@ -1168,16 +1088,9 @@ html.dark .aurora-blob-inner-4 {
   display: inline-block;
   background-image: linear-gradient(
     135deg,
-    #0f172a 0%,
-    #0284c7 100%
-  );
-}
-
-html.dark .aurora-text {
-  background-image: linear-gradient(
-    135deg,
-    #f8fafc 0%,
-    #38bdf8 100%
+    #ffffff 0%,
+    #ef4444 60%,
+    #fbbf24 100%
   );
 }
 

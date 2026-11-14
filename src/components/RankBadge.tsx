@@ -8,8 +8,8 @@ export interface RankBadgeProps {
 }
 
 /**
- * Huy hiệu thứ hạng chuẩn hóa (Podium Top 1-2-3 & Hạng thường):
- * Thiết kế tối giản, tinh tế, sử dụng font mono nhất quán
+ * Huy hiệu thứ hạng chuẩn hóa TH19 (Vàng ánh kim #1, Trắng bạc #2, Đồng ánh kim #3, Đen than cho các hạng còn lại):
+ * Tối giản, tương phản cao, phông mono
  */
 export function RankBadge({ rank, title, className = '', size = 'md' }: RankBadgeProps) {
   const isSm = size === 'sm'
@@ -18,7 +18,7 @@ export function RankBadge({ rank, title, className = '', size = 'md' }: RankBadg
   if (rank === 1) {
     return (
       <div
-        className={`inline-flex shrink-0 items-center justify-center rounded-md border border-amber-500/30 bg-amber-500/15 font-mono font-bold text-amber-800 dark:bg-amber-500/20 dark:text-amber-300 select-none shadow-2xs ${sizeClasses} ${className}`}
+        className={`inline-flex shrink-0 items-center justify-center rounded-md border border-amber-400/40 bg-amber-500/20 font-mono font-black text-amber-300 select-none shadow-2xs ${sizeClasses} ${className}`}
         title={title || 'Top 1'}
       >
         #1
@@ -29,7 +29,7 @@ export function RankBadge({ rank, title, className = '', size = 'md' }: RankBadg
   if (rank === 2) {
     return (
       <div
-        className={`inline-flex shrink-0 items-center justify-center rounded-md border border-slate-300/80 bg-slate-200/60 font-mono font-bold text-slate-800 dark:border-slate-600/70 dark:bg-slate-700/50 dark:text-slate-200 select-none shadow-2xs ${sizeClasses} ${className}`}
+        className={`inline-flex shrink-0 items-center justify-center rounded-md border border-white/30 bg-white/10 font-mono font-bold text-white select-none shadow-2xs ${sizeClasses} ${className}`}
         title={title || 'Top 2'}
       >
         #2
@@ -40,7 +40,7 @@ export function RankBadge({ rank, title, className = '', size = 'md' }: RankBadg
   if (rank === 3) {
     return (
       <div
-        className={`inline-flex shrink-0 items-center justify-center rounded-md border border-amber-700/25 bg-amber-700/10 font-mono font-bold text-amber-900 dark:border-amber-700/30 dark:bg-amber-700/20 dark:text-amber-400 select-none shadow-2xs ${sizeClasses} ${className}`}
+        className={`inline-flex shrink-0 items-center justify-center rounded-md border border-amber-600/40 bg-amber-600/15 font-mono font-bold text-amber-400 select-none shadow-2xs ${sizeClasses} ${className}`}
         title={title || 'Top 3'}
       >
         #3
@@ -50,7 +50,7 @@ export function RankBadge({ rank, title, className = '', size = 'md' }: RankBadg
 
   return (
     <div
-      className={`inline-flex shrink-0 items-center justify-center rounded-md border border-slate-200/70 bg-slate-100/60 font-mono font-medium text-slate-600 dark:border-slate-800/80 dark:bg-slate-800/50 dark:text-slate-400 select-none ${sizeClasses} ${className}`}
+      className={`inline-flex shrink-0 items-center justify-center rounded-md border border-[#272226] bg-[#18171b] font-mono font-medium text-zinc-400 select-none ${sizeClasses} ${className}`}
       title={title || `#${rank}`}
     >
       #{rank}
@@ -67,7 +67,9 @@ export interface RankDiffBadgeProps {
 }
 
 /**
- * Huy hiệu biến động thứ hạng (tăng / giảm / giữ nguyên)
+ * Huy hiệu biến động thứ hạng chuẩn TH19:
+ * - Tăng hạng: Vàng ánh kim (Amber)
+ * - Giảm hạng: Đỏ Crimson (Red)
  */
 export function RankDiffBadge({
   diff,
@@ -78,7 +80,7 @@ export function RankDiffBadge({
 }: RankDiffBadgeProps) {
   if (diff === 0) {
     if (showDashIfZero) {
-      return <span className={`text-[11px] font-bold text-slate-400 select-none ${className}`}>-</span>
+      return <span className={`text-[11px] font-bold text-zinc-500 select-none ${className}`}>-</span>
     }
     return null
   }
@@ -88,10 +90,10 @@ export function RankDiffBadge({
 
   return (
     <span
-      className={`inline-flex shrink-0 items-center gap-0.5 rounded-full px-1.5 py-0.2 font-mono text-[10px] font-black leading-none select-none ${
+      className={`inline-flex shrink-0 items-center gap-0.5 rounded-full px-1.5 py-0.2 font-mono text-[10px] font-black leading-none select-none border ${
         isUp
-          ? 'bg-amber-500/15 text-amber-800 dark:bg-amber-500/20 dark:text-amber-300'
-          : 'bg-red-500/15 text-red-700 dark:bg-red-500/20 dark:text-red-300'
+          ? 'border-amber-500/30 bg-amber-500/20 text-amber-300'
+          : 'border-red-500/30 bg-red-500/20 text-red-300'
       } ${className}`}
       title={title}
     >

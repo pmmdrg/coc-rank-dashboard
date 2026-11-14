@@ -17,10 +17,10 @@ export interface ChartsSectionProps {
 
 function SkeletonPieChart() {
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-lg border border-slate-200/70 bg-white/60 p-4 dark:border-slate-800 dark:bg-slate-900/50">
+    <div className="flex h-full flex-col overflow-hidden rounded-lg border border-[#272226] bg-[#121114] p-4">
       <div className="h-3 w-32 rounded skeleton-shimmer" />
       <div className="my-auto flex items-center justify-center pt-4">
-        <div className="h-28 w-28 rounded-full border-8 border-slate-200 skeleton-shimmer dark:border-slate-800" />
+        <div className="h-28 w-28 rounded-full border-8 border-[#272226] skeleton-shimmer" />
       </div>
     </div>
   )
@@ -62,12 +62,12 @@ function PercentagePieChart({
     new Intl.NumberFormat(language === 'vi' ? 'vi-VN' : 'en-US').format(val)
 
   return (
-    <div className="flex h-full flex-col justify-between overflow-hidden rounded-lg border border-slate-200/80 bg-white/70 p-4 dark:border-slate-800 dark:bg-slate-900/60">
+    <div className="flex h-full flex-col justify-between overflow-hidden rounded-lg border border-[#272226] bg-[#121114] p-4">
       <div className="flex items-center justify-between gap-2">
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
           {title}
         </span>
-        <span className="text-[11px] text-slate-400 font-mono">
+        <span className="text-[11px] text-zinc-500 font-mono">
           {total}
         </span>
       </div>
@@ -80,7 +80,7 @@ function PercentagePieChart({
               cx="18"
               cy="18"
               r="14"
-              className="stroke-slate-100 dark:stroke-slate-800/80"
+              className="stroke-[#1f1d22]"
               strokeWidth="4"
               fill="transparent"
             />
@@ -104,7 +104,7 @@ function PercentagePieChart({
                 cx="18"
                 cy="18"
                 r="14"
-                className="stroke-slate-200 dark:stroke-slate-700"
+                className="stroke-[#272226]"
                 strokeWidth="4"
                 strokeDasharray="100 0"
                 fill="transparent"
@@ -112,10 +112,10 @@ function PercentagePieChart({
             )}
           </svg>
           <div className="pointer-events-none absolute flex flex-col items-center justify-center text-center">
-            <span className="text-[10px] text-slate-400">
+            <span className="text-[10px] text-zinc-500">
               {dict.charts.ratioCenter}
             </span>
-            <span className="font-mono text-xs font-bold text-slate-800 dark:text-slate-200">
+            <span className="font-mono text-xs font-bold text-white">
               {hasData ? '100%' : '0%'}
             </span>
           </div>
@@ -136,14 +136,14 @@ function PercentagePieChart({
                       className="h-2 w-2 shrink-0 rounded-xs"
                       style={{ backgroundColor: item.color }}
                     />
-                    <span className="truncate text-slate-600 dark:text-slate-300">
+                    <span className="truncate text-zinc-300">
                       {item.label}
                     </span>
                   </div>
-                  <span className="font-mono font-medium text-slate-700 dark:text-slate-300 shrink-0">
+                  <span className="font-mono font-medium text-white shrink-0">
                     {formatNumber(item.value)}
                     {showPercentage && (
-                      <span className="text-[10px] text-slate-400 ml-1">
+                      <span className="text-[10px] text-zinc-500 ml-1">
                         ({percent}%)
                       </span>
                     )}
@@ -152,7 +152,7 @@ function PercentagePieChart({
               )
             })
           ) : (
-            <div className="py-2 text-center text-xs text-slate-400">
+            <div className="py-2 text-center text-xs text-zinc-500">
               {dict.common.noData}
             </div>
           )}

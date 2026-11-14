@@ -57,12 +57,12 @@ export function PlayerRow({
   )
 
   const borderClass = isMyPlayer
-    ? 'border-l-[4px] border-l-red-600 bg-red-500/[0.08] dark:bg-red-500/[0.14] hover:bg-red-500/[0.12] dark:hover:bg-red-500/[0.20]'
+    ? 'border-l-[4px] border-l-red-600 bg-red-950/20 hover:bg-red-950/30'
     : isPromotionZone
-      ? 'border-l-[4px] border-l-amber-500 bg-amber-500/[0.03] dark:bg-amber-500/[0.05] hover:bg-zinc-100/70 dark:hover:bg-zinc-800/50'
+      ? 'border-l-[4px] border-l-amber-500 bg-amber-950/10 hover:bg-zinc-900/60'
       : isDemotionZone
-        ? 'border-l-[4px] border-l-red-600 bg-red-500/[0.03] dark:bg-red-500/[0.05] hover:bg-zinc-100/70 dark:hover:bg-zinc-800/50'
-        : 'border-l-[4px] border-l-transparent hover:bg-zinc-100/70 dark:hover:bg-zinc-800/50'
+        ? 'border-l-[4px] border-l-red-600 bg-red-950/10 hover:bg-zinc-900/60'
+        : 'border-l-[4px] border-l-transparent hover:bg-zinc-900/40'
 
   const hasAttackedByMe = Boolean(player.attackedByMe && player.attackedByMe.length > 0)
   const hasDefendedAgainstMe = Boolean(player.defendedAgainstMe && player.defendedAgainstMe.length > 0)
@@ -211,7 +211,7 @@ export function PlayerRow({
               <div className="mt-1 flex flex-wrap items-center gap-1 select-none">
                 {hasAttackedByMe && (
                   <span
-                    className="inline-flex items-center rounded px-1.5 py-0.2 text-[9px] font-bold bg-amber-500/15 text-amber-800 dark:bg-amber-500/20 dark:text-amber-300 border border-amber-500/30 whitespace-nowrap shadow-2xs"
+                    className="inline-flex items-center rounded px-1.5 py-0.2 text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 whitespace-nowrap shadow-2xs"
                     title={attackedTooltip}
                   >
                     {dict.table.attackedByMe}{attackSummaryText}
@@ -219,7 +219,7 @@ export function PlayerRow({
                 )}
                 {hasDefendedAgainstMe && (
                   <span
-                    className="inline-flex items-center rounded px-1.5 py-0.2 text-[9px] font-bold bg-red-500/15 text-red-800 dark:bg-red-500/20 dark:text-red-300 border border-red-500/30 whitespace-nowrap shadow-2xs"
+                    className="inline-flex items-center rounded px-1.5 py-0.2 text-[9px] font-bold bg-red-500/20 text-red-300 border border-red-500/30 whitespace-nowrap shadow-2xs"
                     title={defendedTooltip}
                   >
                     {dict.table.attackedMe}{defenseSummaryText}
@@ -232,7 +232,7 @@ export function PlayerRow({
           <div className="flex items-center gap-1.5 shrink-0">
             {warnings.length > 0 && (
               <span
-                className="shrink-0 flex items-center text-amber-500 hover:text-amber-600 dark:text-amber-400 cursor-default"
+                className="shrink-0 flex items-center text-amber-400 hover:text-amber-300 cursor-default"
                 title={`${warnings.map((w) => '• ' + w.message).join('\n')}`}
               >
                 <Warning weight="duotone" className="h-4 w-4 drop-shadow-xs" />
@@ -245,7 +245,7 @@ export function PlayerRow({
                 e.stopPropagation()
                 onOpenBattleLog?.(player)
               }}
-              className="inline-flex items-center rounded-md border border-zinc-200/80 bg-white/80 px-2 py-0.5 text-[11px] font-medium text-zinc-600 hover:border-red-400 hover:bg-red-50 hover:text-red-600 dark:border-zinc-800 dark:bg-zinc-900/80 dark:text-zinc-300 dark:hover:border-red-500/50 dark:hover:bg-red-950/40 dark:hover:text-red-300 transition-colors cursor-pointer select-none shadow-2xs"
+              className="inline-flex items-center rounded-md border border-[#272226] bg-[#18171b] px-2 py-0.5 text-[11px] font-medium text-zinc-300 hover:border-red-500/50 hover:bg-[#201d22] hover:text-white transition-colors cursor-pointer select-none shadow-2xs"
               title={dict.battleLog.viewLogTooltip}
             >
               <span>{dict.battleLog.actionLog}</span>
@@ -258,16 +258,16 @@ export function PlayerRow({
       <td className="px-2.5 py-2.5 align-middle">
         <div className="flex flex-col justify-center leading-tight">
           <div className="flex items-baseline gap-0.5 font-mono text-sm">
-            <span className="font-bold text-slate-900 dark:text-slate-100">{player.attacks}</span>
-            <span className="text-xs text-slate-400 dark:text-slate-500">/{maxAttacks}</span>
+            <span className="font-bold text-white">{player.attacks}</span>
+            <span className="text-xs text-zinc-500">/{maxAttacks}</span>
           </div>
-          <div className="text-[10px] text-slate-400 dark:text-slate-500">
+          <div className="text-[10px] text-zinc-500">
             {player.attackWinCount !== undefined ? (
-              <span className="text-amber-600 dark:text-amber-400 font-semibold">
+              <span className="text-amber-400 font-semibold">
                 {player.attackWinCount}W{player.attackLoseCount ? `-${player.attackLoseCount}L` : ''}
               </span>
             ) : (
-              <span className={remainingAttacks === 0 ? 'text-amber-600 dark:text-amber-400 font-medium' : ''}>
+              <span className={remainingAttacks === 0 ? 'text-amber-400 font-medium' : ''}>
                 {remainingAttacks === 0 ? dict.table.completedAttacks : `${remainingAttacks} left`}
               </span>
             )}
@@ -279,16 +279,16 @@ export function PlayerRow({
       <td className="px-2.5 py-2.5 align-middle">
         <div className="flex flex-col justify-center leading-tight">
           <div className="flex items-baseline gap-0.5 font-mono text-sm">
-            <span className="font-bold text-slate-900 dark:text-slate-100">{player.defenses}</span>
-            <span className="text-xs text-slate-400 dark:text-slate-500">/{maxDefenses}</span>
+            <span className="font-bold text-white">{player.defenses}</span>
+            <span className="text-xs text-zinc-500">/{maxDefenses}</span>
           </div>
-          <div className="text-[10px] text-slate-400 dark:text-slate-500">
+          <div className="text-[10px] text-zinc-500">
             {player.defenseLoseCount !== undefined ? (
               <span>
                 {player.defenseWinCount ? `${player.defenseWinCount}W-` : ''}{player.defenseLoseCount}L
               </span>
             ) : (
-              <span className={remainingDefenses === 0 ? 'text-amber-600 dark:text-amber-400 font-medium' : ''}>
+              <span className={remainingDefenses === 0 ? 'text-amber-400 font-medium' : ''}>
                 {remainingDefenses === 0 ? dict.table.completedAttacks : `${remainingDefenses} left`}
               </span>
             )}
@@ -298,7 +298,7 @@ export function PlayerRow({
 
       {/* 5. Cúp Hiện Tại */}
       <td className="w-24 min-w-[88px] px-2 py-2.5 align-middle">
-        <span className="font-mono text-sm font-bold text-slate-900 dark:text-slate-100">
+        <span className="font-mono text-sm font-bold text-white">
           {formatNumber(player.currentCups)}
         </span>
       </td>
@@ -317,8 +317,8 @@ export function PlayerRow({
           <span
             className={
               isMyPlayer
-                ? 'text-red-600 dark:text-red-400 font-black'
-                : 'text-zinc-600 dark:text-zinc-300'
+                ? 'text-red-400 font-black'
+                : 'text-zinc-300'
             }
           >
             {formatNumber(player.maxPossibleCups)}
@@ -326,12 +326,12 @@ export function PlayerRow({
 
           {canPassMe && (
             <span
-              className="inline-flex items-center text-amber-500 hover:text-amber-600 dark:text-amber-400"
+              className="inline-flex items-center text-amber-400 hover:text-amber-300"
               title={interpolate(dict.table.canPassTooltip, {
                 cups: formatNumber(player.maxPossibleCups),
               })}
             >
-              <Warning weight="fill" className="h-4 w-4 drop-shadow-xs text-amber-500" />
+              <Warning weight="fill" className="h-4 w-4 drop-shadow-xs text-amber-400" />
             </span>
           )}
         </div>
