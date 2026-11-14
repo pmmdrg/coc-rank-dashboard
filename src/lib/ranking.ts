@@ -17,9 +17,9 @@ export const ratingLabels: Record<RatingCategory, string> = {
 
 export const ratingColors: Record<RatingCategory, string> = {
   dominant: '#f59e0b', // Vàng ánh kim (Áp đảo - Top tier TH19)
-  superior: '#dc2626', // Đỏ thắm (Vượt trội - Heroic Crimson TH19)
+  superior: '#8f1717', // Đỏ sẫm (Vượt trội - Deep Crimson TH19)
   potential: '#e2e8f0', // Trắng bạc (Tiềm năng - Silver White TH19)
-  alarm: '#991b1b',    // Đỏ sẫm huyết đen (Báo động - Dark Blood Red TH19)
+  alarm: '#6b1111',    // Đỏ sẫm huyết đen (Báo động - Dark Wine Blood Red TH19)
 }
 
 export const attackStatusLabels: Record<AttackStatusCategory, string> = {
@@ -35,7 +35,7 @@ export function formatDestruction(val?: number): string {
 
 export const attackStatusColors: Record<AttackStatusCategory, string> = {
   finished: '#f59e0b',  // Vàng ánh kim (Vinh quang hoàn thành)
-  inProgress: '#dc2626', // Đỏ thắm (Chiến sự đang tiếp diễn)
+  inProgress: '#8f1717', // Đỏ sẫm / Deep crimson (Chiến sự đang tiếp diễn)
   notStarted: '#52525b', // Đen / Xám than (Chưa bắt đầu)
 }
 

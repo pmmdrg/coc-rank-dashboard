@@ -227,8 +227,8 @@ export function ClanMembersSection({
         )
       case 'coLeader':
         return (
-          <span className="inline-flex items-center gap-1 rounded-md border border-red-500/40 bg-red-500/15 px-2 py-0.5 text-[10px] font-bold text-red-700 dark:border-red-400/40 dark:bg-red-400/15 dark:text-red-300">
-            <Shield weight="fill" className="h-3 w-3 text-red-500" />
+          <span className="inline-flex items-center gap-1 rounded-md border border-red-800/60 bg-[#2d0909] px-2 py-0.5 text-[10px] font-bold text-red-200">
+            <Shield weight="fill" className="h-3 w-3 text-red-400" />
             {dict.clan.roleCoLeader}
           </span>
         )
@@ -254,7 +254,7 @@ export function ClanMembersSection({
   if (isLoading && !clanData) {
     return (
       <div className="glass-panel rounded-2xl border border-amber-500/25 bg-[#0e0e12] p-8 text-center backdrop-blur-xl animate-fade-in space-y-3">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500/10 text-red-400 shadow-inner">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#2d0909] text-red-300 shadow-inner">
           <CircleNotch weight="bold" className="h-7 w-7 animate-spin" />
         </div>
         <h3 className="text-base font-bold text-white">
@@ -308,7 +308,7 @@ export function ClanMembersSection({
                 />
               </div>
             ) : (
-              <div className="flex h-18 w-18 sm:h-20 sm:w-20 shrink-0 items-center justify-center rounded-2xl border border-red-500/30 bg-red-500/10 text-red-500 shadow-inner">
+              <div className="flex h-18 w-18 sm:h-20 sm:w-20 shrink-0 items-center justify-center rounded-2xl border border-red-800/40 bg-[#2d0909] text-red-400 shadow-inner">
                 <Shield weight="duotone" className="h-10 w-10" />
               </div>
             )}
@@ -319,10 +319,10 @@ export function ClanMembersSection({
                   {clanData.name}
                 </h2>
                 {isLoading && (
-                  <CircleNotch weight="bold" className="h-4 w-4 animate-spin text-red-500" />
+                  <CircleNotch weight="bold" className="h-4 w-4 animate-spin text-red-400" />
                 )}
                 {clanData.clanLevel ? (
-                  <span className="inline-flex items-center gap-1 rounded-lg border border-red-400/30 bg-red-400/15 px-2.5 py-0.5 text-xs font-black text-red-300">
+                  <span className="inline-flex items-center gap-1 rounded-lg border border-red-800/60 bg-[#2d0909] px-2.5 py-0.5 text-xs font-black text-red-200">
                     <Shield weight="fill" className="h-3.5 w-3.5" />
                     {dict.clan.level} {clanData.clanLevel}
                   </span>
@@ -338,7 +338,7 @@ export function ClanMembersSection({
                   <>
                     <span className="text-zinc-600">•</span>
                     <span className="inline-flex items-center gap-1 font-semibold text-zinc-200">
-                      <Sword weight="bold" className="h-3.5 w-3.5 text-red-500" />
+                      <Sword weight="bold" className="h-3.5 w-3.5 text-red-400" />
                       {clanData.warLeague.name}
                     </span>
                   </>
@@ -411,7 +411,7 @@ export function ClanMembersSection({
             <button
               type="button"
               onClick={() => setSortOrder((curr) => (curr === 'asc' ? 'desc' : 'asc'))}
-              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-amber-500/30 bg-[#121216] text-white hover:border-red-500 hover:bg-red-600 active:scale-95 transition-all shadow-2xs backdrop-blur-md cursor-pointer"
+              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-amber-500/30 bg-[#121216] text-white hover:border-red-800 hover:bg-[#7a1313] active:scale-95 transition-all shadow-2xs backdrop-blur-md cursor-pointer"
               title={sortOrder === 'asc' ? 'Tăng dần (Nhấn để đổi giảm dần)' : 'Giảm dần (Nhấn để đổi tăng dần)'}
             >
               <ArrowsDownUp weight="bold" className={`h-4 w-4 ${sortOrder === 'desc' ? 'rotate-180' : ''} transition-transform duration-200`} />
@@ -423,7 +423,7 @@ export function ClanMembersSection({
             type="button"
             onClick={() => handleFetchAllRanks(true)}
             disabled={isFetchingAll}
-            className="inline-flex h-10 items-center gap-1.5 rounded-xl border border-red-500/40 bg-red-950/40 px-3.5 text-xs font-bold text-red-300 hover:bg-red-900/40 active:scale-95 disabled:opacity-50 transition-all cursor-pointer shadow-2xs"
+            className="inline-flex h-10 items-center gap-1.5 rounded-xl border border-red-800/60 bg-[#2d0909] px-3.5 text-xs font-bold text-white hover:bg-[#7a1313] hover:border-red-700 active:scale-95 disabled:opacity-50 transition-all cursor-pointer shadow-2xs"
             title={
               isAllRanksFetched
                 ? 'Gọi lại API Supercell để cập nhật thứ hạng mới nhất cho tất cả thành viên'
@@ -501,7 +501,7 @@ export function ClanMembersSection({
                       key={member.tag}
                       className={`group transition-colors ${
                         isMe
-                          ? 'bg-red-950/25 font-semibold'
+                          ? 'bg-[#220707]/60 font-semibold'
                           : 'hover:bg-[#121216]'
                       }`}
                     >
@@ -525,7 +525,7 @@ export function ClanMembersSection({
                             </span>
 
                             {isMe && (
-                              <span className="inline-flex items-center rounded-full bg-red-500/20 border border-red-500/30 px-2 py-0.2 text-[9px] font-black uppercase tracking-wider text-red-300">
+                              <span className="inline-flex items-center rounded-full bg-[#450d0d] border border-red-800/60 px-2 py-0.2 text-[9px] font-black uppercase tracking-wider text-red-200">
                                 {dict.clan.you}
                               </span>
                             )}
@@ -588,7 +588,7 @@ export function ClanMembersSection({
                                         ? `Thứ hạng của bạn trong bảng đấu 100 người (#${tournamentRank})`
                                         : `Hạng #${tournamentRank} (Cùng bảng đấu 100 người với bạn)`
                                     }
-                                    className={isMe ? 'ring-2 ring-red-500/70 shadow-xs' : ''}
+                                    className={isMe ? 'ring-2 ring-red-800/80 shadow-xs' : ''}
                                   />
                                 </div>
                               )
@@ -597,7 +597,7 @@ export function ClanMembersSection({
                             // 2. Nếu đang gọi API tra cứu thứ hạng cho thành viên này
                             if (fetchingTags.has(cleanMemberTag)) {
                               return (
-                                <span className="inline-flex h-6.5 items-center justify-center gap-1 rounded-lg border border-red-500/30 bg-red-950/40 px-2 text-[10px] font-semibold text-red-300">
+                                <span className="inline-flex h-6.5 items-center justify-center gap-1 rounded-lg border border-red-800/50 bg-[#2d0909] px-2 text-[10px] font-semibold text-red-200">
                                   <CircleNotch weight="bold" className="h-2.5 w-2.5 animate-spin" />
                                   <span>{dict.clan.fetchingRank}</span>
                                 </span>
@@ -621,7 +621,7 @@ export function ClanMembersSection({
                                     <button
                                       type="button"
                                       onClick={() => handleFetchRank(member.tag)}
-                                      className="absolute -right-5.5 opacity-0 group-hover/rank:opacity-100 transition-opacity p-0.5 text-zinc-500 hover:text-red-400 cursor-pointer"
+                                      className="absolute -right-5.5 opacity-0 group-hover/rank:opacity-100 transition-opacity p-0.5 text-zinc-500 hover:text-red-300 cursor-pointer"
                                       title="Tra cứu lại thứ hạng"
                                     >
                                       <ArrowClockwise weight="bold" className="h-3 w-3" />
@@ -642,7 +642,7 @@ export function ClanMembersSection({
                                     <button
                                       type="button"
                                       onClick={() => handleFetchRank(member.tag)}
-                                      className="absolute -right-5.5 opacity-0 group-hover/rank:opacity-100 transition-opacity p-0.5 text-zinc-500 hover:text-red-400 cursor-pointer"
+                                      className="absolute -right-5.5 opacity-0 group-hover/rank:opacity-100 transition-opacity p-0.5 text-zinc-500 hover:text-red-300 cursor-pointer"
                                       title="Tra cứu lại"
                                     >
                                       <ArrowClockwise weight="bold" className="h-3 w-3" />
@@ -656,7 +656,7 @@ export function ClanMembersSection({
                                   <button
                                     type="button"
                                     onClick={() => handleFetchRank(member.tag)}
-                                    className="inline-flex h-6.5 items-center gap-1 rounded-lg border border-red-500/40 bg-red-950/40 px-2 text-[10px] font-semibold text-red-300 hover:bg-red-900/40 cursor-pointer"
+                                    className="inline-flex h-6.5 items-center gap-1 rounded-lg border border-red-800/60 bg-[#2d0909] px-2 text-[10px] font-semibold text-red-200 hover:bg-[#7a1313] cursor-pointer"
                                     title={`${fetchedInfo.error} - Nhấn để thử lại`}
                                   >
                                     <span>Lỗi</span>
@@ -671,7 +671,7 @@ export function ClanMembersSection({
                               <button
                                 type="button"
                                 onClick={() => handleFetchRank(member.tag)}
-                                className="inline-flex h-6.5 items-center justify-center gap-1 rounded-lg border border-red-500/50 bg-red-950/40 px-2 text-[10px] font-semibold text-white hover:bg-red-600 hover:border-red-500 active:scale-95 transition-all cursor-pointer shadow-xs"
+                                className="inline-flex h-6.5 items-center justify-center gap-1 rounded-lg border border-red-800/60 bg-[#2d0909] px-2 text-[10px] font-semibold text-white hover:bg-[#7a1313] hover:border-red-700 active:scale-95 transition-all cursor-pointer shadow-xs"
                                 title="Gọi API Supercell để tra cứu thứ hạng bảng đấu 100 người của người chơi này"
                               >
                                 <MagnifyingGlass weight="bold" className="h-2.5 w-2.5" />

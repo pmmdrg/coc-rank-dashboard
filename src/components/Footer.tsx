@@ -17,7 +17,7 @@ export function Footer() {
               <span className="rounded-full border border-amber-500/25 bg-[#121216] px-2 py-0.5 text-[11px] font-bold text-white shadow-2xs">
                 v{APP_VERSION}
               </span>
-              <span className="rounded-full border border-red-500/40 bg-red-600/25 px-2 py-0.5 text-[11px] font-bold text-red-300 shadow-2xs">
+              <span className="rounded-full border border-red-800/60 bg-[#2d0909] px-2 py-0.5 text-[11px] font-bold text-red-200 shadow-2xs">
                 Fan Tool
               </span>
             </div>
@@ -35,14 +35,14 @@ export function Footer() {
               href="https://github.com/pmmdrg/coc-rank-dashboard"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center rounded-xl border border-amber-500/30 bg-[#121216] px-3.5 py-2 font-bold text-white shadow-2xs transition hover:border-red-500 hover:bg-red-600 hover:text-white"
+              className="inline-flex items-center rounded-xl border border-amber-500/30 bg-[#121216] px-3.5 py-2 font-bold text-white shadow-2xs transition hover:border-red-800 hover:bg-[#7a1313] hover:text-white"
             >
               <span>GitHub</span>
             </a>
 
             <a
               href="mailto:pmmdrg2605@gmail.com"
-              className="inline-flex items-center rounded-xl border border-amber-500/30 bg-[#121216] px-3.5 py-2 font-bold text-white shadow-2xs transition hover:border-red-500 hover:bg-red-600 hover:text-white"
+              className="inline-flex items-center rounded-xl border border-amber-500/30 bg-[#121216] px-3.5 py-2 font-bold text-white shadow-2xs transition hover:border-red-800 hover:bg-[#7a1313] hover:text-white"
             >
               <span>{dict.footer.contactFeedback}</span>
             </a>

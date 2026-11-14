@@ -164,8 +164,8 @@ export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSy
           : `${stats.playersWhoCanPassMe} đối thủ`
         : null,
       badgeType: hasMyPlayer && stats.playersWhoCanPassMe === 0 ? 'success' : 'warning',
-      topBorder: 'border-t-2 border-t-red-600/70',
-      valueColor: 'text-red-400 font-black',
+      topBorder: 'border-t-2 border-t-[#8f1717]',
+      valueColor: 'text-red-300 font-black',
     },
     {
       label: dict.statCards.attackPerformance,
@@ -182,7 +182,7 @@ export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSy
           ? `${(Math.round(attackStats.avgStars * 10) / 10).toFixed(1)}★ TB`
           : null,
       badgeType: 'neutral',
-      topBorder: 'border-t-2 border-t-red-600/70',
+      topBorder: 'border-t-2 border-t-[#8f1717]',
       valueColor: 'text-white font-bold',
     },
     {
@@ -244,7 +244,7 @@ export function StatCardsGrid({ stats, season, myPlayerName: _myPlayerName, isSy
                           card.badgeType === 'gold' || card.badgeType === 'success'
                             ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
                             : card.badgeType === 'warning'
-                              ? 'bg-red-600 text-white border border-red-500/50'
+                              ? 'bg-[#7a1313] text-white border border-red-800/60'
                               : 'bg-[#141418] text-white border border-amber-500/30'
                         }`}
                       >

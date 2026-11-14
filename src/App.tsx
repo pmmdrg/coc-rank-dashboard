@@ -68,7 +68,7 @@ const emptySeason: Season = {
 }
 
 const comparisonColors = {
-  canPass: '#dc2626', // Đỏ thắm (Nguy cơ bị vượt qua)
+  canPass: '#8f1717', // Đỏ sẫm (Nguy cơ bị vượt qua - TH19)
   below: '#f59e0b',   // Vàng ánh kim (Chắc chắn xếp dưới)
 }
 
@@ -546,7 +546,7 @@ function App() {
         <main className="mx-auto w-full max-w-[1360px] flex-1 px-4 py-6 sm:px-6 lg:px-8 space-y-6">
           {/* Thông báo lỗi */}
           {(error || (currentRoute === 'clan' && clanError)) && (
-            <div className="animate-fade-in rounded-xl border border-red-500/40 bg-red-950/40 px-4 py-3 text-sm text-red-200 backdrop-blur">
+            <div className="animate-fade-in rounded-xl border border-red-800/60 bg-[#2d0909] px-4 py-3 text-sm text-red-200 backdrop-blur">
               {currentRoute === 'clan' && clanError ? clanError : error}
             </div>
           )}

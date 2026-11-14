@@ -21,10 +21,10 @@
   --field-text: #ffffff;
   --soft-table-head: #08080a;
   --table-head-text: #ffffff;
-  --row-mine: rgba(220, 38, 38, 0.18);
-  --row-mine-hover: rgba(220, 38, 38, 0.26);
-  --row-risk: rgba(220, 38, 38, 0.18);
-  --row-risk-hover: rgba(220, 38, 38, 0.26);
+  --row-mine: rgba(122, 19, 19, 0.22);
+  --row-mine-hover: rgba(143, 23, 23, 0.32);
+  --row-risk: rgba(122, 19, 19, 0.22);
+  --row-risk-hover: rgba(143, 23, 23, 0.32);
   --row-below: rgba(245, 158, 11, 0.14);
   --row-below-hover: rgba(245, 158, 11, 0.22);
   --text-main: #ffffff;
@@ -58,7 +58,7 @@ body {
 button:focus-visible,
 input:focus-visible,
 select:focus-visible {
-  outline: 2px solid #ef4444;
+  outline: 2px solid #8f1717;
   outline-offset: 2px;
 }
 
@@ -105,8 +105,8 @@ select:focus-visible {
 }
 
 .soft-field:focus {
-  border-color: #ef4444;
-  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25);
+  border-color: #8f1717;
+  box-shadow: 0 0 0 2px rgba(143, 23, 23, 0.25);
 }
 
 .soft-table-head {
@@ -235,12 +235,6 @@ select:focus-visible {
   color: #ffffff;
 }
 
-.liquid-collapse-btn:hover {
-  background: #272228;
-  border-color: rgba(239, 68, 68, 0.4);
-  color: #ffffff;
-}
-
 .liquid-collapse-btn:active {
   transform: scale(0.98);
 }
@@ -278,10 +272,10 @@ html.dark {
   --field-text: #ffffff;
   --soft-table-head: #08080a;
   --table-head-text: #ffffff;
-  --row-mine: rgba(220, 38, 38, 0.18);
-  --row-mine-hover: rgba(220, 38, 38, 0.26);
-  --row-risk: rgba(220, 38, 38, 0.18);
-  --row-risk-hover: rgba(220, 38, 38, 0.26);
+  --row-mine: rgba(122, 19, 19, 0.22);
+  --row-mine-hover: rgba(143, 23, 23, 0.32);
+  --row-risk: rgba(122, 19, 19, 0.22);
+  --row-risk-hover: rgba(143, 23, 23, 0.32);
   --row-below: rgba(245, 158, 11, 0.14);
   --row-below-hover: rgba(245, 158, 11, 0.22);
   --text-main: #ffffff;
@@ -753,9 +747,9 @@ select {
 
 .laser-line-rose,
 .zone-line-crimson {
-  background: rgba(220, 38, 38, 0.08);
-  border-top: 1px solid rgba(220, 38, 38, 0.35);
-  border-bottom: 1px solid rgba(220, 38, 38, 0.35);
+  background: rgba(122, 19, 19, 0.15);
+  border-top: 1px solid rgba(139, 21, 21, 0.45);
+  border-bottom: 1px solid rgba(139, 21, 21, 0.45);
 }
 
 /* Thẻ chỉ số năng lực (.hero-stat-card) */
@@ -794,7 +788,7 @@ html.dark .hero-stat-card::after {
 }
 
 html.dark .hero-stat-card:hover {
-  border-color: rgba(239, 68, 68, 0.4);
+  border-color: rgba(185, 28, 28, 0.4);
   box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.7);
 }
 
@@ -853,17 +847,17 @@ html.dark .hero-stat-card:hover {
   background: rgba(245, 158, 11, 0.25);
 }
 
-/* 2. SUPERIOR (Đỏ thắm TH19 - Crimson Red) */
+/* 2. SUPERIOR (Đỏ sẫm TH19 - Deep Crimson Red) */
 .liquid-rating-chip-superior {
-  background: rgba(220, 38, 38, 0.16);
-  border: 1px solid rgba(248, 113, 113, 0.45);
-  color: #f87171;
+  background: rgba(122, 19, 19, 0.28);
+  border: 1px solid rgba(160, 24, 24, 0.55);
+  color: #fca5a5;
   box-shadow: none;
 }
 
 .liquid-rating-chip-superior:hover {
-  border-color: rgba(248, 113, 113, 0.7);
-  background: rgba(220, 38, 38, 0.25);
+  border-color: rgba(185, 28, 28, 0.7);
+  background: rgba(122, 19, 19, 0.4);
 }
 
 /* 3. POTENTIAL (Trắng / Bạc TH19 - Crisp Silver White) */
@@ -879,17 +873,17 @@ html.dark .hero-stat-card:hover {
   background: rgba(255, 255, 255, 0.16);
 }
 
-/* 4. ALARM (Đỏ sẫm huyết đen TH19 - Obsidian Blood Red) */
+/* 4. ALARM (Đỏ rượu sẫm TH19 - Dark Wine Red) */
 .liquid-rating-chip-alarm {
-  background: rgba(153, 27, 27, 0.25);
-  border: 1px solid rgba(239, 68, 68, 0.45);
+  background: rgba(75, 12, 12, 0.4);
+  border: 1px solid rgba(139, 21, 21, 0.55);
   color: #fca5a5;
   box-shadow: none;
 }
 
 .liquid-rating-chip-alarm:hover {
-  border-color: rgba(239, 68, 68, 0.65);
-  background: rgba(153, 27, 27, 0.35);
+  border-color: rgba(160, 24, 24, 0.75);
+  background: rgba(95, 15, 15, 0.55);
 }
 
 /* Skeleton Shimmer Wave Effect - Tinh tế chuẩn TH19 Obsidian Carbon */
@@ -989,22 +983,22 @@ html.dark .hero-stat-card:hover {
 
 /* TH19 Atmosphere Blobs (Chỉ gồm Đỏ thẫm Crimson & Vàng ánh kim) */
 .aurora-blob-inner-1 {
-  background: radial-gradient(circle at 40% 40%, rgba(220, 38, 38, 0.22) 0%, rgba(153, 27, 27, 0.12) 48%, transparent 75%);
+  background: radial-gradient(circle at 40% 40%, rgba(139, 21, 21, 0.16) 0%, rgba(95, 12, 12, 0.08) 48%, transparent 75%);
   animation: aurora-morph-1 12s ease-in-out infinite alternate;
 }
 
 .aurora-blob-inner-2 {
-  background: radial-gradient(circle at 60% 40%, rgba(245, 158, 11, 0.16) 0%, rgba(220, 38, 38, 0.08) 48%, transparent 75%);
+  background: radial-gradient(circle at 60% 40%, rgba(245, 158, 11, 0.14) 0%, rgba(139, 21, 21, 0.06) 48%, transparent 75%);
   animation: aurora-morph-2 14s ease-in-out infinite alternate;
 }
 
 .aurora-blob-inner-3 {
-  background: radial-gradient(circle at 50% 50%, rgba(220, 38, 38, 0.18) 0%, rgba(185, 28, 28, 0.10) 42%, transparent 85%);
+  background: radial-gradient(circle at 50% 50%, rgba(139, 21, 21, 0.14) 0%, rgba(95, 12, 12, 0.06) 42%, transparent 85%);
   animation: aurora-morph-3 15s ease-in-out infinite alternate;
 }
 
 .aurora-blob-inner-4 {
-  background: radial-gradient(circle at 50% 60%, rgba(245, 158, 11, 0.14) 0%, rgba(220, 38, 38, 0.08) 48%, transparent 85%);
+  background: radial-gradient(circle at 50% 60%, rgba(245, 158, 11, 0.12) 0%, rgba(139, 21, 21, 0.06) 48%, transparent 85%);
   animation: aurora-morph-4 13s ease-in-out infinite alternate;
 }
 
@@ -1082,7 +1076,7 @@ html.dark .hero-stat-card:hover {
   background-image: linear-gradient(
     135deg,
     #ffffff 0%,
-    #ef4444 60%,
+    #b91c1c 60%,
     #fbbf24 100%
   );
 }

@@ -34,7 +34,7 @@ export function TopBar({
           <button
             type="button"
             onClick={onOpenMobileSidebar}
-            className="apple-btn lg:hidden inline-flex h-8 w-8 items-center justify-center rounded-lg border border-amber-500/30 bg-[#121216] text-white hover:bg-red-600 hover:border-red-500 cursor-pointer transition-colors"
+            className="apple-btn lg:hidden inline-flex h-8 w-8 items-center justify-center rounded-lg border border-amber-500/30 bg-[#121216] text-white hover:bg-[#7a1313] hover:border-red-800 cursor-pointer transition-colors"
             title="Mở menu"
           >
             <List weight="bold" className="h-4.5 w-4.5" />
@@ -48,7 +48,7 @@ export function TopBar({
         {/* Trạng thái Đồng bộ - Chuẩn TH19 */}
         <div className="flex items-center gap-2">
           {isSyncing ? (
-            <span className="inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs text-red-500 font-semibold">
+            <span className="inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs text-red-400 font-semibold">
               <CircleNotch weight="bold" className="h-3.5 w-3.5 animate-spin" />
               <span>{dict.header.syncing}</span>
             </span>

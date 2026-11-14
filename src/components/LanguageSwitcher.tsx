@@ -14,7 +14,7 @@ export function LanguageSwitcher() {
     <button
       type="button"
       onClick={handleToggle}
-      className="inline-flex h-9.5 items-center justify-center gap-1.5 rounded-xl border border-amber-500/30 bg-[#121216] px-2.5 text-xs font-bold text-white shadow-2xs backdrop-blur-md transition-all hover:border-red-500 hover:bg-red-600 hover:text-white cursor-pointer select-none"
+      className="inline-flex h-9.5 items-center justify-center gap-1.5 rounded-xl border border-amber-500/30 bg-[#121216] px-2.5 text-xs font-bold text-white shadow-2xs backdrop-blur-md transition-all hover:border-red-800 hover:bg-[#7a1313] hover:text-white cursor-pointer select-none"
       title={`${dict.header.langToggle}: ${nextLanguageName}`}
       aria-label="Toggle language"
     >

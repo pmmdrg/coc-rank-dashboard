@@ -108,20 +108,20 @@ export function SeasonMetaForm({
                   className="h-5 w-8 rounded border border-amber-500/50 bg-[#141418] text-center text-xs font-bold text-white focus:border-amber-400"
                 />
               </label>
-              <label className="flex items-center gap-1 text-red-400 font-bold">
+              <label className="flex items-center gap-1 text-red-300 font-bold">
                 <span>{dict.seasonMeta.demote}</span>
                 <input
                   type="number"
                   min="0"
                   value={season.demotionCount ?? 1}
                   onChange={(e) => onUpdateSeasonMeta('demotionCount', Math.max(0, parseInt(e.target.value, 10) || 0))}
-                  className="h-5 w-8 rounded border border-red-500/50 bg-[#141418] text-center text-xs font-bold text-white focus:border-red-400"
+                  className="h-5 w-8 rounded border border-red-800/60 bg-[#141418] text-center text-xs font-bold text-white focus:border-red-600"
                 />
               </label>
             </div>
           ) : (
             <span className="text-xs text-white">
-              <span className="text-amber-300 font-bold">{dict.seasonMeta.promote} {season.promotionCount ?? 2}</span> • <span className="text-red-400 font-bold">{dict.seasonMeta.demote} {season.demotionCount ?? 1}</span>
+              <span className="text-amber-300 font-bold">{dict.seasonMeta.promote} {season.promotionCount ?? 2}</span> • <span className="text-red-300 font-bold">{dict.seasonMeta.demote} {season.demotionCount ?? 1}</span>
             </span>
           )}
         </div>

@@ -57,11 +57,11 @@ export function PlayerRow({
   )
 
   const borderClass = isMyPlayer
-    ? 'border-l-[4px] border-l-red-600 bg-red-950/25 hover:bg-red-950/35'
+    ? 'border-l-[4px] border-l-[#8f1717] bg-[#220707]/60 hover:bg-[#2e0b0b]/70'
     : isPromotionZone
       ? 'border-l-[4px] border-l-amber-500 bg-amber-950/10 hover:bg-[#121216]'
       : isDemotionZone
-        ? 'border-l-[4px] border-l-red-600 bg-red-950/10 hover:bg-[#121216]'
+        ? 'border-l-[4px] border-l-[#7a1313] bg-[#1a0505]/40 hover:bg-[#121216]'
         : 'border-l-[4px] border-l-transparent hover:bg-[#121216]'
 
   const hasAttackedByMe = Boolean(player.attackedByMe && player.attackedByMe.length > 0)
@@ -146,7 +146,7 @@ export function PlayerRow({
             </span>
           ) : isDemotionZone ? (
             <span
-              className="inline-flex shrink-0 items-center rounded-sm bg-red-500/15 border border-red-500/35 px-1 py-0.5 text-[9px] font-black uppercase tracking-tight text-red-700 dark:text-red-300 select-none shadow-2xs"
+              className="inline-flex shrink-0 items-center rounded-sm bg-[#3a0a0a] border border-red-800/60 px-1 py-0.5 text-[9px] font-black uppercase tracking-tight text-red-200 select-none shadow-2xs"
               title={dict.table.badgeDemotionTooltip}
             >
               {dict.table.badgeDemotion}
@@ -162,9 +162,9 @@ export function PlayerRow({
             <div className="flex items-center gap-1.5 truncate">
               <span
                 onClick={() => onOpenBattleLog?.(player)}
-                className={`truncate text-sm cursor-pointer hover:underline hover:text-red-400 transition-colors ${
+                className={`truncate text-sm cursor-pointer hover:underline hover:text-red-300 transition-colors ${
                   isMyPlayer
-                    ? 'text-red-400 font-black'
+                    ? 'text-red-300 font-black'
                     : 'text-white font-bold'
                 }`}
                 title={player.name}
@@ -172,7 +172,7 @@ export function PlayerRow({
                 {player.name}
               </span>
               {isMyPlayer && (
-                <span className="shrink-0 rounded bg-red-600/30 border border-red-500/50 px-1.5 py-0.2 text-[9px] font-black text-red-300 uppercase tracking-wider">
+                <span className="shrink-0 rounded bg-[#450d0d] border border-red-800/60 px-1.5 py-0.2 text-[9px] font-black text-red-200 uppercase tracking-wider">
                   {dict.common.me}
                 </span>
               )}
@@ -219,7 +219,7 @@ export function PlayerRow({
                 )}
                 {hasDefendedAgainstMe && (
                   <span
-                    className="inline-flex items-center rounded px-1.5 py-0.2 text-[9px] font-bold bg-red-500/20 text-red-300 border border-red-500/30 whitespace-nowrap shadow-2xs"
+                    className="inline-flex items-center rounded px-1.5 py-0.2 text-[9px] font-bold bg-[#2e0909] text-red-200 border border-red-900/60 whitespace-nowrap shadow-2xs"
                     title={defendedTooltip}
                   >
                     {dict.table.attackedMe}{defenseSummaryText}
@@ -245,7 +245,7 @@ export function PlayerRow({
                 e.stopPropagation()
                 onOpenBattleLog?.(player)
               }}
-              className="inline-flex items-center rounded-md border border-red-500/60 bg-red-950/40 px-2.5 py-0.5 text-[11px] font-bold text-white hover:bg-red-600 hover:border-red-500 transition-all cursor-pointer select-none shadow-xs"
+              className="inline-flex items-center rounded-md border border-red-800/60 bg-[#2d0909] px-2.5 py-0.5 text-[11px] font-bold text-white hover:bg-[#7a1313] hover:border-red-700 transition-all cursor-pointer select-none shadow-xs"
               title={dict.battleLog.viewLogTooltip}
             >
               <span>{dict.battleLog.actionLog}</span>
@@ -318,7 +318,7 @@ export function PlayerRow({
           <span
             className={
               isMyPlayer
-                ? 'text-red-400 font-black'
+                ? 'text-red-300 font-black'
                 : 'text-white font-bold'
             }
           >

@@ -28,8 +28,8 @@ function TrendSectionSkeleton() {
             <h2 className="text-base font-bold uppercase tracking-wider text-white">
               {dict.performanceTrend.title}
             </h2>
-            <span className="inline-flex h-5 items-center gap-1.5 rounded-full border border-red-500/30 bg-red-950/60 px-2 text-[10px] font-bold text-red-300">
-              <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-red-500 animate-ping" />
+            <span className="inline-flex h-5 items-center gap-1.5 rounded-full border border-red-800/60 bg-[#2d0909] px-2 text-[10px] font-bold text-red-200">
+              <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-red-400 animate-ping" />
               {dict.common.loading}
             </span>
           </div>
@@ -409,7 +409,7 @@ export function PerformanceTrendSection({
             <h2 className="text-base font-bold uppercase tracking-wider text-white">
               {dict.performanceTrend.title}
             </h2>
-            <span className="rounded-full bg-red-500/15 border border-red-500/30 px-2 py-0.5 text-[10px] font-bold text-red-300">
+            <span className="rounded-full bg-[#2d0909] border border-red-800/60 px-2 py-0.5 text-[10px] font-bold text-red-200">
               {interpolate(dict.performanceTrend.seasonsCount, { count: chronologicalHistory.length })}
             </span>
           </div>
@@ -424,7 +424,7 @@ export function PerformanceTrendSection({
             type="button"
             onClick={() => setShowTable((prev) => !prev)}
             className={`liquid-collapse-btn group shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs sm:text-[13px] font-bold rounded-full select-none cursor-pointer transition-all active:scale-98 ${
-              showTable ? '!text-red-400 font-extrabold' : ''
+              showTable ? '!text-red-300 font-extrabold' : ''
             }`}
           >
             {showTable ? dict.performanceTrend.hideHistoryTable : dict.performanceTrend.showHistoryTable}
@@ -473,8 +473,8 @@ export function PerformanceTrendSection({
                       <span className="h-2 w-2 rounded-full bg-amber-500" />
                       {interpolate(dict.performanceTrend.cupsLegend, { min: minCups, max: maxCups })}
                     </span>
-                    <span className="inline-flex items-center gap-1.5 text-red-600 dark:text-red-400">
-                      <span className="h-2 w-2 rounded-full bg-red-500" />
+                    <span className="inline-flex items-center gap-1.5 text-red-300">
+                      <span className="h-2 w-2 rounded-full bg-[#8f1717]" />
                       {dict.performanceTrend.rankTierLegend}
                     </span>
                   </>
@@ -484,8 +484,8 @@ export function PerformanceTrendSection({
                       <span className="h-2 w-2 rounded-full bg-amber-500" />
                       {dict.performanceTrend.attackWinRateLegend}
                     </span>
-                    <span className="inline-flex items-center gap-1.5 text-red-600 dark:text-red-400">
-                      <span className="h-2 w-2 rounded-full bg-red-500" />
+                    <span className="inline-flex items-center gap-1.5 text-red-300">
+                      <span className="h-2 w-2 rounded-full bg-[#8f1717]" />
                       {dict.performanceTrend.defenseStarsLegend}
                     </span>
                   </>
@@ -586,7 +586,7 @@ export function PerformanceTrendSection({
                       stroke="currentColor"
                       className={
                         hoveredIndex === i
-                          ? 'text-red-500 stroke-[1.5]'
+                          ? 'text-red-400 stroke-[1.5]'
                           : 'text-amber-500/15'
                       }
                       strokeDasharray={hoveredIndex === i ? undefined : '2 2'}
@@ -716,7 +716,7 @@ export function PerformanceTrendSection({
                       textAnchor="middle"
                       className={`text-[10px] font-semibold transition-colors ${
                         hoveredIndex === i
-                          ? 'fill-red-400 font-bold'
+                          ? 'fill-red-300 font-bold'
                           : 'fill-zinc-400'
                       }`}
                     >
@@ -761,7 +761,7 @@ export function PerformanceTrendSection({
                         </span>
                       </div>
                       <div className="flex items-center justify-between gap-3">
-                        <span className="text-red-400 font-medium shrink-0">{dict.common.rank}:</span>
+                        <span className="text-red-300 font-medium shrink-0">{dict.common.rank}:</span>
                         <span className="font-mono font-bold whitespace-nowrap">
                           #{chronologicalHistory[hoveredIndex].placement} {dict.performanceTrend.outOfHundred}
                         </span>
@@ -773,7 +773,7 @@ export function PerformanceTrendSection({
                         </span>
                       </div>
                       <div className="flex items-center justify-between gap-3">
-                        <span className="text-red-400 font-medium shrink-0">{dict.common.defenses}:</span>
+                        <span className="text-red-300 font-medium shrink-0">{dict.common.defenses}:</span>
                         <span className="font-mono font-bold whitespace-nowrap">
                           {interpolate(dict.performanceTrend.lostStars, { stars: chronologicalHistory[hoveredIndex].defenseStars })}
                         </span>

@@ -96,7 +96,7 @@ export function CustomSelect<T extends string | number>({
                   }}
                   className={`group/opt flex w-full items-center justify-between rounded-xl px-3 py-2 text-xs sm:text-sm font-semibold transition-all cursor-pointer select-none ${
                     isSelected
-                      ? 'bg-red-600/25 text-white font-bold shadow-2xs border border-red-500/40'
+                      ? 'bg-[#7a1313] text-white font-bold shadow-2xs border border-red-800/60'
                       : 'text-zinc-300 hover:bg-[#18181b] hover:text-white'
                   }`}
                 >
@@ -104,7 +104,7 @@ export function CustomSelect<T extends string | number>({
                   {isSelected && (
                     <Check
                       weight="bold"
-                      className="h-3.5 w-3.5 shrink-0 text-red-400 ml-2"
+                      className="h-3.5 w-3.5 shrink-0 text-amber-400 ml-2"
                     />
                   )}
                 </button>

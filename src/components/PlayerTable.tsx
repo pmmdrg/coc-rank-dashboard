@@ -302,8 +302,8 @@ export function PlayerTable({
       opts.push({
         value: 'demotion',
         label: <span>{interpolate(dict.table.filterDemotion, { count: Math.min(demotionCount, rankedPlayers.length) })}</span>,
-        activeColorClass: 'text-red-700 dark:text-red-300',
-        hoverColorClass: 'hover:text-red-600 dark:hover:text-red-400',
+        activeColorClass: 'text-red-300',
+        hoverColorClass: 'hover:text-red-200',
       })
     }
 
@@ -311,8 +311,8 @@ export function PlayerTable({
       opts.push({
         value: 'matchup',
         label: <span>{interpolate(dict.table.filterMatchup, { count: matchupPlayerIds.size })}</span>,
-        activeColorClass: 'text-red-700 dark:text-red-300',
-        hoverColorClass: 'hover:text-red-600 dark:hover:text-red-400',
+        activeColorClass: 'text-red-300',
+        hoverColorClass: 'hover:text-red-200',
       })
     }
 
@@ -320,8 +320,8 @@ export function PlayerTable({
       opts.push({
         value: 'canPass',
         label: <span>{interpolate(dict.table.filterCanPass, { count: canPassPlayerIds.size })}</span>,
-        activeColorClass: 'text-red-700 dark:text-red-300',
-        hoverColorClass: 'hover:text-red-600 dark:hover:text-red-400',
+        activeColorClass: 'text-red-300',
+        hoverColorClass: 'hover:text-red-200',
       })
     }
 
@@ -376,10 +376,10 @@ export function PlayerTable({
             {/* Trạng thái cập nhật */}
             {isSyncingApi ? (
               <span
-                className="inline-flex h-6 items-center gap-1.5 rounded-full border border-red-500/30 bg-red-950/60 px-2.5 text-[11px] font-bold leading-none text-red-300 shadow-2xs"
+                className="inline-flex h-6 items-center gap-1.5 rounded-full border border-red-800/60 bg-[#2d0909] px-2.5 text-[11px] font-bold leading-none text-red-200 shadow-2xs"
                 title={dict.table.syncingApi}
               >
-                <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-red-500 animate-ping" />
+                <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-red-400 animate-ping" />
                 <span>{dict.table.syncingApi}</span>
               </span>
             ) : (
@@ -397,7 +397,7 @@ export function PlayerTable({
             )}
 
             {isFiltered && (
-              <span className="inline-flex h-6 items-center rounded-full bg-red-400/15 px-2.5 text-[11px] font-bold leading-none text-red-300 border border-red-500/30 shadow-2xs">
+              <span className="inline-flex h-6 items-center rounded-full bg-[#2d0909] px-2.5 text-[11px] font-bold leading-none text-red-200 border border-red-800/60 shadow-2xs">
                 {interpolate(dict.table.showingCount, { shown: effectivePlayers.length, total: rankedPlayers.length })}
               </span>
             )}
@@ -585,7 +585,7 @@ export function PlayerTable({
                           setFilterTab('all')
                           setSearchQuery('')
                         }}
-                        className="mt-2 inline-flex h-8 items-center rounded-lg bg-red-600 px-3.5 text-xs font-semibold text-white hover:bg-red-500 cursor-pointer shadow-xs transition-all"
+                        className="mt-2 inline-flex h-8 items-center rounded-lg border border-red-800/60 bg-[#7a1313] px-3.5 text-xs font-bold text-white hover:bg-[#8f1717] cursor-pointer shadow-xs transition-all"
                       >
                         {dict.table.backToAll}
                       </button>
@@ -654,12 +654,12 @@ export function PlayerTable({
                     {isBeforeDemotionLine && (
                       <tr key="divider-demotion" className="select-none animate-fade-in">
                         <td colSpan={7} className="p-0 laser-line-rose">
-                          <div className="flex items-center justify-between px-5 py-2 text-xs font-black text-red-800 dark:text-red-300">
+                          <div className="flex items-center justify-between px-5 py-2 text-xs font-bold text-red-200">
                             <span className="flex items-center gap-2 tracking-wider uppercase">
-                              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-white text-[10px] font-black shadow-xs">▼</span>
+                              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#7a1313] text-white border border-red-800/60 text-[10px] font-black shadow-xs">▼</span>
                               <span>{interpolate(dict.table.laserDemotionTitle, { count: demotionCount })}</span>
                             </span>
-                            <span className="text-[11px] font-semibold text-red-700 dark:text-red-400">
+                            <span className="text-[11px] font-semibold text-red-300">
                               {dict.table.laserDemotionSub}
                             </span>
                           </div>
@@ -679,7 +679,7 @@ export function PlayerTable({
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-amber-500/20 bg-[#08080b] px-4 py-2.5 text-xs text-zinc-300">
         <span className="font-semibold text-white">{dict.table.legendTitle}</span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-xs border-l-2 border-l-red-600 bg-red-500/20" />
+          <span className="h-2.5 w-2.5 rounded-xs border-l-2 border-l-[#8f1717] bg-[#220707]" />
           {dict.table.legendMine}
         </span>
         <span className="inline-flex items-center gap-1">
@@ -693,8 +693,8 @@ export function PlayerTable({
           </span>
         )}
         {demotionCount > 0 && (
-          <span className="inline-flex items-center gap-1 text-red-400 font-medium">
-            <span className="h-1.5 w-1.5 rounded-full bg-red-600" />
+          <span className="inline-flex items-center gap-1 text-red-300 font-medium">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#7a1313]" />
             {interpolate(dict.table.legendDemotion, { count: demotionCount })}
           </span>
         )}
@@ -705,7 +705,7 @@ export function PlayerTable({
           {dict.table.legendYouAttacked}
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="inline-block px-1.5 py-0.2 rounded text-[9px] font-bold bg-red-500/15 text-red-300 border border-red-500/30">
+          <span className="inline-block px-1.5 py-0.2 rounded text-[9px] font-bold bg-[#2d0909] text-red-200 border border-red-900/60">
             {dict.table.attackedMe}
           </span>
           {dict.table.legendOpponentAttacked}

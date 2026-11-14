@@ -27,8 +27,8 @@ function RankChangesSkeleton() {
             <h2 className="text-base font-bold uppercase tracking-wider text-white">
               {dict.rankChanges.title}
             </h2>
-            <span className="inline-flex h-5 items-center gap-1.5 rounded-full border border-red-500/30 bg-red-950/60 px-2 text-[10px] font-bold text-red-400">
-              <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-red-500 animate-ping" />
+            <span className="inline-flex h-5 items-center gap-1.5 rounded-full border border-red-800/60 bg-[#2d0909] px-2 text-[10px] font-bold text-red-200">
+              <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-red-400 animate-ping" />
               {dict.rankChanges.analyzing}
             </span>
           </div>
@@ -153,8 +153,8 @@ export function RankChangesSection({
     {
       value: 'fell',
       label: <span>{interpolate(dict.rankChanges.filterFell, { count: fellChanges.length })}</span>,
-      activeColorClass: 'text-red-700 dark:text-red-300',
-      hoverColorClass: 'hover:text-red-600 dark:hover:text-red-400',
+      activeColorClass: 'text-red-300',
+      hoverColorClass: 'hover:text-red-200',
     },
   ], [activeChanges.length, roseChanges.length, fellChanges.length, dict.rankChanges, interpolate])
 
@@ -249,7 +249,7 @@ export function RankChangesSection({
                 </span>
               )}
               {fellChanges.length > 0 && (
-                <span className="rounded-md bg-red-500/20 px-2.5 py-1 text-red-300 border border-red-500/30">
+                <span className="rounded-md bg-[#2d0909] px-2.5 py-1 text-red-200 border border-red-800/60">
                   {interpolate(dict.rankChanges.fellCount, { count: fellChanges.length })}
                 </span>
               )}
@@ -279,7 +279,7 @@ export function RankChangesSection({
                         myChange.rankDiff > 0
                           ? 'border-amber-500/40 bg-amber-950/30 text-amber-200'
                           : myChange.rankDiff < 0
-                            ? 'border-red-500/40 bg-red-950/30 text-red-200'
+                            ? 'border-red-800/60 bg-[#2d0909] text-red-200'
                             : 'border-amber-500/30 bg-[#0e0e12] text-white'
                       }`}
                     >
@@ -329,7 +329,7 @@ export function RankChangesSection({
                       )}
                       {(myChange.defensesDiff !== undefined && myChange.defensesDiff !== 0) && (
                         <div
-                          className="font-mono text-xs font-bold px-2.5 py-1 rounded-lg bg-[#121216] border border-red-500/30 shadow-2xs text-red-400"
+                          className="font-mono text-xs font-bold px-2.5 py-1 rounded-lg bg-[#121216] border border-red-800/50 shadow-2xs text-red-300"
                           title={`${dict.common.defenses}: ${myChange.oldDefenses ?? 0} ➔ ${myChange.newDefenses ?? 0}`}
                         >
                           {interpolate(dict.rankChanges.defensesDiff, { diff: (myChange.defensesDiff ?? 0) > 0 ? `+${myChange.defensesDiff}` : (myChange.defensesDiff ?? 0) })}
@@ -349,7 +349,7 @@ export function RankChangesSection({
                   className="animate-change-card backdrop-blur-md rounded-xl border border-amber-500/25 bg-[#0e0e12] p-3 text-xs text-zinc-300 flex items-center justify-between gap-2"
                 >
                   <div className="flex items-center gap-2">
-                    <span className="rounded-md bg-red-600/30 px-1.5 py-0.5 text-[10px] font-black text-red-300">
+                    <span className="rounded-md bg-[#450d0d] border border-red-800/60 px-1.5 py-0.5 text-[10px] font-black text-red-200">
                       {dict.common.you}
                     </span>
                     <span>
@@ -419,10 +419,10 @@ export function RankChangesSection({
                         }}
                         className={`animate-change-card backdrop-blur-md flex flex-col justify-between rounded-xl border p-2.5 shadow-2xs transition-all hover:scale-[1.01] ${
                           isUser
-                            ? 'border-red-500/60 bg-red-950/30 ring-1 ring-red-500/40'
+                            ? 'border-red-800/60 bg-[#2d0909] ring-1 ring-red-800/50'
                             : isRose
                               ? 'border-amber-500/35 bg-[#0e0e12]'
-                              : 'border-red-500/35 bg-[#0e0e12]'
+                              : 'border-red-900/40 bg-[#0e0e12]'
                         }`}
                       >
                         <div className="flex items-center justify-between gap-2">
@@ -431,7 +431,7 @@ export function RankChangesSection({
                               {item.name}
                             </span>
                             {isUser && (
-                              <span className="rounded bg-red-600/30 px-1 py-0.2 text-[9px] font-black text-red-300 shrink-0">
+                              <span className="rounded bg-[#450d0d] border border-red-800/60 px-1 py-0.2 text-[9px] font-black text-red-200 shrink-0">
                                 {dict.common.you}
                               </span>
                             )}
@@ -442,7 +442,7 @@ export function RankChangesSection({
                             className={`inline-flex shrink-0 items-center justify-center rounded-md px-2 py-0.5 text-xs font-black select-none shadow-2xs border ${
                               isRose
                                 ? 'bg-amber-500/20 text-amber-300 border-amber-500/30'
-                                : 'bg-red-500/20 text-red-300 border-red-500/30'
+                                : 'bg-[#2d0909] text-red-200 border-red-900/60'
                             }`}
                           >
                             {isRose ? `+${item.rankDiff}` : item.rankDiff}
@@ -484,7 +484,7 @@ export function RankChangesSection({
                           <span
                             className={`font-semibold ${
                               (item.defensesDiff ?? 0) > 0
-                                ? 'text-red-400 font-bold'
+                                ? 'text-red-300 font-bold'
                                 : 'text-zinc-500'
                             }`}
                             title={

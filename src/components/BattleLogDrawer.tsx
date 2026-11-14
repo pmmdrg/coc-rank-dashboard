@@ -189,7 +189,7 @@ export function BattleLogDrawer({
           }`}
         >
           {/* Dải phản quang đỉnh Drawer - Concept TH19 Đỏ & Vàng ánh kim */}
-          <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-red-600 via-amber-400 to-red-600 shadow-[0_0_12px_rgba(245,158,11,0.5)]" />
+          <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#7a1313] via-amber-400 to-[#7a1313] shadow-[0_0_12px_rgba(245,158,11,0.5)]" />
 
           {/* Header Drawer: Thông tin người chơi & nút đóng */}
           <div className="p-4 sm:p-5 border-b border-amber-500/25 bg-[#0c0c0f] space-y-3.5">
@@ -201,7 +201,7 @@ export function BattleLogDrawer({
                     <h2
                       className={`truncate text-base sm:text-lg font-black tracking-tight ${
                         isCurrentPlayerMe
-                          ? 'text-red-400'
+                          ? 'text-red-300'
                           : 'text-white'
                       }`}
                       title={player.name}
@@ -209,7 +209,7 @@ export function BattleLogDrawer({
                       {player.name}
                     </h2>
                     {isCurrentPlayerMe && (
-                      <span className="shrink-0 rounded bg-red-600/30 border border-red-500/50 px-1.5 py-0.5 text-[9px] font-black text-red-300 uppercase tracking-wider">
+                      <span className="shrink-0 rounded bg-[#450d0d] border border-red-800/60 px-1.5 py-0.5 text-[9px] font-black text-red-200 uppercase tracking-wider">
                         {dict.common.me}
                       </span>
                     )}
@@ -245,7 +245,7 @@ export function BattleLogDrawer({
               <button
                 type="button"
                 onClick={handleClose}
-                className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-amber-500/30 bg-[#121216] text-white shadow-2xs hover:bg-red-600 hover:border-red-500 transition-colors cursor-pointer"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-amber-500/30 bg-[#121216] text-white shadow-2xs hover:bg-[#7a1313] hover:border-red-800 transition-colors cursor-pointer"
                 title={dict.common.close}
               >
                 <X weight="bold" className="h-4 w-4" />
@@ -276,15 +276,15 @@ export function BattleLogDrawer({
                 onClick={() => setActiveTab('attacks')}
                 className={`inline-flex items-center justify-center gap-2 rounded-md py-1.5 px-3 text-xs font-bold transition-all cursor-pointer select-none ${
                   activeTab === 'attacks'
-                    ? 'bg-red-600 text-white shadow-xs font-bold'
+                    ? 'bg-[#7a1313] border border-red-800/60 text-white shadow-xs font-bold'
                     : 'text-zinc-400 hover:text-white'
                 }`}
               >
-                <Sword weight="bold" className={`h-3.5 w-3.5 ${activeTab === 'attacks' ? 'text-white' : 'text-red-500'}`} />
+                <Sword weight="bold" className={`h-3.5 w-3.5 ${activeTab === 'attacks' ? 'text-white' : 'text-red-400'}`} />
                 <span>{dict.battleLog.attacksTab}</span>
                 <span className={`rounded px-1.5 py-0.2 text-[10px] font-bold ${
                   activeTab === 'attacks'
-                    ? 'bg-red-800/80 text-white'
+                    ? 'bg-[#450d0d] text-white border border-red-800/50'
                     : 'bg-[#18181e] text-zinc-400'
                 }`}>
                   {attackLogs.length}
@@ -337,7 +337,7 @@ export function BattleLogDrawer({
                   <span className="block text-[10px] text-zinc-400 uppercase tracking-wider font-semibold">
                     {dict.battleLog.avgDestruction}
                   </span>
-                  <span className="font-mono text-sm font-bold text-red-500">
+                  <span className="font-mono text-sm font-bold text-red-300">
                     {summary.avgDestruction}
                   </span>
                 </div>
@@ -384,12 +384,12 @@ export function BattleLogDrawer({
 
             {/* 2. Trạng thái Báo lỗi */}
             {!isLoading && error && (
-              <div className="rounded-lg border border-red-200 bg-red-50/60 p-5 text-center dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-200 space-y-3">
+              <div className="rounded-lg border border-red-900/60 bg-[#2d0909] p-5 text-center text-red-200 space-y-3">
                 <p className="text-xs">{error}</p>
                 <button
                   type="button"
                   onClick={() => loadLogs(true)}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-red-300 bg-white px-3 py-1.5 text-xs font-semibold text-red-700 shadow-2xs hover:bg-red-50 dark:border-red-800 dark:bg-red-900/40 dark:text-red-300 cursor-pointer transition-colors"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-red-800/60 bg-[#350b0b] px-3 py-1.5 text-xs font-semibold text-white shadow-2xs hover:bg-[#7a1313] cursor-pointer transition-colors"
                 >
                   <ArrowClockwise weight="bold" className="h-3.5 w-3.5" />
                   <span>{dict.battleLog.retry}</span>
@@ -433,7 +433,7 @@ export function BattleLogDrawer({
                               {log.opponentName || log.opponentPlayerTag}
                             </span>
                             {isOpponentMe && (
-                              <span className="rounded bg-red-600/30 border border-red-500/50 px-1.5 py-0.2 text-[9px] font-black text-red-300 uppercase tracking-wider">
+                              <span className="rounded bg-[#450d0d] border border-red-800/60 px-1.5 py-0.2 text-[9px] font-black text-red-200 uppercase tracking-wider">
                                 {dict.battleLog.versusYou}
                               </span>
                             )}
@@ -477,7 +477,7 @@ export function BattleLogDrawer({
                               log.destructionPercentage === 100
                                 ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
                                 : log.destructionPercentage >= 70
-                                  ? 'bg-red-500/15 text-red-300 border border-red-500/30'
+                                  ? 'bg-[#3f0d0d] text-red-200 border border-red-900/60'
                                   : 'bg-[#121216] text-white border border-amber-500/25'
                             }`}
                           >

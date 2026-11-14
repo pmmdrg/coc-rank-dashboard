@@ -315,7 +315,7 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
             <button
               type="button"
               onClick={handleCopyImage}
-              className="apple-btn inline-flex items-center gap-1.5 rounded-xl border border-amber-500/30 bg-[#121216] px-4 py-2 text-xs font-semibold text-white hover:bg-red-600 hover:border-red-500 shadow-xs cursor-pointer transition-colors"
+              className="apple-btn inline-flex items-center gap-1.5 rounded-xl border border-amber-500/30 bg-[#121216] px-4 py-2 text-xs font-semibold text-white hover:bg-[#7a1313] hover:border-red-800 shadow-xs cursor-pointer transition-colors"
               title={dict.shareModal.copyBtn}
             >
               {isCopied ? (
@@ -334,7 +334,7 @@ export function ShareCardModal({ isOpen, onClose, season, stats }: ShareCardModa
             <button
               type="button"
               onClick={handleDownload}
-              className="apple-btn inline-flex items-center gap-1.5 rounded-xl border border-red-500/60 bg-red-600 px-4 py-2 text-xs font-bold text-white shadow-xs shadow-red-950/40 hover:bg-red-500 cursor-pointer transition-colors"
+              className="apple-btn inline-flex items-center gap-1.5 rounded-xl border border-red-800/60 bg-[#7a1313] px-4 py-2 text-xs font-bold text-white shadow-xs shadow-black/50 hover:bg-[#8f1717] cursor-pointer transition-colors"
               title={dict.shareModal.downloadBtn}
             >
               <DownloadSimple weight="bold" className="h-4 w-4" />

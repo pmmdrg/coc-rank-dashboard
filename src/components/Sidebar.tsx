@@ -89,7 +89,7 @@ export function Sidebar({
         {/* Brand Header - Concept TH19: Đen, Đỏ, Trắng, Vàng ánh kim */}
         <div className="flex items-center justify-between">
           <h1 className="flex items-center gap-2 text-lg font-black tracking-tight text-white select-none">
-            <span className="text-red-500">CoC</span>
+            <span className="text-red-400">CoC</span>
             <span>Rank</span>
             <span className="rounded-md bg-gradient-to-r from-amber-500/25 to-amber-600/15 border border-amber-400/50 px-2 py-0.5 text-[10px] font-black tracking-wider text-amber-300 uppercase shadow-[0_0_10px_rgba(245,158,11,0.25)]">
               TH19
@@ -169,7 +169,7 @@ export function Sidebar({
                 type="button"
                 disabled={isSyncingApi || playerTag.trim().length < 3}
                 onClick={() => onSyncCocApi(playerTag)}
-                className="apple-btn inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-red-500/60 bg-red-600 text-white hover:bg-red-500 disabled:opacity-40 cursor-pointer shadow-xs transition-colors"
+                className="apple-btn inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-red-800/60 bg-[#7a1313] text-white hover:bg-[#8f1717] disabled:opacity-40 cursor-pointer shadow-xs transition-colors"
                 title={dict.header.syncApi}
               >
                 <ArrowsClockwise
@@ -198,7 +198,7 @@ export function Sidebar({
                 onClick={() => handleSelectNav(item.id)}
                 className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-xs font-semibold transition-colors cursor-pointer select-none ${
                   isActive
-                    ? 'bg-red-600 text-white font-bold shadow-md shadow-red-950/60'
+                    ? 'bg-[#7a1313] border border-red-800/50 text-white font-bold shadow-md shadow-black/60'
                     : 'text-zinc-200 hover:bg-[#141418] hover:text-white'
                 }`}
               >
@@ -220,7 +220,7 @@ export function Sidebar({
           <button
             type="button"
             onClick={onOpenShareCard}
-            className="flex w-full items-center justify-center gap-2 rounded-lg border border-amber-500/40 bg-red-600 hover:bg-red-500 py-2 text-xs font-bold text-white shadow-md shadow-red-950/40 transition-colors cursor-pointer select-none"
+            className="flex w-full items-center justify-center gap-2 rounded-lg border border-red-800/60 bg-[#7a1313] hover:bg-[#8f1717] py-2 text-xs font-bold text-white shadow-md shadow-black/50 transition-colors cursor-pointer select-none"
           >
             <ShareNetwork weight="bold" className="h-3.5 w-3.5 text-white" />
             <span>{dict.header.shareCard}</span>
@@ -232,7 +232,7 @@ export function Sidebar({
           <button
             type="button"
             onClick={() => onExport('json')}
-            className="apple-btn flex-1 rounded-md py-1 text-center text-[11px] font-semibold text-white hover:bg-red-600 hover:text-white transition-colors cursor-pointer"
+            className="apple-btn flex-1 rounded-md py-1 text-center text-[11px] font-semibold text-white hover:bg-[#7a1313] hover:text-white transition-colors cursor-pointer"
           >
             JSON
           </button>
@@ -240,7 +240,7 @@ export function Sidebar({
           <button
             type="button"
             onClick={() => onExport('csv')}
-            className="apple-btn flex-1 rounded-md py-1 text-center text-[11px] font-semibold text-white hover:bg-red-600 hover:text-white transition-colors cursor-pointer"
+            className="apple-btn flex-1 rounded-md py-1 text-center text-[11px] font-semibold text-white hover:bg-[#7a1313] hover:text-white transition-colors cursor-pointer"
           >
             CSV
           </button>

@@ -93,7 +93,7 @@ export function RankDiffBadge({
       className={`inline-flex shrink-0 items-center gap-0.5 rounded-full px-1.5 py-0.2 font-mono text-[10px] font-black leading-none select-none border ${
         isUp
           ? 'border-amber-500/30 bg-amber-500/20 text-amber-300'
-          : 'border-red-500/30 bg-red-500/20 text-red-300'
+          : 'border-red-900/60 bg-[#2d0909] text-red-200'
       } ${className}`}
       title={title}
     >
